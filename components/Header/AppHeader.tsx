@@ -1,8 +1,10 @@
 import React from 'react';
 import { StyleSheet, View, Image, Text } from 'react-native';
 
+// TEST TEXT 
+import * as TESTTEXT from './TestText';
 
-const logo ={
+const logo = {
     uri: '../../assets/images/icon.png'
 };
 
@@ -10,7 +12,10 @@ export default function AppHeader() {
     return (
        <View style={styles.container}>
            <Image source={require('../../assets/images/icon.png')} style={styles.logo} />
-           <Text style={styles.headline}>HEADER HERE</Text>
+           <View style={styles.skillTextContainer}>
+                <Text style={styles.headline}>{TESTTEXT.headlineTestText.global}</Text>
+                <Text style={styles.subHeadline}>{TESTTEXT.subHeadlineTestText.global}</Text>
+           </View>
        </View>
     );
 }
@@ -20,21 +25,28 @@ const styles = StyleSheet.create({
         width:'100%',
         display: 'flex',
         flexDirection: 'row',
-        justifyContent:'space-around',
         alignContent:'center',
         color: '#ff00bb',
-        padding: 10,
+        padding: 20,
+        paddingTop: 40,
         borderBottomWidth: 1,
         borderBottomColor: '#aaa'
     },
     logo: {
-        width: 64,
-        height: 64
+        width: 100,
+        height: 100
+    },
+    skillTextContainer: {
+        display: 'flex',
+        flexDirection: 'column',
+        padding: 10
     },
     headline: {
-        fontSize: 30,
+        fontSize: 50,
         color: '#fb00aa',
-        backgroundColor:'#000',
         alignSelf: 'center',
+    },
+    subHeadline: {
+        fontSize: 20
     }
 });
