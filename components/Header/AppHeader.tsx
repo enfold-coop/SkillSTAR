@@ -13,8 +13,8 @@ export default function AppHeader() {
        <View style={styles.container}>
            <Image source={require('../../assets/images/icon.png')} style={styles.logo} />
            <View style={styles.skillTextContainer}>
-                <Text style={styles.headline}>{TESTTEXT.headlineTestText.global}</Text>
-                <Text style={styles.subHeadline}>{TESTTEXT.subHeadlineTestText.global}</Text>
+                <Text style={styles.headline}>{TESTTEXT.headlineTestText.teeth}</Text>
+                <Text style={styles.subHeadline}>{TESTTEXT.subHeadlineTestText.teeth}</Text>
            </View>
        </View>
     );
