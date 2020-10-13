@@ -6,6 +6,8 @@ import useCachedResources from './hooks/useCachedResources';
 import useColorScheme from './hooks/useColorScheme';
 import Navigation from './navigation';
 
+import AppHeader from './components/Header/AppHeader';
+
 export default function App() {
   const isLoadingComplete = useCachedResources();
   const colorScheme = useColorScheme();
@@ -15,6 +17,7 @@ export default function App() {
   } else {
     return (
       <SafeAreaProvider>
+        <AppHeader />
         <Navigation colorScheme={colorScheme} />
         <StatusBar />
       </SafeAreaProvider>
