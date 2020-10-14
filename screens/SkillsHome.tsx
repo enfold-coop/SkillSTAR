@@ -4,19 +4,21 @@ import { SkillHomeProps as Props } from '../types';
 
 import { Text, View } from '../components/Themed';
 
+import { SkillsList } from '../components/SkillsHome';
+
 export default function SkillsHome({navigation}: Props) {
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Skills Home</Text>
+      <SkillsList />
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
+    // flex: 1,
+    // alignItems: 'center',
+    // justifyContent: 'center',
   },
   title: {
     fontSize: 20,
