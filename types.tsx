@@ -1,7 +1,12 @@
 export type RootStackParamList = {
-  Root: undefined;
+  Landing: undefined;
+  SkillsHome: undefined;
   NotFound: undefined;
 };
+
+export type LandingParamList = {
+  
+}
 
 export type BottomTabParamList = {
   TabOne: undefined;
