@@ -1,17 +1,8 @@
 import * as React from 'react';
 import { StyleSheet, Button } from 'react-native';
-import { StackNavigationProp } from '@react-navigation/stack';
-import { RootStackParamList } from '../types';
+import { LandingProps as Props} from '../types';
 
 import { Text, View } from '../components/Themed';
-
-type LandingNavigationProp = StackNavigationProp<
-  RootStackParamList
->;
-
-type Props = {
-  navigation: LandingNavigationProp;
-};
 
 export default function Landing({navigation}: Props) {
   return (
@@ -21,7 +12,6 @@ export default function Landing({navigation}: Props) {
         title="To Skills Home"
         onPress={() => navigation.navigate('SkillsHome')}
       />
-      <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
     </View>
   );
 }
