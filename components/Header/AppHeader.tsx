@@ -1,5 +1,6 @@
 import React from 'react';
 import { StyleSheet, View, Image, Text } from 'react-native';
+import { Appbar } from 'react-native-paper';
 
 // TEST TEXT 
 import * as TESTTEXT from './TestText';
