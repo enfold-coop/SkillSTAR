@@ -21,7 +21,11 @@ In order to demo locally:
 
 
 ### Running the app from a mobile device:
-In order to demo the app from a mobile device, download the Expo Client app onto the mobile device. Find the Expo app here: [iOS](https://apps.apple.com/us/app/expo-client/id982107779)  / [Android](https://play.google.com/store/apps/details?id=host.exp.exponent)
+1. In order to demo the app from a mobile device, download the `Expo Client` app onto the mobile device. (Find the Expo app here: [iOS](https://apps.apple.com/us/app/expo-client/id982107779)  / [Android](https://play.google.com/store/apps/details?id=host.exp.exponent)),
+2. Once the `Expo Client` is installed on the device, open the `Metro Bundler` in your browser,
+3. From `Expo Client` on your device, select the "Projects" tab and then tap `"Scan QR Code"`.  
+4. Aim device at the QR Code in the Metro Bundler,
+5. Voila!  The SkillSTAR app will bundle and run.
 
 
 
