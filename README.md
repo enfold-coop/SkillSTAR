@@ -1,7 +1,7 @@
 # SkillSTAR
 
 ## Overview
-Mobile application teaching young children with autism essential skills. A collaboration between UVa and UMich.  Built by Sartography.
+Mobile application teaching essential skills to young children afflicted by autism. A collaboration between UVa and UMich.  Built by Sartography.
 
 ## Getting Started
 
