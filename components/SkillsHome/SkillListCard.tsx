@@ -1,6 +1,11 @@
 import React from 'react';
-import { StyleSheet, ScrollView, View, Text } from 'react-native';
+import { StyleSheet, ScrollView, View, Text, Button } from 'react-native';
 import { SkillGrade } from './index';
+
+
+interface Props {
+
+}
 
 export default function SkillListCard() {
     return (
@@ -13,6 +18,12 @@ export default function SkillListCard() {
                     <SkillGrade />
                     <SkillGrade />
                 </View>
+                <Button
+                    onPress={()=>console.log("GO TO SKILL")}
+                    title="Go To Skill"
+                    color="#841584"
+                    accessibilityLabel="Learn more about this purple button"
+                    />
             </View>
        </ScrollView>
     );
@@ -29,7 +40,7 @@ const styles = StyleSheet.create({
         borderRadius: 5
     },
     title: {
-        padding:10,
+    padding:10,
       fontSize: 20,
       fontWeight: 'bold',
     },

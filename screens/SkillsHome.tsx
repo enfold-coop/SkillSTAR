@@ -2,9 +2,10 @@ import * as React from 'react';
 import { StyleSheet } from 'react-native';
 import { SkillHomeProps as Props } from '../types';
 
-import { Text, View } from '../components/Themed';
+import { View } from '../components/Themed';
 
 import { SkillsList } from '../components/SkillsHome';
+
 
 export default function SkillsHome({navigation}: Props) {
   return (
@@ -16,9 +17,7 @@ export default function SkillsHome({navigation}: Props) {
 
 const styles = StyleSheet.create({
   container: {
-    // flex: 1,
-    // alignItems: 'center',
-    // justifyContent: 'center',
+    // 
   },
   title: {
     fontSize: 20,

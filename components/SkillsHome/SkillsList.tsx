@@ -2,11 +2,19 @@ import React from 'react';
 import { StyleSheet, ScrollView, View, Text } from 'react-native';
 import { SkillListCard } from './index';
 
+interface Props {
+    
+}
+
 export default function SkillsList() {
     return (
        <ScrollView>
            <View  style={styles.container}>
             <Text style={styles.title}>SKILLS LIST</Text>
+                <SkillListCard />
+                <SkillListCard />
+                <SkillListCard />
+                <SkillListCard />
                 <SkillListCard />
                 <SkillListCard />
                 <SkillListCard />
