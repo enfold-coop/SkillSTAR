@@ -16,7 +16,7 @@ In order to demo locally:
 1. Install the Android SDK [Android SDK](https://developer.android.com/studio) _and/or_ the [XCode Simulator](https://developer.apple.com/documentation/xcode/running_your_app_in_the_simulator_or_on_a_device) must be installed on your computer,
 2. Start the [**Android Emulator**](https://developer.android.com/studio/run/emulator) or [**iOS Simulator**](https://developer.apple.com/documentation/xcode/running_your_app_in_the_simulator_or_on_a_device), on your computer,
 3. Back in the **"Metro Bundler"** browser-tab, select `"Run on Android device"` or `"Run on iOS Simulator"`
-4. Within emulator or simulator, will display the Expo app installing, and then bundling and running the SkillSTAR app.
+4. Within the emulator or simulator, will display the Expo app installing, and then bundling and running the SkillSTAR app.
 5. You're good to go!
 
 
