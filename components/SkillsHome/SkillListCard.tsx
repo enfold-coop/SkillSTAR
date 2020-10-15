@@ -1,5 +1,6 @@
 import React from 'react';
 import { StyleSheet, ScrollView, View, Text } from 'react-native';
+import { SkillGrade } from './index';
 
 export default function SkillListCard() {
     return (
@@ -7,19 +8,10 @@ export default function SkillListCard() {
            <View  style={styles.container}>
             <Text style={styles.title}>Skill ScoreCard Title</Text>
                 <View style={styles.subcontainer}>
-                    <View style={styles.skill}>
-                        <Text>Skill A</Text>
-                    </View>
-                    <View style={styles.skill}>
-                        <Text>Skill B</Text>
-                    </View>
-                    <View style={styles.skill}>
-                        <Text>Skill C</Text>
-                    </View>
-                    <View style={styles.skill}>
-                        <Text>Skill D</Text>
-                    </View>
-                    
+                    <SkillGrade />
+                    <SkillGrade />
+                    <SkillGrade />
+                    <SkillGrade />
                 </View>
             </View>
        </ScrollView>
@@ -47,7 +39,11 @@ const styles = StyleSheet.create({
         flexWrap: 'wrap',
         justifyContent: 'flex-start'
     },
-    skill:{
+    skillComponent:{
+        display:'flex',
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+        justifyContent: 'flex-start',
         padding: 80,
         paddingTop:40,
         paddingBottom:40,

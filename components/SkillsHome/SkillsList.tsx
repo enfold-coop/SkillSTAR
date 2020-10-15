@@ -8,6 +8,8 @@ export default function SkillsList() {
            <View  style={styles.container}>
             <Text style={styles.title}>SKILLS LIST</Text>
                 <SkillListCard />
+                <SkillListCard />
+                <SkillListCard />
             </View>
        </ScrollView>
     );
