@@ -1,7 +1,7 @@
 # SkillSTAR
 
 ## Overview
-    ...
+Mobile application teaching young children with autism essential skills. A collaboration between UVa and UMich.  Built by Sartography.
 
 ## Getting Started
 
@@ -27,10 +27,3 @@ In order to demo locally:
 4. Aim device at the QR Code in the Metro Bundler,
 5. Voila!  The SkillSTAR app will bundle and run.
 
-
-
-## Features
-    ...
-
-## Additional Notes
-    ...
