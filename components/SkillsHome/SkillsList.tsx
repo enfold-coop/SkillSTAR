@@ -2,8 +2,8 @@ import React from 'react';
 import { StyleSheet, ScrollView, View, Text } from 'react-native';
 import { SkillListCard } from './index';
 
-interface Props {
-    
+type Props = {
+
 }
 
 export default function SkillsList() {

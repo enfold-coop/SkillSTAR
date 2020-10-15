@@ -1,16 +1,17 @@
 import React from 'react';
-import { StyleSheet, ScrollView, View, Text, Button } from 'react-native';
+import { StyleSheet, ScrollView, View, Text } from 'react-native';
+import { Button, Card } from 'react-native-paper';
+
 import { SkillGrade } from './index';
 
 
-interface Props {
+type Props = {
 
 }
 
 export default function SkillListCard() {
     return (
-       <ScrollView>
-           <View  style={styles.container}>
+       <Card style={styles.container}>
             <Text style={styles.title}>Skill ScoreCard Title</Text>
                 <View style={styles.subcontainer}>
                     <SkillGrade />
@@ -19,25 +20,21 @@ export default function SkillListCard() {
                     <SkillGrade />
                 </View>
                 <Button
+                    mode="contained" 
                     onPress={()=>console.log("GO TO SKILL")}
-                    title="Go To Skill"
-                    color="#841584"
-                    accessibilityLabel="Learn more about this purple button"
-                    />
-            </View>
-       </ScrollView>
+                > Go To Skill</Button>
+       </Card>
     );
 }
 
 const styles = StyleSheet.create({
     container: {
         padding: 20,
-        margin:20,
+        margin:10,
         flex: 1,
         flexDirection: 'column',
         borderWidth:1,
         borderColor: '#F27030',
-        borderRadius: 5
     },
     title: {
     padding:10,

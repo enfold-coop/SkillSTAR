@@ -24,9 +24,9 @@ const Stack = createStackNavigator<RootStackParamList>();
 
 function RootNavigator() {
   return (
-    <Stack.Navigator initialRouteName="Landing" screenOptions={{ headerShown: true }}>
-      <Stack.Screen name="Landing" component={Landing} />
+    <Stack.Navigator initialRouteName="SkillsHome" screenOptions={{ headerShown: true }}>
       <Stack.Screen name="SkillsHome" component={SkillsHome} />
+      <Stack.Screen name="Landing" component={Landing} />
     </Stack.Navigator>
   );
 }
