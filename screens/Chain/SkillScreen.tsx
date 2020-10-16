@@ -1,15 +1,15 @@
 import * as React from "react";
-import { StyleSheet } from "react-native";
-import { SkillScreenProps as Props } from "../../types";
-
-import { View } from "../../components/Themed";
+import { View, Text, StyleSheet } from "react-native";
+import { ChainNavProps } from "../../types";
 
 import { SkillsList } from "../../components/SkillsHome";
 
-export default function SkillScreen({ navigation }: Props) {
+export default function SkillScreen({
+	navigation,
+}: ChainNavProps<"SkillScreen">) {
 	return (
 		<View style={styles.container}>
-			<SkillsList />
+			<Text>SKILL SCREEN</Text>
 		</View>
 	);
 }

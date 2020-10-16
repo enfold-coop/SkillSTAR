@@ -7,12 +7,16 @@ export type RootStackParamList = {
 	SkillScreen: undefined;
 };
 
+export type RootNavProps<T extends keyof RootStackParamList> = {
+	navigation: StackNavigationProp<RootStackParamList, T>;
+	route: RouteProp<RootStackParamList, T>;
+};
+
 export type ChainParamList = {
 	SkillScreen: undefined;
 	PrepareMaterials: undefined;
-	BaselineAssessment: undefined;
-	Reward: undefined;
 	Step: undefined;
+	Reward: undefined;
 	TipsTricks: undefined;
 };
 
@@ -20,10 +24,3 @@ export type ChainNavProps<T extends keyof ChainParamList> = {
 	navigation: StackNavigationProp<ChainParamList, T>;
 	route: RouteProp<ChainParamList, T>;
 };
-
-export type LandingProps = StackScreenProps<RootStackParamList, "Landing">;
-export type SkillHomeProps = StackScreenProps<RootStackParamList, "SkillsHome">;
-export type SkillScreenProps = StackScreenProps<
-	RootStackParamList,
-	"SkillScreen"
->;
