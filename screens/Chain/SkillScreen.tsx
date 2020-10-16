@@ -1,15 +1,19 @@
 import * as React from "react";
 import { View, Text, StyleSheet } from "react-native";
-import { ChainNavProps } from "../../types";
+import { RootNavProps } from "../../types";
 
 import { SkillsList } from "../../components/SkillsHome";
 
 export default function SkillScreen({
 	navigation,
-}: ChainNavProps<"SkillScreen">) {
+	route,
+}: RootNavProps<"SkillScreen">) {
+	const { thisSkill } = route.params;
+	// console.log(thisSkill);
+	navigation.setOptions({ title: thisSkill });
 	return (
 		<View style={styles.container}>
-			<Text>SKILL SCREEN</Text>
+			<Text>{thisSkill}</Text>
 		</View>
 	);
 }

@@ -1,11 +1,13 @@
-import React from "react";
+import React, { PropsWithChildren } from "react";
 import { StyleSheet, View, Text } from "react-native";
+import { useNavigation } from "@react-navigation/native";
 import { Button, Card } from "react-native-paper";
-import { RootNavProps as Props } from "../../types";
 
 import { SkillGrade } from "./index";
 
-export default function SkillListCard({ navigation }) {
+export default function SkillListCard() {
+	const navigation = useNavigation();
+	const thisSkill = "Tooth Brushing";
 	return (
 		<Card style={styles.container}>
 			<Text style={styles.title}>Skill ScoreCard</Text>
@@ -17,10 +19,11 @@ export default function SkillListCard({ navigation }) {
 			</View>
 			<Button
 				mode="contained"
-				color="#b72ef2"
-				onPress={() => navigation.navigate("SkillScreen")}
+				onPress={() =>
+					navigation.navigate("SkillScreen", { thisSkill })
+				}
 			>
-				Go To Skill
+				Got To Skill
 			</Button>
 		</Card>
 	);

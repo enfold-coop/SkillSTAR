@@ -1,10 +1,9 @@
 import React from "react";
 import { StyleSheet, ScrollView, View, Text } from "react-native";
 import { SkillListCard } from "./index";
+import { RootNavProps as Props } from "../../types";
 
-type Props = {};
-
-export default function SkillsList({}) {
+export default function SkillsList() {
 	return (
 		<ScrollView>
 			<View style={styles.container}>
