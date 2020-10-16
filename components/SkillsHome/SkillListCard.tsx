@@ -10,7 +10,7 @@ export default function SkillListCard() {
 	const thisSkill = "Tooth Brushing";
 	return (
 		<Card style={styles.container}>
-			<Text style={styles.title}>Skill ScoreCard</Text>
+			<Text style={styles.title}>Skill ScoreCard (placeholder)</Text>
 			<View style={styles.subcontainer}>
 				<SkillGrade />
 				<SkillGrade />
@@ -23,7 +23,7 @@ export default function SkillListCard() {
 					navigation.navigate("SkillScreen", { thisSkill })
 				}
 			>
-				Got To Skill
+				Go To Skill
 			</Button>
 		</Card>
 	);
