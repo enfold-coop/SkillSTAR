@@ -1,4 +1,4 @@
-import React, { PropsWithChildren } from "react";
+import React from "react";
 import { StyleSheet, View, Text } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { Button, Card } from "react-native-paper";
