@@ -28,11 +28,12 @@ const styles = StyleSheet.create({
         flex:1,
         flexDirection: 'column',
         justifyContent: 'space-between',
-        backgroundColor: '#ccc',
+        backgroundColor: '#bbb',
         padding: 20
     },
     title: {
-      fontSize: 20,
-      fontWeight: 'bold',
+        fontSize: 20,
+        fontWeight: '900',
+        color:'#b72ef2'
     }
   });

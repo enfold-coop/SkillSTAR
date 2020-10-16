@@ -12,7 +12,7 @@ type Props = {
 export default function SkillListCard() {
     return (
        <Card style={styles.container}>
-            <Text style={styles.title}>Skill ScoreCard Title</Text>
+            <Text style={styles.title}>Skill ScoreCard</Text>
                 <View style={styles.subcontainer}>
                     <SkillGrade />
                     <SkillGrade />
@@ -21,6 +21,7 @@ export default function SkillListCard() {
                 </View>
                 <Button
                     mode="contained" 
+                    color="#b72ef2"
                     onPress={()=>console.log("GO TO SKILL")}
                 > Go To Skill</Button>
        </Card>
@@ -33,8 +34,8 @@ const styles = StyleSheet.create({
         margin:10,
         flex: 1,
         flexDirection: 'column',
-        borderWidth:1,
-        borderColor: '#F27030',
+        borderWidth:5,
+        borderColor: '#dcff16',
     },
     title: {
     padding:10,
