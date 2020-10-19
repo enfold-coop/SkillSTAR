@@ -1,10 +1,15 @@
 import React from "react";
 import { View, Text, StyleSheet } from "react-native";
 
-export default function ScorecardListItem() {
+export default function ScorecardListItem(props) {
+	console.log(props);
+	const { id, skill, mastered } = props.data;
+
 	return (
 		<View>
-			<Text></Text>
+			<Text>{id}</Text>
+			<Text>Skill: {skill}</Text>
+			<Text>Mastered: {mastered}</Text>
 		</View>
 	);
 }

@@ -3,15 +3,59 @@ import { ScrollView, View, Text, FlatList, StyleSheet } from "react-native";
 import { ScorecardListItem } from "./index";
 
 // BEGIN :: DUMMY DATA
-const DUMMYDATA = {};
+/**
+ * 0 = not started
+ * 1 = not mastered
+ * 2 = mastered
+ */
+interface DUMMYDATAITEM {
+	id: number;
+	skill: string;
+	mastered: number;
+}
+
+let DUMMYARR: DUMMYDATAITEM[] = [
+	{
+		id: 1,
+		skill: "A",
+		mastered: 0,
+	},
+	{
+		id: 2,
+		skill: "B",
+		mastered: 1,
+	},
+	{
+		id: 3,
+		skill: "C",
+		mastered: 2,
+	},
+	{
+		id: 4,
+		skill: "D",
+		mastered: 2,
+	},
+];
+
+DUMMYARR.forEach((e, i) => {
+	let item: DUMMYDATAITEM = {
+		id: e.id,
+		skill: e.skill,
+		mastered: e.mastered,
+	};
+	DUMMYARR[i] = item;
+});
+
 // END :: DUMMY DATA
-const;
 
 export default function ScorecardItemList() {
 	return (
 		<View>
 			<Text>Scorecard Item List ...</Text>
-			<FlatList data={[{ key: "" }]} />
+			<FlatList
+				data={DUMMYARR}
+				renderItem={({ item }) => <ScorecardListItem data={item} />}
+			/>
 		</View>
 	);
 }
@@ -25,10 +69,5 @@ const styles = StyleSheet.create({
 	title: {
 		fontSize: 20,
 		fontWeight: "bold",
-	},
-	separator: {
-		marginVertical: 30,
-		height: 1,
-		width: "80%",
 	},
 });
