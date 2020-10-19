@@ -20,7 +20,7 @@ export default function SkillListCard() {
 			<Button
 				mode="contained"
 				onPress={() =>
-					navigation.navigate("SkillScreen", { thisSkill })
+					navigation.navigate("ScoreCardScreen", { thisSkill })
 				}
 			>
 				Go To Skill

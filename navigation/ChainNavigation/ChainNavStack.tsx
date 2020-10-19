@@ -10,8 +10,8 @@ import { ChainStackParamList } from "./types";
 import {
 	BaselineAssessment,
 	PrepareMaterials,
+	ScoreCardScreen,
 	Reward,
-	SkillScreen,
 	StepScreen,
 	Tipstricks,
 } from "../../screens/Chain/index";
@@ -29,13 +29,16 @@ const ChainStack = createStackNavigator<ChainStackParamList>();
 function ChainNavigator() {
 	return (
 		<ChainStack.Navigator
-			initialRouteName="SkillScreen"
+			initialRouteName="ChainHomeScreen"
 			screenOptions={{ headerShown: true }}
 		>
-			<ChainStack.Screen name="SkillScreen" component={SkillScreen} />
 			<ChainStack.Screen
 				name="PrepareMaterials"
 				component={PrepareMaterials}
+			/>
+			<ChainStack.Screen
+				name="ScoreCardScreen"
+				component={ScoreCardScreen}
 			/>
 			<ChainStack.Screen
 				name="BaselineAssessment"

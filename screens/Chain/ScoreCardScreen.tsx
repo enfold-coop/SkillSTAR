@@ -1,12 +1,14 @@
 import React, { useEffect } from "react";
 import { View, Text, StyleSheet } from "react-native";
 import { RootNavProps } from "../../types";
+import { ScorecardItemList } from "../../components/Chain/index";
 
-export default function SkillScreen({
+export default function ScoreCardScreen({
 	navigation,
 	route,
-}: RootNavProps<"SkillScreen">) {
+}: RootNavProps<"ScoreCardScreen">) {
 	const { thisSkill } = route.params;
+	console.log(thisSkill);
 
 	useEffect(() => {
 		navigation.setOptions({ title: thisSkill });
@@ -15,13 +17,17 @@ export default function SkillScreen({
 	return (
 		<View style={styles.container}>
 			<Text>{thisSkill}</Text>
+			<Text style={styles.title}>Scorecard</Text>
+			<ScorecardItemList />
 		</View>
 	);
 }
 
 const styles = StyleSheet.create({
 	container: {
-		//
+		flex: 1,
+		justifyContent: "flex-start",
+		alignItems: "center",
 	},
 	title: {
 		fontSize: 20,

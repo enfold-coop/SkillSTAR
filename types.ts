@@ -1,10 +1,10 @@
-import { StackScreenProps, StackNavigationProp } from "@react-navigation/stack";
+import { StackNavigationProp } from "@react-navigation/stack";
 import { CompositeNavigationProp, RouteProp } from "@react-navigation/native";
 
 export type RootStackParamList = {
 	Landing: undefined;
 	SkillsHome: undefined;
-	SkillScreen: undefined;
+	ScoreCardScreen: undefined;
 };
 
 export type RootNavProps<T extends keyof RootStackParamList> = {

@@ -9,7 +9,7 @@ import { ColorSchemeName } from "react-native";
 
 import Landing from "../screens/Landing";
 import SkillsHome from "../screens/SkillsHome";
-import SkillScreen from "../screens/Chain/SkillScreen";
+import ScoreCardScreen from "../screens/Chain/ScoreCardScreen";
 
 import { RootStackParamList } from "../types";
 import LinkingConfiguration from "./LinkingConfiguration";
@@ -39,7 +39,7 @@ function RootNavigator() {
 		>
 			<Stack.Screen name="SkillsHome" component={SkillsHome} />
 			<Stack.Screen name="Landing" component={Landing} />
-			<Stack.Screen name="SkillScreen" component={SkillScreen} />
+			<Stack.Screen name="ScoreCardScreen" component={ScoreCardScreen} />
 		</Stack.Navigator>
 	);
 }
