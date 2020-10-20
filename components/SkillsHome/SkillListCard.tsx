@@ -10,7 +10,7 @@ export default function SkillListCard() {
 	const [thisSkill, setSkill] = useState("");
 	useEffect(() => {
 		setSkill("Tooth Brushing");
-	}[thisSkill]);
+	}, [thisSkill]);
 	return (
 		<Card style={styles.container}>
 			<Text style={styles.title}>Skill ScoreCard (placeholder)</Text>

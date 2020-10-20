@@ -14,7 +14,7 @@ import {
 	Reward,
 	StepScreen,
 	Tipstricks,
-} from "../../screens/Chain/index";
+} from "../../screens/index";
 
 export default function ChainNavigation({}) {
 	return (

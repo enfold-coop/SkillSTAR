@@ -9,9 +9,9 @@ import { ColorSchemeName } from "react-native";
 
 import Landing from "../screens/Landing";
 import SkillsHome from "../screens/SkillsHome";
-import ScoreCardScreen from "../screens/Chain/ScoreCardScreen";
+import { ScoreCardScreen } from "../screens/index";
 
-import { RootStackParamList } from "../types";
+import { RootStackParamList } from "./rootStackPropTypes";
 import LinkingConfiguration from "./LinkingConfiguration";
 
 export default function Navigation({

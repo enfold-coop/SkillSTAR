@@ -1,5 +1,5 @@
 import { StackNavigationProp } from "@react-navigation/stack";
-import { CompositeNavigationProp, RouteProp } from "@react-navigation/native";
+import { RouteProp } from "@react-navigation/native";
 
 export type RootStackParamList = {
 	Landing: undefined;

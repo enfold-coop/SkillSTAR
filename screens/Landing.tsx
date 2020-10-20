@@ -1,34 +1,34 @@
-import * as React from 'react';
-import { StyleSheet, Button } from 'react-native';
-import { LandingProps as Props} from '../types';
+import * as React from "react";
+import { StyleSheet, Button } from "react-native";
+import { RootNavProps as Props } from "../navigation/rootStackPropTypes";
 
-import { Text, View } from '../components/Themed';
+import { Text, View } from "../components/Themed";
 
-export default function Landing({navigation}: Props) {
-  return (
-    <View style={styles.container}>
-      <Text style={styles.title}>LANDING</Text>
-      <Button 
-        title="To Skills Home"
-        onPress={() => navigation.navigate('SkillsHome')}
-      />
-    </View>
-  );
+export default function Landing({ navigation }: Props<"Landing">) {
+	return (
+		<View style={styles.container}>
+			<Text style={styles.title}>LANDING</Text>
+			<Button
+				title="To Skills Home"
+				onPress={() => navigation.navigate("SkillsHome")}
+			/>
+		</View>
+	);
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: 'bold',
-  },
-  separator: {
-    marginVertical: 30,
-    height: 1,
-    width: '80%',
-  },
+	container: {
+		flex: 1,
+		alignItems: "center",
+		justifyContent: "center",
+	},
+	title: {
+		fontSize: 20,
+		fontWeight: "bold",
+	},
+	separator: {
+		marginVertical: 30,
+		height: 1,
+		width: "80%",
+	},
 });
