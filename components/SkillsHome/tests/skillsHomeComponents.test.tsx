@@ -9,8 +9,8 @@ describe("SkillsHome components rendering...", () => {
 		await wait();
 	});
 
-	test("snapshot: SkillGrade", async () => {
-		const tree = await renderer.create(<SkillGrade />).toJSON();
+	test("snapshot: SkillGrade", () => {
+		const tree = renderer.create(<SkillGrade />).toJSON();
 		expect(tree).toMatchSnapshot();
 	});
 	test("snapshot: SkillsList", () => {

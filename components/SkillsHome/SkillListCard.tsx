@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { StyleSheet, View, Text } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { Button, Card } from "react-native-paper";
@@ -7,7 +7,10 @@ import { SkillGrade } from "./index";
 
 export default function SkillListCard() {
 	const navigation = useNavigation();
-	const thisSkill = "Tooth Brushing";
+	const [thisSkill, setSkill] = useState("");
+	useEffect(() => {
+		setSkill("Tooth Brushing");
+	}[thisSkill]);
 	return (
 		<Card style={styles.container}>
 			<Text style={styles.title}>Skill ScoreCard (placeholder)</Text>
