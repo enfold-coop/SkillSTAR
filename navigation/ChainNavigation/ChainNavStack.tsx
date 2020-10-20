@@ -8,12 +8,12 @@ import { createStackNavigator } from "@react-navigation/stack";
 
 import { ChainStackParamList } from "./types";
 import {
-	BaselineAssessment,
-	PrepareMaterials,
+	BaselineAssessmentScreen,
+	PrepareMaterialsScreen,
 	ScoreCardScreen,
 	Reward,
 	StepScreen,
-	Tipstricks,
+	TipsTricksScreen,
 } from "../../screens/index";
 
 export default function ChainNavigation({}) {
@@ -29,12 +29,12 @@ const ChainStack = createStackNavigator<ChainStackParamList>();
 function ChainNavigator() {
 	return (
 		<ChainStack.Navigator
-			initialRouteName="ChainHomeScreen"
+			initialRouteName="ChainHome"
 			screenOptions={{ headerShown: true }}
 		>
 			<ChainStack.Screen
 				name="PrepareMaterials"
-				component={PrepareMaterials}
+				component={PrepareMaterialsScreen}
 			/>
 			<ChainStack.Screen
 				name="ScoreCardScreen"
@@ -42,11 +42,11 @@ function ChainNavigator() {
 			/>
 			<ChainStack.Screen
 				name="BaselineAssessment"
-				component={BaselineAssessment}
+				component={BaselineAssessmentScreen}
 			/>
 			<ChainStack.Screen name="Reward" component={Reward} />
 			<ChainStack.Screen name="StepScreen" component={StepScreen} />
-			<ChainStack.Screen name="Tipstricks" component={Tipstricks} />
+			<ChainStack.Screen name="Tipstricks" component={TipsTricksScreen} />
 		</ChainStack.Navigator>
 	);
 }

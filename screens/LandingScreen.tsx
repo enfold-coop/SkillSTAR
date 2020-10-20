@@ -4,7 +4,7 @@ import { RootNavProps as Props } from "../navigation/rootStackPropTypes";
 
 import { Text, View } from "../components/Themed";
 
-export default function Landing({ navigation }: Props<"Landing">) {
+export default function LandingScreen({ navigation }: Props<"Landing">) {
 	return (
 		<View style={styles.container}>
 			<Text style={styles.title}>LANDING</Text>

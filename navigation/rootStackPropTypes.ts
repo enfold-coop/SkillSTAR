@@ -7,6 +7,7 @@ export type RootStackParamList = {
 	ScoreCardScreen: undefined;
 };
 
+// A generic used to provide propTypes to Screens.
 export type RootNavProps<T extends keyof RootStackParamList> = {
 	navigation: StackNavigationProp<RootStackParamList, T>;
 	route: RouteProp<RootStackParamList, T>;

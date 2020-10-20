@@ -1,12 +1,15 @@
 import * as React from "react";
 import { StyleSheet } from "react-native";
-import { RootNavProps as Props } from "../types";
+import { RootNavProps as Props } from "../navigation/rootStackPropTypes";
 
 import { View } from "../components/Themed";
 
 import { SkillsList } from "../components/SkillsHome";
 
-export default function SkillsHome({ navigation, route }: Props<"SkillsHome">) {
+export default function SkillsHomeScreen({
+	navigation,
+	route,
+}: Props<"SkillsHome">) {
 	return (
 		<View style={styles.container}>
 			<SkillsList />

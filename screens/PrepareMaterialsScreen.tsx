@@ -1,9 +1,7 @@
-import { readJsonConfigFile } from "typescript";
-
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
 
-export default function BaselineAssessment() {
+export default function PrepareMaterialsScreen() {
 	return (
 		<View>
 			<Text></Text>
