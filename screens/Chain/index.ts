@@ -4,4 +4,5 @@
 // export {default as StepScreen} from './Step';
 // export {default as Tipstricks} from './TipsTricks';
 export {default as ScoreCardScreen} from './ScoreCardScreen';
+export {default as StepScreen} from './StepScreen';
 
