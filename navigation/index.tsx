@@ -7,8 +7,8 @@ import { createStackNavigator } from "@react-navigation/stack";
 import * as React from "react";
 import { ColorSchemeName } from "react-native";
 
-import Landing from "../screens/Landing";
-import SkillsHome from "../screens/SkillsHome";
+import Landing from "../screens/LandingScreen";
+import SkillsHome from "../screens/SkillsHomeScreen";
 import { ScoreCardScreen } from "../screens/index";
 
 import { RootStackParamList } from "./rootStackPropTypes";
