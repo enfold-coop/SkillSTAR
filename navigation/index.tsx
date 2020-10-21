@@ -7,8 +7,8 @@ import { createStackNavigator } from "@react-navigation/stack";
 import * as React from "react";
 import { ColorSchemeName } from "react-native";
 
-import Landing from "../screens/LandingScreen";
-import SkillsHome from "../screens/SkillsHomeScreen";
+import LandingScreen from "../screens/LandingScreen";
+import SkillsHomeScreen from "../screens/SkillsHomeScreen";
 import { ScoreCardScreen } from "../screens/index";
 
 import { RootStackParamList } from "./rootStackPropTypes";
@@ -34,11 +34,14 @@ const Stack = createStackNavigator<RootStackParamList>();
 function RootNavigator() {
 	return (
 		<Stack.Navigator
-			initialRouteName="Landing"
+			initialRouteName="LandingScreen"
 			screenOptions={{ headerShown: true }}
 		>
-			<Stack.Screen name="SkillsHome" component={SkillsHome} />
-			<Stack.Screen name="Landing" component={Landing} />
+			<Stack.Screen
+				name="SkillsHomeScreen"
+				component={SkillsHomeScreen}
+			/>
+			<Stack.Screen name="LandingScreen" component={LandingScreen} />
 			<Stack.Screen name="ScoreCardScreen" component={ScoreCardScreen} />
 		</Stack.Navigator>
 	);

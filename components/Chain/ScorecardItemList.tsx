@@ -50,7 +50,10 @@ DUMMYARR.forEach((e, i) => {
 // END :: DUMMY DATA
 //
 
-export default function ScorecardItemList() {
+export default function ScorecardItemList(props) {
+	// console.log("scorecard list");
+	// console.log(props);
+
 	return (
 		<View>
 			<Text>Scorecard Item List ...</Text>

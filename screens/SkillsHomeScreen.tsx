@@ -9,10 +9,10 @@ import { SkillsList } from "../components/SkillsHome";
 export default function SkillsHomeScreen({
 	navigation,
 	route,
-}: Props<"SkillsHome">) {
+}: Props<"SkillsHomeScreen">) {
 	return (
 		<View style={styles.container}>
-			<SkillsList />
+			<SkillsList navigation={navigation} route={route} />
 		</View>
 	);
 }

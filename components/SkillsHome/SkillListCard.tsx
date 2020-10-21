@@ -5,8 +5,11 @@ import { Button, Card } from "react-native-paper";
 
 import { SkillGrade } from "./index";
 
-export default function SkillListCard() {
+export default function SkillListCard(props) {
 	const navigation = useNavigation();
+	// console.log("skill list card");
+	// console.log(props);
+
 	const [thisSkill, setSkill] = useState("");
 	useEffect(() => {
 		setSkill("Tooth Brushing");

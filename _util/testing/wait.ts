@@ -1,4 +1,4 @@
-import {act} from '@testing-library/react-native';
+import { act } from '@testing-library/react-native';
 
 export async function wait(ms = 0) {
   await act(async () => {

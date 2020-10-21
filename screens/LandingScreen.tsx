@@ -4,13 +4,13 @@ import { RootNavProps as Props } from "../navigation/rootStackPropTypes";
 
 import { Text, View } from "../components/Themed";
 
-export default function LandingScreen({ navigation }: Props<"Landing">) {
+export default function LandingScreen({ navigation }: Props<"LandingScreen">) {
 	return (
 		<View style={styles.container}>
 			<Text style={styles.title}>LANDING</Text>
 			<Button
 				title="To Skills Home"
-				onPress={() => navigation.navigate("SkillsHome")}
+				onPress={() => navigation.navigate("SkillsHomeScreen")}
 			/>
 		</View>
 	);

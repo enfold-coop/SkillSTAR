@@ -2,8 +2,8 @@ import { StackNavigationProp } from "@react-navigation/stack";
 import { RouteProp } from "@react-navigation/native";
 
 export type RootStackParamList = {
-	Landing: undefined;
-	SkillsHome: undefined;
+	LandingScreen: undefined;
+	SkillsHomeScreen: undefined;
 	ScoreCardScreen: undefined;
 };
 
