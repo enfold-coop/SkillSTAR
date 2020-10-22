@@ -1,52 +1,30 @@
 import * as React from "react";
-import {
-	NavigationContainer,
-	DefaultTheme,
-	DarkTheme,
-} from "@react-navigation/native";
+import {} from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
-
 import { ChainStackParamList } from "./types";
 import {
-	BaselineAssessmentScreen,
+	ChainHomeScreen,
 	PrepareMaterialsScreen,
-	ScoreCardScreen,
-	Reward,
 	StepScreen,
-	TipsTricksScreen,
 } from "../../screens/index";
-
-export default function ChainNavigation({}) {
-	return (
-		<NavigationContainer>
-			<ChainNavigator />
-		</NavigationContainer>
-	);
-}
 
 const ChainStack = createStackNavigator<ChainStackParamList>();
 
 function ChainNavigator() {
 	return (
 		<ChainStack.Navigator
-			initialRouteName="ChainHome"
+			initialRouteName="ChainHomeScreen"
 			screenOptions={{ headerShown: true }}
 		>
 			<ChainStack.Screen
-				name="PrepareMaterials"
+				name="ChainHomeScreen"
+				component={ChainHomeScreen}
+			/>
+			<ChainStack.Screen
+				name="PrepareMaterialsScreen"
 				component={PrepareMaterialsScreen}
 			/>
-			<ChainStack.Screen
-				name="ScoreCardScreen"
-				component={ScoreCardScreen}
-			/>
-			<ChainStack.Screen
-				name="BaselineAssessment"
-				component={BaselineAssessmentScreen}
-			/>
-			<ChainStack.Screen name="Reward" component={Reward} />
 			<ChainStack.Screen name="StepScreen" component={StepScreen} />
-			<ChainStack.Screen name="Tipstricks" component={TipsTricksScreen} />
 		</ChainStack.Navigator>
 	);
 }

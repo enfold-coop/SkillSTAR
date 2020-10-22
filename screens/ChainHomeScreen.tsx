@@ -1,12 +1,12 @@
 import * as React from "react";
 import { StyleSheet } from "react-native";
-import { RootNavProps as Props } from "../navigation/rootStackPropTypes";
+import { RootNavProps as Props } from "../navigation/root_types";
 
 import { View } from "../components/Themed";
 
 import { SkillsList } from "../components/SkillsHome";
 
-export default function SkillsHomeScreen({
+export default function ChainHomeScreen({
 	navigation,
 	route,
 }: Props<"SkillsHomeScreen">) {

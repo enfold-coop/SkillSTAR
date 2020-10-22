@@ -1,7 +1,7 @@
 import React from "react";
 import { StyleSheet, ScrollView, View, Text } from "react-native";
 import { SkillListCard } from "./index";
-import { RootNavProps as Props } from "../../navigation/rootStackPropTypes";
+import { RootNavProps as Props } from "../../navigation/root_types";
 
 export default function SkillsList(props) {
 	return (

@@ -4,10 +4,8 @@ import { RouteProp } from "@react-navigation/native";
 export type ChainStackParamList = {
     ChainHomeScreen: undefined;
     BaseAssessScreen: undefined;
-    PrepMaterialsScreen: undefined;
-    RewardScreen: undefined;
+    PrepareMaterialsScreen: undefined;
     StepScreen: undefined;
-    TipsTricksScreen: undefined;
 }
 
 export type ChainNavProps<T extends keyof ChainStackParamList> = {

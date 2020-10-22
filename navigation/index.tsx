@@ -8,11 +8,10 @@ import * as React from "react";
 import { ColorSchemeName } from "react-native";
 
 import LandingScreen from "../screens/LandingScreen";
-import SkillsHomeScreen from "../screens/SkillsHomeScreen";
+import SkillsHomeScreen from "../screens/ChainHomeScreen";
 import { ScoreCardScreen } from "../screens/index";
 
-import { RootStackParamList } from "./rootStackPropTypes";
-import LinkingConfiguration from "./LinkingConfiguration";
+import { RootStackParamList } from "./root_types";
 
 export default function Navigation({
 	colorScheme,
@@ -21,7 +20,6 @@ export default function Navigation({
 }) {
 	return (
 		<NavigationContainer
-			linking={LinkingConfiguration}
 			theme={colorScheme === "dark" ? DarkTheme : DefaultTheme}
 		>
 			<RootNavigator />

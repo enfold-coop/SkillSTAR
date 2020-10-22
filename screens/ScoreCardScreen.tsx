@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { View, Text, StyleSheet } from "react-native";
-import { RootNavProps } from "../navigation/rootStackPropTypes";
+import { RootNavProps } from "../navigation/root_types";
 import { ScorecardItemList } from "../components/Chain/index";
 
 export default function ScoreCardScreen({
