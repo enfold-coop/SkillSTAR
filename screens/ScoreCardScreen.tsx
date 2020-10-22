@@ -8,8 +8,6 @@ export default function ScoreCardScreen({
 	route,
 }: RootNavProps<"ScoreCardScreen">) {
 	const { thisSkill } = route.params;
-	// console.log("scorecardscreen");
-	// console.log(navigation);
 
 	useEffect(() => {
 		navigation.setOptions({ title: thisSkill });
