@@ -3,9 +3,8 @@ import { View, Text, StyleSheet } from "react-native";
 import { Button, Card } from "react-native-paper";
 import { useNavigation } from "@react-navigation/native";
 
-export default function ScorecardListItem(props) {
+export default function ScorecardListItem({ props }) {
 	const { id, skill, mastered } = props.data;
-	console.log("scorecard list item");
 	console.log(props);
 
 	return (

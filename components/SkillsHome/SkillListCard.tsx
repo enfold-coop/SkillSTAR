@@ -26,7 +26,7 @@ export default function SkillListCard(props) {
 			<Button
 				mode="contained"
 				onPress={() =>
-					navigation.navigate("ScoreCardScreen", { thisSkill })
+					navigation.navigate("ChainsHomeScreen", { thisSkill })
 				}
 			>
 				Go To Skill

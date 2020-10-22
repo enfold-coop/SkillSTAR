@@ -6,13 +6,13 @@ import { View } from "../components/Themed";
 
 import { SkillsList } from "../components/SkillsHome";
 
-export default function ChainHomeScreen({
+export default function SkillsHomeScreen({
 	navigation,
 	route,
 }: Props<"SkillsHomeScreen">) {
 	return (
 		<View style={styles.container}>
-			<SkillsList navigation={navigation} route={route} />
+			<SkillsList />
 		</View>
 	);
 }

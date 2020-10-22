@@ -8,8 +8,8 @@ import * as React from "react";
 import { ColorSchemeName } from "react-native";
 
 import LandingScreen from "../screens/LandingScreen";
-import SkillsHomeScreen from "../screens/ChainHomeScreen";
-import { ScoreCardScreen } from "../screens/index";
+import SkillsHomeScreen from "../screens/SkillsHomeScreen";
+import { ChainsHomeScreen } from "../screens/index";
 
 import { RootStackParamList } from "./root_types";
 
@@ -40,7 +40,10 @@ function RootNavigator() {
 				component={SkillsHomeScreen}
 			/>
 			<Stack.Screen name="LandingScreen" component={LandingScreen} />
-			<Stack.Screen name="ScoreCardScreen" component={ScoreCardScreen} />
+			<Stack.Screen
+				name="ChainsHomeScreen"
+				component={ChainsHomeScreen}
+			/>
 		</Stack.Navigator>
 	);
 }

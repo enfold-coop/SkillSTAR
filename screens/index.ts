@@ -3,6 +3,6 @@ export {default as PrepareMaterialsScreen} from './PrepareMaterialsScreen';
 export {default as Reward} from './RewardScreen';
 export {default as StepScreen} from './StepScreen';
 export {default as TipsTricksScreen} from './TipsTricksScreen';
-export {default as ScoreCardScreen} from './ScoreCardScreen';
-export {default as ChainHomeScreen}  from './ChainHomeScreen';
+export {default as ChainsHomeScreen} from './ChainsHomeScreen';
+export {default as SkillsHomeScreen}  from './SkillsHomeScreen';
 

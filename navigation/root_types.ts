@@ -4,7 +4,7 @@ import { RouteProp } from "@react-navigation/native";
 export type RootStackParamList = {
 	LandingScreen: undefined;
 	SkillsHomeScreen: undefined;
-	ScoreCardScreen: {thisSkill: string};
+	ChainsHomeScreen: {thisSkill: string, data: []};
 };
 
 // A generic used to provide propTypes to Root Screens.
