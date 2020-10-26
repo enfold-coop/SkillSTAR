@@ -27,3 +27,6 @@ In order to demo locally:
 4. Aim device at the QR Code in the Metro Bundler,
 5. Voila!  The SkillSTAR app will bundle and run.
 
+### Running Tests
+1. Install jest globally, npm install jest --global
+2. run 'jest' from the command line to execute all tests.
