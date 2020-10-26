@@ -1,9 +1,9 @@
 import React from "react";
 import { StyleSheet, View, Text, Image } from "react-native";
 
-type Props = {};
+export default function SkillGrade(props) {
+	console.log(props.data);
 
-export default function SkillGrade() {
 	return (
 		<View style={styles.container}>
 			<Image
@@ -11,8 +11,11 @@ export default function SkillGrade() {
 				style={styles.icon}
 			/>
 			<View style={styles.subcontainer}>
-				<Text style={styles.skillGrade}>Mastered</Text>
-				<Text style={styles.skillTitle}>Brushing</Text>
+				<Text style={styles.skillGrade}>{props.name}</Text>
+				<View style={styles}></View>
+				{props.data.map((e) => {
+					return <Text style={styles.skillTitle}>{e.title}</Text>;
+				})}
 			</View>
 		</View>
 	);

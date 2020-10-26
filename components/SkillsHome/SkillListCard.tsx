@@ -33,9 +33,9 @@ export default function SkillListCard({
 		<Card style={styles.container}>
 			<Text style={styles.title}>Skill ScoreCard x</Text>
 			<View style={styles.subcontainer}>
-				<SkillGrade data={mastered} />
-				<SkillGrade data={inProgress} />
-				<SkillGrade data={needsSupport} />
+				<SkillGrade data={mastered} name={"Mastered"} />
+				<SkillGrade data={inProgress} name={"In Progress"} />
+				<SkillGrade data={needsSupport} name={"Needs Support"} />
 			</View>
 			<Button
 				mode="contained"
