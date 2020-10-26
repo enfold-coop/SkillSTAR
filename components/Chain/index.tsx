@@ -1,5 +1,5 @@
-export { default as ScorecardItemList } from "./ScorecardItemList";
 export { default as ScorecardListItem } from "./ScorecardListItem";
+export { default as ScorecardList } from "./ScorecardList";
 
 // DUMMY DATA
 export { default as DUMMYARR } from "./ScoreCardDUMMYDATA";

@@ -3,22 +3,22 @@ import {} from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { ChainStackParamList } from "./types";
 import {
-	ChainHomeScreen,
+	ChainsHomeScreen,
 	PrepareMaterialsScreen,
 	StepScreen,
 } from "../../screens/index";
 
 const ChainStack = createStackNavigator<ChainStackParamList>();
 
-function ChainNavigator() {
+export function ChainNavigator() {
 	return (
 		<ChainStack.Navigator
 			initialRouteName="ChainHomeScreen"
 			screenOptions={{ headerShown: true }}
 		>
 			<ChainStack.Screen
-				name="ChainHomeScreen"
-				component={ChainHomeScreen}
+				name="ChainsHomeScreen"
+				component={ChainsHomeScreen}
 			/>
 			<ChainStack.Screen
 				name="PrepareMaterialsScreen"

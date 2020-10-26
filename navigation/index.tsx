@@ -10,6 +10,7 @@ import { ColorSchemeName } from "react-native";
 import LandingScreen from "../screens/LandingScreen";
 import SkillsHomeScreen from "../screens/SkillsHomeScreen";
 import { ChainsHomeScreen } from "../screens/index";
+import { ChainNavigator } from "./ChainNavigation/ChainNavStack";
 
 import { RootStackParamList } from "./root_types";
 
@@ -40,10 +41,7 @@ function RootNavigator() {
 				component={SkillsHomeScreen}
 			/>
 			<Stack.Screen name="LandingScreen" component={LandingScreen} />
-			<Stack.Screen
-				name="ChainsHomeScreen"
-				component={ChainsHomeScreen}
-			/>
+			<Stack.Screen name="ChainsHomeScreen" component={ChainNavigator} />
 		</Stack.Navigator>
 	);
 }

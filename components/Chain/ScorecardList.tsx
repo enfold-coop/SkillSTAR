@@ -2,9 +2,9 @@ import React, { useEffect } from "react";
 import { ScrollView, View, Text, FlatList, StyleSheet } from "react-native";
 import { ScorecardListItem } from "./index";
 
-export default function ScorecardItemList(props) {
+export default function ScorecardList(props) {
 	// let data = null;
-	console.log(props);
+
 	// useEffect(() => {
 	// 	data = props.data;
 	// 	console.log(data);

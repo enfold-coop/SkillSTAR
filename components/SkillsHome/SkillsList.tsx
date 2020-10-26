@@ -3,18 +3,18 @@ import { StyleSheet, ScrollView, View, Text } from "react-native";
 import { SkillListCard } from "./index";
 import { RootNavProps as Props } from "../../navigation/root_types";
 
-export default function SkillsList(props) {
+export default function SkillsList(data: Props<"SkillsHomeScreen">) {
+	console.log(data);
+
 	return (
 		<ScrollView>
 			<View style={styles.container}>
 				<Text style={styles.title}>SKILLS LIST</Text>
-				<SkillListCard props={props} />
-				<SkillListCard />
-				<SkillListCard />
-				<SkillListCard />
-				<SkillListCard />
-				<SkillListCard />
-				<SkillListCard />
+				{/* {
+                    array.forEach(element => {
+                        
+                    });
+                } */}
 			</View>
 		</ScrollView>
 	);

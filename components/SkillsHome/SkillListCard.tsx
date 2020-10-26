@@ -2,18 +2,16 @@ import React, { useEffect, useState } from "react";
 import { StyleSheet, View, Text } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { Button, Card } from "react-native-paper";
+import { RootNavProps } from "../../navigation/root_types";
 
 import { SkillGrade } from "./index";
 
-export default function SkillListCard(props) {
-	const navigation = useNavigation();
+export default function SkillListCard({
+	navigation,
+	route,
+}: RootNavProps<"SkillsHomeScreen">) {
 	// console.log("skill list card");
 	// console.log(props);
-
-	const [thisSkill, setSkill] = useState("");
-	useEffect(() => {
-		setSkill("Tooth Brushing");
-	}, [thisSkill]);
 	return (
 		<Card style={styles.container}>
 			<Text style={styles.title}>Skill ScoreCard (placeholder)</Text>
@@ -25,9 +23,7 @@ export default function SkillListCard(props) {
 			</View>
 			<Button
 				mode="contained"
-				onPress={() =>
-					navigation.navigate("ChainsHomeScreen", { thisSkill })
-				}
+				onPress={() => navigation.navigate("ChainsHomeScreen")}
 			>
 				Go To Skill
 			</Button>
