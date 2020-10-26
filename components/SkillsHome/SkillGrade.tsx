@@ -1,54 +1,52 @@
-import React from 'react';
-import { StyleSheet, View, Text, Image } from 'react-native';
+import React from "react";
+import { StyleSheet, View, Text, Image } from "react-native";
 
-type Props = {
-
-}
+type Props = {};
 
 export default function SkillGrade() {
-    return (
-
-        <View  style={styles.container}>
-            <Image source={require('../../assets/images/skill_icon.png')} style={styles.icon}/>
-            <View style={styles.subcontainer}>
-                <Text style={styles.skillTitle}>Skill A and B</Text>
-                <Text style={styles.skillGrade}>Mastered</Text>
-                <Text></Text>
-            </View>
-        </View>
-       
-    );
+	return (
+		<View style={styles.container}>
+			<Image
+				source={require("../../assets/images/skill_icon.png")}
+				style={styles.icon}
+			/>
+			<View style={styles.subcontainer}>
+				<Text style={styles.skillGrade}>Mastered</Text>
+				<Text style={styles.skillTitle}>Brushing</Text>
+			</View>
+		</View>
+	);
 }
 
 const styles = StyleSheet.create({
-    container: {
-        display:'flex',
-        flexDirection: 'row',
-        flexWrap: 'wrap',
-        justifyContent: 'center',
-        alignContent: 'center',
-        margin: 10,
-        padding: 5,
-        borderWidth: 1,
-        borderColor: '#fff',
-        borderRadius: 5
-    },
-    icon: {
-        width: 50,
-        height: 50,
-        borderWidth: 0,
-        borderRadius: 3,
-        backgroundColor: '#fff'
-    },
-    subcontainer: {
-        padding: 5,
-        display: 'flex',
-        flexDirection: 'column',
-    },
-    skillTitle: {
-
-    },
-    skillGrade: {
-        fontWeight: '600'
-    }
-  });
+	container: {
+		display: "flex",
+		flexDirection: "row",
+		flexWrap: "wrap",
+		justifyContent: "center",
+		alignContent: "center",
+		margin: 5,
+		padding: 5,
+		borderWidth: 1,
+		borderColor: "#fff",
+		borderRadius: 5,
+	},
+	icon: {
+		width: 50,
+		height: 50,
+		borderWidth: 0,
+		borderRadius: 3,
+		backgroundColor: "#fff",
+	},
+	subcontainer: {
+		padding: 5,
+		display: "flex",
+		flexDirection: "column",
+	},
+	skillTitle: {
+		padding: 2,
+	},
+	skillGrade: {
+		fontWeight: "600",
+	},
+});

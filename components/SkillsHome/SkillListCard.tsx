@@ -6,20 +6,36 @@ import { RootNavProps } from "../../navigation/root_types";
 
 import { SkillGrade } from "./index";
 
+function filterSkillByScore(arr, score) {
+	let temp = [];
+	arr.forEach((e) => {
+		if (e.score === score) {
+			temp.push(e);
+		}
+	});
+	return temp;
+}
+
 export default function SkillListCard({
 	navigation,
 	route,
+	dataItem,
 }: RootNavProps<"SkillsHomeScreen">) {
 	// console.log("skill list card");
-	// console.log(props);
+	// console.log(dataItem.item);
+
+	const { name, subItems } = dataItem.item;
+	let mastered = filterSkillByScore(subItems, 1);
+	let inProgress = filterSkillByScore(subItems, 0);
+	let needsSupport = filterSkillByScore(subItems, 2);
+
 	return (
 		<Card style={styles.container}>
-			<Text style={styles.title}>Skill ScoreCard (placeholder)</Text>
+			<Text style={styles.title}>Skill ScoreCard x</Text>
 			<View style={styles.subcontainer}>
-				<SkillGrade />
-				<SkillGrade />
-				<SkillGrade />
-				<SkillGrade />
+				<SkillGrade data={mastered} />
+				<SkillGrade data={inProgress} />
+				<SkillGrade data={needsSupport} />
 			</View>
 			<Button
 				mode="contained"
@@ -33,12 +49,14 @@ export default function SkillListCard({
 
 const styles = StyleSheet.create({
 	container: {
-		padding: 20,
-		margin: 10,
 		flex: 1,
 		flexDirection: "column",
 		borderWidth: 5,
 		borderColor: "#dcff16",
+		paddingTop: 10,
+		paddingBottom: 10,
+		paddingLeft: 10,
+		margin: 10,
 	},
 	title: {
 		padding: 10,
@@ -46,22 +64,24 @@ const styles = StyleSheet.create({
 		fontWeight: "bold",
 	},
 	subcontainer: {
+		// margin: 20,
+		// padding: 20,
 		display: "flex",
 		flexDirection: "row",
 		flexWrap: "wrap",
 		justifyContent: "flex-start",
 	},
-	skillComponent: {
-		display: "flex",
-		flexDirection: "row",
-		flexWrap: "wrap",
-		justifyContent: "flex-start",
-		padding: 80,
-		paddingTop: 40,
-		paddingBottom: 40,
-		margin: 10,
-		borderWidth: 1,
-		borderColor: "#fff",
-		borderRadius: 5,
-	},
+	// skillComponent: {
+	// 	display: "flex",
+	// 	flexDirection: "row",
+	// 	flexWrap: "wrap",
+	// 	justifyContent: "flex-start",
+	// 	padding: 80,
+	// 	paddingTop: 40,
+	// 	paddingBottom: 40,
+	// 	margin: 10,
+	// 	borderWidth: 1,
+	// 	borderColor: "#fff",
+	// 	borderRadius: 5,
+	// },
 });

@@ -32,4 +32,15 @@ export const DUMMY_SKILLS_ARR = [
 			{ id: "F", title: "Clean Up", score: 1 },
 		],
 	},
+	{
+		name: "Flossing Teeth",
+		subItems: [
+			{ id: "A", title: "Prepare Materials", score: 0 },
+			{ id: "B", title: "Floss Top", score: 2 },
+			{ id: "C", title: "Floss Outside", score: 0 },
+			{ id: "D", title: "Floss Inside", score: 1 },
+			{ id: "E", title: "Toss the Floss", score: 2 },
+			{ id: "F", title: "Eat Candy", score: 1 },
+		],
+	},
 ];

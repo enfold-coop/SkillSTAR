@@ -1,22 +1,24 @@
 import React from "react";
-import { StyleSheet, ScrollView, View, Text } from "react-native";
+import { StyleSheet, FlatList, View, Text } from "react-native";
 import { SkillListCard } from "./index";
 import { RootNavProps as Props } from "../../navigation/root_types";
 
-export default function SkillsList(data: Props<"SkillsHomeScreen">) {
-	console.log(data);
-
+export default function SkillsList({
+	data,
+	navigation,
+	route,
+}: Props<"SkillsHomeScreen">) {
 	return (
-		<ScrollView>
+		<View>
 			<View style={styles.container}>
 				<Text style={styles.title}>SKILLS LIST</Text>
-				{/* {
-                    array.forEach(element => {
-                        
-                    });
-                } */}
+				<FlatList
+					data={data}
+					keyExtractor={(index) => index.toString()}
+					renderItem={(item) => <SkillListCard dataItem={item} />}
+				/>
 			</View>
-		</ScrollView>
+		</View>
 	);
 }
 
@@ -27,6 +29,7 @@ const styles = StyleSheet.create({
 		justifyContent: "space-between",
 		backgroundColor: "#bbb",
 		padding: 20,
+		margin: 20,
 	},
 	title: {
 		fontSize: 20,
