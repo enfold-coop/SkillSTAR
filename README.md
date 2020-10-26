@@ -1,7 +1,7 @@
 # SkillSTAR
 
 ## Overview
-Mobile application teaching young children with autism essential skills. A collaboration between UVa and UMich.  Built by Sartography.
+Mobile application teaching essential skills to young children afflicted by autism. A collaboration between UVa and UMich.  Built by Sartography.
 
 ## Getting Started
 
@@ -13,7 +13,7 @@ Mobile application teaching young children with autism essential skills. A colla
 
 ### Running the app from your computer:
 In order to demo locally: 
-1. Install the Android SDK [Android SDK](https://developer.android.com/studio) _and/or_ the [XCode Simulator](https://developer.apple.com/documentation/xcode/running_your_app_in_the_simulator_or_on_a_device) must be installed on your computer,
+1. Install the Android SDK [Android SDK](https://developer.android.com/studio) _and/or_ the [XCode Simulator](https://developer.apple.com/documentation/xcode/running_your_app_in_the_simulator_or_on_a_device) on your computer,
 2. Start the [**Android Emulator**](https://developer.android.com/studio/run/emulator) or [**iOS Simulator**](https://developer.apple.com/documentation/xcode/running_your_app_in_the_simulator_or_on_a_device), on your computer,
 3. Back in the **"Metro Bundler"** browser-tab, select `"Run on Android device"` or `"Run on iOS Simulator"`
 4. Within the emulator or simulator, will display the Expo app installing, and then bundling and running the SkillSTAR app.
@@ -27,3 +27,6 @@ In order to demo locally:
 4. Aim device at the QR Code in the Metro Bundler,
 5. Voila!  The SkillSTAR app will bundle and run.
 
+### Running Tests
+1. Install jest globally, npm install jest --global
+2. run 'jest' from the command line to execute all tests.
