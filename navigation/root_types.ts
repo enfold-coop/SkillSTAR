@@ -11,7 +11,7 @@ type dataItem = [
 export type RootStackParamList = {
 	LandingScreen: undefined;
 	SkillsHomeScreen: undefined | { data: data; dataItem: dataItem };
-	ChainsHomeScreen: undefined | { thisSkill: string; data: [] };
+	ChainsHomeScreen: undefined | { thisSkill: string; dataItem: dataItem };
 };
 
 // A generic used to provide propTypes to Root Screens.

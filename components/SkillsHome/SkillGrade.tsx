@@ -3,7 +3,12 @@ import { StyleSheet, View, Text, Image } from "react-native";
 import { Card } from "react-native-paper";
 
 export default function SkillGrade(props) {
-	console.log(props.data);
+	function createSkillTitleString(data: []): string {
+		console.log(data);
+		let t = data.map((e) => e.title);
+		let str = t.join(", ");
+		return str;
+	}
 
 	return (
 		<Card style={styles.container}>
@@ -13,14 +18,8 @@ export default function SkillGrade(props) {
 			/>
 			<View style={styles.subcontainer}>
 				<Text style={styles.skillGrade}>{props.name}</Text>
-				<View style={styles}>
-					{props.data.map((e, i) => {
-						return (
-							<Text key={i.toString()} style={styles.skillTitle}>
-								{e.title}
-							</Text>
-						);
-					})}
+				<View style={styles.skillList}>
+					<Text>{createSkillTitleString(props.data)}</Text>
 				</View>
 			</View>
 		</Card>
@@ -51,6 +50,10 @@ const styles = StyleSheet.create({
 		padding: 5,
 		display: "flex",
 		flexDirection: "column",
+	},
+	skillList: {
+		display: "flex",
+		flexDirection: "row",
 	},
 	skillTitle: {
 		padding: 2,

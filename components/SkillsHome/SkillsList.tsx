@@ -4,15 +4,19 @@ import { SkillListCard } from "./index";
 import { RootNavProps as Props } from "../../navigation/root_types";
 
 export default function SkillsList({
-	data,
 	navigation,
 	route,
+	data,
 }: Props<"SkillsHomeScreen">) {
 	return (
 		<View>
 			<View style={styles.container}>
 				<Text style={styles.title}>SKILLS LIST</Text>
 				<FlatList
+					contentContainerStyle={{
+						flexGrow: 1,
+						justifyContent: "center",
+					}}
 					data={data}
 					keyExtractor={(index) => index.toString()}
 					renderItem={(item) => <SkillListCard dataItem={item} />}
