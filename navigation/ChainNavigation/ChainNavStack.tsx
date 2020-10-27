@@ -14,7 +14,7 @@ export function ChainNavigator() {
 	return (
 		<ChainStack.Navigator
 			initialRouteName="ChainHomeScreen"
-			screenOptions={{ headerShown: true }}
+			screenOptions={{ headerShown: false }}
 		>
 			<ChainStack.Screen
 				name="ChainsHomeScreen"
