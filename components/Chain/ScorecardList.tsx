@@ -1,14 +1,13 @@
-import React, { useEffect } from "react";
-import { ScrollView, View, Text, FlatList, StyleSheet } from "react-native";
+import React, { FC, useEffect } from "react";
+import { View, Text, FlatList, StyleSheet } from "react-native";
 import { ScorecardListItem } from "./index";
 
-export default function ScorecardList(props) {
-	// let data = null;
+type ScorecardListProps = {
+	data: [];
+};
 
-	// useEffect(() => {
-	// 	data = props.data;
-	// 	console.log(data);
-	// });
+const ScorecardList: FC<ScorecardListProps> = (props) => {
+	console.log(props);
 
 	return (
 		<View>
@@ -22,7 +21,7 @@ export default function ScorecardList(props) {
 			)}
 		</View>
 	);
-}
+};
 
 const styles = StyleSheet.create({
 	container: {
@@ -35,3 +34,5 @@ const styles = StyleSheet.create({
 		fontWeight: "bold",
 	},
 });
+
+export default ScorecardList;

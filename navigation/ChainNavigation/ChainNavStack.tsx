@@ -13,7 +13,7 @@ const ChainStack = createStackNavigator<ChainStackParamList>();
 export function ChainNavigator() {
 	return (
 		<ChainStack.Navigator
-			initialRouteName="ChainHomeScreen"
+			initialRouteName="ChainsHomeScreen"
 			screenOptions={{ headerShown: false }}
 		>
 			<ChainStack.Screen

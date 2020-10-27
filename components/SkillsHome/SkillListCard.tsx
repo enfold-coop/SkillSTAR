@@ -1,23 +1,25 @@
 import React, { FC, useEffect, useState } from "react";
 import { StyleSheet, View, Text } from "react-native";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
 import { Button, Card } from "react-native-paper";
 import { RootNavProps } from "../../navigation/root_types";
 
 import { SkillGrade } from "./index";
 
 type Item = {
-	name: string;
-	subItems: [];
+	item: {
+		name: string;
+		subItems: [];
+	};
 };
 
 type ListCardProps = {
-	dataItem: undefined | Item;
+	dataItem: Item;
 	rootProps: RootNavProps<"SkillsHomeScreen">;
 };
 
 function filterSkillByScore(arr: [], score: number) {
-	let temp = [];
+	let temp: [] = [];
 	arr.forEach((e) => {
 		if (e.score === score) {
 			temp.push(e);
@@ -29,7 +31,6 @@ function filterSkillByScore(arr: [], score: number) {
 const SkillListCard: FC<ListCardProps> = (props) => {
 	const navigation = useNavigation();
 	const { name, subItems } = props.dataItem.item;
-	console.log(props);
 
 	let mastered = filterSkillByScore(subItems, 1);
 	let inProgress = filterSkillByScore(subItems, 0);
@@ -43,8 +44,12 @@ const SkillListCard: FC<ListCardProps> = (props) => {
 				<SkillGrade data={inProgress} name={"In Progress"} />
 				<SkillGrade data={needsSupport} name={"Needs Support"} />
 			</View>
+
 			<Button
 				mode="contained"
+				//
+				// --- Here... send selected skill to Context API
+				//
 				onPress={() => navigation.navigate("ChainsHomeScreen")}
 			>
 				Go To Skill
