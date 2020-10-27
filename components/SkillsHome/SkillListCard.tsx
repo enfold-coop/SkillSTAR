@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { FC, useEffect, useState } from "react";
 import { StyleSheet, View, Text } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { Button, Card } from "react-native-paper";
@@ -6,7 +6,17 @@ import { RootNavProps } from "../../navigation/root_types";
 
 import { SkillGrade } from "./index";
 
-function filterSkillByScore(arr, score) {
+type Item = {
+	name: string;
+	subItems: [];
+};
+
+type ListCardProps = {
+	dataItem: undefined | Item;
+	rootProps: RootNavProps<"SkillsHomeScreen">;
+};
+
+function filterSkillByScore(arr: [], score: number) {
 	let temp = [];
 	arr.forEach((e) => {
 		if (e.score === score) {
@@ -16,15 +26,11 @@ function filterSkillByScore(arr, score) {
 	return temp;
 }
 
-export default function SkillListCard({
-	navigation,
-	route,
-	dataItem,
-}: RootNavProps<"SkillsHomeScreen">) {
-	// console.log("skill list card");
-	// console.log(dataItem.item);
+const SkillListCard: FC<ListCardProps> = (props) => {
+	const navigation = useNavigation();
+	const { name, subItems } = props.dataItem.item;
+	console.log(props);
 
-	const { name, subItems } = dataItem.item;
 	let mastered = filterSkillByScore(subItems, 1);
 	let inProgress = filterSkillByScore(subItems, 0);
 	let needsSupport = filterSkillByScore(subItems, 2);
@@ -45,7 +51,7 @@ export default function SkillListCard({
 			</Button>
 		</Card>
 	);
-}
+};
 
 const styles = StyleSheet.create({
 	container: {
@@ -85,3 +91,5 @@ const styles = StyleSheet.create({
 	// 	borderRadius: 5,
 	// },
 });
+
+export default SkillListCard;

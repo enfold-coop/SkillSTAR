@@ -33,7 +33,7 @@ const Stack = createStackNavigator<RootStackParamList>();
 function RootNavigator() {
 	return (
 		<Stack.Navigator
-			initialRouteName="SkillsHomeScreen"
+			initialRouteName="LandingScreen"
 			screenOptions={{ headerShown: true }}
 		>
 			<Stack.Screen

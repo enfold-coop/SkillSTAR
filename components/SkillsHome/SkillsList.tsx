@@ -1,13 +1,14 @@
-import React from "react";
+import React, { FC } from "react";
 import { StyleSheet, FlatList, View, Text } from "react-native";
 import { SkillListCard } from "./index";
-import { RootNavProps as Props } from "../../navigation/root_types";
 
-export default function SkillsList({
-	navigation,
-	route,
-	data,
-}: Props<"SkillsHomeScreen">) {
+type SkillsListProps = {
+	data?: [];
+};
+
+const SkillsList: FC<SkillsListProps> = (props) => {
+	console.log(props.data);
+
 	return (
 		<View>
 			<View style={styles.container}>
@@ -17,14 +18,14 @@ export default function SkillsList({
 						flexGrow: 1,
 						justifyContent: "center",
 					}}
-					data={data}
-					keyExtractor={(index) => index.toString()}
+					data={props.data}
+					keyExtractor={(index) => index}
 					renderItem={(item) => <SkillListCard dataItem={item} />}
 				/>
 			</View>
 		</View>
 	);
-}
+};
 
 const styles = StyleSheet.create({
 	container: {
@@ -41,3 +42,5 @@ const styles = StyleSheet.create({
 		color: "#b72ef2",
 	},
 });
+
+export default SkillsList;

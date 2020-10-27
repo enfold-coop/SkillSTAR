@@ -1,12 +1,18 @@
 import React from "react";
 import { StyleSheet, View, Text, Image } from "react-native";
 import { Card } from "react-native-paper";
+import { RootNavProps as Props } from "../../navigation/root_types";
 
-export default function SkillGrade(props) {
+export default function SkillGrade({
+	navigation,
+	route,
+}: Props<"SkillsHomeScreen">) {
+	console.log(navigation);
 	function createSkillTitleString(data: []): string {
-		console.log(data);
 		let t = data.map((e) => e.title);
 		let str = t.join(", ");
+		console.log(str);
+
 		return str;
 	}
 
@@ -17,9 +23,9 @@ export default function SkillGrade(props) {
 				style={styles.icon}
 			/>
 			<View style={styles.subcontainer}>
-				<Text style={styles.skillGrade}>{props.name}</Text>
+				{/* <Text style={styles.skillGrade}>{props.name}</Text> */}
 				<View style={styles.skillList}>
-					<Text>{createSkillTitleString(props.data)}</Text>
+					{/* <Text>{createSkillTitleString(props.data)}</Text> */}
 				</View>
 			</View>
 		</Card>
