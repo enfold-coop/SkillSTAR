@@ -1,23 +1,29 @@
 import React from "react";
 import { StyleSheet, View, Text, Image } from "react-native";
+import { Card } from "react-native-paper";
 
 export default function SkillGrade(props) {
 	console.log(props.data);
 
 	return (
-		<View style={styles.container}>
+		<Card style={styles.container}>
 			<Image
 				source={require("../../assets/images/skill_icon.png")}
 				style={styles.icon}
 			/>
 			<View style={styles.subcontainer}>
 				<Text style={styles.skillGrade}>{props.name}</Text>
-				<View style={styles}></View>
-				{props.data.map((e) => {
-					return <Text style={styles.skillTitle}>{e.title}</Text>;
-				})}
+				<View style={styles}>
+					{props.data.map((e, i) => {
+						return (
+							<Text key={i.toString()} style={styles.skillTitle}>
+								{e.title}
+							</Text>
+						);
+					})}
+				</View>
 			</View>
-		</View>
+		</Card>
 	);
 }
 
@@ -26,7 +32,7 @@ const styles = StyleSheet.create({
 		display: "flex",
 		flexDirection: "row",
 		flexWrap: "wrap",
-		justifyContent: "center",
+		justifyContent: "space-around",
 		alignContent: "center",
 		margin: 5,
 		padding: 5,
