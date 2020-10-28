@@ -45,11 +45,6 @@ const SkillListCard: FC<ListCardProps> = (props) => {
 		//
 		// --- Here... send selected skill to Context API
 		//
-		console.log("Setting context");
-		console.log("Setting context");
-		console.log("Setting context");
-		console.log("Setting context");
-
 		navigation.navigate("ChainsHomeScreen");
 	}
 

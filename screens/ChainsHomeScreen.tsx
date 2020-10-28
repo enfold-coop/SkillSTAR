@@ -1,7 +1,5 @@
 import React, { FC, useEffect, useState } from "react";
 import { View, Text, StyleSheet } from "react-native";
-import { useNavigation } from "@react-navigation/native";
-import { RouteProp } from "@react-navigation/native";
 import { ChainNavProps } from "../navigation/ChainNavigation/types";
 import { ScorecardList } from "../components/Chain/index";
 
@@ -11,8 +9,6 @@ type Props = {
 };
 
 const ChainsHomeScreen: FC<Props> = (props) => {
-	console.log(props);
-
 	return (
 		<View style={styles.container}>
 			<Text>CHAINS HOME</Text>

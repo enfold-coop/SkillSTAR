@@ -7,8 +7,6 @@ type ScorecardListProps = {
 };
 
 const ScorecardList: FC<ScorecardListProps> = (props) => {
-	console.log(props);
-
 	return (
 		<View>
 			<Text>Scorecard Item List ...</Text>
