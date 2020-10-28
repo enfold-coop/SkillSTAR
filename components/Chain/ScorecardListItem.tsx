@@ -1,7 +1,6 @@
 import React, { FC } from "react";
-import { View, Text, StyleSheet } from "react-native";
-import { Button, Card } from "react-native-paper";
-import { useNavigation } from "@react-navigation/native";
+import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import { Card } from "react-native-paper";
 
 type Props = {
 	id: string;
@@ -11,14 +10,15 @@ type Props = {
 
 const ScorecardListItem: FC<Props> = (props) => {
 	const { id, title, score } = props.item;
-	console.log(title);
 
 	return (
-		<Card style={styles.container}>
-			<Text style={styles.id}>{id}</Text>
-			<Text style={styles.skill}>Skill: {title}</Text>
-			<Text style={styles.icon}>Mastered: {score}</Text>
-		</Card>
+		<TouchableOpacity>
+			<Card style={styles.container}>
+				<Text style={styles.id}>{id}</Text>
+				<Text style={styles.skill}>Skill: {title}</Text>
+				<Text style={styles.icon}>Mastered: {score}</Text>
+			</Card>
+		</TouchableOpacity>
 	);
 };
 

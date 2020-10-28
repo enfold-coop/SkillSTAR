@@ -17,7 +17,6 @@ type AuthProviderProps = {
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 	const [user, setUser] = useState<User>(null);
-	console.log(children);
 
 	return (
 		<AuthContext.Provider

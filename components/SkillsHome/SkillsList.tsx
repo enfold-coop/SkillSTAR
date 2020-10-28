@@ -9,8 +9,6 @@ type SkillsListProps = {
 };
 
 const SkillsList: FC<SkillsListProps> = (props) => {
-	console.log(props);
-
 	return (
 		<View>
 			<View style={styles.container}>

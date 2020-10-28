@@ -11,8 +11,8 @@ const ScorecardList: FC<Props> = (props) => {
 	const { subItems } = props.item;
 
 	return (
-		<View>
-			<Text>Scorecard Item List ...</Text>
+		<View style={styles.container}>
+			<Text style={styles.title}>Scorecard Item List ...</Text>
 			<FlatList
 				data={subItems}
 				keyExtractor={(item) => item.id}
