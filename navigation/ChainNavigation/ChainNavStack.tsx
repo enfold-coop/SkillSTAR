@@ -8,7 +8,7 @@ import {
 	StepScreen,
 } from "../../screens/index";
 
-const ChainStack = createStackNavigator<ChainStackParamList>();
+export const ChainStack = createStackNavigator<ChainStackParamList>();
 
 export function ChainNavigator() {
 	return (

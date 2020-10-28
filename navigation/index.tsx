@@ -41,7 +41,10 @@ function RootNavigator() {
 				component={SkillsHomeScreen}
 			/>
 			<Stack.Screen name="LandingScreen" component={LandingScreen} />
-			<Stack.Screen name="ChainsHomeScreen" component={ChainNavigator} />
+			<Stack.Screen
+				name="ChainsHomeScreen"
+				component={ChainsHomeScreen}
+			/>
 		</Stack.Navigator>
 	);
 }

@@ -1,9 +1,11 @@
 import React, { FC } from "react";
 import { StyleSheet, FlatList, View, Text } from "react-native";
 import { SkillListCard } from "./index";
+import { RootNavProps } from "../../navigation/root_types";
 
 type SkillsListProps = {
 	data?: [];
+	root: RootNavProps<"SkillsHomeScreen">;
 };
 
 const SkillsList: FC<SkillsListProps> = (props) => {
@@ -18,7 +20,9 @@ const SkillsList: FC<SkillsListProps> = (props) => {
 					}}
 					data={props.data}
 					keyExtractor={(index) => index}
-					renderItem={(item) => <SkillListCard dataItem={item} />}
+					renderItem={(item) => (
+						<SkillListCard dataItem={item} root={props.root} />
+					)}
 				/>
 			</View>
 		</View>
