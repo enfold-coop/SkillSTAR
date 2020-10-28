@@ -9,6 +9,7 @@ import useColorScheme from "./hooks/useColorScheme";
 import Navigation from "./navigation";
 
 import { AuthProvider } from "./context/AuthProvider";
+import { ChainProvider } from "./context/ChainProvider";
 
 /**
  * Entry for the application.
@@ -22,11 +23,11 @@ export default function App() {
 	} else {
 		return (
 			<SafeAreaProvider>
-				{/* <AppHeader /> */}
 				<AuthProvider>
-					<Navigation colorScheme={colorScheme} />
+					<ChainProvider>
+						<Navigation colorScheme={colorScheme} />
+					</ChainProvider>
 				</AuthProvider>
-				{/* <StatusBar /> */}
 			</SafeAreaProvider>
 		);
 	}

@@ -1,28 +1,26 @@
 import React, { useState } from "react";
 import AsyncStorage from "@react-native-community/async-storage";
 
-type User = null | { username: string };
-type Skill = null | { skillname: string };
+type Skill = {};
+type User = string;
 
-const ChainContext = React.createContext<{
-	user: User;
+export const ChainContext = React.createContext();
+
+interface ChainProviderProps {
 	skill: Skill;
-}>({
-	user: null,
-	skill: null,
-});
+	setChainSkill: (skill: Skill) => void;
+}
 
-interface ChainProviderProps {}
-
-export const ChainProvider: React.FC<ChainProviderProps> = ({ children }) => {
-	const [user, setUser] = useState<User>(null);
-	const [skill, setSkill] = useState<Skill>(null);
+export const ChainProvider = ({ children }) => {
+	const [skill, setSkill] = useState<ChainProviderProps>();
 
 	return (
 		<ChainContext.Provider
 			value={{
-				user,
 				skill,
+				setChainSkill: () => {
+					setSkill(skill);
+				},
 			}}
 		>
 			{children}

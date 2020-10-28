@@ -4,11 +4,13 @@ import { SkillListCard } from "./index";
 import { RootNavProps } from "../../navigation/root_types";
 
 type SkillsListProps = {
-	data?: [];
+	data?: {}[];
 	root: RootNavProps<"SkillsHomeScreen">;
 };
 
 const SkillsList: FC<SkillsListProps> = (props) => {
+	console.log(props);
+
 	return (
 		<View>
 			<View style={styles.container}>
@@ -19,10 +21,8 @@ const SkillsList: FC<SkillsListProps> = (props) => {
 						justifyContent: "center",
 					}}
 					data={props.data}
-					keyExtractor={(index) => index}
-					renderItem={(item) => (
-						<SkillListCard dataItem={item} root={props.root} />
-					)}
+					keyExtractor={(item) => item.name}
+					renderItem={(item) => <SkillListCard dataItem={item} />}
 				/>
 			</View>
 		</View>
