@@ -6,15 +6,18 @@ import { ScorecardList } from "../components/Chain/index";
 type Props = {
 	skill?: {};
 	route: ChainNavProps<"ChainsHomeScreen">;
+	navigation: ChainNavProps<"ChainsHomeScreen">;
 };
 
 const ChainsHomeScreen: FC<Props> = (props) => {
+	const { item } = props.route.params.skill;
+
 	return (
 		<View style={styles.container}>
 			<Text>CHAINS HOME</Text>
-			{/* <Text>{thisSkill}</Text>
+			<Text>SOME TEXT</Text>
 			<Text style={styles.title}>Scorecard</Text>
-			<ScorecardList data={data} /> */}
+			<ScorecardList item={item} />
 		</View>
 	);
 };

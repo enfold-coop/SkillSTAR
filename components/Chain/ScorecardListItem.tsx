@@ -1,19 +1,26 @@
-import React from "react";
-import { View, Text, StyleSheet } from "react-native";
-import { Button, Card } from "react-native-paper";
-import { useNavigation } from "@react-navigation/native";
+import React, { FC } from "react";
+import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import { Card } from "react-native-paper";
 
-export default function ScorecardListItem({ props }) {
-	const { id, skill, mastered } = props.data;
+type Props = {
+	id: string;
+	title: string;
+	score: number;
+};
+
+const ScorecardListItem: FC<Props> = (props) => {
+	const { id, title, score } = props.item;
 
 	return (
-		<Card style={styles.container}>
-			<Text style={styles.id}>{id}</Text>
-			<Text style={styles.skill}>Skill: {skill}</Text>
-			<Text style={styles.icon}>Mastered: {mastered}</Text>
-		</Card>
+		<TouchableOpacity>
+			<Card style={styles.container}>
+				<Text style={styles.id}>{id}</Text>
+				<Text style={styles.skill}>Skill: {title}</Text>
+				<Text style={styles.icon}>Mastered: {score}</Text>
+			</Card>
+		</TouchableOpacity>
 	);
-}
+};
 
 const styles = StyleSheet.create({
 	container: {
@@ -35,3 +42,5 @@ const styles = StyleSheet.create({
 		fontWeight: "bold",
 	},
 });
+
+export default ScorecardListItem;

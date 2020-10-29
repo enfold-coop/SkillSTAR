@@ -1,5 +1,6 @@
 import {
 	NavigationContainer,
+	CompositeNavigationProp,
 	DefaultTheme,
 	DarkTheme,
 } from "@react-navigation/native";

@@ -3,17 +3,17 @@ import AsyncStorage from "@react-native-community/async-storage";
 
 type User = null | { username: string };
 
-const AuthContext = React.createContext<{
-	user: User;
-	login: () => void;
-	logout: () => void;
-}>({
+const AuthContext = React.createContext<AuthProviderProps>({
 	user: null,
 	login: () => {},
 	logout: () => {},
 });
 
-interface AuthProviderProps {}
+type AuthProviderProps = {
+	user: User;
+	login: () => void;
+	logout: () => void;
+};
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 	const [user, setUser] = useState<User>(null);

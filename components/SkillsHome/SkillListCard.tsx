@@ -1,25 +1,25 @@
-import React, { FC, useEffect, useState } from "react";
+import React, { FC, useContext } from "react";
 import { StyleSheet, View, Text } from "react-native";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { Button, Card } from "react-native-paper";
-import { RootNavProps } from "../../navigation/root_types";
-import {
-	ChainStack,
-	ChainNavigator,
-} from "../../navigation/ChainNavigation/ChainNavStack";
+import { ChainNavProps } from "../../navigation/ChainNavigation/types";
+// import {
+// 	ChainStack,
+// 	ChainNavigator,
+// } from "../../navigation/ChainNavigation/ChainNavStack";
+// import { ChainContext, ChainProvider } from "../../context/ChainProvider";
 
 import { SkillGrade } from "./index";
 
 type Item = {
-	item: {
-		name: string;
-		subItems: [];
-	};
+	name: string;
+	subItems: {}[];
 };
 
 type ListCardProps = {
 	dataItem: Item;
-	root: RootNavProps<"SkillsHomeScreen">;
+	route: ChainNavProps<"ChainsHomeScreen">;
+	navigation: ChainNavProps<"ChainsHomeScreen">;
 };
 
 function filterSkillByScore(arr: [], score: number) {
@@ -34,8 +34,10 @@ function filterSkillByScore(arr: [], score: number) {
 
 const SkillListCard: FC<ListCardProps> = (props) => {
 	const navigation = useNavigation();
-
-	const { name, subItems } = props.dataItem.item;
+	// KEEP >>
+	// const chainContext = useContext(ChainContext);
+	// <<
+	const { subItems } = props.dataItem.item;
 
 	let mastered = filterSkillByScore(subItems, 1);
 	let inProgress = filterSkillByScore(subItems, 0);
@@ -45,7 +47,7 @@ const SkillListCard: FC<ListCardProps> = (props) => {
 		//
 		// --- Here... send selected skill to Context API
 		//
-		navigation.navigate("ChainsHomeScreen");
+		navigation.navigate("ChainsHomeScreen", { skill: props.dataItem });
 	}
 
 	return (
