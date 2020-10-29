@@ -1,13 +1,29 @@
-import React, { useEffect, useState } from "react";
+import React, { FC, useEffect, useState } from "react";
 import { StyleSheet, View, Text } from "react-native";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
 import { Button, Card } from "react-native-paper";
 import { RootNavProps } from "../../navigation/root_types";
+import {
+	ChainStack,
+	ChainNavigator,
+} from "../../navigation/ChainNavigation/ChainNavStack";
 
 import { SkillGrade } from "./index";
 
-function filterSkillByScore(arr, score) {
-	let temp = [];
+type Item = {
+	item: {
+		name: string;
+		subItems: [];
+	};
+};
+
+type ListCardProps = {
+	dataItem: Item;
+	root: RootNavProps<"SkillsHomeScreen">;
+};
+
+function filterSkillByScore(arr: [], score: number) {
+	let temp: [] = [];
 	arr.forEach((e) => {
 		if (e.score === score) {
 			temp.push(e);
@@ -16,18 +32,21 @@ function filterSkillByScore(arr, score) {
 	return temp;
 }
 
-export default function SkillListCard({
-	navigation,
-	route,
-	dataItem,
-}: RootNavProps<"SkillsHomeScreen">) {
-	// console.log("skill list card");
-	// console.log(dataItem.item);
+const SkillListCard: FC<ListCardProps> = (props) => {
+	const navigation = useNavigation();
 
-	const { name, subItems } = dataItem.item;
+	const { name, subItems } = props.dataItem.item;
+
 	let mastered = filterSkillByScore(subItems, 1);
 	let inProgress = filterSkillByScore(subItems, 0);
 	let needsSupport = filterSkillByScore(subItems, 2);
+
+	function SetContextSkill() {
+		//
+		// --- Here... send selected skill to Context API
+		//
+		navigation.navigate("ChainsHomeScreen");
+	}
 
 	return (
 		<Card style={styles.container}>
@@ -37,15 +56,13 @@ export default function SkillListCard({
 				<SkillGrade data={inProgress} name={"In Progress"} />
 				<SkillGrade data={needsSupport} name={"Needs Support"} />
 			</View>
-			<Button
-				mode="contained"
-				onPress={() => navigation.navigate("ChainsHomeScreen")}
-			>
-				Go To Skill
+
+			<Button mode="contained" onPress={() => SetContextSkill()}>
+				Go to Skill
 			</Button>
 		</Card>
 	);
-}
+};
 
 const styles = StyleSheet.create({
 	container: {
@@ -85,3 +102,5 @@ const styles = StyleSheet.create({
 	// 	borderRadius: 5,
 	// },
 });
+
+export default SkillListCard;

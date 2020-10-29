@@ -1,26 +1,33 @@
-import React from "react";
+import React, { FC } from "react";
 import { StyleSheet, FlatList, View, Text } from "react-native";
 import { SkillListCard } from "./index";
-import { RootNavProps as Props } from "../../navigation/root_types";
+import { RootNavProps } from "../../navigation/root_types";
 
-export default function SkillsList({
-	data,
-	navigation,
-	route,
-}: Props<"SkillsHomeScreen">) {
+type SkillsListProps = {
+	data?: [];
+	root: RootNavProps<"SkillsHomeScreen">;
+};
+
+const SkillsList: FC<SkillsListProps> = (props) => {
 	return (
 		<View>
 			<View style={styles.container}>
 				<Text style={styles.title}>SKILLS LIST</Text>
 				<FlatList
-					data={data}
-					keyExtractor={(index) => index.toString()}
-					renderItem={(item) => <SkillListCard dataItem={item} />}
+					contentContainerStyle={{
+						flexGrow: 1,
+						justifyContent: "center",
+					}}
+					data={props.data}
+					keyExtractor={(index) => index}
+					renderItem={(item) => (
+						<SkillListCard dataItem={item} root={props.root} />
+					)}
 				/>
 			</View>
 		</View>
 	);
-}
+};
 
 const styles = StyleSheet.create({
 	container: {
@@ -37,3 +44,5 @@ const styles = StyleSheet.create({
 		color: "#b72ef2",
 	},
 });
+
+export default SkillsList;

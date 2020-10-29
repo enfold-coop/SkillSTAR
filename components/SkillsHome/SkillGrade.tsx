@@ -1,10 +1,20 @@
-import React from "react";
+import React, { FC } from "react";
 import { StyleSheet, View, Text, Image } from "react-native";
 import { Card } from "react-native-paper";
+import { RootNavProps } from "../../navigation/root_types";
 
-export default function SkillGrade(props) {
-	console.log(props.data);
+type Props = {
+	data: [];
+	name: string;
+};
 
+function createSkillTitleString(data: []): string {
+	let t = data.map((e) => e.title);
+	let str = t.join(", ");
+	return str;
+}
+
+const SkillGrade: FC<Props> = (props) => {
 	return (
 		<Card style={styles.container}>
 			<Image
@@ -12,20 +22,14 @@ export default function SkillGrade(props) {
 				style={styles.icon}
 			/>
 			<View style={styles.subcontainer}>
-				<Text style={styles.skillGrade}>{props.name}</Text>
-				<View style={styles}>
-					{props.data.map((e, i) => {
-						return (
-							<Text key={i.toString()} style={styles.skillTitle}>
-								{e.title}
-							</Text>
-						);
-					})}
+				<Text style={styles.skillGrade}>{props.name}: </Text>
+				<View style={styles.skillList}>
+					<Text>{createSkillTitleString(props.data)}</Text>
 				</View>
 			</View>
 		</Card>
 	);
-}
+};
 
 const styles = StyleSheet.create({
 	container: {
@@ -52,6 +56,10 @@ const styles = StyleSheet.create({
 		display: "flex",
 		flexDirection: "column",
 	},
+	skillList: {
+		display: "flex",
+		flexDirection: "row",
+	},
 	skillTitle: {
 		padding: 2,
 	},
@@ -59,3 +67,5 @@ const styles = StyleSheet.create({
 		fontWeight: "600",
 	},
 });
+
+export default SkillGrade;

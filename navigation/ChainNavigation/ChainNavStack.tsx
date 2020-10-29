@@ -8,13 +8,13 @@ import {
 	StepScreen,
 } from "../../screens/index";
 
-const ChainStack = createStackNavigator<ChainStackParamList>();
+export const ChainStack = createStackNavigator<ChainStackParamList>();
 
 export function ChainNavigator() {
 	return (
 		<ChainStack.Navigator
-			initialRouteName="ChainHomeScreen"
-			screenOptions={{ headerShown: true }}
+			initialRouteName="ChainsHomeScreen"
+			screenOptions={{ headerShown: false }}
 		>
 			<ChainStack.Screen
 				name="ChainsHomeScreen"

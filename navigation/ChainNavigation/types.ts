@@ -2,13 +2,13 @@ import { StackNavigationProp } from "@react-navigation/stack";
 import { RouteProp } from "@react-navigation/native";
 
 export type ChainStackParamList = {
-    ChainHomeScreen: {thisSkill: string};
-    BaseAssessScreen: undefined;
-    PrepareMaterialsScreen: undefined;
-    RewardScreen: undefined;
-    StepScreen: undefined;
-    TipsTricksScreen: undefined;
-}
+	ChainsHomeScreen: undefined;
+	BaseAssessScreen: undefined;
+	PrepareMaterialsScreen: undefined;
+	RewardScreen: undefined;
+	StepScreen: undefined;
+	TipsTricksScreen: undefined;
+};
 
 export type ChainNavProps<T extends keyof ChainStackParamList> = {
 	navigation: StackNavigationProp<ChainStackParamList, T>;

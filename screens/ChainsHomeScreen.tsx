@@ -1,19 +1,14 @@
-import React, { useEffect, useState } from "react";
+import React, { FC, useEffect, useState } from "react";
 import { View, Text, StyleSheet } from "react-native";
-import { RootNavProps } from "../navigation/root_types";
+import { ChainNavProps } from "../navigation/ChainNavigation/types";
 import { ScorecardList } from "../components/Chain/index";
 
-export default function ChainsHomeScreen({
-	navigation,
-	route,
-}: RootNavProps<"ChainsHomeScreen">) {
-	// const { thisSkill } = route.params;
-	// const [data, setData] = useState();
+type Props = {
+	skill?: {};
+	route: ChainNavProps<"ChainsHomeScreen">;
+};
 
-	// useEffect(() => {
-	// 	navigation.setOptions({ title: skill });
-	// });
-
+const ChainsHomeScreen: FC<Props> = (props) => {
 	return (
 		<View style={styles.container}>
 			<Text>CHAINS HOME</Text>
@@ -22,7 +17,7 @@ export default function ChainsHomeScreen({
 			<ScorecardList data={data} /> */}
 		</View>
 	);
-}
+};
 
 const styles = StyleSheet.create({
 	container: {
@@ -40,3 +35,5 @@ const styles = StyleSheet.create({
 		width: "80%",
 	},
 });
+
+export default ChainsHomeScreen;
