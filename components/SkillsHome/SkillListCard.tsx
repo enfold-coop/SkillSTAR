@@ -51,7 +51,7 @@ const SkillListCard: FC<ListCardProps> = (props) => {
 	}
 
 	function Navigate() {
-		navigation.navigate("ChainsHomeScreen", { skill: props.dataItem });
+		navigation.navigate("ChainsHomeScreen");
 	}
 
 	return (

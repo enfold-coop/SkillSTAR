@@ -8,7 +8,7 @@ type Props = {
 };
 
 const ScorecardList: FC<Props> = (props) => {
-	const { subItems } = props.item;
+	console.log(props);
 
 	return (
 		<View style={styles.container}>

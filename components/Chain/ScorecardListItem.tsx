@@ -9,7 +9,9 @@ type Props = {
 };
 
 const ScorecardListItem: FC<Props> = (props) => {
-	const { id, title, score } = props.item;
+	console.log(props);
+
+	const { id, title, score } = props.item.item;
 
 	return (
 		<TouchableOpacity>
