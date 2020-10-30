@@ -48,8 +48,8 @@ const styles = StyleSheet.create({
 	},
 	icon: {},
 	nextIcon: {
-		marginRight: 0,
-		alignSelf: "flex-end",
+		marginLeft: "auto",
+		padding: 10,
 		backgroundColor: "#da0",
 	},
 
