@@ -15,7 +15,6 @@ export const ChainContext = React.createContext<{
 
 export const ChainProvider: React.FC<ChainProviderProps> = ({ children }) => {
 	const [currentSkill, setSkill] = useState<Skill>(null);
-	console.log(currentSkill);
 
 	return (
 		<ChainContext.Provider

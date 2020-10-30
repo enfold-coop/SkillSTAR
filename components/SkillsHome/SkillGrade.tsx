@@ -2,6 +2,7 @@ import React, { FC } from "react";
 import { StyleSheet, View, Text, Image } from "react-native";
 import { Card } from "react-native-paper";
 import { RootNavProps } from "../../navigation/root_types";
+import { MasteryIcons } from "../../constants/MasteryIcons";
 
 type Props = {
 	data: [];
@@ -17,10 +18,7 @@ function createSkillTitleString(data: []): string {
 const SkillGrade: FC<Props> = (props) => {
 	return (
 		<Card style={styles.container}>
-			<Image
-				source={require("../../assets/images/skill_icon.png")}
-				style={styles.icon}
-			/>
+			{MasteryIcons(props.data[0].score)}
 			<View style={styles.subcontainer}>
 				<Text style={styles.skillGrade}>{props.name}: </Text>
 				<View style={styles.skillList}>

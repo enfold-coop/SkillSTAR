@@ -8,8 +8,6 @@ type Props = {
 };
 
 const ScorecardList: FC<Props> = (props) => {
-	console.log(props);
-
 	return (
 		<View style={styles.container}>
 			<Text style={styles.title}>Scorecard Item List ...</Text>
