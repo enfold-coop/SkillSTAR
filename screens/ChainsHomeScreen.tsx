@@ -33,6 +33,7 @@ const ChainsHomeScreen: FC<Props> = (props) => {
 
 const styles = StyleSheet.create({
 	container: {
+		width: "100%",
 		flex: 1,
 		justifyContent: "flex-start",
 		alignItems: "center",
