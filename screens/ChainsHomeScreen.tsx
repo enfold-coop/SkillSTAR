@@ -2,6 +2,7 @@ import React, { FC, useEffect, useState } from "react";
 import { View, Text, StyleSheet } from "react-native";
 import { ChainNavProps } from "../navigation/ChainNavigation/types";
 import { ScorecardList } from "../components/Chain/index";
+import { skill } from "../context/ChainProvider";
 
 type Props = {
 	skill?: {};
