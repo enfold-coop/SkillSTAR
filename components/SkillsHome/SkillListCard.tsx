@@ -36,19 +36,16 @@ function filterSkillByScore(arr: [], score: number) {
 const SkillListCard: FC<ListCardProps> = (props) => {
 	const navigation = useNavigation();
 	const { setChainSkill } = useContext(ChainContext);
-	console.log(setChainSkill);
 
-	// KEEP >>
-	// const chainContext = useContext(ChainContext);
-	// <<
 	const { subItems } = props.dataItem.item;
 
 	let mastered = filterSkillByScore(subItems, 1);
 	let inProgress = filterSkillByScore(subItems, 0);
 	let needsSupport = filterSkillByScore(subItems, 2);
 
+	// passing selected skill to ChainProvider (CHAIN's state management)
+	// calls Navigate(), to navigate to ChainsHomeScreen
 	function SetContextSkill() {
-		//
 		setChainSkill(props.dataItem);
 		Navigate();
 	}
