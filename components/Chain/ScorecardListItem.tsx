@@ -1,7 +1,7 @@
 import React, { FC } from "react";
 import { Text, StyleSheet, TouchableOpacity } from "react-native";
 import { Card } from "react-native-paper";
-import { MasteryIcons } from "../../constants/MasteryIcons";
+import { MasteryIcons } from "../../styles/MasteryIcons";
 import { AntDesign } from "@expo/vector-icons";
 
 type Props = {

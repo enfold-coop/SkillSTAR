@@ -2,7 +2,7 @@ import React, { FC } from "react";
 import { StyleSheet, View, Text, Image } from "react-native";
 import { Card } from "react-native-paper";
 import { RootNavProps } from "../../navigation/root_types";
-import { MasteryIcons } from "../../constants/MasteryIcons";
+import { MasteryIcons } from "../../styles/MasteryIcons";
 
 type Props = {
 	data: [];
