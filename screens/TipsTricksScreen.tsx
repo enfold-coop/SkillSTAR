@@ -1,14 +1,14 @@
-import React from "react";
-import { View, StyleSheet, Text } from "react-native";
+import React, {ReactElement} from "react";
+import {StyleSheet, Text, View} from "react-native";
 
-export default function TipsTricksScreen() {
-	return (
-		<View style={styles.container}>
-			<Text>...</Text>
-		</View>
-	);
-}
+export const TipsTricksScreen = (): ReactElement => {
+  return (
+    <View style={styles.container}>
+      <Text>...</Text>
+    </View>
+  );
+};
 
 const styles = StyleSheet.create({
-	container: {},
+  container: {},
 });

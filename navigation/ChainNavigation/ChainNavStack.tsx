@@ -1,14 +1,15 @@
 import {createStackNavigator} from "@react-navigation/stack";
+import {ReactElement} from 'react';
 import * as React from "react";
 import {ChainStackParamList} from "../../_types/Chain";
 import {ChainProvider} from "../../context/ChainProvider";
-import ChainsHomeScreen from '../../screens/ChainsHomeScreen';
-import PrepareMaterialsScreen from '../../screens/PrepareMaterialsScreen';
-import StepScreen from '../../screens/StepScreen';
+import {ChainsHomeScreen} from '../../screens/ChainsHomeScreen';
+import {PrepareMaterialsScreen} from '../../screens/PrepareMaterialsScreen';
+import {StepScreen} from '../../screens/StepScreen';
 
 export const ChainStack = createStackNavigator<ChainStackParamList>();
 
-export function ChainNavigator() {
+export const ChainNavigator = (): ReactElement => {
   return (
     <ChainProvider>
       <ChainStack.Navigator

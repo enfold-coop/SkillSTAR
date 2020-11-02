@@ -14,3 +14,8 @@ export type ChainNavProps<T extends keyof ChainStackParamList> = {
 	navigation: StackNavigationProp<ChainStackParamList, T>;
 	route: RouteProp<ChainStackParamList, T>;
 };
+
+export interface ChainsHomeScreenProps {
+  route: ChainNavProps<"ChainsHomeScreen">;
+  navigation: ChainNavProps<"ChainsHomeScreen">;
+}

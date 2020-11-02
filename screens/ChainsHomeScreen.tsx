@@ -1,16 +1,10 @@
-import React, {FC, Fragment, useContext} from "react";
+import React, {FC, Fragment, ReactElement, useContext} from "react";
 import {FlatList, StyleSheet, Text, View} from "react-native";
-import {ScorecardItem} from '../_interfaces/Scorecard';
-import {ChainNavProps} from '../_types/Chain';
+import {ChainsHomeScreenProps} from '../_types/Chain';
 import ScorecardListItem from '../components/Chain/ScorecardListItem';
 import {ChainContext} from "../context/ChainProvider";
 
-type Props = {
-  route: ChainNavProps<"ChainsHomeScreen">;
-  navigation: ChainNavProps<"ChainsHomeScreen">;
-};
-
-const ChainsHomeScreen: FC<Props> = (props) => {
+export const ChainsHomeScreen: FC<ChainsHomeScreenProps> = (props): ReactElement => {
   const {currentSkill} = useContext(ChainContext);
   // const { name } = skill.item;
 
@@ -24,7 +18,7 @@ const ChainsHomeScreen: FC<Props> = (props) => {
           <FlatList
             data={currentSkill.item.subItems}
             keyExtractor={(item) => item.id}
-            renderItem={(item) => <ScorecardListItem item={item.item} />}
+            renderItem={(item) => <ScorecardListItem item={item.item}/>}
           />
         </Fragment>
       )}
@@ -49,5 +43,3 @@ const styles = StyleSheet.create({
     width: "80%",
   },
 });
-
-export default ChainsHomeScreen;

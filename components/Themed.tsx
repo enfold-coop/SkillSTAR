@@ -1,6 +1,7 @@
-import * as React from "react";
 import { Text as DefaultText, View as DefaultView } from "react-native";
-
+import {ReactElement} from 'react';
+import * as React from "react";
+import {TextProps, ViewProps} from '../_types/Theme';
 import Colors from "../styles/Colors";
 import useColorScheme from "../hooks/useColorScheme";
 
@@ -18,22 +19,15 @@ export function useThemeColor(
 	}
 }
 
-type ThemeProps = {
-	lightColor?: string;
-	darkColor?: string;
-};
 
-export type TextProps = ThemeProps & DefaultText["props"];
-export type ViewProps = ThemeProps & DefaultView["props"];
-
-export function Text(props: TextProps) {
+export const Text = (props: TextProps): ReactElement => {
 	const { style, lightColor, darkColor, ...otherProps } = props;
 	const color = useThemeColor({ light: lightColor, dark: darkColor }, "text");
 
 	return <DefaultText style={[{ color }, style]} {...otherProps} />;
 }
 
-export function View(props: ViewProps) {
+export const View = (props: ViewProps): ReactElement => {
 	const { style, lightColor, darkColor, ...otherProps } = props;
 	const backgroundColor = useThemeColor(
 		{ light: lightColor, dark: darkColor },

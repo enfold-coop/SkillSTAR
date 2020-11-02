@@ -1,6 +1,6 @@
 import React, {FC} from "react";
 import {FlatList, StyleSheet, Text, View} from "react-native";
-import {ScorecardItem, ScorecardListProps} from '../../_interfaces/Scorecard';
+import {ScorecardListProps} from '../../_interfaces/Scorecard';
 import ScorecardListItem from './ScorecardListItem';
 
 const ScorecardList: FC<ScorecardListProps> = (props) => {

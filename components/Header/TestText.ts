@@ -1,8 +1,6 @@
-
-
 const headlineTestText = {
     global: 'SKILL STAR',
-    teeth: 'TEETH BRUSING'
+    teeth: 'TEETH BRUSHING'
 };
 
 const subHeadlineTestText = {

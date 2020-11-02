@@ -24,7 +24,7 @@ export interface ListCardProps {
 export interface SkillGradeProps {
 	data: SkillSubItem[];
 	name: string;
-};
+}
 
 export interface SkillsListProps {
 	data?: SkillItem[];
