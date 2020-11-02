@@ -63,7 +63,11 @@ const SkillListCard: FC<ListCardProps> = (props) => {
 				<SkillGrade data={needsSupport} name={"Needs Support"} />
 			</View>
 
-			<Button mode="contained" onPress={() => SetContextSkill()}>
+			<Button
+				style={styles.button}
+				mode="contained"
+				onPress={() => SetContextSkill()}
+			>
 				Go to Skill
 			</Button>
 		</Card>
@@ -76,9 +80,7 @@ const styles = StyleSheet.create({
 		flexDirection: "column",
 		borderWidth: 5,
 		borderColor: "#dcff16",
-		paddingTop: 10,
-		paddingBottom: 10,
-		paddingLeft: 10,
+		// padding: 10,
 		margin: 10,
 	},
 	title: {
@@ -87,26 +89,14 @@ const styles = StyleSheet.create({
 		fontWeight: "bold",
 	},
 	subcontainer: {
-		// margin: 20,
-		// padding: 20,
-		display: "flex",
+		margin: 20,
 		flexDirection: "row",
 		flexWrap: "wrap",
-		justifyContent: "flex-start",
+		justifyContent: "space-between",
 	},
-	// skillComponent: {
-	// 	display: "flex",
-	// 	flexDirection: "row",
-	// 	flexWrap: "wrap",
-	// 	justifyContent: "flex-start",
-	// 	padding: 80,
-	// 	paddingTop: 40,
-	// 	paddingBottom: 40,
-	// 	margin: 10,
-	// 	borderWidth: 1,
-	// 	borderColor: "#fff",
-	// 	borderRadius: 5,
-	// },
+	button: {
+		margin: 20,
+	},
 });
 
 export default SkillListCard;
