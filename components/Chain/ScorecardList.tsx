@@ -1,35 +1,31 @@
-import React, { FC, useEffect } from "react";
-import { View, Text, FlatList, StyleSheet } from "react-native";
-import { ScorecardListItem } from "./index";
+import React, {FC} from "react";
+import {FlatList, StyleSheet, Text, View} from "react-native";
+import {ScorecardItem, ScorecardListProps} from '../../_interfaces/Scorecard';
+import ScorecardListItem from './ScorecardListItem';
 
-type Props = {
-	name: string;
-	subItems: {}[];
-};
-
-const ScorecardList: FC<Props> = (props) => {
-	return (
-		<View style={styles.container}>
-			<Text style={styles.title}>Scorecard Item List ...</Text>
-			<FlatList
-				data={subItems}
-				keyExtractor={(item) => item.id}
-				renderItem={({ item }) => <ScorecardListItem item={item} />}
-			/>
-		</View>
-	);
+const ScorecardList: FC<ScorecardListProps> = (props) => {
+  return (
+    <View style={styles.container}>
+      <Text style={styles.title}>Scorecard Item List ...</Text>
+      <FlatList
+        data={props.subItems}
+        keyExtractor={(item) => item.id}
+        renderItem={({item}) => <ScorecardListItem item={item}/>}
+      />
+    </View>
+  );
 };
 
 const styles = StyleSheet.create({
-	container: {
-		flex: 1,
-		justifyContent: "flex-start",
-		alignItems: "center",
-	},
-	title: {
-		fontSize: 20,
-		fontWeight: "bold",
-	},
+  container: {
+    flex: 1,
+    justifyContent: "flex-start",
+    alignItems: "center",
+  },
+  title: {
+    fontSize: 20,
+    fontWeight: "bold",
+  },
 });
 
 export default ScorecardList;

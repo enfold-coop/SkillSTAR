@@ -1,6 +1,6 @@
 import * as React from "react";
 import { StyleSheet, Button } from "react-native";
-import { RootNavProps as Props } from "../navigation/root_types";
+import { RootNavProps as Props } from "../_types/RootNav";
 
 import { Text, View } from "../components/Themed";
 

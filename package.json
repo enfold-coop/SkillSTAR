@@ -8,8 +8,8 @@
     "eject": "expo eject",
     "test": "node_modules/.bin/jest",
     "test:debug": "node --inspect-brk node_modules/jest/bin/jest.js --runInBand",
-    "lint": "eslint . --ext .ts,.tsx,.js,.jsx,.json",
-    "lint-and-fix": "eslint . --ext .ts,.tsx,.js,.jsx,.json --fix"
+    "lint": "eslint . --ext .ts,.tsx",
+    "lint-and-fix": "eslint . --ext .ts,.tsx --fix"
   },
   "dependencies": {
     "@expo/vector-icons": "^10.0.0",

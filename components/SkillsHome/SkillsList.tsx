@@ -1,12 +1,8 @@
 import React, { FC } from "react";
 import { StyleSheet, FlatList, View, Text } from "react-native";
-import { SkillListCard } from "./index";
-import { RootNavProps } from "../../navigation/root_types";
-
-type SkillsListProps = {
-	data?: {}[];
-	root: RootNavProps<"SkillsHomeScreen">;
-};
+import {SkillDataItem, SkillItem, SkillsListProps} from '../../_interfaces/Skill';
+import { RootNavProps } from "../../_types/RootNav";
+import SkillListCard from './SkillListCard';
 
 const SkillsList: FC<SkillsListProps> = (props) => {
 	return (

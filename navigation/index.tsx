@@ -13,7 +13,7 @@ import SkillsHomeScreen from "../screens/SkillsHomeScreen";
 import { ChainsHomeScreen } from "../screens/index";
 import { ChainNavigator } from "./ChainNavigation/ChainNavStack";
 
-import { RootStackParamList } from "./root_types";
+import { RootStackParamList } from "../_types/root_types";
 
 export default function Navigation({
 	colorScheme,

@@ -1,8 +1,7 @@
 import * as React from "react";
 import { StyleSheet, View, Text } from "react-native";
-import { RootNavProps as Props } from "../navigation/root_types";
-
-import { SkillsList } from "../components/SkillsHome/index";
+import { RootNavProps as Props } from "../_types/RootNav";
+import SkillsList from '../components/SkillsHome/SkillsList';
 import { DUMMY_SKILLS_ARR } from "../data/DUMMYDATA";
 
 export default function SkillsHomeScreen({

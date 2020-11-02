@@ -1,17 +1,12 @@
 import React, { FC } from "react";
 import { Text, StyleSheet, TouchableOpacity } from "react-native";
 import { Card } from "react-native-paper";
+import {ScorecardItem, ScorecardListRenderItemInfo} from '../../_interfaces/Scorecard';
 import { MasteryIcons } from "../../styles/MasteryIcons";
 import { AntDesign } from "@expo/vector-icons";
 
-type Props = {
-	id: string;
-	title: string;
-	score: number;
-};
-
-const ScorecardListItem: FC<Props> = (props) => {
-	const { id, title, score } = props.item.item;
+const ScorecardListItem: FC<ScorecardListRenderItemInfo> = (props) => {
+	const { id, title, score } = props.item;
 
 	return (
 		<Card style={styles.container}>

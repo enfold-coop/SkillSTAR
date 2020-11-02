@@ -1,21 +1,16 @@
 import React, { FC } from "react";
 import { StyleSheet, View, Text, Image } from "react-native";
 import { Card } from "react-native-paper";
-import { RootNavProps } from "../../navigation/root_types";
+import {SkillSubItem, SkillGradeProps} from '../../_interfaces/Skill';
 import { MasteryIcons } from "../../styles/MasteryIcons";
 
-type Props = {
-	data: [];
-	name: string;
-};
-
-function createSkillTitleString(data: []): string {
-	let t = data.map((e) => e.title);
-	let str = t.join(", ");
-	return str;
+function createSkillTitleString(data: SkillSubItem[]): string {
+	return data
+		.map((e) => e.title)
+		.join(', ');
 }
 
-const SkillGrade: FC<Props> = (props) => {
+const SkillGrade: FC<SkillGradeProps> = (props) => {
 	return (
 		<Card style={styles.container}>
 			{MasteryIcons(props.data[0].score)}

@@ -5,15 +5,15 @@ type User = null | { username: string };
 
 const AuthContext = React.createContext<AuthProviderProps>({
 	user: null,
-	login: () => {},
-	logout: () => {},
+	login: () => { console.log('login'); },
+	logout: () => { console.log('logout'); },
 });
 
-type AuthProviderProps = {
+interface AuthProviderProps {
 	user: User;
 	login: () => void;
 	logout: () => void;
-};
+}
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 	const [user, setUser] = useState<User>(null);
