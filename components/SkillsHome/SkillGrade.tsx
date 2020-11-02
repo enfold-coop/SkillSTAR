@@ -31,12 +31,6 @@ const SkillGrade: FC<Props> = (props) => {
 
 const styles = StyleSheet.create({
 	container: {
-		display: "flex",
-		flexDirection: "row",
-		flexWrap: "wrap",
-		justifyContent: "space-around",
-		alignContent: "center",
-		margin: 5,
 		padding: 5,
 		borderWidth: 1,
 		borderColor: "#fff",
