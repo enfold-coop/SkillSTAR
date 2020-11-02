@@ -12,7 +12,7 @@ import {Navigation} from './navigation';
 /**
  * Entry for the application.
  */
-const App = (): ReactElement | null => {
+export const App = (): ReactElement | null => {
   const isLoadingComplete = useCachedResources();
   const colorScheme = useColorScheme();
 

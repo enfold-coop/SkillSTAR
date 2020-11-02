@@ -30,7 +30,10 @@ export const RootNavigator = (): ReactElement => {
         name="SkillsHomeScreen"
         component={SkillsHomeScreen}
       />
-      <Stack.Screen name="LandingScreen" component={LandingScreen}/>
+      <Stack.Screen
+        name="LandingScreen"
+        component={LandingScreen}
+      />
       <Stack.Screen
         name="ChainsHomeScreen"
         component={ChainsHomeScreen}
