@@ -23,11 +23,9 @@ export default function App() {
 	} else {
 		return (
 			<SafeAreaProvider>
-				<AuthProvider>
-					<ChainProvider>
-						<Navigation colorScheme={colorScheme} />
-					</ChainProvider>
-				</AuthProvider>
+				<ChainProvider>
+					<Navigation colorScheme={colorScheme} />
+				</ChainProvider>
 			</SafeAreaProvider>
 		);
 	}

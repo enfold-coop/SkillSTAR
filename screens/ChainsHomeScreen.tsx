@@ -1,29 +1,39 @@
-import React, { FC, useEffect, useState } from "react";
-import { View, Text, StyleSheet } from "react-native";
+import React, { FC, useContext, Fragment } from "react";
+import { View, Text, StyleSheet, FlatList } from "react-native";
 import { ChainNavProps } from "../navigation/ChainNavigation/types";
-import { ScorecardList } from "../components/Chain/index";
+import { ScorecardListItem } from "../components/Chain/index";
+import { ChainContext } from "../context/ChainProvider";
 
 type Props = {
-	skill?: {};
 	route: ChainNavProps<"ChainsHomeScreen">;
 	navigation: ChainNavProps<"ChainsHomeScreen">;
 };
 
 const ChainsHomeScreen: FC<Props> = (props) => {
-	const { item } = props.route.params.skill;
+	const { currentSkill } = useContext(ChainContext);
+	// const { name } = skill.item;
 
 	return (
 		<View style={styles.container}>
-			<Text>CHAINS HOME</Text>
-			<Text>SOME TEXT</Text>
-			<Text style={styles.title}>Scorecard</Text>
-			<ScorecardList item={item} />
+			{currentSkill.item.name && (
+				<Fragment>
+					{/* <Text>{skill.item.name}</Text> */}
+					<Text>{currentSkill.item.name}</Text>
+					<Text style={styles.title}>Scorecard</Text>
+					<FlatList
+						data={currentSkill.item.subItems}
+						keyExtractor={(item) => item.id}
+						renderItem={(item) => <ScorecardListItem item={item} />}
+					/>
+				</Fragment>
+			)}
 		</View>
 	);
 };
 
 const styles = StyleSheet.create({
 	container: {
+		width: "100%",
 		flex: 1,
 		justifyContent: "flex-start",
 		alignItems: "center",

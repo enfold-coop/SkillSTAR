@@ -3,6 +3,7 @@ import { StyleSheet, View, Text } from "react-native";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { Button, Card } from "react-native-paper";
 import { ChainNavProps } from "../../navigation/ChainNavigation/types";
+import { ChainContext } from "../../context/ChainProvider";
 // import {
 // 	ChainStack,
 // 	ChainNavigator,
@@ -34,20 +35,23 @@ function filterSkillByScore(arr: [], score: number) {
 
 const SkillListCard: FC<ListCardProps> = (props) => {
 	const navigation = useNavigation();
-	// KEEP >>
-	// const chainContext = useContext(ChainContext);
-	// <<
+	const { setChainSkill } = useContext(ChainContext);
+
 	const { subItems } = props.dataItem.item;
 
 	let mastered = filterSkillByScore(subItems, 1);
 	let inProgress = filterSkillByScore(subItems, 0);
 	let needsSupport = filterSkillByScore(subItems, 2);
 
+	// passing selected skill to ChainProvider (CHAIN's state management)
+	// calls Navigate(), to navigate to ChainsHomeScreen
 	function SetContextSkill() {
-		//
-		// --- Here... send selected skill to Context API
-		//
-		navigation.navigate("ChainsHomeScreen", { skill: props.dataItem });
+		setChainSkill(props.dataItem);
+		Navigate();
+	}
+
+	function Navigate() {
+		navigation.navigate("ChainsHomeScreen");
 	}
 
 	return (
