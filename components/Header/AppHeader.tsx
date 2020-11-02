@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {ReactElement} from 'react';
 import {Image, StyleSheet, Text, View} from 'react-native';
 // import { Appbar } from 'react-native-paper';
 import * as TESTTEXT from './TestText';
@@ -7,7 +7,7 @@ const logo = {
   uri: '../../assets/images/icon.png'
 };
 
-export default function AppHeader() {
+export const AppHeader = (): ReactElement => {
   return (
     <View style={styles.container}>
       <Image source={require('../../assets/images/icon.png')} style={styles.logo}/>
@@ -17,7 +17,7 @@ export default function AppHeader() {
       </View>
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {

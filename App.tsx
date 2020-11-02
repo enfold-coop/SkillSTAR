@@ -5,7 +5,7 @@ import React, {ReactElement} from "react";
 import "react-native-gesture-handler";
 import {SafeAreaProvider} from "react-native-safe-area-context";
 import {ChainProvider} from "./context/ChainProvider";
-import useCachedResources from "./hooks/useCachedResources";
+import {useCachedResources} from './hooks/useCachedResources';
 import useColorScheme from "./hooks/useColorScheme";
 import {Navigation} from './navigation';
 

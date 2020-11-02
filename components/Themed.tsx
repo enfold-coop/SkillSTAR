@@ -5,10 +5,10 @@ import {TextProps, ViewProps} from '../_types/Theme';
 import Colors from "../styles/Colors";
 import useColorScheme from "../hooks/useColorScheme";
 
-export function useThemeColor(
+export const useThemeColor = (
 	props: { light?: string; dark?: string },
 	colorName: keyof typeof Colors.light & keyof typeof Colors.dark
-) {
+): string => {
 	const theme = useColorScheme();
 	const colorFromProps = props[theme];
 

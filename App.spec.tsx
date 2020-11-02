@@ -5,7 +5,7 @@ import {wait} from './_util/testing/wait';
 
 describe('App', () => {
   afterEach(async () => {
-    await wait();
+    await wait(10);
   })
 
   it('renders correctly', async () => {
