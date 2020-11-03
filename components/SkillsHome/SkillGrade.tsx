@@ -16,6 +16,7 @@ function createSkillTitleString(data: []): string {
 }
 
 const SkillGrade: FC<Props> = (props) => {
+	// console.log(props);
 	return (
 		<Card style={styles.container}>
 			{MasteryIcons(props.data[0].score)}

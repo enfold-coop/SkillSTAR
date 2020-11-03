@@ -35,7 +35,7 @@ function filterSkillByScore(arr: [], score: number) {
 
 const SkillListCard: FC<ListCardProps> = (props) => {
 	const navigation = useNavigation();
-	const { setChainSkill } = useContext(ChainContext);
+	const context = useContext(ChainContext);
 
 	const { subItems } = props.dataItem.item;
 
@@ -46,7 +46,7 @@ const SkillListCard: FC<ListCardProps> = (props) => {
 	// passing selected skill to ChainProvider (CHAIN's state management)
 	// calls Navigate(), to navigate to ChainsHomeScreen
 	function SetContextSkill() {
-		setChainSkill(props.dataItem);
+		context.setChainSkill(props.dataItem);
 		Navigate();
 	}
 
@@ -66,6 +66,7 @@ const SkillListCard: FC<ListCardProps> = (props) => {
 			<Button
 				style={styles.button}
 				mode="contained"
+				// onPress={() => navigation.navigate("ChainsHomeScreen")}
 				onPress={() => SetContextSkill()}
 			>
 				Go to Skill
@@ -80,7 +81,6 @@ const styles = StyleSheet.create({
 		flexDirection: "column",
 		borderWidth: 5,
 		borderColor: "#dcff16",
-		// padding: 10,
 		margin: 10,
 	},
 	title: {

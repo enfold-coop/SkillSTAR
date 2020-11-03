@@ -1,4 +1,5 @@
-import React, { FC, useContext, Fragment } from "react";
+import React, { FC, Fragment, useContext, useEffect } from "react";
+import AsyncStorage from "@react-native-community/async-storage";
 import { View, Text, StyleSheet, FlatList } from "react-native";
 import { ChainNavProps } from "../navigation/ChainNavigation/types";
 import { ScorecardListItem } from "../components/Chain/index";
@@ -10,24 +11,29 @@ type Props = {
 };
 
 const ChainsHomeScreen: FC<Props> = (props) => {
-	const { currentSkill } = useContext(ChainContext);
-	// const { name } = skill.item;
+	const context = useContext(ChainContext);
 
 	return (
+		// <ChainContext.Consumer>
+		// 	{() => (
+
 		<View style={styles.container}>
-			{currentSkill.item.name && (
-				<Fragment>
-					{/* <Text>{skill.item.name}</Text> */}
-					<Text>{currentSkill.item.name}</Text>
-					<Text style={styles.title}>Scorecard</Text>
-					<FlatList
-						data={currentSkill.item.subItems}
-						keyExtractor={(item) => item.id}
-						renderItem={(item) => <ScorecardListItem item={item} />}
-					/>
-				</Fragment>
-			)}
+			{/* {currentSkill.item.name && ( */}
+			<Fragment>
+				{/* <Text>{skill.item.name}</Text> */}
+				{/* <Text>{currentSkill.item.name}</Text>
+                        <Text style={styles.title}>Scorecard</Text>
+                        <FlatList
+                            data={currentSkill.item.subItems}
+                            keyExtractor={(item) => item.id}
+                            renderItem={(item) => <ScorecardListItem item={item} />}
+                        /> */}
+			</Fragment>
+			{/* )} */}
 		</View>
+		// }
+		// 	)}
+		// </ChainContext.Consumer>
 	);
 };
 
