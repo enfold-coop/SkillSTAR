@@ -7,7 +7,14 @@ import { Text, View } from "../components/Themed";
 export default function LandingScreen({ navigation }: Props<"LandingScreen">) {
 	return (
 		<View style={styles.container}>
-			<Text style={styles.title}>LANDING</Text>
+			<Text style={styles.title}>LANDING / Login</Text>
+			<View>
+				{/**
+				 * New user?
+				 * -- Yes: background survey,
+				 * -- No: baseline assesssment
+				 */}
+			</View>
 			<Button
 				title="To Skills Home"
 				onPress={() => navigation.navigate("SkillsHomeScreen")}

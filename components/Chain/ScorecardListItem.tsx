@@ -15,7 +15,7 @@ const ScorecardListItem: FC<Props> = (props) => {
 
 	return (
 		<Card style={styles.container}>
-			<TouchableOpacity style={styles.touchable}>
+			<TouchableOpacity style={styles.touchable} onPress={() => {}}>
 				<Text style={styles.id}>Skill {id}: </Text>
 				<Text style={styles.skill}>{title}</Text>
 				<Text style={styles.score}>{MasteryIcons(score)}</Text>
