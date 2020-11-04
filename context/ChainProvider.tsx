@@ -15,22 +15,19 @@ type Skill = {
 type ChainProviderProps = {};
 
 export const defaultContextValue: ChainProviderProps = {
-	skill: "",
+	skill: {},
 	setChainSkill: () => null,
 	getChainSkill: () => null,
 };
-
-export const currentSkill = {};
 
 export const ChainContext = React.createContext<ChainProviderProps>(
 	defaultContextValue
 );
 
+let initialState = {};
+
 export const ChainProvider: React.FC<ChainProviderProps> = ({ children }) => {
 	const [skill, setSkill] = useState<Skill>();
-	AsyncStorage.setItem("skill", JSON.stringify(skill));
-	let currentSkill;
-	console.log(currentSkill);
 
 	return (
 		<ChainContext.Provider

@@ -44,18 +44,21 @@ function RootNavigator() {
 		>
 			<Stack.Screen name="LandingScreen" component={LandingScreen} />
 			<Stack.Screen
-				name="BaselineAssessmentScreen"
-				component={BaselineAssessmentScreen}
+				name="SkillsHomeScreen"
+				component={SkillsHomeScreen}
+			/>
+			<Stack.Screen
+				name="ChainsHomeScreen"
+				component={ChainsHomeScreen}
 			/>
 			<Stack.Screen
 				name="BackgroundSurveyScreen"
 				component={BackgroundSurveyScreen}
 			/>
 			<Stack.Screen
-				name="SkillsHomeScreen"
-				component={SkillsHomeScreen}
+				name="BaselineAssessmentScreen"
+				component={BaselineAssessmentScreen}
 			/>
-			<Stack.Screen name="ChainsHomeScreen" component={ChainNavigator} />
 		</Stack.Navigator>
 	);
 }

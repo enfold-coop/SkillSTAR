@@ -1,6 +1,6 @@
 import React, { FC, useContext } from "react";
 import { StyleSheet, View, Text } from "react-native";
-import { useNavigation, useRoute } from "@react-navigation/native";
+import { useNavigation } from "@react-navigation/native";
 import { Button, Card } from "react-native-paper";
 import { ChainNavProps } from "../../navigation/ChainNavigation/types";
 import { ChainContext } from "../../context/ChainProvider";
@@ -45,14 +45,7 @@ const SkillListCard: FC<ListCardProps> = (props) => {
 
 	// passing selected skill to ChainProvider (CHAIN's state management)
 	// calls Navigate(), to navigate to ChainsHomeScreen
-	function SetContextSkill() {
-		context.setChainSkill(props.dataItem);
-		Navigate();
-	}
-
-	function Navigate() {
-		navigation.navigate("ChainsHomeScreen");
-	}
+	console.log(props.dataItem);
 
 	return (
 		<Card style={styles.container}>
@@ -66,8 +59,11 @@ const SkillListCard: FC<ListCardProps> = (props) => {
 			<Button
 				style={styles.button}
 				mode="contained"
-				// onPress={() => navigation.navigate("ChainsHomeScreen")}
-				onPress={() => SetContextSkill()}
+				onPress={() =>
+					navigation.navigate("ChainsHomeScreen", {
+						skill: props.dataItem.item,
+					})
+				}
 			>
 				Go to Skill
 			</Button>

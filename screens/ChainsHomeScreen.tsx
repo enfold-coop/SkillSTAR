@@ -11,47 +11,42 @@ type Props = {
 };
 
 const ChainsHomeScreen: FC<Props> = (props) => {
-	const context = useContext(ChainContext);
+	const { skill } = props.route.params;
+	console.log(skill);
 
 	return (
-		// <ChainContext.Consumer>
-		// 	{() => (
-
 		<View style={styles.container}>
-			{/* {currentSkill.item.name && ( */}
-			<Fragment>
-				{/* <Text>{skill.item.name}</Text> */}
-				{/* <Text>{currentSkill.item.name}</Text>
-                        <Text style={styles.title}>Scorecard</Text>
-                        <FlatList
-                            data={currentSkill.item.subItems}
-                            keyExtractor={(item) => item.id}
-                            renderItem={(item) => <ScorecardListItem item={item} />}
-                        /> */}
-			</Fragment>
-			{/* )} */}
+			{skill.name && (
+				<Fragment>
+					<Text>{skill.name}</Text>
+					<Text style={styles.title}>Scorecard</Text>
+					<FlatList
+						style={styles.list}
+						data={skill.subItems}
+						keyExtractor={(item) => item.id}
+						renderItem={(item) => <ScorecardListItem item={item} />}
+					/>
+				</Fragment>
+			)}
 		</View>
-		// }
-		// 	)}
-		// </ChainContext.Consumer>
 	);
 };
 
 const styles = StyleSheet.create({
 	container: {
-		width: "100%",
-		flex: 1,
-		justifyContent: "flex-start",
-		alignItems: "center",
+		justifyContent: "center",
 	},
 	title: {
 		fontSize: 20,
 		fontWeight: "bold",
+		padding: 20,
 	},
 	separator: {
 		marginVertical: 30,
 		height: 1,
-		width: "80%",
+	},
+	list: {
+		margin: 20,
 	},
 });
 
