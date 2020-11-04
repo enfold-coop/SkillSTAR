@@ -4,6 +4,7 @@ import { Button, ProgressBar, Colors } from "react-native-paper";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { RootNavProps } from "../navigation/root_types";
 import AppHeader from "../components/Header/AppHeader";
+import { AntDesign } from "@expo/vector-icons";
 import { Video } from "expo-av";
 
 type Props = {
@@ -17,38 +18,28 @@ const dummy_data = {
 };
 
 const StepScreen: FC<Props> = (props) => {
-	// console.log(props);
-	/**
-	 * Need to add:
-	 * - step number, w/ label
-	 * - steps progress bar
-	 * - "challenging behavior" button
-	 * - view for instructions and/or video
-	 * - "Focused step" label
-	 * - EXIT button
-	 * - NEXT button
-	 */
 	return (
 		<View style={styles.container}>
 			<AppHeader />
 			<View style={styles.progress}>
-				{/* flex: row */}
 				<Text style={styles.headline}>
 					Step {dummy_data.stepNum}: {dummy_data.stepDirection}
 				</Text>
-				{/* PROGRESS BAR */}
 				<ProgressBar
 					style={styles.progressBar}
 					progress={0.5}
-					color={Colors.red800}
+					color={Colors.blue400}
 				/>
 			</View>
 			<View style={styles.subContainer}>
-				{/* flex: column */}
 				<View style={styles.challengingBehavior}>
-					{/* flex: row */}
 					<TouchableOpacity>
-						<Text>DIFFICULTY BUTTON</Text>
+						<AntDesign
+							name="exclamationcircleo"
+							size={50}
+							color="black"
+							style={styles.difficultyButton}
+						/>
 					</TouchableOpacity>
 					<Text style={styles.difficultyParagraph}>
 						Click on this icon anytime your child is having
@@ -56,7 +47,6 @@ const StepScreen: FC<Props> = (props) => {
 					</Text>
 				</View>
 				<View style={styles.subVideoContainer}>
-					{/* <Image source={require("...to focus step icon")}/> */}
 					<Video
 						source={{
 							uri:
@@ -71,7 +61,25 @@ const StepScreen: FC<Props> = (props) => {
 						style={styles.video}
 					/>
 				</View>
+				<View style={styles.bottomContainer}>
+					<Button
+						style={styles.exitButton}
+						mode="outlined"
+						onPress={() => {
+							console.log("nav to next step");
+						}}
+					>
+						Exit
+					</Button>
+					<AntDesign
+						name="exclamationcircleo"
+						size={24}
+						color="black"
+						style={styles.focusStepIcon}
+					/>
+				</View>
 				<Button
+					style={styles.nextButton}
 					mode="contained"
 					onPress={() => {
 						console.log("nav to next step");
@@ -105,11 +113,12 @@ const styles = StyleSheet.create({
 	},
 	challengingBehavior: {
 		flexDirection: "row",
-		padding: 10,
+		// padding: 10,
 		// paddingRight: 100,
 		paddingLeft: 80,
 		justifyContent: "flex-start",
 	},
+	difficultyButton: {},
 	difficultyParagraph: {
 		width: 300,
 		padding: 10,
@@ -132,6 +141,23 @@ const styles = StyleSheet.create({
 	progressBar: {
 		width: 122,
 		height: 20,
+	},
+	bottomContainer: {
+		flexDirection: "row",
+		padding: 20,
+		margin: 10,
+		justifyContent: "space-between",
+	},
+	focusStepIcon: {
+		height: 30,
+	},
+	exitButton: {
+		width: 144,
+		fontWeight: "600",
+	},
+	nextButton: {
+		width: 144,
+		marginLeft: 20,
 	},
 });
 
