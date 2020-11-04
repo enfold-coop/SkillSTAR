@@ -10,7 +10,7 @@ type Props = {
 };
 
 const PrepareMaterialsScreen: FC<Props> = (props) => {
-	console.log(props);
+	// console.log(props);
 	const navigation = useNavigation();
 	/**
 	 *

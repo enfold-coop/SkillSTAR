@@ -2,7 +2,6 @@ import React from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { TextInput, Checkbox, Button, RadioButton } from "react-native-paper";
-import Navigation from "../navigation";
 
 export default function BackgroundSurveyScreen({}) {
 	const navigation = useNavigation();

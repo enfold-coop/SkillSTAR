@@ -12,9 +12,9 @@ type Props = {
 };
 
 const ScorecardListItem: FC<Props> = (props) => {
+	// console.log(props);
 	const navigation = useNavigation();
 	const { id, title, score } = props.item.item;
-	// console.log(props);
 
 	return (
 		<Card style={styles.container}>
