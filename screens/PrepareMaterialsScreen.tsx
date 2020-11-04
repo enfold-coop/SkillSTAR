@@ -1,5 +1,6 @@
 import React, { FC } from "react";
 import { StyleSheet, Text, View, Image } from "react-native";
+import { useNavigation } from "@react-navigation/native";
 import { Button } from "react-native-paper";
 import { RootNavProps } from "../navigation/root_types";
 
@@ -10,6 +11,7 @@ type Props = {
 
 const PrepareMaterialsScreen: FC<Props> = (props) => {
 	console.log(props);
+	const navigation = useNavigation();
 	/**
 	 *
 	 * Need to add
@@ -30,7 +32,13 @@ const PrepareMaterialsScreen: FC<Props> = (props) => {
 				/>
 				<Text style={styles.itemName}>ToothBrush</Text>
 			</View>
-			<Button mode="contained" style={styles.nextBtn}>
+			<Button
+				mode="contained"
+				style={styles.nextBtn}
+				onPress={() => {
+					navigation.navigate("StepScreen");
+				}}
+			>
 				Next
 			</Button>
 		</View>

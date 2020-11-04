@@ -34,7 +34,9 @@ const StepScreen: FC<Props> = (props) => {
 				{/* flex: column */}
 				<View>
 					{/* flex: row */}
-					<TouchableOpacity>DIFFICULTY BUTTON</TouchableOpacity>
+					<TouchableOpacity>
+						<Text>DIFFICULTY BUTTON</Text>
+					</TouchableOpacity>
 					<Text>
 						Click on this icon anytime your child is having
 						difficulty or experiening challenging behavior.

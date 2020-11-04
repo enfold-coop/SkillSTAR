@@ -10,12 +10,11 @@ type Props = {
 
 const ChainsHomeScreen: FC<Props> = (props) => {
 	const { skill } = props.route.params;
-	console.log(props);
 
 	return (
 		<View style={styles.container}>
 			{skill.name && (
-				<Fragment>
+				<View>
 					<Text>{skill.name}</Text>
 					<Text style={styles.title}>Scorecard</Text>
 					<FlatList
@@ -24,7 +23,7 @@ const ChainsHomeScreen: FC<Props> = (props) => {
 						keyExtractor={(item) => item.id}
 						renderItem={(item) => <ScorecardListItem item={item} />}
 					/>
-				</Fragment>
+				</View>
 			)}
 		</View>
 	);
