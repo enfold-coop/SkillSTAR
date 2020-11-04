@@ -12,21 +12,19 @@ export const ChainStack = createStackNavigator<ChainStackParamList>();
 
 export function ChainNavigator() {
 	return (
-		<ChainProvider>
-			<ChainStack.Navigator
-				initialRouteName="ChainsHomeScreen"
-				screenOptions={{ headerShown: false }}
-			>
-				<ChainStack.Screen
-					name="ChainsHomeScreen"
-					component={ChainsHomeScreen}
-				/>
-				<ChainStack.Screen
-					name="PrepareMaterialsScreen"
-					component={PrepareMaterialsScreen}
-				/>
-				<ChainStack.Screen name="StepScreen" component={StepScreen} />
-			</ChainStack.Navigator>
-		</ChainProvider>
+		<ChainStack.Navigator
+			initialRouteName="ChainsHomeScreen"
+			screenOptions={{ headerShown: false }}
+		>
+			<ChainStack.Screen
+				name="ChainsHomeScreen"
+				component={ChainsHomeScreen}
+			/>
+			<ChainStack.Screen
+				name="PrepareMaterialsScreen"
+				component={PrepareMaterialsScreen}
+			/>
+			<ChainStack.Screen name="StepScreen" component={StepScreen} />
+		</ChainStack.Navigator>
 	);
 }

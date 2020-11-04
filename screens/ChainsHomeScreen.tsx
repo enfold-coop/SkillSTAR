@@ -11,12 +11,12 @@ type Props = {
 };
 
 const ChainsHomeScreen: FC<Props> = (props) => {
-	const { skill } = props.route.params;
-	console.log(skill);
+	// const { skill } = props.route.params;
+	console.log(props);
 
 	return (
 		<View style={styles.container}>
-			{skill.name && (
+			{/* {skill.name && (
 				<Fragment>
 					<Text>{skill.name}</Text>
 					<Text style={styles.title}>Scorecard</Text>
@@ -27,7 +27,7 @@ const ChainsHomeScreen: FC<Props> = (props) => {
 						renderItem={(item) => <ScorecardListItem item={item} />}
 					/>
 				</Fragment>
-			)}
+			)} */}
 		</View>
 	);
 };

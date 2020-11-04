@@ -14,6 +14,8 @@ import {
 	SkillsHomeScreen,
 	BaselineAssessmentScreen,
 	BackgroundSurveyScreen,
+	PrepareMaterialsScreen,
+	StepScreen,
 } from "../screens/index";
 
 import { ChainNavigator } from "./ChainNavigation/ChainNavStack";
@@ -44,6 +46,14 @@ function RootNavigator() {
 		>
 			<Stack.Screen name="LandingScreen" component={LandingScreen} />
 			<Stack.Screen
+				name="BackgroundSurveyScreen"
+				component={BackgroundSurveyScreen}
+			/>
+			<Stack.Screen
+				name="BaselineAssessmentScreen"
+				component={BaselineAssessmentScreen}
+			/>
+			<Stack.Screen
 				name="SkillsHomeScreen"
 				component={SkillsHomeScreen}
 			/>
@@ -52,13 +62,10 @@ function RootNavigator() {
 				component={ChainsHomeScreen}
 			/>
 			<Stack.Screen
-				name="BackgroundSurveyScreen"
-				component={BackgroundSurveyScreen}
+				name="PrepareMaterialsScreen"
+				component={PrepareMaterialsScreen}
 			/>
-			<Stack.Screen
-				name="BaselineAssessmentScreen"
-				component={BaselineAssessmentScreen}
-			/>
+			<Stack.Screen name="StepScreen" component={StepScreen} />
 		</Stack.Navigator>
 	);
 }
