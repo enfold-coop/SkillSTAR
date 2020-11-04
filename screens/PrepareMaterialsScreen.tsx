@@ -1,5 +1,6 @@
 import React, { FC } from "react";
 import { StyleSheet, Text, View, Image } from "react-native";
+import { Button } from "react-native-paper";
 import { RootNavProps } from "../navigation/root_types";
 
 type Props = {
@@ -18,13 +19,20 @@ const PrepareMaterialsScreen: FC<Props> = (props) => {
 			<Text style={styles.headline}>
 				Have you gathered your materials?
 			</Text>
+			{/* 
+                - have a list of required materials and their images
+                -loop thru list, rendering View elem for each
+            */}
 			<View style={styles.listContainer}>
 				<Image
 					style={styles.icon}
-					source={require("@expo/snack-static/react-native-logo.png")}
+					source={require("../assets/images/materials/toothbrush.png")}
 				/>
-				<Text style={styles.itemName}>ToothPaste</Text>
+				<Text style={styles.itemName}>ToothBrush</Text>
 			</View>
+			<Button mode="contained" style={styles.nextBtn}>
+				Next
+			</Button>
 		</View>
 	);
 };
@@ -33,8 +41,12 @@ const styles = StyleSheet.create({
 	container: {},
 	headline: {},
 	listContainer: {},
-	icon: {},
+	icon: {
+		width: 100,
+		height: 100,
+	},
 	itemName: {},
+	nextBtn: {},
 });
 
 export default PrepareMaterialsScreen;

@@ -1,9 +1,7 @@
 import React, { FC, Fragment, useContext, useEffect } from "react";
-import AsyncStorage from "@react-native-community/async-storage";
 import { View, Text, StyleSheet, FlatList } from "react-native";
 import { RootNavProps } from "../navigation/root_types";
 import { ScorecardListItem } from "../components/Chain/index";
-import { ChainContext } from "../context/ChainProvider";
 
 type Props = {
 	route: RootNavProps<"ChainsHomeScreen">;
