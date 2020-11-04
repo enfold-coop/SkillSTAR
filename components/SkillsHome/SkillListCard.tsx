@@ -2,7 +2,7 @@ import React, { FC, useContext } from "react";
 import { StyleSheet, View, Text } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { Button, Card } from "react-native-paper";
-import { ChainNavProps } from "../../navigation/ChainNavigation/types";
+import { RootNavProps } from "../../navigation/root_types";
 import { ChainContext } from "../../context/ChainProvider";
 // import {
 // 	ChainStack,
@@ -19,8 +19,8 @@ type Item = {
 
 type ListCardProps = {
 	dataItem: Item;
-	route: ChainNavProps<"ChainsHomeScreen">;
-	navigation: ChainNavProps<"ChainsHomeScreen">;
+	route: RootNavProps<"ChainsHomeScreen">;
+	navigation: RootNavProps<"ChainsHomeScreen">;
 };
 
 function filterSkillByScore(arr: [], score: number) {

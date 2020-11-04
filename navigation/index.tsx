@@ -18,8 +18,6 @@ import {
 	StepScreen,
 } from "../screens/index";
 
-import { ChainNavigator } from "./ChainNavigation/ChainNavStack";
-
 import { RootStackParamList } from "./root_types";
 
 export default function Navigation({

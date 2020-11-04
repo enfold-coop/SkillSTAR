@@ -17,7 +17,7 @@ export default function LandingScreen({ navigation }: Props<"LandingScreen">) {
 			</View>
 			<Button
 				title="To Skills Home"
-				onPress={() => navigation.navigate("SkillsHomeScreen")}
+				onPress={() => navigation.navigate("BackgroundSurveyScreen")}
 			/>
 		</View>
 	);

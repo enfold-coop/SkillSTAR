@@ -7,6 +7,8 @@ export type RootStackParamList = {
 	BaselineAssessmentScreen: undefined;
 	SkillsHomeScreen: undefined;
 	ChainsHomeScreen: undefined;
+	PrepareMaterialsScreen: undefined;
+	StepScreen: undefined;
 };
 
 // A generic used to provide propTypes to Root Screens.
