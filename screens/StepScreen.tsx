@@ -201,7 +201,8 @@ const styles = StyleSheet.create({
 	},
 	nextButton: {
 		width: 144,
-		marginLeft: 20,
+		marginRight: 30,
+		alignSelf: "flex-end",
 	},
 });
 
