@@ -88,12 +88,30 @@ const StepScreen: FC<Props> = (props) => {
 					>
 						Exit
 					</Button>
-					<AntDesign
-						name="exclamationcircleo"
-						size={24}
-						color="black"
-						style={styles.focusStepIcon}
-					/>
+					<View
+						style={{
+							flexDirection: "row",
+							justifyContent: "space-between",
+						}}
+					>
+						<AntDesign
+							name="exclamationcircleo"
+							size={24}
+							color="black"
+							style={styles.focusStepIcon}
+						/>
+						<Text
+							style={{
+								fontSize: 14,
+								fontWeight: "700",
+								paddingLeft: 10,
+								paddingTop: 3,
+								alignContent: "center",
+							}}
+						>
+							{"Focus Step"}
+						</Text>
+					</View>
 				</View>
 				<Button
 					style={styles.nextButton}
