@@ -1,7 +1,7 @@
 const tintColorLight = "#2f95dc";
 const tintColorDark = "#fff";
 
-export default {
+const CustomColors = {
 	light: {
 		text: "#000",
 		background: "#fff",
@@ -21,4 +21,10 @@ export default {
 		blue: "#002F6C",
 		white: "#FEFEFE",
 	},
+	star: {
+		magenta: "#dd00cc",
+		blue: "#7BBBFF",
+	},
 };
+
+export default CustomColors;

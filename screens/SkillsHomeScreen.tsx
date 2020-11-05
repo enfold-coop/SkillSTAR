@@ -1,18 +1,19 @@
 import React from "react";
 import { StyleSheet, View, Text } from "react-native";
 import { RootNavProps as Props } from "../navigation/root_types";
-import { ChainContext } from "../context/ChainProvider";
-
 import { SkillsList } from "../components/SkillsHome/index";
+import AppHeader from "../components/Header/AppHeader";
 import { DUMMY_SKILLS_ARR } from "../data/DUMMYDATA";
 
 export default function SkillsHomeScreen({
 	navigation,
 	route,
 }: Props<"SkillsHomeScreen">) {
+	console.log(DUMMY_SKILLS_ARR);
+
 	return (
 		<View style={styles.container}>
-			<Text>SKILLS SCREEN</Text>
+			<AppHeader name={"Skills Home"} />
 			<SkillsList data={DUMMY_SKILLS_ARR} />
 		</View>
 	);
@@ -21,7 +22,6 @@ export default function SkillsHomeScreen({
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
-		backgroundColor: "#000",
 	},
 	title: {
 		fontSize: 20,
@@ -29,7 +29,7 @@ const styles = StyleSheet.create({
 	},
 	separator: {
 		marginVertical: 30,
-		height: 1,
-		width: "80%",
+		// height: 1,
+		// width: "80%",
 	},
 });

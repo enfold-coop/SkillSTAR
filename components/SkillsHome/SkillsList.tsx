@@ -12,7 +12,7 @@ const SkillsList: FC<SkillsListProps> = (props) => {
 	return (
 		<View>
 			<View style={styles.container}>
-				<Text style={styles.title}>SKILLS LIST Placeholder header</Text>
+				<Text style={styles.title}></Text>
 				<FlatList
 					contentContainerStyle={{
 						flexGrow: 1,
@@ -29,13 +29,12 @@ const SkillsList: FC<SkillsListProps> = (props) => {
 
 const styles = StyleSheet.create({
 	container: {
-		backgroundColor: "#bbb",
 		margin: 20,
+		marginTop: 0,
 	},
 	title: {
 		fontSize: 20,
 		fontWeight: "900",
-		color: "#b72ef2",
 	},
 });
 

@@ -3,6 +3,7 @@ import { StyleSheet, View, Text } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { Button, Card } from "react-native-paper";
 import { RootNavProps } from "../../navigation/root_types";
+import CustomColors from "../../styles/Colors";
 import { ChainContext } from "../../context/ChainProvider";
 // import {
 // 	ChainStack,
@@ -36,7 +37,8 @@ function filterSkillByScore(arr: [], score: number) {
 const SkillListCard: FC<ListCardProps> = (props) => {
 	const navigation = useNavigation();
 
-	const { subItems } = props.dataItem.item;
+	const { subItems, name } = props.dataItem.item;
+	console.log(props.dataItem);
 
 	let mastered = filterSkillByScore(subItems, 1);
 	let inProgress = filterSkillByScore(subItems, 0);
@@ -44,7 +46,7 @@ const SkillListCard: FC<ListCardProps> = (props) => {
 
 	return (
 		<Card style={styles.container}>
-			<Text style={styles.title}>Skill ScoreCard x</Text>
+			<Text style={styles.skillName}>{name}</Text>
 			<View style={styles.subcontainer}>
 				<SkillGrade data={mastered} name={"Mastered"} />
 				<SkillGrade data={inProgress} name={"In Progress"} />
@@ -53,6 +55,7 @@ const SkillListCard: FC<ListCardProps> = (props) => {
 
 			<Button
 				style={styles.button}
+				color={CustomColors.uva.blue}
 				mode="contained"
 				onPress={() =>
 					navigation.navigate("ChainsHomeScreen", {
@@ -70,14 +73,14 @@ const styles = StyleSheet.create({
 	container: {
 		flex: 1,
 		flexDirection: "column",
-		borderWidth: 5,
-		borderColor: "#dcff16",
-		margin: 10,
+		borderWidth: 1,
+		borderColor: CustomColors.uva.orange,
+		margin: 5,
 	},
-	title: {
+	skillName: {
 		padding: 10,
 		fontSize: 20,
-		fontWeight: "bold",
+		fontWeight: "800",
 	},
 	subcontainer: {
 		margin: 20,

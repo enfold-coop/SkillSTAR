@@ -23,7 +23,9 @@ const SkillGrade: FC<Props> = (props) => {
 			<View style={styles.subcontainer}>
 				<Text style={styles.skillGrade}>{props.name}: </Text>
 				<View style={styles.skillList}>
-					<Text>{createSkillTitleString(props.data)}</Text>
+					<Text style={styles.stepNames}>
+						{createSkillTitleString(props.data)}
+					</Text>
 				</View>
 			</View>
 		</Card>
@@ -32,7 +34,7 @@ const SkillGrade: FC<Props> = (props) => {
 
 const styles = StyleSheet.create({
 	container: {
-		padding: 5,
+		padding: 10,
 		borderWidth: 1,
 		borderColor: "#fff",
 		borderRadius: 5,
@@ -40,6 +42,7 @@ const styles = StyleSheet.create({
 	icon: {
 		width: 50,
 		height: 50,
+		margin: 5,
 		borderWidth: 0,
 		borderRadius: 3,
 		backgroundColor: "#fff",
@@ -57,6 +60,10 @@ const styles = StyleSheet.create({
 		padding: 2,
 	},
 	skillGrade: {
+		fontWeight: "800",
+	},
+	stepNames: {
+		fontSize: 14,
 		fontWeight: "600",
 	},
 });

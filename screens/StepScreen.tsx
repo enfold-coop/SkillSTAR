@@ -6,6 +6,7 @@ import { RootNavProps } from "../navigation/root_types";
 import AppHeader from "../components/Header/AppHeader";
 import { AntDesign } from "@expo/vector-icons";
 import { Video } from "expo-av";
+import CustomColors from "../styles/Colors";
 
 type Props = {
 	route: RootNavProps<"StepScreen">;
@@ -20,16 +21,21 @@ const dummy_data = {
 const StepScreen: FC<Props> = (props) => {
 	return (
 		<View style={styles.container}>
-			<AppHeader />
+			<AppHeader name={"Step Screen"} />
 			<View style={styles.progress}>
 				<Text style={styles.headline}>
 					Step {dummy_data.stepNum}: {dummy_data.stepDirection}
 				</Text>
-				<ProgressBar
-					style={styles.progressBar}
-					progress={0.5}
-					color={Colors.blue400}
-				/>
+				<View style={styles.progressContainer}>
+					<ProgressBar
+						style={styles.progressBar}
+						progress={0.5}
+						color={CustomColors.uva.blue}
+					/>
+					<Text style={styles.progressText}>
+						Step {"1"} out of {"17"}{" "}
+					</Text>
+				</View>
 			</View>
 			<View style={styles.subContainer}>
 				<View style={styles.challengingBehavior}>
@@ -64,6 +70,7 @@ const StepScreen: FC<Props> = (props) => {
 				<View style={styles.bottomContainer}>
 					<Button
 						style={styles.exitButton}
+						color={CustomColors.uva.blue}
 						mode="outlined"
 						onPress={() => {
 							console.log("nav to next step");
@@ -80,6 +87,7 @@ const StepScreen: FC<Props> = (props) => {
 				</View>
 				<Button
 					style={styles.nextButton}
+					color={CustomColors.uva.blue}
 					mode="contained"
 					onPress={() => {
 						console.log("nav to next step");
@@ -104,6 +112,10 @@ const styles = StyleSheet.create({
 		paddingLeft: 20,
 		paddingRight: 20,
 	},
+	progressContainer: {},
+	progressText: {
+		paddingTop: 4,
+	},
 	headline: {
 		fontSize: 20,
 		fontWeight: "600",
@@ -113,16 +125,20 @@ const styles = StyleSheet.create({
 	},
 	challengingBehavior: {
 		flexDirection: "row",
-		// padding: 10,
-		// paddingRight: 100,
+		padding: 10,
 		paddingLeft: 80,
+		alignContent: "center",
 		justifyContent: "flex-start",
 	},
-	difficultyButton: {},
+	difficultyButton: {
+		margin: 0,
+		padding: 0,
+	},
 	difficultyParagraph: {
 		width: 300,
-		padding: 10,
+		padding: 0,
 		paddingLeft: 40,
+		fontWeight: "600",
 	},
 	icon: {
 		padding: 10,

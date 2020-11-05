@@ -1,6 +1,7 @@
 import React from "react";
 import { StyleSheet, View, Image, Text } from "react-native";
 import { Appbar } from "react-native-paper";
+import CustomColors from "../../styles/Colors";
 
 // TEST TEXT
 import * as TESTTEXT from "./TestText";
@@ -17,10 +18,10 @@ export default function AppHeader(props) {
 				style={styles.logo}
 			/>
 			<View style={styles.skillTextContainer}>
-				<Text style={styles.headline}>Brushing Teeth</Text>
-				<Text style={styles.subHeadline}>
+				<Text style={styles.headline}>{props.name}</Text>
+				{/* <Text style={styles.subHeadline}>
 					{TESTTEXT.subHeadlineTestText.teeth}
-				</Text>
+				</Text> */}
 			</View>
 		</View>
 	);
@@ -28,22 +29,23 @@ export default function AppHeader(props) {
 
 const styles = StyleSheet.create({
 	container: {
-		width: "100%",
+		margin: 20,
 		display: "flex",
 		flexDirection: "row",
 		justifyContent: "flex-start",
 		color: "#000",
 		padding: 10,
-		paddingLeft: 80,
 		borderBottomWidth: 3,
-		borderBottomColor: "#aaa",
+		borderBottomColor: CustomColors.uva.orange,
 	},
 	logo: {
 		width: 100,
 		height: 100,
+		marginBottom: 10,
 	},
 	skillTextContainer: {
 		flexDirection: "column",
+		justifyContent: "flex-end",
 		padding: 10,
 		paddingLeft: 30,
 	},
