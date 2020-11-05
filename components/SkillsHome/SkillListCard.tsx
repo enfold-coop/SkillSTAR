@@ -73,12 +73,11 @@ const styles = StyleSheet.create({
 	container: {
 		flex: 1,
 		flexDirection: "column",
-		borderWidth: 1,
-		borderColor: CustomColors.uva.orange,
 		margin: 5,
 	},
 	skillName: {
 		padding: 10,
+		paddingLeft: 20,
 		fontSize: 20,
 		fontWeight: "800",
 	},

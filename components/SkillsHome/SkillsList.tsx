@@ -10,27 +10,27 @@ type SkillsListProps = {
 
 const SkillsList: FC<SkillsListProps> = (props) => {
 	return (
-		<View>
-			<View style={styles.container}>
-				<Text style={styles.title}></Text>
-				<FlatList
-					contentContainerStyle={{
-						flexGrow: 1,
-						justifyContent: "center",
-					}}
-					data={props.data}
-					keyExtractor={(item) => item.name}
-					renderItem={(item) => <SkillListCard dataItem={item} />}
-				/>
-			</View>
+		<View style={styles.container}>
+			<Text style={styles.title}></Text>
+			<FlatList
+				contentContainerStyle={{
+					flexGrow: 1,
+					justifyContent: "center",
+					paddingBottom: 30,
+				}}
+				data={props.data}
+				keyExtractor={(item) => item.name}
+				renderItem={(item) => <SkillListCard dataItem={item} />}
+			/>
 		</View>
 	);
 };
 
 const styles = StyleSheet.create({
 	container: {
-		margin: 20,
-		marginTop: 0,
+		flex: 1,
+		marginLeft: 10,
+		marginRight: 10,
 	},
 	title: {
 		fontSize: 20,

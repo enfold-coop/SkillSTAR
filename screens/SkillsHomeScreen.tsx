@@ -9,8 +9,6 @@ export default function SkillsHomeScreen({
 	navigation,
 	route,
 }: Props<"SkillsHomeScreen">) {
-	console.log(DUMMY_SKILLS_ARR);
-
 	return (
 		<View style={styles.container}>
 			<AppHeader name={"Skills Home"} />
@@ -29,7 +27,5 @@ const styles = StyleSheet.create({
 	},
 	separator: {
 		marginVertical: 30,
-		// height: 1,
-		// width: "80%",
 	},
 });

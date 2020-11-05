@@ -2,6 +2,7 @@ import React, { FC } from "react";
 import { StyleSheet, View, Text, Image } from "react-native";
 import { Card } from "react-native-paper";
 import { RootNavProps } from "../../navigation/root_types";
+import CustomColors from "../../styles/Colors";
 import { MasteryIcons } from "../../styles/MasteryIcons";
 
 type Props = {
@@ -36,7 +37,7 @@ const styles = StyleSheet.create({
 	container: {
 		padding: 10,
 		borderWidth: 1,
-		borderColor: "#fff",
+		borderColor: "#ddd",
 		borderRadius: 5,
 	},
 	icon: {
