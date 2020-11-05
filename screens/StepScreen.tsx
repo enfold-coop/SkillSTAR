@@ -8,6 +8,8 @@ import { AntDesign } from "@expo/vector-icons";
 import { Video } from "expo-av";
 import CustomColors from "../styles/Colors";
 
+import { DUMMY_SKILLS_ARR } from "../data/DUMMYDATA";
+
 type Props = {
 	route: RootNavProps<"StepScreen">;
 	navigation: RootNavProps<"StepScreen">;
@@ -16,6 +18,11 @@ type Props = {
 const dummy_data = {
 	stepNum: 1,
 	stepDirection: "I get my toothbrush.",
+};
+
+// Convert progress to "0.1 - 1.0" value
+const progressBarCalculation = (arr: Array, currStep: number): number => {
+	return currStep / arr.length;
 };
 
 const StepScreen: FC<Props> = (props) => {
@@ -29,11 +36,14 @@ const StepScreen: FC<Props> = (props) => {
 				<View style={styles.progressContainer}>
 					<ProgressBar
 						style={styles.progressBar}
-						progress={0.5}
+						progress={progressBarCalculation(
+							DUMMY_SKILLS_ARR[0].subItems,
+							3
+						)}
 						color={CustomColors.uva.blue}
 					/>
 					<Text style={styles.progressText}>
-						Step {"1"} out of {"17"}{" "}
+						Step {3} out of {DUMMY_SKILLS_ARR[0].subItems.length}
 					</Text>
 				</View>
 			</View>
@@ -62,7 +72,7 @@ const StepScreen: FC<Props> = (props) => {
 						volume={1.0}
 						isMuted={false}
 						resizeMode="cover"
-						shouldPlay
+						// shouldPlay
 						isLooping
 						style={styles.video}
 					/>
