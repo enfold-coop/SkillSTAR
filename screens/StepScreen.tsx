@@ -1,5 +1,6 @@
 import React, { FC } from "react";
 import { StyleSheet, Text, View, Image } from "react-native";
+import ChallengingBehavModal from "../components/ChallengingBehavior/ChallengingBehavModal";
 import { Button, ProgressBar, Colors } from "react-native-paper";
 import { useNavigation } from "@react-navigation/native";
 import { TouchableOpacity } from "react-native-gesture-handler";
@@ -31,6 +32,7 @@ const StepScreen: FC<Props> = (props) => {
 	return (
 		<View style={styles.container}>
 			<AppHeader name={DUMMY_SKILLS_ARR[0].name} />
+			<ChallengingBehavModal />
 			<View style={styles.progress}>
 				<Text style={styles.headline}>
 					Step {dummy_data.stepNum}: {dummy_data.stepDirection}
