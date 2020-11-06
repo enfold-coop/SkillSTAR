@@ -29,6 +29,9 @@ const ChallengingBehavModal: FC<Props> = (props) => {
 						<TouchableOpacity style={styles.exitBtn}>
 							<Text>EXIT</Text>
 						</TouchableOpacity>
+						<Text style={styles.headline}>
+							Challenging Behavior Probe
+						</Text>
 						<Text style={styles.textInputPrompt}></Text>
 						<TextInput
 							label="Challenging behavior"
@@ -91,7 +94,10 @@ const styles = StyleSheet.create({
 		borderRadius: 5,
 		padding: 30,
 	},
-
+	headline: {
+		fontSize: 30,
+		alignSelf: "center",
+	},
 	modal: {
 		// height: 600,
 		width: 400,
