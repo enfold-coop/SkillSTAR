@@ -10,8 +10,7 @@ type Props = {
 };
 
 const ChainsHomeScreen: FC<Props> = (props) => {
-	console.log(props);
-
+	// console.log(props);
 	const { skill } = props.route.params;
 
 	return (
