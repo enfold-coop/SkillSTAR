@@ -17,6 +17,7 @@ import {
 	PrepareMaterialsScreen,
 	StepScreen,
 } from "../screens/index";
+import CustomColors from "../styles/Colors";
 
 import { RootStackParamList } from "./root_types";
 
@@ -27,12 +28,28 @@ export default function Navigation({
 }) {
 	return (
 		<NavigationContainer
-			theme={colorScheme === "dark" ? DarkTheme : DefaultTheme}
+		// theme={colorScheme === "dark" ? DarkTheme : DefaultTheme}
 		>
 			<RootNavigator />
 		</NavigationContainer>
 	);
 }
+
+const headerStyles = {
+	backgroundColor: CustomColors.uva.blue,
+};
+
+const options = {
+	headerStyle: {
+		backgroundColor: CustomColors.uva.blue,
+	},
+	headerTintColor: CustomColors.uva.orange,
+	headerTitleStyle: {
+		fontWeight: "bold",
+		// headerTitle: "#fff",
+		color: "#fff",
+	},
+};
 
 const Stack = createStackNavigator<RootStackParamList>();
 
@@ -42,28 +59,36 @@ function RootNavigator() {
 			initialRouteName="LandingScreen"
 			screenOptions={{ headerShown: true }}
 		>
-			<Stack.Screen name="LandingScreen" component={LandingScreen} />
 			<Stack.Screen
-				name="BackgroundSurveyScreen"
-				component={BackgroundSurveyScreen}
+				options={options}
+				name="LandingScreen"
+				component={LandingScreen}
 			/>
 			<Stack.Screen
+				options={options}
 				name="BaselineAssessmentScreen"
 				component={BaselineAssessmentScreen}
 			/>
 			<Stack.Screen
+				options={options}
 				name="SkillsHomeScreen"
 				component={SkillsHomeScreen}
 			/>
 			<Stack.Screen
+				options={options}
 				name="ChainsHomeScreen"
 				component={ChainsHomeScreen}
 			/>
 			<Stack.Screen
+				options={options}
 				name="PrepareMaterialsScreen"
 				component={PrepareMaterialsScreen}
 			/>
-			<Stack.Screen name="StepScreen" component={StepScreen} />
+			<Stack.Screen
+				options={options}
+				name="StepScreen"
+				component={StepScreen}
+			/>
 		</Stack.Navigator>
 	);
 }

@@ -1,5 +1,6 @@
 import React, { FC, Fragment, useContext, useEffect } from "react";
 import { View, Text, StyleSheet, FlatList } from "react-native";
+import AppHeader from "../components/Header/AppHeader";
 import { RootNavProps } from "../navigation/root_types";
 import { ScorecardListItem } from "../components/Chain/index";
 
@@ -9,13 +10,15 @@ type Props = {
 };
 
 const ChainsHomeScreen: FC<Props> = (props) => {
+	console.log(props);
+
 	const { skill } = props.route.params;
 
 	return (
 		<View style={styles.container}>
+			<AppHeader name={skill.name} />
 			{skill.name && (
 				<View>
-					<Text>{skill.name}</Text>
 					<Text style={styles.title}>Scorecard</Text>
 					<FlatList
 						style={styles.list}
@@ -32,11 +35,12 @@ const ChainsHomeScreen: FC<Props> = (props) => {
 const styles = StyleSheet.create({
 	container: {
 		justifyContent: "center",
+		alignContent: "flex-end",
 	},
 	title: {
-		fontSize: 20,
+		fontSize: 26,
 		fontWeight: "bold",
-		padding: 20,
+		paddingLeft: 20,
 	},
 	separator: {
 		marginVertical: 30,

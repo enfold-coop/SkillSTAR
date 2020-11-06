@@ -1,6 +1,7 @@
-import React, { FC, Fragment } from "react";
+import React, { FC } from "react";
 import { StyleSheet, Text, View, Image } from "react-native";
 import { Button, ProgressBar, Colors } from "react-native-paper";
+import { useNavigation } from "@react-navigation/native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { RootNavProps } from "../navigation/root_types";
 import AppHeader from "../components/Header/AppHeader";
@@ -26,9 +27,10 @@ const progressBarCalculation = (arr: Array, currStep: number): number => {
 };
 
 const StepScreen: FC<Props> = (props) => {
+	const navigation = useNavigation();
 	return (
 		<View style={styles.container}>
-			<AppHeader name={"Step Screen"} />
+			<AppHeader name={DUMMY_SKILLS_ARR[0].name} />
 			<View style={styles.progress}>
 				<Text style={styles.headline}>
 					Step {dummy_data.stepNum}: {dummy_data.stepDirection}
@@ -38,12 +40,12 @@ const StepScreen: FC<Props> = (props) => {
 						style={styles.progressBar}
 						progress={progressBarCalculation(
 							DUMMY_SKILLS_ARR[0].subItems,
-							3
+							1
 						)}
 						color={CustomColors.uva.blue}
 					/>
 					<Text style={styles.progressText}>
-						Step {3} out of {DUMMY_SKILLS_ARR[0].subItems.length}
+						Step {1} out of {DUMMY_SKILLS_ARR[0].subItems.length}
 					</Text>
 				</View>
 			</View>
@@ -83,7 +85,8 @@ const StepScreen: FC<Props> = (props) => {
 						color={CustomColors.uva.blue}
 						mode="outlined"
 						onPress={() => {
-							console.log("nav to next step");
+							console.log("exit");
+							navigation.navigate("SkillsHomeScreen");
 						}}
 					>
 						Exit
@@ -119,6 +122,9 @@ const StepScreen: FC<Props> = (props) => {
 					mode="contained"
 					onPress={() => {
 						console.log("nav to next step");
+						/**
+						 *
+						 */
 					}}
 				>
 					NEXT

@@ -21,7 +21,7 @@ export function MasteryIcons(mastery: number) {
 		<View style={styles.icon}>
 			<FontAwesome5
 				name={iconName}
-				size={40}
+				size={30}
 				style={styles.icon}
 				color={color}
 			/>
