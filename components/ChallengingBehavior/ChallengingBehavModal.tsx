@@ -24,48 +24,50 @@ const ChallengingBehavModal: FC<Props> = (props) => {
 			}}
 		>
 			<View style={styles.container}>
-				<View style={styles.textInputContainer}>
-					<TouchableOpacity style={styles.exitBtn}>
-						<Text>EXIT</Text>
-					</TouchableOpacity>
-					<Text style={styles.textInputPrompt}></Text>
-					<TextInput
-						label="Challenging behavior"
-						mode="outlined"
-						style={styles.textInput}
-					></TextInput>
-				</View>
-				<View style={styles.questionContainer}>
-					<Text style={styles.questionText}>
-						Some Text for a question?
-						{props.stepComplete}
-					</Text>
-					<View style={styles.buttonContainer}>
-						<Button style={styles.button} mode="contained">
-							Yes
-						</Button>
-						<Button style={styles.button} mode="contained">
-							No
-						</Button>
+				<View style={styles.subContainer}>
+					<View style={styles.textInputContainer}>
+						<TouchableOpacity style={styles.exitBtn}>
+							<Text>EXIT</Text>
+						</TouchableOpacity>
+						<Text style={styles.textInputPrompt}></Text>
+						<TextInput
+							label="Challenging behavior"
+							mode="outlined"
+							style={styles.textInput}
+						></TextInput>
 					</View>
-				</View>
-				<View style={styles.questionContainer}>
-					<Text style={styles.questionText}>
-						Some Text for a question?
-						{props.stepComplete}
-					</Text>
-					<View style={styles.buttonContainer}>
-						<Button style={styles.button} mode="contained">
-							Yes
-						</Button>
-						<Button style={styles.button} mode="contained">
-							No
-						</Button>
+					<View style={styles.questionContainer}>
+						<Text style={styles.questionText}>
+							Some Text for a question?
+							{props.stepComplete}
+						</Text>
+						<View style={styles.buttonContainer}>
+							<Button style={styles.button} mode="contained">
+								Yes
+							</Button>
+							<Button style={styles.button} mode="contained">
+								No
+							</Button>
+						</View>
 					</View>
+					<View style={styles.questionContainer}>
+						<Text style={styles.questionText}>
+							Some Text for a question?
+							{props.stepComplete}
+						</Text>
+						<View style={styles.buttonContainer}>
+							<Button style={styles.button} mode="contained">
+								Yes
+							</Button>
+							<Button style={styles.button} mode="contained">
+								No
+							</Button>
+						</View>
+					</View>
+					<Button style={styles.submitBtn} mode="contained">
+						Enter
+					</Button>
 				</View>
-				<Button style={styles.submitBtn} mode="contained">
-					Enter
-				</Button>
 			</View>
 		</Modal>
 	);
@@ -75,16 +77,21 @@ export default ChallengingBehavModal;
 
 const styles = StyleSheet.create({
 	container: {
-		margin: 50,
-		marginTop: 200,
+		flex: 1,
+		width: "100%",
 		alignSelf: "center",
 		flexDirection: "column",
 		justifyContent: "space-between",
 		alignItems: "center",
+		backgroundColor: "rgba(0,0,0,0.5)",
+	},
+	subContainer: {
+		marginTop: 200,
 		backgroundColor: "#fff",
 		borderRadius: 5,
 		padding: 30,
 	},
+
 	modal: {
 		// height: 600,
 		width: 400,
