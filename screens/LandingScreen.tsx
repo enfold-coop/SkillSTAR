@@ -1,17 +1,47 @@
 import * as React from "react";
-import { StyleSheet, Button } from "react-native";
+import { StyleSheet, Image, View, Text } from "react-native";
+import { Button, TextInput } from "react-native-paper";
 import { RootNavProps as Props } from "../navigation/root_types";
+import CustomColors from "../styles/Colors";
 
-import { Text, View } from "../components/Themed";
+// import { Text, View } from "../components/Themed";
 
 export default function LandingScreen({ navigation }: Props<"LandingScreen">) {
 	return (
 		<View style={styles.container}>
-			<Text style={styles.title}>LANDING</Text>
-			<Button
-				title="To Skills Home"
-				onPress={() => navigation.navigate("SkillsHomeScreen")}
+			<Image
+				style={{ alignSelf: "center" }}
+				source={require("./logo.png")}
 			/>
+			{/* <View> */}
+			{/**
+			 * New user?
+			 * -- Yes: background survey,
+			 * -- No: baseline assesssment
+			 */}
+			<TextInput
+				label="Email"
+				mode="outlined"
+				value={""}
+				style={styles.input}
+				onChangeText={(text) => setText(text)}
+			/>
+			<TextInput
+				label="Password"
+				mode="outlined"
+				value={""}
+				style={styles.input}
+				onChangeText={(text) => setText(text)}
+			/>
+			{/* </View> */}
+			<Button
+				style={styles.button}
+				color={CustomColors.uva.blue}
+				mode="contained"
+				onPress={() => navigation.navigate("SkillsHomeScreen")}
+			>
+				Log In
+			</Button>
 		</View>
 	);
 }
@@ -19,16 +49,23 @@ export default function LandingScreen({ navigation }: Props<"LandingScreen">) {
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
-		alignItems: "center",
+		flexDirection: "column",
+		alignContent: "center",
 		justifyContent: "center",
 	},
 	title: {
 		fontSize: 20,
 		fontWeight: "bold",
 	},
-	separator: {
-		marginVertical: 30,
-		height: 1,
-		width: "80%",
+	input: {
+		height: 50,
+		width: 200,
+		alignSelf: "center",
+		margin: 10,
+	},
+	button: {
+		margin: 22,
+		width: 122,
+		alignSelf: "center",
 	},
 });

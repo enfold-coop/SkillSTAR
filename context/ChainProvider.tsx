@@ -1,25 +1,38 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import AsyncStorage from "@react-native-community/async-storage";
 
-type Skill = null | {};
+type SubItem = {
+	id: string;
+	title: string;
+	score: number;
+};
+
+type Skill = {
+	name: "";
+	subItems: SubItem[];
+};
 
 type ChainProviderProps = {};
 
-export const ChainContext = React.createContext<{
-	currentSkill: Skill;
-	setChainSkill: (skill: Skill) => void;
-}>({
-	currentSkill: {},
-	setChainSkill: (skill: Skill) => {},
-});
+export const defaultContextValue: ChainProviderProps = {
+	skill: {},
+	setChainSkill: () => null,
+	getChainSkill: () => null,
+};
+
+export const ChainContext = React.createContext<ChainProviderProps>(
+	defaultContextValue
+);
+
+let initialState = {};
 
 export const ChainProvider: React.FC<ChainProviderProps> = ({ children }) => {
-	const [currentSkill, setSkill] = useState<Skill>(null);
+	const [skill, setSkill] = useState<Skill>();
 
 	return (
 		<ChainContext.Provider
 			value={{
-				currentSkill,
+				skill,
 				setChainSkill: (s) => {
 					setSkill(s);
 				},

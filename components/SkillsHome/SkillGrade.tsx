@@ -2,6 +2,7 @@ import React, { FC } from "react";
 import { StyleSheet, View, Text, Image } from "react-native";
 import { Card } from "react-native-paper";
 import { RootNavProps } from "../../navigation/root_types";
+import CustomColors from "../../styles/Colors";
 import { MasteryIcons } from "../../styles/MasteryIcons";
 
 type Props = {
@@ -16,13 +17,16 @@ function createSkillTitleString(data: []): string {
 }
 
 const SkillGrade: FC<Props> = (props) => {
+	// console.log(props);
 	return (
 		<Card style={styles.container}>
 			{MasteryIcons(props.data[0].score)}
 			<View style={styles.subcontainer}>
 				<Text style={styles.skillGrade}>{props.name}: </Text>
 				<View style={styles.skillList}>
-					<Text>{createSkillTitleString(props.data)}</Text>
+					<Text style={styles.stepNames}>
+						{createSkillTitleString(props.data)}
+					</Text>
 				</View>
 			</View>
 		</Card>
@@ -31,14 +35,15 @@ const SkillGrade: FC<Props> = (props) => {
 
 const styles = StyleSheet.create({
 	container: {
-		padding: 5,
+		padding: 10,
 		borderWidth: 1,
-		borderColor: "#fff",
+		borderColor: "#ddd",
 		borderRadius: 5,
 	},
 	icon: {
 		width: 50,
 		height: 50,
+		margin: 5,
 		borderWidth: 0,
 		borderRadius: 3,
 		backgroundColor: "#fff",
@@ -56,6 +61,10 @@ const styles = StyleSheet.create({
 		padding: 2,
 	},
 	skillGrade: {
+		fontWeight: "800",
+	},
+	stepNames: {
+		fontSize: 14,
 		fontWeight: "600",
 	},
 });

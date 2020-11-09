@@ -8,18 +8,6 @@
  * ---- "Needs Support": 2,
  */
 
-// function FetchDummyData(): [] {
-// 	DUMMYARR.forEach((e, i) => {
-// 		let item: DUMMYDATAITEM = {
-// 			id: e.id,
-// 			skill: e.skill,
-// 			mastered: e.mastered,
-// 		};
-// 		DUMMYARR[i] = item;
-// 	});
-// 	return DUMMYARR;
-// }
-
 export const DUMMY_SKILLS_ARR = [
 	{
 		name: "Brushing Teeth",
@@ -41,6 +29,17 @@ export const DUMMY_SKILLS_ARR = [
 			{ id: "D", title: "Floss Inside", score: 1 },
 			{ id: "E", title: "Toss the Floss", score: 2 },
 			{ id: "F", title: "Eat Candy", score: 1 },
+		],
+	},
+	{
+		name: "Brushing Hair",
+		subItems: [
+			{ id: "A", title: "Prepare Materials", score: 2 },
+			{ id: "B", title: "Brush Top", score: 1 },
+			{ id: "C", title: "Brush Outside", score: 1 },
+			{ id: "D", title: "Brush Inside", score: 0 },
+			{ id: "E", title: "Toss the Brush", score: 0 },
+			{ id: "F", title: "Eat More Candy", score: 2 },
 		],
 	},
 ];

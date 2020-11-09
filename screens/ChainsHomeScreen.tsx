@@ -1,31 +1,31 @@
-import React, { FC, useContext, Fragment } from "react";
+import React, { FC, Fragment, useContext, useEffect } from "react";
 import { View, Text, StyleSheet, FlatList } from "react-native";
-import { ChainNavProps } from "../navigation/ChainNavigation/types";
+import AppHeader from "../components/Header/AppHeader";
+import { RootNavProps } from "../navigation/root_types";
 import { ScorecardListItem } from "../components/Chain/index";
-import { ChainContext } from "../context/ChainProvider";
 
 type Props = {
-	route: ChainNavProps<"ChainsHomeScreen">;
-	navigation: ChainNavProps<"ChainsHomeScreen">;
+	route: RootNavProps<"ChainsHomeScreen">;
+	navigation: RootNavProps<"ChainsHomeScreen">;
 };
 
 const ChainsHomeScreen: FC<Props> = (props) => {
-	const { currentSkill } = useContext(ChainContext);
-	// const { name } = skill.item;
+	// console.log(props);
+	const { skill } = props.route.params;
 
 	return (
 		<View style={styles.container}>
-			{currentSkill.item.name && (
-				<Fragment>
-					{/* <Text>{skill.item.name}</Text> */}
-					<Text>{currentSkill.item.name}</Text>
+			<AppHeader name={skill.name} />
+			{skill.name && (
+				<View>
 					<Text style={styles.title}>Scorecard</Text>
 					<FlatList
-						data={currentSkill.item.subItems}
+						style={styles.list}
+						data={skill.subItems}
 						keyExtractor={(item) => item.id}
 						renderItem={(item) => <ScorecardListItem item={item} />}
 					/>
-				</Fragment>
+				</View>
 			)}
 		</View>
 	);
@@ -33,19 +33,20 @@ const ChainsHomeScreen: FC<Props> = (props) => {
 
 const styles = StyleSheet.create({
 	container: {
-		width: "100%",
-		flex: 1,
-		justifyContent: "flex-start",
-		alignItems: "center",
+		justifyContent: "center",
+		alignContent: "flex-end",
 	},
 	title: {
-		fontSize: 20,
+		fontSize: 26,
 		fontWeight: "bold",
+		paddingLeft: 20,
 	},
 	separator: {
 		marginVertical: 30,
 		height: 1,
-		width: "80%",
+	},
+	list: {
+		margin: 20,
 	},
 });
 

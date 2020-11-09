@@ -1,8 +1,9 @@
 import React, { FC, useContext } from "react";
 import { StyleSheet, View, Text } from "react-native";
-import { useNavigation, useRoute } from "@react-navigation/native";
+import { useNavigation } from "@react-navigation/native";
 import { Button, Card } from "react-native-paper";
-import { ChainNavProps } from "../../navigation/ChainNavigation/types";
+import { RootNavProps } from "../../navigation/root_types";
+import CustomColors from "../../styles/Colors";
 import { ChainContext } from "../../context/ChainProvider";
 // import {
 // 	ChainStack,
@@ -19,8 +20,8 @@ type Item = {
 
 type ListCardProps = {
 	dataItem: Item;
-	route: ChainNavProps<"ChainsHomeScreen">;
-	navigation: ChainNavProps<"ChainsHomeScreen">;
+	route: RootNavProps<"ChainsHomeScreen">;
+	navigation: RootNavProps<"ChainsHomeScreen">;
 };
 
 function filterSkillByScore(arr: [], score: number) {
@@ -35,28 +36,17 @@ function filterSkillByScore(arr: [], score: number) {
 
 const SkillListCard: FC<ListCardProps> = (props) => {
 	const navigation = useNavigation();
-	const { setChainSkill } = useContext(ChainContext);
 
-	const { subItems } = props.dataItem.item;
+	const { subItems, name } = props.dataItem.item;
+	console.log(props.dataItem);
 
 	let mastered = filterSkillByScore(subItems, 1);
 	let inProgress = filterSkillByScore(subItems, 0);
 	let needsSupport = filterSkillByScore(subItems, 2);
 
-	// passing selected skill to ChainProvider (CHAIN's state management)
-	// calls Navigate(), to navigate to ChainsHomeScreen
-	function SetContextSkill() {
-		setChainSkill(props.dataItem);
-		Navigate();
-	}
-
-	function Navigate() {
-		navigation.navigate("ChainsHomeScreen");
-	}
-
 	return (
 		<Card style={styles.container}>
-			<Text style={styles.title}>Skill ScoreCard x</Text>
+			<Text style={styles.skillName}>{name}</Text>
 			<View style={styles.subcontainer}>
 				<SkillGrade data={mastered} name={"Mastered"} />
 				<SkillGrade data={inProgress} name={"In Progress"} />
@@ -65,8 +55,13 @@ const SkillListCard: FC<ListCardProps> = (props) => {
 
 			<Button
 				style={styles.button}
+				color={CustomColors.uva.blue}
 				mode="contained"
-				onPress={() => SetContextSkill()}
+				onPress={() =>
+					navigation.navigate("ChainsHomeScreen", {
+						skill: props.dataItem.item,
+					})
+				}
 			>
 				Go to Skill
 			</Button>
@@ -78,15 +73,13 @@ const styles = StyleSheet.create({
 	container: {
 		flex: 1,
 		flexDirection: "column",
-		borderWidth: 5,
-		borderColor: "#dcff16",
-		// padding: 10,
-		margin: 10,
+		margin: 5,
 	},
-	title: {
+	skillName: {
 		padding: 10,
+		paddingLeft: 20,
 		fontSize: 20,
-		fontWeight: "bold",
+		fontWeight: "800",
 	},
 	subcontainer: {
 		margin: 20,

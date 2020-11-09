@@ -5,37 +5,39 @@ import { RootNavProps } from "../../navigation/root_types";
 
 type SkillsListProps = {
 	data?: {}[];
-	root: RootNavProps<"SkillsHomeScreen">;
+	route: RootNavProps<"SkillsHomeScreen">;
+	navigation: RootNavProps<"SkillsHomeScreen">;
 };
 
 const SkillsList: FC<SkillsListProps> = (props) => {
 	return (
-		<View>
-			<View style={styles.container}>
-				<Text style={styles.title}>SKILLS LIST Placeholder header</Text>
+		<View style={styles.container}>
+			<Text style={styles.title}></Text>
+			{props.data && (
 				<FlatList
 					contentContainerStyle={{
 						flexGrow: 1,
 						justifyContent: "center",
+						paddingBottom: 30,
 					}}
 					data={props.data}
 					keyExtractor={(item) => item.name}
 					renderItem={(item) => <SkillListCard dataItem={item} />}
 				/>
-			</View>
+			)}
 		</View>
 	);
 };
 
 const styles = StyleSheet.create({
 	container: {
-		backgroundColor: "#bbb",
-		margin: 20,
+		flex: 1,
+		marginLeft: 10,
+		marginRight: 10,
 	},
 	title: {
 		fontSize: 20,
 		fontWeight: "900",
-		color: "#b72ef2",
 	},
 });
 
