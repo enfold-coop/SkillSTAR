@@ -5,7 +5,8 @@ import { RootNavProps } from "../../navigation/root_types";
 
 type SkillsListProps = {
 	data?: {}[];
-	root: RootNavProps<"SkillsHomeScreen">;
+	route: RootNavProps<"SkillsHomeScreen">;
+	navigation: RootNavProps<"SkillsHomeScreen">;
 };
 
 const SkillsList: FC<SkillsListProps> = (props) => {

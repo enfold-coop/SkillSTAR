@@ -29,10 +29,23 @@ const progressBarCalculation = (arr: Array, currStep: number): number => {
 
 const StepScreen: FC<Props> = (props) => {
 	const navigation = useNavigation();
+	const [visible, setVisible] = React.useState(false);
+
+	const toggleModal = () => {
+		setVisible(!visible);
+	};
+
+	const handleModalClose = () => {
+		toggleModal();
+	};
+
 	return (
 		<View style={styles.container}>
 			<AppHeader name={DUMMY_SKILLS_ARR[0].name} />
-			<ChallengingBehavModal />
+			<ChallengingBehavModal
+				visible={visible}
+				toggleModal={handleModalClose}
+			/>
 			<View style={styles.progress}>
 				<Text style={styles.headline}>
 					Step {dummy_data.stepNum}: {dummy_data.stepDirection}
@@ -53,7 +66,11 @@ const StepScreen: FC<Props> = (props) => {
 			</View>
 			<View style={styles.subContainer}>
 				<View style={styles.challengingBehavior}>
-					<TouchableOpacity>
+					<TouchableOpacity
+						onPress={() => {
+							toggleModal();
+						}}
+					>
 						<AntDesign
 							name="exclamationcircleo"
 							size={50}

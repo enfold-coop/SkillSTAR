@@ -1,10 +1,8 @@
+import { NavigationContainer } from "@react-navigation/native";
 import {
-	NavigationContainer,
-	CompositeNavigationProp,
-	DefaultTheme,
-	DarkTheme,
-} from "@react-navigation/native";
-import { createStackNavigator } from "@react-navigation/stack";
+	createStackNavigator,
+	StackNavigationOptions,
+} from "@react-navigation/stack";
 import * as React from "react";
 import { ColorSchemeName } from "react-native";
 
@@ -13,7 +11,6 @@ import {
 	ChainsHomeScreen,
 	SkillsHomeScreen,
 	BaselineAssessmentScreen,
-	BackgroundSurveyScreen,
 	PrepareMaterialsScreen,
 	StepScreen,
 } from "../screens/index";
@@ -27,26 +24,19 @@ export default function Navigation({
 	colorScheme: ColorSchemeName;
 }) {
 	return (
-		<NavigationContainer
-		// theme={colorScheme === "dark" ? DarkTheme : DefaultTheme}
-		>
+		<NavigationContainer>
 			<RootNavigator />
 		</NavigationContainer>
 	);
 }
 
-const headerStyles = {
-	backgroundColor: CustomColors.uva.blue,
-};
-
-const options = {
+const screenOpts: StackNavigationOptions = {
 	headerStyle: {
 		backgroundColor: CustomColors.uva.blue,
 	},
 	headerTintColor: CustomColors.uva.orange,
 	headerTitleStyle: {
 		fontWeight: "bold",
-		// headerTitle: "#fff",
 		color: "#fff",
 	},
 };
@@ -60,32 +50,32 @@ function RootNavigator() {
 			screenOptions={{ headerShown: true }}
 		>
 			<Stack.Screen
-				options={options}
+				options={screenOpts}
 				name="LandingScreen"
 				component={LandingScreen}
 			/>
 			<Stack.Screen
-				options={options}
+				options={screenOpts}
 				name="BaselineAssessmentScreen"
 				component={BaselineAssessmentScreen}
 			/>
 			<Stack.Screen
-				options={options}
+				options={screenOpts}
 				name="SkillsHomeScreen"
 				component={SkillsHomeScreen}
 			/>
 			<Stack.Screen
-				options={options}
+				options={screenOpts}
 				name="ChainsHomeScreen"
 				component={ChainsHomeScreen}
 			/>
 			<Stack.Screen
-				options={options}
+				options={screenOpts}
 				name="PrepareMaterialsScreen"
 				component={PrepareMaterialsScreen}
 			/>
 			<Stack.Screen
-				options={options}
+				options={screenOpts}
 				name="StepScreen"
 				component={StepScreen}
 			/>

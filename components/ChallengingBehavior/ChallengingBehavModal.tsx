@@ -7,26 +7,30 @@ import CustomColors from "../../styles/Colors";
 type Props = {
 	stepComplete: string;
 	challengeOccur: string;
+	visible: boolean;
+	toggleModal: () => void;
 };
 
 const ChallengingBehavModal: FC<Props> = (props) => {
-	const [visible, setVisible] = React.useState(true);
-	const showModal = () => setVisible(true);
-	const hideModal = () => setVisible(false);
+	let { visible } = props;
 	return (
 		<Modal
 			animationType="slide"
 			transparent={true}
-			visible={true}
-			// style={styles.container}
+			visible={visible}
 			onRequestClose={() => {
-				console.log("Closed modal");
+				props.toggleModal();
 			}}
 		>
 			<View style={styles.container}>
 				<View style={styles.subContainer}>
 					<View style={styles.textInputContainer}>
-						<TouchableOpacity style={styles.exitBtn}>
+						<TouchableOpacity
+							style={styles.exitBtn}
+							onPress={() => {
+								props.toggleModal();
+							}}
+						>
 							<Text>EXIT</Text>
 						</TouchableOpacity>
 						<Text style={styles.headline}>
@@ -67,7 +71,13 @@ const ChallengingBehavModal: FC<Props> = (props) => {
 							</Button>
 						</View>
 					</View>
-					<Button style={styles.submitBtn} mode="contained">
+					<Button
+						style={styles.submitBtn}
+						mode="contained"
+						onPress={() => {
+							console.log("submit");
+						}}
+					>
 						Enter
 					</Button>
 				</View>
