@@ -1,12 +1,19 @@
-import * as React from "react";
+import React, { useEffect, useState } from "react";
 import { StyleSheet, Image, View, Text } from "react-native";
 import { Button, TextInput } from "react-native-paper";
 import { RootNavProps as Props } from "../navigation/root_types";
 import CustomColors from "../styles/Colors";
 
-// import { Text, View } from "../components/Themed";
+let url = "../data/chain_steps.json";
+let dataJSON = require(url);
 
 export default function LandingScreen({ navigation }: Props<"LandingScreen">) {
+	let [data, setData] = useState(dataJSON);
+
+	useEffect(() => {
+		setData(data);
+		// console.log(data.chainSteps);
+	});
 	return (
 		<View style={styles.container}>
 			<Image
@@ -38,7 +45,9 @@ export default function LandingScreen({ navigation }: Props<"LandingScreen">) {
 				style={styles.button}
 				color={CustomColors.uva.blue}
 				mode="contained"
-				onPress={() => navigation.navigate("SkillsHomeScreen")}
+				onPress={() =>
+					navigation.navigate("ChainsHomeScreen", { steps: data })
+				}
 			>
 				Log In
 			</Button>

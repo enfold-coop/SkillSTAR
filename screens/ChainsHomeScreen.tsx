@@ -1,5 +1,6 @@
 import React, { FC, Fragment, useContext, useEffect } from "react";
 import { View, Text, StyleSheet, FlatList } from "react-native";
+import { useNavigation } from "@react-navigation/native";
 import AppHeader from "../components/Header/AppHeader";
 import { RootNavProps } from "../navigation/root_types";
 import { ScorecardListItem } from "../components/Chain/index";
@@ -10,19 +11,21 @@ type Props = {
 };
 
 const ChainsHomeScreen: FC<Props> = (props) => {
-	// console.log(props);
-	const { skill } = props.route.params;
+	const navigation = useNavigation();
+
+	const { chainSteps } = props.route.params.steps;
+	console.log(chainSteps);
 
 	return (
 		<View style={styles.container}>
-			<AppHeader name={skill.name} />
-			{skill.name && (
+			{/* <AppHeader name={skill.name} /> */}
+			{chainSteps && (
 				<View>
 					<Text style={styles.title}>Scorecard</Text>
 					<FlatList
 						style={styles.list}
-						data={skill.subItems}
-						keyExtractor={(item) => item.id}
+						data={chainSteps}
+						keyExtractor={(item) => item.step}
 						renderItem={(item) => <ScorecardListItem item={item} />}
 					/>
 				</View>

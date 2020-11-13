@@ -12,7 +12,7 @@ type SkillsListProps = {
 const SkillsList: FC<SkillsListProps> = (props) => {
 	return (
 		<View style={styles.container}>
-			<Text style={styles.title}></Text>
+			{/* <Text style={styles.title}></Text>
 			{props.data && (
 				<FlatList
 					contentContainerStyle={{
@@ -24,7 +24,7 @@ const SkillsList: FC<SkillsListProps> = (props) => {
 					keyExtractor={(item) => item.name}
 					renderItem={(item) => <SkillListCard dataItem={item} />}
 				/>
-			)}
+			)} */}
 		</View>
 	);
 };

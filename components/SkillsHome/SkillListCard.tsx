@@ -46,7 +46,7 @@ const SkillListCard: FC<ListCardProps> = (props) => {
 
 	return (
 		<Card style={styles.container}>
-			<Text style={styles.skillName}>{name}</Text>
+			{/* <Text style={styles.skillName}>{name}</Text>
 			<View style={styles.subcontainer}>
 				<SkillGrade data={mastered} name={"Mastered"} />
 				<SkillGrade data={inProgress} name={"In Progress"} />
@@ -64,7 +64,7 @@ const SkillListCard: FC<ListCardProps> = (props) => {
 				}
 			>
 				Go to Skill
-			</Button>
+			</Button> */}
 		</Card>
 	);
 };

@@ -59,11 +59,11 @@ function RootNavigator() {
 				name="BaselineAssessmentScreen"
 				component={BaselineAssessmentScreen}
 			/>
-			<Stack.Screen
+			{/* <Stack.Screen
 				options={screenOpts}
 				name="SkillsHomeScreen"
 				component={SkillsHomeScreen}
-			/>
+			/> */}
 			<Stack.Screen
 				options={screenOpts}
 				name="ChainsHomeScreen"

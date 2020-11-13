@@ -4,7 +4,6 @@ import { RouteProp } from "@react-navigation/native";
 export type RootStackParamList = {
 	LandingScreen: undefined;
 	BaselineAssessmentScreen: undefined;
-	SkillsHomeScreen: undefined;
 	ChainsHomeScreen: undefined;
 	PrepareMaterialsScreen: undefined;
 	StepScreen: undefined;
