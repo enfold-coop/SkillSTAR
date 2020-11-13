@@ -14,11 +14,6 @@ type Props = {
 };
 
 function Touchable(step: {}) {
-	/**
-	 * - determine level of mastery,
-	 * - get corresponding icon for mastery level
-	 * - return element with icon and info
-	 */
 	return (
 		<TouchableOpacity
 			style={styles.touchable}
@@ -40,7 +35,6 @@ function Touchable(step: {}) {
 }
 
 const ScorecardListItem: FC<Props> = (props) => {
-	// console.log(props);
 	const navigation = useNavigation();
 
 	return <Card style={styles.container}>{Touchable(props.item)}</Card>;

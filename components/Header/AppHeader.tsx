@@ -14,14 +14,11 @@ export default function AppHeader(props) {
 	return (
 		<View style={styles.container}>
 			<Image
-				source={require("../../assets/images/icon.png")}
+				source={require("../../assets/images/logo.png")}
 				style={styles.logo}
 			/>
 			<View style={styles.skillTextContainer}>
 				<Text style={styles.headline}>{props.name}</Text>
-				{/* <Text style={styles.subHeadline}>
-					{TESTTEXT.subHeadlineTestText.teeth}
-				</Text> */}
 			</View>
 		</View>
 	);

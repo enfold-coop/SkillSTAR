@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, FlatList } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { RootNavProps } from "../navigation/root_types";
 import { ScorecardListItem } from "../components/Chain/index";
+import AppHeader from "../components/Header/AppHeader";
 
 type Props = {
 	route: RootNavProps<"ChainsHomeScreen">;
@@ -15,6 +16,7 @@ const ChainsHomeScreen: FC<Props> = (props) => {
 
 	return (
 		<View style={styles.container}>
+			<AppHeader name="Chains Home" />
 			{chainSteps && (
 				<View>
 					<Text style={styles.title}>Scorecard</Text>

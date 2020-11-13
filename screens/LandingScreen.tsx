@@ -18,9 +18,8 @@ export default function LandingScreen({ navigation }: Props<"LandingScreen">) {
 		<View style={styles.container}>
 			<Image
 				style={{ alignSelf: "center" }}
-				source={require("./logo.png")}
+				source={require("../assets/images/logo.png")}
 			/>
-			{/* <View> */}
 			{/**
 			 * New user?
 			 * -- Yes: background survey,
