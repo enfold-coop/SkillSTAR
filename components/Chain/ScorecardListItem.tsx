@@ -13,34 +13,37 @@ type Props = {
 	video: string;
 };
 
+function Touchable(step: {}) {
+	/**
+	 * - determine level of mastery,
+	 * - get corresponding icon for mastery level
+	 * - return element with icon and info
+	 */
+	return (
+		<TouchableOpacity
+			style={styles.touchable}
+			onPress={() => {
+				navigation.navigate("PrepareMaterialsScreen");
+			}}
+		>
+			<Text style={styles.id}>{step.item.step}. </Text>
+			<Text style={styles.skill}>{step.item.instruction}</Text>
+			<Text style={styles.score}>{MasteryIcons(step.item.mastery)}</Text>
+			<AntDesign
+				name="caretright"
+				size={24}
+				color="black"
+				style={styles.nextIcon}
+			/>
+		</TouchableOpacity>
+	);
+}
+
 const ScorecardListItem: FC<Props> = (props) => {
 	// console.log(props);
 	const navigation = useNavigation();
-	console.log("props");
 
-	// console.log(props);
-	// const { id, title, score } = props;
-
-	return (
-		<Card style={styles.container}>
-			<TouchableOpacity
-				style={styles.touchable}
-				onPress={() => {
-					navigation.navigate("PrepareMaterialsScreen");
-				}}
-			>
-				{/* <Text style={styles.id}>Skill {id}: </Text>
-				<Text style={styles.skill}>{title}</Text>
-				<Text style={styles.score}>{MasteryIcons(score)}</Text> */}
-				<AntDesign
-					name="caretright"
-					size={24}
-					color="black"
-					style={styles.nextIcon}
-				/>
-			</TouchableOpacity>
-		</Card>
-	);
+	return <Card style={styles.container}>{Touchable(props.item)}</Card>;
 };
 
 const styles = StyleSheet.create({
@@ -57,12 +60,12 @@ const styles = StyleSheet.create({
 	},
 	id: {
 		padding: 5,
-		fontSize: 20,
+		fontSize: 14,
 		fontWeight: "bold",
 	},
 	skill: {
 		padding: 5,
-		fontSize: 20,
+		fontSize: 14,
 		fontWeight: "bold",
 	},
 	score: {

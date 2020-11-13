@@ -1,7 +1,6 @@
 import React, { FC, Fragment, useContext, useEffect } from "react";
 import { View, Text, StyleSheet, FlatList } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import AppHeader from "../components/Header/AppHeader";
 import { RootNavProps } from "../navigation/root_types";
 import { ScorecardListItem } from "../components/Chain/index";
 
@@ -12,13 +11,10 @@ type Props = {
 
 const ChainsHomeScreen: FC<Props> = (props) => {
 	const navigation = useNavigation();
-
 	const { chainSteps } = props.route.params.steps;
-	console.log(chainSteps);
 
 	return (
 		<View style={styles.container}>
-			{/* <AppHeader name={skill.name} /> */}
 			{chainSteps && (
 				<View>
 					<Text style={styles.title}>Scorecard</Text>
@@ -49,6 +45,7 @@ const styles = StyleSheet.create({
 		height: 1,
 	},
 	list: {
+		height: "60%",
 		margin: 20,
 	},
 });
