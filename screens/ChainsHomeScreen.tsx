@@ -34,11 +34,11 @@ const ChainsHomeScreen: FC<Props> = (props) => {
 
 const styles = StyleSheet.create({
 	container: {
-		justifyContent: "center",
+		justifyContent: "flex-start",
 		alignContent: "flex-end",
 	},
 	title: {
-		fontSize: 26,
+		fontSize: 20,
 		fontWeight: "bold",
 		paddingLeft: 20,
 	},

@@ -32,6 +32,7 @@ const styles = StyleSheet.create({
 		justifyContent: "flex-start",
 		color: "#000",
 		padding: 10,
+		paddingTop: 0,
 		borderBottomWidth: 3,
 		borderBottomColor: CustomColors.uva.orange,
 	},
@@ -43,7 +44,7 @@ const styles = StyleSheet.create({
 	skillTextContainer: {
 		flexDirection: "column",
 		justifyContent: "flex-end",
-		padding: 10,
+		padding: 0,
 		paddingLeft: 30,
 	},
 	headline: {
