@@ -13,31 +13,32 @@ type Props = {
 	video: string;
 };
 
-function Touchable(step: {}) {
-	return (
-		<TouchableOpacity
-			style={styles.touchable}
-			onPress={() => {
-				navigation.navigate("PrepareMaterialsScreen");
-			}}
-		>
-			<Text style={styles.id}>{step.item.step}. </Text>
-			<Text style={styles.skill}>{step.item.instruction}</Text>
-			<Text style={styles.score}>{MasteryIcons(step.item.mastery)}</Text>
-			<AntDesign
-				name="caretright"
-				size={24}
-				color="black"
-				style={styles.nextIcon}
-			/>
-		</TouchableOpacity>
-	);
-}
-
-const ScorecardListItem: FC<Props> = (props) => {
+const ScorecardListItem: FC<Props> = ({ item }: props) => {
 	const navigation = useNavigation();
+	console.log(item);
 
-	return <Card style={styles.container}>{Touchable(props.item)}</Card>;
+	return (
+		<Card style={styles.container}>
+			<TouchableOpacity
+				style={styles.touchable}
+				onPress={() => {
+					navigation.navigate("PrepareMaterialsScreen");
+				}}
+			>
+				<Text style={styles.id}>{item.item.step}. </Text>
+				<Text style={styles.skill}>{item.item.instruction}</Text>
+				<Text style={styles.score}>
+					{MasteryIcons(item.item.mastery)}
+				</Text>
+				<AntDesign
+					name="caretright"
+					size={24}
+					color="black"
+					style={styles.nextIcon}
+				/>
+			</TouchableOpacity>
+		</Card>
+	);
 };
 
 const styles = StyleSheet.create({
