@@ -1,9 +1,10 @@
 import React, { FC } from "react";
 import { StyleSheet, Text, View, Image } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import { Button } from "react-native-paper";
+import { Button, Card } from "react-native-paper";
 import { RootNavProps } from "../navigation/root_types";
 import CustomColors from "../styles/Colors";
+import { PREP_MATS } from "../data/prep_materials";
 
 type Props = {
 	route: RootNavProps<"PrepareMaterialsScreen">;
@@ -11,32 +12,31 @@ type Props = {
 };
 
 const PrepareMaterialsScreen: FC<Props> = (props) => {
-	// console.log(props);
 	const navigation = useNavigation();
-	/**
-	 *
-	 * Need to add
-	 */
+
 	return (
 		<View style={styles.container}>
-			{/* <Text style={styles.headline}>
+			<Text style={styles.headline}>
 				Have you gathered your materials?
-			</Text> */}
-			{/* 
-                - have a list of required materials and their images
-                -loop thru list, rendering View elem for each
-            */}
-			{/* <View style={styles.listContainer}>
-				<Image
-					style={styles.icon}
-					source={require("../assets/images/materials/toothbrush.png")}
-				/>
-				<Text style={styles.itemName}>ToothBrush</Text>
-			</View> */}
-			<Image
-				style={styles.underConstruction}
-				source={require("../assets/images/errata/under_construction.png")}
-			/>
+			</Text>
+			{PREP_MATS.map((e) => {
+				return (
+					<Card style={{ margin: 2 }}>
+						<View style={styles.listItem}>
+							<Card.Content>
+								<Image
+									style={styles.itemIcon}
+									source={require("../assets/images/materials/toothbrush.png")}
+								/>
+							</Card.Content>
+							<Card.Title
+								title={e.title}
+								style={styles.itemTitle}
+							/>
+						</View>
+					</Card>
+				);
+			})}
 			<Button
 				mode="contained"
 				color={CustomColors.uva.blue}
@@ -53,25 +53,30 @@ const PrepareMaterialsScreen: FC<Props> = (props) => {
 
 const styles = StyleSheet.create({
 	container: {
+		flex: 1,
 		padding: 10,
-		flexDirection: "column",
-		justifyContent: "space-around",
+		paddingTop: 30,
 		alignContent: "center",
+		justifyContent: "center",
 	},
-	headline: {},
-	listContainer: {},
-	underConstruction: {
-		alignSelf: "center",
-		padding: 100,
-		paddingTop: 200,
-		height: 600,
-		width: 500,
+	headline: {
+		fontSize: 20,
 	},
-	icon: {
-		width: 100,
-		height: 100,
+	listItem: {
+		margin: 10,
+		padding: 10,
+		flexDirection: "row",
+		justifyContent: "flex-start",
+		alignContent: "space-around",
 	},
-	itemName: {},
+	itemIcon: {
+		width: 80,
+		height: 80,
+	},
+	itemTitle: {
+		width: 200,
+		padding: 10,
+	},
 	nextBtn: {
 		margin: 20,
 		width: 122,
