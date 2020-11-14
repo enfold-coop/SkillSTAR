@@ -15,7 +15,6 @@ type Props = {
 
 const ScorecardListItem: FC<Props> = ({ item }: props) => {
 	const navigation = useNavigation();
-	console.log(item);
 
 	return (
 		<Card style={styles.container}>
