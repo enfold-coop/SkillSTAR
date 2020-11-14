@@ -9,7 +9,7 @@ type Props = {
 	attemps: {}[];
 	instruction: string;
 	mastered: number;
-	step: number;
+	step: string;
 	video: string;
 };
 
