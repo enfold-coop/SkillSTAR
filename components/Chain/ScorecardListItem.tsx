@@ -6,7 +6,7 @@ import { MasteryIcons } from "../../styles/MasteryIcons";
 import { AntDesign } from "@expo/vector-icons";
 
 type Props = {
-	attemps: {}[];
+	attempts: {}[];
 	instruction: string;
 	mastered: number;
 	step: number;
