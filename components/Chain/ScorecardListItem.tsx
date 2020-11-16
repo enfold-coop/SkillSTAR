@@ -9,11 +9,11 @@ type Props = {
 	attemps: {}[];
 	instruction: string;
 	mastered: number;
-	step: string;
+	step: number;
 	video: string;
 };
 
-const ScorecardListItem: FC<Props> = ({ item }: props) => {
+const ScorecardListItem: FC<Props> = ({ ...props }) => {
 	const navigation = useNavigation();
 
 	return (
@@ -24,10 +24,10 @@ const ScorecardListItem: FC<Props> = ({ item }: props) => {
 					navigation.navigate("PrepareMaterialsScreen");
 				}}
 			>
-				<Text style={styles.id}>{item.item.step}. </Text>
-				<Text style={styles.skill}>{item.item.instruction}</Text>
+				<Text style={styles.id}>{props.item.item.step}. </Text>
+				<Text style={styles.skill}>{props.item.item.instruction}</Text>
 				<Text style={styles.score}>
-					{MasteryIcons(item.item.mastery)}
+					{MasteryIcons(props.item.item.mastery)}
 				</Text>
 				<AntDesign
 					name="caretright"

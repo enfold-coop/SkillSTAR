@@ -21,6 +21,7 @@ Intensity 	Prompt Type
 /**
  * Dummy-data created 11/10/2020
  */
+
 export const PREP_MATS = [
 	{ id: 0, title: "Tooth brush", img: "../" },
 	{ id: 1, title: "Tooth paste", img: "../" },

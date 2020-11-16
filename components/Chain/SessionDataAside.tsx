@@ -5,6 +5,7 @@ import CustomColors from "../../styles/Colors";
 
 type Props = {
 	historicalData: {};
+	name: string;
 };
 
 const SessionDataAside: FC<Props> = ({ name }) => {
@@ -54,9 +55,7 @@ const SessionDataAside: FC<Props> = ({ name }) => {
 
 const styles = StyleSheet.create({
 	container: {
-		// flex: 1,
 		width: 300,
-		// height: 400,
 		margin: 10,
 		marginLeft: 0,
 		padding: 0,
@@ -68,7 +67,6 @@ const styles = StyleSheet.create({
 		fontSize: 32,
 	},
 	subContainer: {
-		// width: 180,
 		flexDirection: "row",
 	},
 	sessionNum: {
@@ -98,22 +96,16 @@ const styles = StyleSheet.create({
 		paddingLeft: 10,
 	},
 	moreDetailsBtn: {
-		// width: 180,
 		padding: 1,
-		// alignSelf: "center",
-		// textAlign: "center",
 		margin: 10,
-		// marginBottom: 10,
 	},
 	graphIconContainer: {
 		flexDirection: "column",
 		justifyContent: "center",
 		alignContent: "center",
 		height: 200,
-		// margin: 10,
 	},
 	graphIcon: {
-		// height: 140,
 		padding: 5,
 	},
 });
