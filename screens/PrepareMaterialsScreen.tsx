@@ -82,6 +82,7 @@ const styles = StyleSheet.create({
 		flex: 1,
 		padding: 20,
 		paddingTop: 30,
+		flexDirection: "row",
 		alignContent: "flex-start",
 		justifyContent: "flex-start",
 	},
@@ -103,7 +104,6 @@ const styles = StyleSheet.create({
 		marginRight: 130,
 	},
 	itemTitle: {
-		// width: 200,
 		fontSize: 34,
 		lineHeight: 34,
 		alignSelf: "center",

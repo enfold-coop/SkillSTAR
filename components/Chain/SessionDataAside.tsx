@@ -11,40 +11,42 @@ const SessionDataAside: FC<Props> = ({ name }) => {
 	return (
 		<View style={styles.container}>
 			<Text style={styles.header}>Today's Session</Text>
-			<View style={styles.subContainer}>
-				<Card>
-					<Text style={styles.sessionNum}>Session #: {10}</Text>
-					<Text style={styles.isProbeTrainingSession}></Text>
-					<Text style={styles.focusStep}>
-						Focus Step: {"rinse brush"}
-					</Text>
-					<Text style={styles.promptLevel}>
-						Prompt Level: {"Partial Phys."}
-					</Text>
-					<Text style={styles.masteryLevel}>
-						Mastery: {"Focus Step"}
-					</Text>
-					<TouchableOpacity>
-						<Button
-							color={CustomColors.uva.orange}
-							labelStyle={{ fontSize: 12, fontWeight: "800" }}
-							contentStyle={styles.moreDetailsBtn}
-							style={styles.moreDetailsBtn}
-							mode="outlined"
-						>
-							See more details
-						</Button>
-					</TouchableOpacity>
-				</Card>
-			</View>
-			<View style={styles.graphIconContainer}>
-				<Card>
-					<Image
-						resizeMode="contain"
-						style={styles.graphIcon}
-						source={require("../../assets/images/graph.png")}
-					/>
-				</Card>
+			<View>
+				<View>
+					<Card>
+						<Text style={styles.sessionNum}>Session #: {10}</Text>
+						<Text style={styles.isProbeTrainingSession}></Text>
+						<Text style={styles.focusStep}>
+							Focus Step: {"rinse brush"}
+						</Text>
+						<Text style={styles.promptLevel}>
+							Prompt Level: {"Partial Phys."}
+						</Text>
+						<Text style={styles.masteryLevel}>
+							Mastery: {"Focus Step"}
+						</Text>
+						<TouchableOpacity>
+							<Button
+								color={CustomColors.uva.orange}
+								labelStyle={{ fontSize: 12, fontWeight: "800" }}
+								contentStyle={styles.moreDetailsBtn}
+								style={styles.moreDetailsBtn}
+								mode="outlined"
+							>
+								See more details
+							</Button>
+						</TouchableOpacity>
+					</Card>
+				</View>
+				<View style={styles.graphIconContainer}>
+					<Card>
+						<Image
+							resizeMode="contain"
+							style={styles.graphIcon}
+							source={require("../../assets/images/graph.png")}
+						/>
+					</Card>
+				</View>
 			</View>
 		</View>
 	);
@@ -67,6 +69,7 @@ const styles = StyleSheet.create({
 	},
 	subContainer: {
 		// width: 180,
+		flexDirection: "row",
 	},
 	sessionNum: {
 		fontSize: 18,

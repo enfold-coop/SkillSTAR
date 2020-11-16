@@ -57,10 +57,12 @@ const styles = StyleSheet.create({
 		padding: 10,
 	},
 	list: {
-		// width: 500,
+		height: 700,
 		margin: 5,
+		marginBottom: 4,
 		backgroundColor: "#aaa",
 		padding: 5,
+		paddingBottom: 30,
 		borderRadius: 5,
 	},
 });
