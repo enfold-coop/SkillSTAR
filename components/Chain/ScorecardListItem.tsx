@@ -6,15 +6,15 @@ import { MasteryIcons } from "../../styles/MasteryIcons";
 import { AntDesign } from "@expo/vector-icons";
 
 type Props = {
-	id: string;
-	title: string;
-	score: number;
+	attemps: {}[];
+	instruction: string;
+	mastered: number;
+	step: string;
+	video: string;
 };
 
-const ScorecardListItem: FC<Props> = (props) => {
-	// console.log(props);
+const ScorecardListItem: FC<Props> = ({ item }: props) => {
 	const navigation = useNavigation();
-	const { id, title, score } = props.item.item;
 
 	return (
 		<Card style={styles.container}>
@@ -24,9 +24,11 @@ const ScorecardListItem: FC<Props> = (props) => {
 					navigation.navigate("PrepareMaterialsScreen");
 				}}
 			>
-				<Text style={styles.id}>Skill {id}: </Text>
-				<Text style={styles.skill}>{title}</Text>
-				<Text style={styles.score}>{MasteryIcons(score)}</Text>
+				<Text style={styles.id}>{item.item.step}. </Text>
+				<Text style={styles.skill}>{item.item.instruction}</Text>
+				<Text style={styles.score}>
+					{MasteryIcons(item.item.mastery)}
+				</Text>
 				<AntDesign
 					name="caretright"
 					size={24}
@@ -52,12 +54,12 @@ const styles = StyleSheet.create({
 	},
 	id: {
 		padding: 5,
-		fontSize: 20,
+		fontSize: 14,
 		fontWeight: "bold",
 	},
 	skill: {
 		padding: 5,
-		fontSize: 20,
+		fontSize: 14,
 		fontWeight: "bold",
 	},
 	score: {

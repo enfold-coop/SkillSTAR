@@ -14,14 +14,11 @@ export default function AppHeader(props) {
 	return (
 		<View style={styles.container}>
 			<Image
-				source={require("../../assets/images/icon.png")}
+				source={require("../../assets/images/logo.png")}
 				style={styles.logo}
 			/>
 			<View style={styles.skillTextContainer}>
 				<Text style={styles.headline}>{props.name}</Text>
-				{/* <Text style={styles.subHeadline}>
-					{TESTTEXT.subHeadlineTestText.teeth}
-				</Text> */}
 			</View>
 		</View>
 	);
@@ -35,6 +32,7 @@ const styles = StyleSheet.create({
 		justifyContent: "flex-start",
 		color: "#000",
 		padding: 10,
+		paddingTop: 0,
 		borderBottomWidth: 3,
 		borderBottomColor: CustomColors.uva.orange,
 	},
@@ -46,7 +44,7 @@ const styles = StyleSheet.create({
 	skillTextContainer: {
 		flexDirection: "column",
 		justifyContent: "flex-end",
-		padding: 10,
+		padding: 0,
 		paddingLeft: 30,
 	},
 	headline: {

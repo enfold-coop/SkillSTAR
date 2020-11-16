@@ -1,0 +1,24 @@
+step,instruction ,video , promptLevel, behavSeverity
+1,Put toothpaste on your toothbrush,https://drive.google.com/drive/u/0/folders/1pEEH8ecn3sKnjWL7-6jWpaTTuv_0VPaV, 0, 0
+2,Put toothpaste away,https://drive.google.com/drive/u/0/folders/1pEEH8ecn3sKnjWL7-6jWpaTTuv_0VPaV, 0, 0
+3,Rinse toothbrush,https://drive.google.com/drive/u/0/folders/1pEEH8ecn3sKnjWL7-6jWpaTTuv_0VPaV, 0, 0
+4,Brush top surface of bottom teeth on right side.,https://drive.google.com/drive/u/0/folders/1pEEH8ecn3sKnjWL7-6jWpaTTuv_0VPaVV, 0, 0
+5,Brush top surface of bottom teeth on left side. ,https://drive.google.com/drive/u/0/folders/1pEEH8ecn3sKnjWL7-6jWpaTTuv_0VPaV, 0, 0
+6,Brush top surface of top teeth on right side,https://drive.google.com/drive/u/0/folders/1pEEH8ecn3sKnjWL7-6jWpaTTuv_0VPaV, 0, 0
+7,Brush top surface of top teeth on left side,https://drive.google.com/drive/u/0/folders/1pEEH8ecn3sKnjWL7-6jWpaTTuv_0VPaV, 0, 0
+8,Brush outside surface (facing cheek) of bottom teeth on right side,https://drive.google.com/drive/u/0/folders/1pEEH8ecn3sKnjWL7-6jWpaTTuv_0VPaV, 0, 0
+9,Brush outside surface (facing lips) of bottom teeth at the front of your mouth,https://drive.google.com/drive/u/0/folders/1pEEH8ecn3sKnjWL7-6jWpaTTuv_0VPaV, 0, 0
+10,Brush outside surface (facing cheek) of bottom teeth on left side,https://drive.google.com/drive/u/0/folders/1pEEH8ecn3sKnjWL7-6jWpaTTuv_0VPaV, 0, 0
+11,Brush outside surface (facing cheek) of top teeth on right side,https://drive.google.com/drive/u/0/folders/1pEEH8ecn3sKnjWL7-6jWpaTTuv_0VPaV, 0, 0
+12,Brush outside surface (facing lips) of top teeth at the front of your mouth,https://drive.google.com/drive/u/0/folders/1pEEH8ecn3sKnjWL7-6jWpaTTuv_0VPaV, 0, 0
+13,Brush outside surface (facing cheek) of top teeth on left side,https://drive.google.com/drive/u/0/folders/1pEEH8ecn3sKnjWL7-6jWpaTTuv_0VPaV, 0, 0
+14,Brush the inside surface (facing tongue) of bottom teeth on right side.,https://drive.google.com/drive/u/0/folders/1pEEH8ecn3sKnjWL7-6jWpaTTuv_0VPaV, 0, 0
+15,Brush the inside surface (facing tongue) of bottom teeth on left side,https://drive.google.com/drive/u/0/folders/1pEEH8ecn3sKnjWL7-6jWpaTTuv_0VPaV, 0, 0
+16,Brush the inside surface (facing tongue) of top teeth on left side.,https://drive.google.com/drive/u/0/folders/1pEEH8ecn3sKnjWL7-6jWpaTTuv_0VPaV, 0, 0
+17,Brush the inside surface (facing tongue) of top teeth on right side.,https://drive.google.com/drive/u/0/folders/1pEEH8ecn3sKnjWL7-6jWpaTTuv_0VPaV, 0, 0
+18,Spit in the sink,https://drive.google.com/drive/u/0/folders/1pEEH8ecn3sKnjWL7-6jWpaTTuv_0VPaV, 0, 0
+19,Rinse toothbrush and put it away,https://drive.google.com/drive/u/0/folders/1pEEH8ecn3sKnjWL7-6jWpaTTuv_0VPaV, 0, 0
+20,Get your cup and fill with water,https://drive.google.com/drive/u/0/folders/1pEEH8ecn3sKnjWL7-6jWpaTTuv_0VPaV, 0, 0
+21,Rinse mouth and spit in sink,https://drive.google.com/drive/u/0/folders/1pEEH8ecn3sKnjWL7-6jWpaTTuv_0VPaV, 0, 0
+22,Wipe your face with a towel,https://drive.google.com/drive/u/0/folders/1pEEH8ecn3sKnjWL7-6jWpaTTuv_0VPaV, 0, 0
+23,Clean up,https://drive.google.com/drive/u/0/folders/1pEEH8ecn3sKnjWL7-6jWpaTTuv_0VPaV, 0, 0

@@ -1,8 +1,9 @@
 import React, { FC, Fragment, useContext, useEffect } from "react";
 import { View, Text, StyleSheet, FlatList } from "react-native";
-import AppHeader from "../components/Header/AppHeader";
+import { useNavigation } from "@react-navigation/native";
 import { RootNavProps } from "../navigation/root_types";
-import { ScorecardListItem } from "../components/Chain/index";
+import ScorecardListItem from "../components/Chain/ScorecardListItem";
+import AppHeader from "../components/Header/AppHeader";
 
 type Props = {
 	route: RootNavProps<"ChainsHomeScreen">;
@@ -10,19 +11,19 @@ type Props = {
 };
 
 const ChainsHomeScreen: FC<Props> = (props) => {
-	// console.log(props);
-	const { skill } = props.route.params;
+	const navigation = useNavigation();
+	const { chainSteps } = props.route.params.steps;
 
 	return (
 		<View style={styles.container}>
-			<AppHeader name={skill.name} />
-			{skill.name && (
+			<AppHeader name="Chains Home" />
+			{chainSteps && (
 				<View>
 					<Text style={styles.title}>Scorecard</Text>
 					<FlatList
 						style={styles.list}
-						data={skill.subItems}
-						keyExtractor={(item) => item.id}
+						data={chainSteps}
+						keyExtractor={(item) => item.step}
 						renderItem={(item) => <ScorecardListItem item={item} />}
 					/>
 				</View>
@@ -33,11 +34,11 @@ const ChainsHomeScreen: FC<Props> = (props) => {
 
 const styles = StyleSheet.create({
 	container: {
-		justifyContent: "center",
+		justifyContent: "flex-start",
 		alignContent: "flex-end",
 	},
 	title: {
-		fontSize: 26,
+		fontSize: 20,
 		fontWeight: "bold",
 		paddingLeft: 20,
 	},
@@ -46,6 +47,7 @@ const styles = StyleSheet.create({
 		height: 1,
 	},
 	list: {
+		height: "60%",
 		margin: 20,
 	},
 });

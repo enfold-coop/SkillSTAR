@@ -38,7 +38,6 @@ const SkillListCard: FC<ListCardProps> = (props) => {
 	const navigation = useNavigation();
 
 	const { subItems, name } = props.dataItem.item;
-	console.log(props.dataItem);
 
 	let mastered = filterSkillByScore(subItems, 1);
 	let inProgress = filterSkillByScore(subItems, 0);
@@ -46,7 +45,7 @@ const SkillListCard: FC<ListCardProps> = (props) => {
 
 	return (
 		<Card style={styles.container}>
-			<Text style={styles.skillName}>{name}</Text>
+			{/* <Text style={styles.skillName}>{name}</Text>
 			<View style={styles.subcontainer}>
 				<SkillGrade data={mastered} name={"Mastered"} />
 				<SkillGrade data={inProgress} name={"In Progress"} />
@@ -64,7 +63,7 @@ const SkillListCard: FC<ListCardProps> = (props) => {
 				}
 			>
 				Go to Skill
-			</Button>
+			</Button> */}
 		</Card>
 	);
 };

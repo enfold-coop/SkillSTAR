@@ -7,7 +7,6 @@ import useCachedResources from "./hooks/useCachedResources";
 import useColorScheme from "./hooks/useColorScheme";
 import Navigation from "./navigation";
 
-import { AuthProvider } from "./context/AuthProvider";
 import { ChainProvider } from "./context/ChainProvider";
 
 /**

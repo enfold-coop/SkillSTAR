@@ -1,0 +1,4 @@
+interface Session {
+	date?: {};
+	data: {}[];
+}
