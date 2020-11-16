@@ -1,4 +1,4 @@
-import React, { FC } from "react";
+import React, { FC, useState } from "react";
 import { StyleSheet, Text, View, Image } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { Button, Card } from "react-native-paper";
@@ -13,30 +13,37 @@ type Props = {
 
 const PrepareMaterialsScreen: FC<Props> = (props) => {
 	const navigation = useNavigation();
+	const [data, setData] = useState(PREP_MATS);
 
 	return (
 		<View style={styles.container}>
 			<Text style={styles.headline}>
 				Have you gathered your materials?
 			</Text>
-			{PREP_MATS.map((e) => {
-				return (
-					<Card style={{ margin: 2 }}>
-						<View style={styles.listItem}>
-							<Card.Content>
-								<Image
-									style={styles.itemIcon}
-									source={require("../assets/images/materials/toothbrush.png")}
-								/>
-							</Card.Content>
-							<Card.Title
-								title={e.title}
-								style={styles.itemTitle}
-							/>
-						</View>
-					</Card>
-				);
-			})}
+			<View style={styles.listItem}>
+				<Image
+					style={styles.itemIcon}
+					source={require("../assets/images/prep_materials_icon/toothbrush.png")}
+				/>
+			</View>
+			<View style={styles.listItem}>
+				<Image
+					style={styles.itemIcon}
+					source={require("../assets/images/prep_materials_icon/toothpaste.png")}
+				/>
+			</View>
+			<View style={styles.listItem}>
+				<Image
+					style={styles.itemIcon}
+					source={require("../assets/images/prep_materials_icon/towel.png")}
+				/>
+			</View>
+			<View style={styles.listItem}>
+				<Image
+					style={styles.itemIcon}
+					source={require("../assets/images/prep_materials_icon/toothbrush.png")}
+				/>
+			</View>
 			<Button
 				mode="contained"
 				color={CustomColors.uva.blue}
