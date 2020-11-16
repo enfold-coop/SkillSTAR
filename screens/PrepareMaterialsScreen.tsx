@@ -1,10 +1,9 @@
 import React, { FC, useState } from "react";
-import { StyleSheet, Text, View, Image } from "react-native";
+import { StyleSheet, View, Image } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { Button, Card, Title } from "react-native-paper";
 import { RootNavProps } from "../navigation/root_types";
 import CustomColors from "../styles/Colors";
-import { PREP_MATS } from "../data/prep_materials";
 import AppHeader from "../components/Header/AppHeader";
 
 type Props = {
@@ -14,7 +13,6 @@ type Props = {
 
 const PrepareMaterialsScreen: FC<Props> = (props) => {
 	const navigation = useNavigation();
-	const [data, setData] = useState(PREP_MATS);
 
 	return (
 		<View style={styles.container}>
