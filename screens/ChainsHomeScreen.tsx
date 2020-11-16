@@ -4,6 +4,7 @@ import { useNavigation } from "@react-navigation/native";
 import { RootNavProps } from "../navigation/root_types";
 import ScorecardListItem from "../components/Chain/ScorecardListItem";
 import AppHeader from "../components/Header/AppHeader";
+import SessionDataAside from "../components/Chain/SessionDataAside";
 
 type Props = {
 	route: RootNavProps<"ChainsHomeScreen">;
@@ -17,9 +18,11 @@ const ChainsHomeScreen: FC<Props> = (props) => {
 	return (
 		<View style={styles.container}>
 			<AppHeader name="Chains Home" />
+			<Text style={styles.title}>Scorecard</Text>
 			{chainSteps && (
 				<View style={styles.listContainer}>
-					<Text style={styles.title}>Scorecard</Text>
+					<SessionDataAside name={"Moxy"} />
+
 					<FlatList
 						style={styles.list}
 						data={chainSteps}
@@ -35,7 +38,7 @@ const ChainsHomeScreen: FC<Props> = (props) => {
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
-		padding: 20,
+		padding: 10,
 		paddingTop: 30,
 		justifyContent: "flex-start",
 		alignContent: "flex-end",
@@ -50,13 +53,14 @@ const styles = StyleSheet.create({
 		height: 1,
 	},
 	listContainer: {
+		flexDirection: "row",
 		padding: 10,
 	},
 	list: {
-		height: "60%",
-		margin: 10,
+		// width: 500,
+		margin: 5,
 		backgroundColor: "#aaa",
-		padding: 10,
+		padding: 5,
 		borderRadius: 5,
 	},
 });

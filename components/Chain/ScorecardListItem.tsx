@@ -58,6 +58,8 @@ const styles = StyleSheet.create({
 		fontWeight: "bold",
 	},
 	skill: {
+		width: 300,
+		flexWrap: "wrap",
 		padding: 5,
 		fontSize: 14,
 		fontWeight: "bold",
