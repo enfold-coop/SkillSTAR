@@ -18,7 +18,7 @@ const ChainsHomeScreen: FC<Props> = (props) => {
 		<View style={styles.container}>
 			<AppHeader name="Chains Home" />
 			{chainSteps && (
-				<View>
+				<View style={styles.listContainer}>
 					<Text style={styles.title}>Scorecard</Text>
 					<FlatList
 						style={styles.list}
@@ -34,6 +34,9 @@ const ChainsHomeScreen: FC<Props> = (props) => {
 
 const styles = StyleSheet.create({
 	container: {
+		flex: 1,
+		padding: 20,
+		paddingTop: 30,
 		justifyContent: "flex-start",
 		alignContent: "flex-end",
 	},
@@ -46,9 +49,15 @@ const styles = StyleSheet.create({
 		marginVertical: 30,
 		height: 1,
 	},
+	listContainer: {
+		padding: 10,
+	},
 	list: {
 		height: "60%",
-		margin: 20,
+		margin: 10,
+		backgroundColor: "#aaa",
+		padding: 10,
+		borderRadius: 5,
 	},
 });
 

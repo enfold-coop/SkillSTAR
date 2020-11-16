@@ -1,16 +1,12 @@
-import React from "react";
+import React, { FC } from "react";
 import { StyleSheet, View, Image, Text } from "react-native";
-import { Appbar } from "react-native-paper";
 import CustomColors from "../../styles/Colors";
 
-// TEST TEXT
-import * as TESTTEXT from "./TestText";
-
-const logo = {
-	uri: "../../assets/images/icon.png",
+type Props = {
+	name: string;
 };
 
-export default function AppHeader(props) {
+const AppHeader: FC<Props> = (props) => {
 	return (
 		<View style={styles.container}>
 			<Image
@@ -22,17 +18,18 @@ export default function AppHeader(props) {
 			</View>
 		</View>
 	);
-}
+};
 
 const styles = StyleSheet.create({
 	container: {
-		margin: 20,
+		margin: 10,
+		marginTop: 0,
 		display: "flex",
 		flexDirection: "row",
 		justifyContent: "flex-start",
 		color: "#000",
-		padding: 10,
 		paddingTop: 0,
+		paddingBottom: 10,
 		borderBottomWidth: 3,
 		borderBottomColor: CustomColors.uva.orange,
 	},
@@ -57,3 +54,5 @@ const styles = StyleSheet.create({
 		fontSize: 20,
 	},
 });
+
+export default AppHeader;
