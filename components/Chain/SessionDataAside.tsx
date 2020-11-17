@@ -66,6 +66,7 @@ const styles = StyleSheet.create({
 		borderRadius: 10,
 		fontSize: 22,
 	},
+
 	subContainer: {
 		marginTop: 0,
 		flexDirection: "row",

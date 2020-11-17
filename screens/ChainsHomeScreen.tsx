@@ -1,5 +1,11 @@
 import React, { FC, Fragment, useContext, useEffect } from "react";
-import { View, Text, StyleSheet, FlatList } from "react-native";
+import {
+	View,
+	Text,
+	StyleSheet,
+	FlatList,
+	ImageBackground,
+} from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { RootNavProps } from "../navigation/root_types";
 import ScorecardListItem from "../components/Chain/ScorecardListItem";
@@ -17,20 +23,30 @@ const ChainsHomeScreen: FC<Props> = (props) => {
 
 	return (
 		<View style={styles.container}>
-			<AppHeader name="Chains Home" />
-			<Text style={styles.title}>Today's Session</Text>
-			{chainSteps && (
-				<View style={styles.listContainer}>
-					<SessionDataAside name={"Moxy"} />
-
-					<FlatList
-						style={styles.list}
-						data={chainSteps}
-						keyExtractor={(item) => item.step}
-						renderItem={(item) => <ScorecardListItem item={item} />}
-					/>
+			<ImageBackground
+				source={require("../assets/images/skillstar-bkrd-muted-color.png")}
+				style={styles.bkgrdImage}
+			>
+				<AppHeader name="Chains Home" />
+				<View style={styles.titleWrap}>
+					<Text style={styles.title}>Today's Session</Text>
+					<Text style={styles.title}>Steps</Text>
 				</View>
-			)}
+				{chainSteps && (
+					<View style={styles.listContainer}>
+						<SessionDataAside name={"Moxy"} />
+
+						<FlatList
+							style={styles.list}
+							data={chainSteps}
+							keyExtractor={(item) => item.step}
+							renderItem={(item) => (
+								<ScorecardListItem item={item} />
+							)}
+						/>
+					</View>
+				)}
+			</ImageBackground>
 		</View>
 	);
 };
@@ -38,10 +54,21 @@ const ChainsHomeScreen: FC<Props> = (props) => {
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
-		padding: 10,
-		paddingTop: 30,
+		// padding: 10,
+		// paddingTop: 30,
+		margin: 0,
 		justifyContent: "flex-start",
 		alignContent: "flex-end",
+	},
+	bkgrdImage: {
+		flex: 1,
+		padding: 0,
+		resizeMode: "cover",
+	},
+	titleWrap: {
+		flexDirection: "row",
+		justifyContent: "space-between",
+		paddingRight: 50,
 	},
 	title: {
 		fontSize: 30,
@@ -56,12 +83,12 @@ const styles = StyleSheet.create({
 	listContainer: {
 		flexDirection: "row",
 		padding: 10,
+		// backgroundColor: "#aaa",
 	},
 	list: {
 		height: 700,
 		margin: 5,
 		marginBottom: 4,
-		backgroundColor: "#aaa",
 		padding: 5,
 		paddingBottom: 30,
 		borderRadius: 5,

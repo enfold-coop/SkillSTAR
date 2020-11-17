@@ -22,8 +22,8 @@ const AppHeader: FC<Props> = (props) => {
 
 const styles = StyleSheet.create({
 	container: {
-		margin: 10,
-		marginTop: 0,
+		margin: 15,
+		// marginTop: 10,
 		display: "flex",
 		flexDirection: "row",
 		justifyContent: "flex-start",
