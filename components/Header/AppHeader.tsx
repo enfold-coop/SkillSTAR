@@ -34,13 +34,13 @@ const styles = StyleSheet.create({
 		borderBottomColor: CustomColors.uva.orange,
 	},
 	logo: {
-		width: 100,
-		height: 100,
+		width: 50,
+		height: 50,
 		marginBottom: 10,
 	},
 	skillTextContainer: {
 		flexDirection: "column",
-		justifyContent: "flex-end",
+		justifyContent: "center",
 		padding: 0,
 		paddingLeft: 30,
 	},

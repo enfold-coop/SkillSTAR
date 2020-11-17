@@ -18,7 +18,7 @@ const ChainsHomeScreen: FC<Props> = (props) => {
 	return (
 		<View style={styles.container}>
 			<AppHeader name="Chains Home" />
-			<Text style={styles.title}>Scorecard</Text>
+			<Text style={styles.title}>Today's Session</Text>
 			{chainSteps && (
 				<View style={styles.listContainer}>
 					<SessionDataAside name={"Moxy"} />
@@ -44,9 +44,10 @@ const styles = StyleSheet.create({
 		alignContent: "flex-end",
 	},
 	title: {
-		fontSize: 20,
+		fontSize: 30,
 		fontWeight: "bold",
 		paddingLeft: 20,
+		alignSelf: "flex-start",
 	},
 	separator: {
 		marginVertical: 30,

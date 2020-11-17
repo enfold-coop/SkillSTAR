@@ -11,7 +11,6 @@ type Props = {
 const SessionDataAside: FC<Props> = ({ name }) => {
 	return (
 		<View style={styles.container}>
-			<Text style={styles.header}>Today's Session</Text>
 			<View>
 				<View>
 					<Card>
@@ -40,13 +39,18 @@ const SessionDataAside: FC<Props> = ({ name }) => {
 					</Card>
 				</View>
 				<View style={styles.graphIconContainer}>
-					<Card>
-						<Image
-							resizeMode="contain"
-							style={styles.graphIcon}
-							source={require("../../assets/images/graph.png")}
-						/>
-					</Card>
+					<TouchableOpacity>
+						<Card>
+							<Image
+								resizeMode="contain"
+								style={styles.graphIcon}
+								source={require("../../assets/images/graph.png")}
+							/>
+							<Text style={styles.graphText}>
+								View your progress
+							</Text>
+						</Card>
+					</TouchableOpacity>
 				</View>
 			</View>
 		</View>
@@ -61,36 +65,38 @@ const styles = StyleSheet.create({
 		padding: 0,
 		borderRadius: 10,
 		fontSize: 22,
-		fontWeight: "600",
-	},
-	header: {
-		fontSize: 32,
 	},
 	subContainer: {
+		marginTop: 0,
 		flexDirection: "row",
 	},
 	sessionNum: {
+		fontWeight: "600",
 		fontSize: 18,
 		padding: 5,
 		paddingTop: 15,
 		paddingLeft: 10,
 	},
 	isProbeTrainingSession: {
+		fontWeight: "600",
 		fontSize: 18,
 		padding: 2,
 		paddingLeft: 10,
 	},
 	focusStep: {
+		fontWeight: "600",
 		fontSize: 18,
 		padding: 2,
 		paddingLeft: 10,
 	},
 	promptLevel: {
+		fontWeight: "600",
 		fontSize: 18,
 		padding: 2,
 		paddingLeft: 10,
 	},
 	masteryLevel: {
+		fontWeight: "600",
 		fontSize: 18,
 		padding: 2,
 		paddingLeft: 10,
@@ -103,9 +109,17 @@ const styles = StyleSheet.create({
 		flexDirection: "column",
 		justifyContent: "center",
 		alignContent: "center",
-		height: 200,
+		marginTop: 10,
+		padding: 2,
+		// height: 200,
 	},
 	graphIcon: {
+		padding: 5,
+	},
+	graphText: {
+		fontSize: 16,
+		fontWeight: "200",
+		alignSelf: "center",
 		padding: 5,
 	},
 });
