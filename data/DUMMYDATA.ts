@@ -1,9 +1,9 @@
 /**
-Intensity 	Prompt Type 
-1	No Prompt (Independent) 
-2	Shadow Prompt (approximately one inch)  
-3	Partial Physical Prompt (thumb and index finger)
-4	Full Physical Prompt (hand-over-hand)
+Intensity -- Prompt Type 
+1  --	No Prompt (Independent) 
+2	--  Shadow Prompt (approximately one inch)  
+3	--  Partial Physical Prompt (thumb and index finger)
+4	--  Full Physical Prompt (hand-over-hand)
  */
 
 export const PREP_MATS = [
