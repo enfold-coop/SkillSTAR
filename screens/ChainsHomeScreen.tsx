@@ -34,14 +34,14 @@ const ChainsHomeScreen: FC<Props> = (props) => {
 				</View>
 				{chainSteps && (
 					<View style={styles.listContainer}>
-						<SessionDataAside name={"Moxy"} />
+						<SessionDataAside historicalData={{}} name={"Moxy"} />
 
 						<FlatList
 							style={styles.list}
 							data={chainSteps}
 							keyExtractor={(item) => item.step}
 							renderItem={(item) => (
-								<ScorecardListItem item={item} />
+								<ScorecardListItem itemProps={item} />
 							)}
 						/>
 					</View>
@@ -81,12 +81,11 @@ const styles = StyleSheet.create({
 		height: 1,
 	},
 	listContainer: {
+		height: "80%",
 		flexDirection: "row",
-		padding: 10,
-		// backgroundColor: "#aaa",
+		padding: 5,
 	},
 	list: {
-		height: 700,
 		margin: 5,
 		marginBottom: 4,
 		padding: 5,

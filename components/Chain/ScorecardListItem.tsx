@@ -5,16 +5,20 @@ import { Card } from "react-native-paper";
 import { MasteryIcons } from "../../styles/MasteryIcons";
 import { AntDesign } from "@expo/vector-icons";
 
+type ListItem = {};
 type Props = {
-	attempts: {}[];
-	instruction: string;
-	mastered: number;
-	step: number;
-	video: string;
+	itemProps: ListItem;
+	// attempts: {}[];
+	// instruction: string;
+	// mastered: number;
+	// step: number;
+	// video: string;
 };
 
 const ScorecardListItem: FC<Props> = ({ ...props }) => {
 	const navigation = useNavigation();
+	console.log(props);
+	const { step, instruction, mastery } = props.itemProps.item;
 
 	return (
 		<Card style={styles.container}>
@@ -24,11 +28,9 @@ const ScorecardListItem: FC<Props> = ({ ...props }) => {
 					navigation.navigate("PrepareMaterialsScreen");
 				}}
 			>
-				<Text style={styles.id}>{props.item.item.step}. </Text>
-				<Text style={styles.skill}>{props.item.item.instruction}</Text>
-				<Text style={styles.score}>
-					{MasteryIcons(props.item.item.mastery)}
-				</Text>
+				<Text style={styles.id}>{step}. </Text>
+				<Text style={styles.skill}>{instruction}</Text>
+				<Text style={styles.score}>{MasteryIcons(mastery)}</Text>
 				<AntDesign
 					name="caretright"
 					size={24}

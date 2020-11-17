@@ -61,7 +61,7 @@ const styles = StyleSheet.create({
 	container: {
 		width: 300,
 		margin: 10,
-		marginLeft: 0,
+		marginLeft: 15,
 		padding: 0,
 		borderRadius: 10,
 		fontSize: 22,
