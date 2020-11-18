@@ -1,4 +1,42 @@
 {
+    "user": {
+        "sessionAttempts": [{
+                "id": 0,
+                "date": "",
+                "stepNumber": 0,
+                "isFocusStep": false,
+                "masteryLevel": 0,
+                "promptLevel": 1,
+                "challengingBehavior": false,
+                "challBehavDescr": "",
+                "sessionComplete": false
+            },
+            {
+                "id": 0,
+                "date": "",
+                "stepNumber": 1,
+                "isFocusStep": false,
+                "masteryLevel": 0,
+                "promptLevel": 1,
+                "challengingBehavior": false,
+                "challBehavDescr": "",
+                "sessionComplete": false
+            },
+            {
+                "id": 0,
+                "date": "",
+                "stepNumber": 2,
+                "isFocusStep": false,
+                "masteryLevel": 0,
+                "promptLevel": 1,
+                "challengingBehavior": false,
+                "challBehavDescr": "",
+                "sessionComplete": false
+            }
+        ]
+
+
+    },
     "chainSteps": [{
             "step": 1,
             "instruction": "Put toothpaste on your toothbrush",
