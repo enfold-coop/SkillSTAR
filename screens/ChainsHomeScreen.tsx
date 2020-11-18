@@ -24,8 +24,9 @@ const ChainsHomeScreen: FC<Props> = (props) => {
 	return (
 		<View style={styles.container}>
 			<ImageBackground
-				source={require("../assets/images/skillstar-bkrd-muted-color.png")}
-				style={styles.bkgrdImage}
+				source={require("../assets/images/sunrise-burst.jpg")}
+				resizeMode={'cover'}
+				style={styles.bgImage}
 			>
 				<AppHeader name="Chains Home" />
 				<View style={styles.titleWrap}>
@@ -60,10 +61,10 @@ const styles = StyleSheet.create({
 		justifyContent: "flex-start",
 		alignContent: "flex-end",
 	},
-	bkgrdImage: {
+	bgImage: {
 		flex: 1,
 		padding: 0,
-		resizeMode: "cover",
+		resizeMode: 'cover',
 	},
 	titleWrap: {
 		flexDirection: "row",
