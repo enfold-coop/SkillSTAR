@@ -1,6 +1,5 @@
 import React, { FC } from "react";
 import { Text, StyleSheet, TouchableOpacity } from "react-native";
-import { useNavigation } from "@react-navigation/native";
 import { Card } from "react-native-paper";
 import { MasteryIcons } from "../../styles/MasteryIcons";
 import { AntDesign } from "@expo/vector-icons";
@@ -11,7 +10,6 @@ type Props = {
 };
 
 const ScorecardListItem: FC<Props> = ({ ...props }) => {
-	const navigation = useNavigation();
 	const { step, instruction, mastery } = props.itemProps.item;
 
 	return (

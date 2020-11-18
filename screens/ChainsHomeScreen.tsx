@@ -120,7 +120,7 @@ const styles = StyleSheet.create({
 	},
 	startSessionBtn: {
 		flex: 1,
-		// padding: 20,
+		paddingBottom: 20,
 		backgroundColor: "#fff",
 		justifyContent: "center",
 		alignItems: "center",
@@ -128,6 +128,7 @@ const styles = StyleSheet.create({
 	btnText: {
 		textAlign: "center",
 		fontSize: 32,
+		fontWeight: "600",
 	},
 });
 

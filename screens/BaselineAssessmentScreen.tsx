@@ -17,10 +17,10 @@ const BaselineAssessmentScreen: FC<Props> = (props) => {
 			<Button
 				mode="contained"
 				onPress={() => {
-					navigation.navigate("SkillsHomeScreen");
+					navigation.navigate("ChainsHomeScreen");
 				}}
 			>
-				To SkillsHome
+				To the Chain
 			</Button>
 		</View>
 	);
