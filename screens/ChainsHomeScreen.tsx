@@ -24,7 +24,7 @@ const ChainsHomeScreen: FC<Props> = (props) => {
 	return (
 		<View style={styles.container}>
 			<ImageBackground
-				source={require("../assets/images/sunrise-burst.jpg")}
+				source={require("../assets/images/energy-burst-dark.jpg")}
 				resizeMode={'cover'}
 				style={styles.bgImage}
 			>

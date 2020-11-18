@@ -1,6 +1,6 @@
 import "react-native-gesture-handler";
 
-import React from "react";
+import React, {useEffect, useState} from "react";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 
 import useCachedResources from "./hooks/useCachedResources";
@@ -8,6 +8,11 @@ import useColorScheme from "./hooks/useColorScheme";
 import Navigation from "./navigation";
 
 import { ChainProvider } from "./context/ChainProvider";
+import * as Font from 'expo-font';
+
+let customFonts = {
+  'SkillStarIcons': require('./assets/fonts/icons/skillstar_icons.ttf'),
+};
 
 /**
  * Entry for the application.
@@ -15,8 +20,18 @@ import { ChainProvider } from "./context/ChainProvider";
 export default function App() {
 	const isLoadingComplete = useCachedResources();
 	const colorScheme = useColorScheme();
+	const [fontsLoaded, setFontsLoaded] = useState<boolean>(false);
 
-	if (!isLoadingComplete) {
+	const _loadFonts = async () => {
+		await Font.loadAsync(customFonts);
+		setFontsLoaded(true);
+	}
+
+	useEffect(() => {
+		_loadFonts();
+	});
+
+	if (!fontsLoaded || !isLoadingComplete) {
 		return null;
 	} else {
 		return (

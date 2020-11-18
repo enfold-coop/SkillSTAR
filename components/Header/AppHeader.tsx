@@ -32,6 +32,7 @@ const styles = StyleSheet.create({
 		paddingBottom: 10,
 		borderBottomWidth: 3,
 		borderBottomColor: CustomColors.uva.orange,
+		backgroundColor: CustomColors.uva.blue,
 	},
 	logo: {
 		width: 50,

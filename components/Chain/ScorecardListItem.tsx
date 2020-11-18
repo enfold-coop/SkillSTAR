@@ -4,8 +4,13 @@ import { useNavigation } from "@react-navigation/native";
 import { Card } from "react-native-paper";
 import { MasteryIcons } from "../../styles/MasteryIcons";
 import { AntDesign } from "@expo/vector-icons";
+import {MasteryLevel} from '../../types/CHAIN/MasteryLevel';
 
-type ListItem = {};
+interface ListItem {
+	step: string;
+	instruction: string;
+	mastery: MasteryLevel;
+};
 type Props = {
 	itemProps: ListItem;
 	// attempts: {}[];

@@ -1,29 +1,40 @@
+// import {MaterialCommunityIcons} from "@expo/vector-icons";
 import React from "react";
-import { View, StyleSheet } from "react-native";
-import { AntDesign, FontAwesome5 } from "@expo/vector-icons";
+import {StyleSheet, View} from "react-native";
 import CustomColor from "../styles/Colors";
+import {MasteryLevel, MasteryStatus} from '../types/CHAIN/MasteryLevel';
+import {SkillStarIcons} from './Icons';
 
-export function MasteryIcons(mastery: number) {
-	let iconName, color;
-	if (mastery === 0) {
-		iconName = "star";
-		color = CustomColor.uva.mountain;
-	} else if (mastery === 1) {
-		iconName = "grin-stars";
-		color = CustomColor.uva.mountain;
-	} else if (mastery === 2) {
-		iconName = "star-half-alt";
-		color = CustomColor.uva.mountain;
-	} else {
-		iconName = "star-half-alt";
-	}
+export function MasteryIcons(mastery: MasteryLevel = MasteryLevel.NotStarted) {
+	const index = mastery.valueOf();
+	const icons: { [key: number]: MasteryStatus } = {
+		0: {
+			level: MasteryLevel.NotStarted,
+			label: 'Not Started',
+			icon: 'not_started',
+			color: CustomColor.uva.gray,
+		},
+		1: {
+			level: MasteryLevel.NotMastered,
+			label: 'Not Mastered',
+			icon: 'not_mastered',
+			color: CustomColor.uva.mountain,
+		},
+		2: {
+			level: MasteryLevel.Mastered,
+			label: 'Mastered',
+			icon: 'mastered',
+			color: CustomColor.uva.mountain,
+		},
+	};
+
 	return (
 		<View style={styles.icon}>
-			<FontAwesome5
-				name={iconName}
+			<SkillStarIcons
+				name={icons[index].icon}
 				size={30}
 				style={styles.icon}
-				color={color}
+				color={icons[index].color}
 			/>
 		</View>
 	);
