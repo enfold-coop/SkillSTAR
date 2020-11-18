@@ -13,7 +13,7 @@ import {
 	BaselineAssessmentScreen,
 	PrepareMaterialsScreen,
 	StepScreen,
-} from "../screens/index";
+} from "../screens";
 import CustomColors from "../styles/Colors";
 
 import { RootStackParamList } from "./root_types";
