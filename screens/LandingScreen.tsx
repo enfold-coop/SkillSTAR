@@ -4,15 +4,12 @@ import { Button, TextInput } from "react-native-paper";
 import { RootNavProps as Props } from "../navigation/root_types";
 import CustomColors from "../styles/Colors";
 
-let url = "../data/chain_steps.json";
-let dataJSON = require(url);
-
 export default function LandingScreen({ navigation }: Props<"LandingScreen">) {
-	let [data, setData] = useState(dataJSON);
+	let [data, setData] = useState<any>(null);
 
 	useEffect(() => {
-		setData(data);
-		// console.log(data.chainSteps);
+		const dataJSON = require('../data/chain_steps.json');
+		setData(dataJSON);
 	});
 	return (
 		<View style={styles.container}>
