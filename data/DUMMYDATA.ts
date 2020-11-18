@@ -1,26 +1,11 @@
 /**
- * -- DUMMY DATA for SkillsHomeScreen --
- * - Skill name,
- * - skill subitems
- * -- subitems scores:
- * ---- "In-Progress": 0,
- * ---- "Mastered": 1,
- * ---- "Needs Support": 2,
+Intensity -- Prompt Type 
+1  --	No Prompt (Independent) 
+2	--  Shadow Prompt (approximately one inch)  
+3	--  Partial Physical Prompt (thumb and index finger)
+4	--  Full Physical Prompt (hand-over-hand)
  */
 
-/**
- *
- * 
-Intensity 	Prompt Type 
-1	No Prompt (Independent) 
-2	Shadow Prompt (approximately one inch)  
-3	Partial Physical Prompt (thumb and index finger)
-4	Full Physical Prompt (hand-over-hand)
- */
-
-/**
- * Dummy-data created 11/10/2020
- */
 export const PREP_MATS = [
 	{ id: 0, title: "Tooth brush", img: "../" },
 	{ id: 1, title: "Tooth paste", img: "../" },

@@ -7,13 +7,13 @@ export function MasteryIcons(mastery: number) {
 	let iconName, color;
 	if (mastery === 0) {
 		iconName = "star";
-		color = CustomColor.star.magenta;
+		color = CustomColor.uva.mountain;
 	} else if (mastery === 1) {
 		iconName = "grin-stars";
-		color = CustomColor.star.blue;
+		color = CustomColor.uva.mountain;
 	} else if (mastery === 2) {
 		iconName = "star-half-alt";
-		color = CustomColor.uva.orange;
+		color = CustomColor.uva.mountain;
 	} else {
 		iconName = "star-half-alt";
 	}

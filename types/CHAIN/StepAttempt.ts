@@ -1,15 +1,41 @@
-interface Attempt {
-	date?: {};
-	wasPrompted?: boolean;
-	promptLevel?: number;
-	behavOccurred?: boolean;
-	behavSeverity?: number;
+class ChallengingBehavior {
+	didOccur: boolean;
+	severity: number;
+	description: string;
+	constructor() {}
 }
 
-class StepAttempt implements Attempt {
-	date: Date = new Date();
-	wasPrompted: boolean = false;
-	promptLevel: number = 0;
-	behavOccurred: boolean = false;
-	behavSeverity: number = 0;
+class StepAttempt {
+	date: Date;
+	stepId: number;
+	wasPrompted?: boolean;
+	promptLevel?: number;
+	challengingBehavior?: ChallengingBehavior;
+
+	constructor(stepId: number) {
+		this.date = new Date();
+		this.stepId = stepId;
+		this.challengingBehavior = new ChallengingBehavior();
+	}
+
+	setPromptLevel(promptLevel: number) {
+		this.promptLevel = promptLevel;
+	}
+
+	getPromptLevel(): number | undefined {
+		if (this.wasPrompted && this.promptLevel != undefined)
+			return this.promptLevel;
+	}
+
+	setWasPrompted(wasPrompted: boolean) {
+		this.wasPrompted = wasPrompted;
+	}
+
+	getWasPrompted(): boolean | undefined {
+		if (this.wasPrompted != undefined) return this.wasPrompted;
+	}
+
+	setChallengingBehavior(challengingBehavior: ChallengingBehavior) {
+		this.challengingBehavior = challengingBehavior;
+	}
 }
