@@ -1,4 +1,4 @@
 interface Session {
 	date?: {};
-	data: {}[];
+	data: StepAttempt[];
 }

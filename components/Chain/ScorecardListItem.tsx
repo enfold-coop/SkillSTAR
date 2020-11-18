@@ -8,26 +8,15 @@ import { AntDesign } from "@expo/vector-icons";
 type ListItem = {};
 type Props = {
 	itemProps: ListItem;
-	// attempts: {}[];
-	// instruction: string;
-	// mastered: number;
-	// step: number;
-	// video: string;
 };
 
 const ScorecardListItem: FC<Props> = ({ ...props }) => {
 	const navigation = useNavigation();
-	console.log(props);
 	const { step, instruction, mastery } = props.itemProps.item;
 
 	return (
 		<Card style={styles.container}>
-			<TouchableOpacity
-				style={styles.touchable}
-				onPress={() => {
-					navigation.navigate("PrepareMaterialsScreen");
-				}}
-			>
+			<TouchableOpacity style={styles.touchable}>
 				<Text style={styles.id}>{step}. </Text>
 				<Text style={styles.skill}>{instruction}</Text>
 				<Text style={styles.score}>{MasteryIcons(mastery)}</Text>

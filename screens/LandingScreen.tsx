@@ -8,12 +8,9 @@ let url = "../data/chain_steps.json";
 let dataJSON = require(url);
 
 export default function LandingScreen({ navigation }: Props<"LandingScreen">) {
-	let [data, setData] = useState(dataJSON);
+	let [email, setEmail] = useState("");
+	let [password, setPassword] = useState("");
 
-	useEffect(() => {
-		setData(data);
-		// console.log(data.chainSteps);
-	});
 	return (
 		<View style={styles.container}>
 			<Image
@@ -28,25 +25,23 @@ export default function LandingScreen({ navigation }: Props<"LandingScreen">) {
 			<TextInput
 				label="Email"
 				mode="outlined"
-				value={""}
+				value={email}
 				style={styles.input}
-				onChangeText={(text) => setText(text)}
+				onChangeText={(text) => setEmail(text)}
 			/>
 			<TextInput
 				label="Password"
 				mode="outlined"
-				value={""}
+				value={password}
 				style={styles.input}
-				onChangeText={(text) => setText(text)}
+				onChangeText={(text) => setPassword(text)}
 			/>
 			{/* </View> */}
 			<Button
 				style={styles.button}
 				color={CustomColors.uva.blue}
 				mode="contained"
-				onPress={() =>
-					navigation.navigate("ChainsHomeScreen", { steps: data })
-				}
+				onPress={() => navigation.navigate("ChainsHomeScreen")}
 			>
 				Log In
 			</Button>

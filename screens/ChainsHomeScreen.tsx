@@ -1,25 +1,46 @@
-import React, { FC, Fragment, useContext, useEffect } from "react";
+import React, { FC, Fragment, useState, useEffect } from "react";
 import {
 	View,
 	Text,
 	StyleSheet,
 	FlatList,
 	ImageBackground,
+	TouchableOpacity,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
+
+import { Button } from "react-native-paper";
 import { RootNavProps } from "../navigation/root_types";
 import ScorecardListItem from "../components/Chain/ScorecardListItem";
 import AppHeader from "../components/Header/AppHeader";
 import SessionDataAside from "../components/Chain/SessionDataAside";
+
+//
+let url = "../data/chain_steps.json";
 
 type Props = {
 	route: RootNavProps<"ChainsHomeScreen">;
 	navigation: RootNavProps<"ChainsHomeScreen">;
 };
 
+// Chain Home Screen
 const ChainsHomeScreen: FC<Props> = (props) => {
 	const navigation = useNavigation();
-	const { chainSteps } = props.route.params.steps;
+
+	let [chainSteps, setStepList] = useState();
+
+	const apiCall = () => {
+		let { chainSteps } = require(url);
+		setStepList(chainSteps);
+	};
+
+	const navToProbeOrTraining = () => {
+		navigation.navigate("PrepareMaterialsScreen");
+	};
+
+	useEffect(() => {
+		apiCall();
+	});
 
 	return (
 		<View style={styles.container}>
@@ -35,7 +56,6 @@ const ChainsHomeScreen: FC<Props> = (props) => {
 				{chainSteps && (
 					<View style={styles.listContainer}>
 						<SessionDataAside historicalData={{}} name={"Moxy"} />
-
 						<FlatList
 							style={styles.list}
 							data={chainSteps}
@@ -46,6 +66,14 @@ const ChainsHomeScreen: FC<Props> = (props) => {
 						/>
 					</View>
 				)}
+				<TouchableOpacity
+					style={styles.startSessionBtn}
+					onPress={() => {
+						navToProbeOrTraining();
+					}}
+				>
+					<Text style={styles.btnText}>Start the Chain</Text>
+				</TouchableOpacity>
 			</ImageBackground>
 		</View>
 	);
@@ -54,8 +82,6 @@ const ChainsHomeScreen: FC<Props> = (props) => {
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
-		// padding: 10,
-		// paddingTop: 30,
 		margin: 0,
 		justifyContent: "flex-start",
 		alignContent: "flex-end",
@@ -91,6 +117,17 @@ const styles = StyleSheet.create({
 		padding: 5,
 		paddingBottom: 30,
 		borderRadius: 5,
+	},
+	startSessionBtn: {
+		flex: 1,
+		// padding: 20,
+		backgroundColor: "#fff",
+		justifyContent: "center",
+		alignItems: "center",
+	},
+	btnText: {
+		textAlign: "center",
+		fontSize: 32,
 	},
 });
 

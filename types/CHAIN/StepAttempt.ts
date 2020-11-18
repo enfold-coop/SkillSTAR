@@ -1,8 +1,7 @@
-class ChallengingBehavior {
+interface ChallengingBehavior {
 	didOccur: boolean;
 	severity: number;
-	description: string;
-	constructor() {}
+	description?: string;
 }
 
 class StepAttempt {
@@ -15,7 +14,11 @@ class StepAttempt {
 	constructor(stepId: number) {
 		this.date = new Date();
 		this.stepId = stepId;
-		this.challengingBehavior = new ChallengingBehavior();
+		this.challengingBehavior = {
+			didOccur: false,
+			severity: 0,
+			description: "",
+		};
 	}
 
 	setPromptLevel(promptLevel: number) {
