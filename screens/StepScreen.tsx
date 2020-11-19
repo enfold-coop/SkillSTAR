@@ -9,9 +9,8 @@ import AppHeader from "../components/Header/AppHeader";
 import { AntDesign } from "@expo/vector-icons";
 import { Video } from "expo-av";
 import CustomColors from "../styles/Colors";
-
-import { DUMMY_SKILLS_ARR } from "../data/DUMMYDATA";
-let vid = "../assets/videos/1_Put_toothpaste_on_your_toothbrush.mp4";
+import { chainSteps } from "../data/chainSteps";
+let vid = "";
 
 type Props = {
 	route: RootNavProps<"StepScreen">;
@@ -30,8 +29,11 @@ const progressBarCalculation = (arr: Array, currStep: number): number => {
 
 const StepScreen: FC<Props> = (props) => {
 	const navigation = useNavigation();
-	const [visible, setVisible] = React.useState(false);
-	const [video, setVideo] = useState(null);
+	let [visible, setVisible] = React.useState(false);
+	let [steps, setSteps] = useState([]);
+	let [stepIndex, setStepIndex] = useState(0);
+	console.log(stepIndex);
+	// let chainSteps = [];
 
 	const toggleModal = () => {
 		setVisible(!visible);
@@ -41,32 +43,42 @@ const StepScreen: FC<Props> = (props) => {
 		toggleModal();
 	};
 
+	const incrIndex = () => {
+		if (stepIndex >= chainSteps.length) {
+			navigation.navigate("BaselineAssessmentScreen");
+		} else {
+			stepIndex += 1;
+			setStepIndex(stepIndex);
+		}
+	};
+
 	useEffect(() => {
-		setVideo(require(vid));
+		setSteps(chainSteps);
 	});
 
 	return (
 		<View style={styles.container}>
-			<AppHeader name={DUMMY_SKILLS_ARR[0].name} />
+			<AppHeader name={"Brush Teeth"} />
 			<ChallengingBehavModal
 				visible={visible}
 				toggleModal={handleModalClose}
 			/>
 			<View style={styles.progress}>
 				<Text style={styles.headline}>
-					Step {dummy_data.stepNum}: {dummy_data.stepDirection}
+					Step {chainSteps[stepIndex].step}:{" "}
+					{chainSteps[stepIndex].instruction}
 				</Text>
 				<View style={styles.progressContainer}>
 					<ProgressBar
 						style={styles.progressBar}
 						progress={progressBarCalculation(
-							DUMMY_SKILLS_ARR[0].subItems,
-							1
+							chainSteps,
+							stepIndex + 1
 						)}
 						color={CustomColors.uva.blue}
 					/>
 					<Text style={styles.progressText}>
-						Step {1} out of {DUMMY_SKILLS_ARR[0].subItems.length}
+						Step {chainSteps[stepIndex].step} out of {steps.length}
 					</Text>
 				</View>
 			</View>
@@ -91,7 +103,7 @@ const StepScreen: FC<Props> = (props) => {
 				</View>
 				<View style={styles.subVideoContainer}>
 					<Video
-						source={video}
+						source={require("../assets/videos/1_Put_toothpaste_on_your_toothbrush.mp4")}
 						rate={1.0}
 						volume={1.0}
 						isMuted={false}
@@ -143,10 +155,7 @@ const StepScreen: FC<Props> = (props) => {
 					color={CustomColors.uva.blue}
 					mode="contained"
 					onPress={() => {
-						console.log("nav to next step");
-						/**
-						 *
-						 */
+						incrIndex();
 					}}
 				>
 					NEXT
@@ -163,16 +172,21 @@ const styles = StyleSheet.create({
 	progress: {
 		flexDirection: "row",
 		justifyContent: "space-between",
-		height: 50,
+		// height: 50,
 		padding: 10,
 		paddingLeft: 20,
 		paddingRight: 20,
+		marginLeft: 20,
+		marginRight: 20,
 	},
 	progressContainer: {},
 	progressText: {
 		paddingTop: 4,
+
+		// width: 400,
 	},
 	headline: {
+		width: "60%",
 		fontSize: 20,
 		fontWeight: "600",
 	},
