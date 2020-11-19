@@ -4,9 +4,6 @@ import { Button, TextInput } from "react-native-paper";
 import { RootNavProps as Props } from "../navigation/root_types";
 import CustomColors from "../styles/Colors";
 
-let url = "../data/chain_steps.json";
-let dataJSON = require(url);
-
 export default function LandingScreen({ navigation }: Props<"LandingScreen">) {
 	let [email, setEmail] = useState("");
 	let [password, setPassword] = useState("");

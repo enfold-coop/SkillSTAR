@@ -1,4 +1,4 @@
-import React, { FC } from "react";
+import React, { FC, useEffect, useState } from "react";
 import { StyleSheet, Text, View, Image } from "react-native";
 import ChallengingBehavModal from "../components/ChallengingBehavior/ChallengingBehavModal";
 import { Button, ProgressBar, Colors } from "react-native-paper";
@@ -11,6 +11,7 @@ import { Video } from "expo-av";
 import CustomColors from "../styles/Colors";
 
 import { DUMMY_SKILLS_ARR } from "../data/DUMMYDATA";
+let vid = "../assets/videos/1_Put_toothpaste_on_your_toothbrush.mp4";
 
 type Props = {
 	route: RootNavProps<"StepScreen">;
@@ -30,6 +31,7 @@ const progressBarCalculation = (arr: Array, currStep: number): number => {
 const StepScreen: FC<Props> = (props) => {
 	const navigation = useNavigation();
 	const [visible, setVisible] = React.useState(false);
+	const [video, setVideo] = useState(null);
 
 	const toggleModal = () => {
 		setVisible(!visible);
@@ -38,6 +40,10 @@ const StepScreen: FC<Props> = (props) => {
 	const handleModalClose = () => {
 		toggleModal();
 	};
+
+	useEffect(() => {
+		setVideo(require(vid));
+	});
 
 	return (
 		<View style={styles.container}>
@@ -85,10 +91,7 @@ const StepScreen: FC<Props> = (props) => {
 				</View>
 				<View style={styles.subVideoContainer}>
 					<Video
-						source={{
-							uri:
-								"http://d23dyxeqlo5psv.cloudfront.net/big_buck_bunny.mp4",
-						}}
+						source={video}
 						rate={1.0}
 						volume={1.0}
 						isMuted={false}

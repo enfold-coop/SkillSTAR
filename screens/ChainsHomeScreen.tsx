@@ -1,4 +1,4 @@
-import React, { FC, Fragment, useState, useEffect } from "react";
+import React, { FC, useState, useEffect } from "react";
 import {
 	View,
 	Text,
@@ -8,8 +8,6 @@ import {
 	TouchableOpacity,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-
-import { Button } from "react-native-paper";
 import { RootNavProps } from "../navigation/root_types";
 import ScorecardListItem from "../components/Chain/ScorecardListItem";
 import AppHeader from "../components/Header/AppHeader";
@@ -30,7 +28,9 @@ const ChainsHomeScreen: FC<Props> = (props) => {
 	let [chainSteps, setStepList] = useState();
 
 	const apiCall = () => {
-		let { chainSteps } = require(url);
+		let { chainSteps, user } = require(url);
+		console.log(user);
+
 		setStepList(chainSteps);
 	};
 
@@ -59,7 +59,7 @@ const ChainsHomeScreen: FC<Props> = (props) => {
 						<FlatList
 							style={styles.list}
 							data={chainSteps}
-							keyExtractor={(item) => item.step}
+							keyExtractor={(item) => item.step.toString()}
 							renderItem={(item) => (
 								<ScorecardListItem itemProps={item} />
 							)}

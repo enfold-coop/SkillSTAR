@@ -15,7 +15,7 @@ export function MasteryIcons(mastery: number) {
 		iconName = "star-half-alt";
 		color = CustomColor.uva.mountain;
 	} else {
-		iconName = "star-half-alt";
+		iconName = "star";
 	}
 	return (
 		<View style={styles.icon}>
