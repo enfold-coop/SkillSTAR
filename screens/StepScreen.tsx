@@ -66,11 +66,13 @@ const StepScreen: FC<Props> = (props) => {
 	return (
 		<View style={styles.container}>
 			<AppHeader name={"Brush Teeth"} />
-			<ChallengingBehavModal
-				visible={visible}
-				toggleModal={handleModalClose}
-				attempt={session.data[stepIndex]}
-			/>
+			{session.data[stepIndex] && (
+				<ChallengingBehavModal
+					visible={visible}
+					toggleModal={handleModalClose}
+					attempt={session.data[stepIndex]}
+				/>
+			)}
 			<View style={styles.progress}>
 				<Text style={styles.headline}>
 					Step {chainSteps[stepIndex].step}:{" "}
