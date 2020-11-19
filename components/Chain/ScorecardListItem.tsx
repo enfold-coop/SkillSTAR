@@ -19,7 +19,7 @@ interface ListItem {
 };
 
 type Props = {
-	index: number;
+	index?: number;
 	itemProps: ListItem;
 };
 
