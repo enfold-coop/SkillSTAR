@@ -1,5 +1,5 @@
 import React, { FC } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View, ImageBackground } from "react-native";
 import { TextInput, Checkbox, Button, RadioButton } from "react-native-paper";
 import { useNavigation } from "@react-navigation/native";
 import { RootNavProps } from "../navigation/root_types";
@@ -25,20 +25,30 @@ const BaselineAssessmentScreen: FC<Props> = (props) => {
 	 */
 
 	return (
-		<View>
-			<Text></Text>
-			<Button
-				mode="contained"
-				onPress={() => {
-					navigation.navigate("ChainsHomeScreen");
-				}}
-			>
-				To the Chain
-			</Button>
-		</View>
+		<ImageBackground
+			source={require("../assets/images/sunrise-muted.png")}
+			resizeMode={"cover"}
+			style={styles.image}
+		>
+			<View style={styles.container}>
+				<Text></Text>
+				<Button
+					mode="contained"
+					onPress={() => {
+						navigation.navigate("ChainsHomeScreen");
+					}}
+				>
+					To the Chain
+				</Button>
+			</View>
+		</ImageBackground>
 	);
 };
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+	container: {
+		flex: 1,
+	},
+});
 
 export default BaselineAssessmentScreen;

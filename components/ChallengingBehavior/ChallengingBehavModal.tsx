@@ -15,7 +15,6 @@ type Props = {
 
 const ChallengingBehavModal: FC<Props> = (props) => {
 	let { visible } = props;
-	console.log(props.attempt);
 
 	return (
 		<Modal

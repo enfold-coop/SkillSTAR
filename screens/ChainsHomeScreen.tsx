@@ -116,17 +116,16 @@ const styles = StyleSheet.create({
 		margin: 20,
 		borderWidth: 1,
 		borderRadius: 10,
-		borderColor: CustomColors.uva.white,
+		// borderColor: CustomColors.uva.white,
 		backgroundColor: CustomColors.uva.blue,
 		justifyContent: "center",
 		alignItems: "center",
 	},
 	btnText: {
 		textAlign: "center",
-		color: CustomColors.uva.white,
-		// color: CustomColors.uva.blue,
+		color: CustomColors.uva.sky,
 		fontSize: 32,
-		fontWeight: "600",
+		fontWeight: "400",
 	},
 });
 

@@ -14,13 +14,13 @@ const SessionDataAside: FC<Props> = ({ name }) => {
 			<View>
 				<View>
 					<Card>
-						<Text style={styles.sessionNum}>Session #: {10}</Text>
+						<Text style={styles.sessionNum}>Session #{1}</Text>
 						<Text style={styles.isProbeTrainingSession}></Text>
 						<Text style={styles.focusStep}>
-							Focus Step: {"rinse brush"}
+							Focus Step: {"Put toothpaste on brush"}
 						</Text>
 						<Text style={styles.promptLevel}>
-							Prompt Level: {"Partial Phys."}
+							Prompt Level: {"Full Phys."}
 						</Text>
 						<Text style={styles.masteryLevel}>
 							Mastery: {"Focus Step"}
@@ -91,13 +91,13 @@ const styles = StyleSheet.create({
 		paddingLeft: 10,
 	},
 	promptLevel: {
-		fontWeight: "600",
+		fontWeight: "400",
 		fontSize: 18,
 		padding: 2,
 		paddingLeft: 10,
 	},
 	masteryLevel: {
-		fontWeight: "600",
+		fontWeight: "400",
 		fontSize: 18,
 		padding: 2,
 		paddingLeft: 10,

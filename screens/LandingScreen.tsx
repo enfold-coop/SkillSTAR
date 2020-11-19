@@ -64,8 +64,6 @@ const styles = StyleSheet.create({
 		alignContent: "center",
 		justifyContent: "center",
 		padding: 0,
-		// height: "100%",
-		// width: "100%",
 	},
 	image: {
 		flex: 1,
