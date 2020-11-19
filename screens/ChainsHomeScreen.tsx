@@ -12,6 +12,7 @@ import ScorecardListItem from "../components/Chain/ScorecardListItem";
 import SessionDataAside from "../components/Chain/SessionDataAside";
 import AppHeader from "../components/Header/AppHeader";
 import { RootNavProps } from "../navigation/root_types";
+import CustomColors from "../styles/Colors";
 
 type Props = {
 	route: RootNavProps<"ChainsHomeScreen">;
@@ -22,6 +23,7 @@ type Props = {
 const ChainsHomeScreen: FC<Props> = (props) => {
 	const navigation = useNavigation();
 
+	let [chainSteps, setStepList] = useState();
 	const apiCall = () => {
 		let { chainSteps, user } = require("../data/chain_steps.json");
 		setStepList(chainSteps);
@@ -38,14 +40,14 @@ const ChainsHomeScreen: FC<Props> = (props) => {
 
 	return (
 		<ImageBackground
-			source={require("../assets/images/energy-burst-dark.jpg")}
+			source={require("../assets/images/sunrise-muted.png")}
 			resizeMode={"cover"}
 			style={styles.container}
 		>
 			<AppHeader name="Chains Home" />
 			<View style={styles.titleWrap}>
-				<Text style={styles.title}>Today's Session</Text>
-				<Text style={styles.title}>Steps</Text>
+				{/* <Text style={styles.title}>Today's Session</Text>
+				<Text style={styles.title}>Steps</Text> */}
 			</View>
 			{chainSteps && (
 				<View style={styles.listContainer}>
@@ -110,13 +112,18 @@ const styles = StyleSheet.create({
 	},
 	startSessionBtn: {
 		flex: 1,
-		paddingBottom: 20,
-		backgroundColor: "#fff",
+		// paddingBottom: 20,
+		margin: 20,
+		borderWidth: 5,
+		borderRadius: 10,
+		borderColor: CustomColors.uva.white,
+		backgroundColor: "rgba(0,0,0,0)",
 		justifyContent: "center",
 		alignItems: "center",
 	},
 	btnText: {
 		textAlign: "center",
+		color: CustomColors.uva.blue,
 		fontSize: 32,
 		fontWeight: "600",
 	},

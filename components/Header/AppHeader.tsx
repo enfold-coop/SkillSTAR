@@ -32,7 +32,7 @@ const styles = StyleSheet.create({
 		paddingBottom: 10,
 		borderBottomWidth: 3,
 		borderBottomColor: CustomColors.uva.orange,
-		backgroundColor: 'transparent',
+		backgroundColor: "transparent",
 	},
 	logo: {
 		width: 50,
@@ -48,7 +48,7 @@ const styles = StyleSheet.create({
 	headline: {
 		fontSize: 30,
 		fontWeight: "800",
-		color: CustomColors.uva.white,
+		color: "#000",
 		alignSelf: "center",
 	},
 	subHeadline: {
