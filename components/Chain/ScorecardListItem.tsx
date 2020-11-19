@@ -3,9 +3,22 @@ import { Text, StyleSheet, TouchableOpacity } from "react-native";
 import { Card } from "react-native-paper";
 import { MasteryIcons } from "../../styles/MasteryIcons";
 import { AntDesign } from "@expo/vector-icons";
+import {MasteryLevel} from '../../types/CHAIN/MasteryLevel';
 
-type ListItem = {};
+interface ScorecardStepListItem {
+	attempts: StepAttempt[];
+	step: number;
+	instruction: string;
+	mastery: MasteryLevel;
+	video: string;
+}
+
+interface ListItem {
+	item: ScorecardStepListItem;
+};
+
 type Props = {
+	index?: number;
 	itemProps: ListItem;
 };
 

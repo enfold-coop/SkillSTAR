@@ -1,5 +1,5 @@
 import React, { FC, useState } from "react";
-import { StyleSheet, View, Image } from "react-native";
+import {StyleSheet, View, Image, ImageBackground} from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { Button, Card, Title } from "react-native-paper";
 import { RootNavProps } from "../navigation/root_types";
@@ -15,7 +15,11 @@ const PrepareMaterialsScreen: FC<Props> = (props) => {
 	const navigation = useNavigation();
 
 	return (
-		<View style={styles.container}>
+    <ImageBackground
+      source={require("../assets/images/energy-burst-dark.jpg")}
+      resizeMode={'cover'}
+      style={styles.container}
+    >
 			<AppHeader name="Prepare Materials" />
 			<Card style={styles.listItem}>
 				<View style={styles.listItem}>
@@ -73,17 +77,20 @@ const PrepareMaterialsScreen: FC<Props> = (props) => {
 			>
 				Next
 			</Button>
-		</View>
+		</ImageBackground>
 	);
 };
 
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
-		padding: 20,
-		paddingTop: 30,
+		// padding: 20,
+		// paddingTop: 30,
 		alignContent: "flex-start",
 		justifyContent: "flex-start",
+    padding: 0,
+    height: '100%',
+    width: '100%',
 	},
 	headline: {
 		fontSize: 20,

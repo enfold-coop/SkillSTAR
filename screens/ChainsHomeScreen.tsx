@@ -1,20 +1,17 @@
-import React, { FC, useState, useEffect } from "react";
+import { useNavigation } from "@react-navigation/native";
+import React, { FC, useEffect, useState } from "react";
 import {
-	View,
-	Text,
-	StyleSheet,
 	FlatList,
 	ImageBackground,
+	StyleSheet,
+	Text,
 	TouchableOpacity,
+	View,
 } from "react-native";
-import { useNavigation } from "@react-navigation/native";
-import { RootNavProps } from "../navigation/root_types";
 import ScorecardListItem from "../components/Chain/ScorecardListItem";
-import AppHeader from "../components/Header/AppHeader";
 import SessionDataAside from "../components/Chain/SessionDataAside";
-
-//
-let url = "../data/chain_steps.json";
+import AppHeader from "../components/Header/AppHeader";
+import { RootNavProps } from "../navigation/root_types";
 
 type Props = {
 	route: RootNavProps<"ChainsHomeScreen">;
@@ -25,14 +22,13 @@ type Props = {
 const ChainsHomeScreen: FC<Props> = (props) => {
 	const navigation = useNavigation();
 
-	let [chainSteps, setStepList] = useState();
-
 	const apiCall = () => {
-		let { chainSteps, user } = require(url);
+		let { chainSteps, user } = require("../data/chain_steps.json");
 		setStepList(chainSteps);
 	};
 
 	const navToProbeOrTraining = () => {
+		console.log("go to PrepareMaterialsScreen");
 		navigation.navigate("PrepareMaterialsScreen");
 	};
 
@@ -41,39 +37,38 @@ const ChainsHomeScreen: FC<Props> = (props) => {
 	});
 
 	return (
-		<View style={styles.container}>
-			<ImageBackground
-				source={require("../assets/images/skillstar-bkrd-muted-color.png")}
-				style={styles.bkgrdImage}
-			>
-				<AppHeader name="Chains Home" />
-				<View style={styles.titleWrap}>
-					<Text style={styles.title}>Today's Session</Text>
-					<Text style={styles.title}>Steps</Text>
+		<ImageBackground
+			source={require("../assets/images/energy-burst-dark.jpg")}
+			resizeMode={"cover"}
+			style={styles.container}
+		>
+			<AppHeader name="Chains Home" />
+			<View style={styles.titleWrap}>
+				<Text style={styles.title}>Today's Session</Text>
+				<Text style={styles.title}>Steps</Text>
+			</View>
+			{chainSteps && (
+				<View style={styles.listContainer}>
+					<SessionDataAside historicalData={{}} name={"Moxy"} />
+					<FlatList
+						style={styles.list}
+						data={chainSteps}
+						keyExtractor={(item) => item.step.toString()}
+						renderItem={(item) => (
+							<ScorecardListItem itemProps={item} />
+						)}
+					/>
 				</View>
-				{chainSteps && (
-					<View style={styles.listContainer}>
-						<SessionDataAside historicalData={{}} name={"Moxy"} />
-						<FlatList
-							style={styles.list}
-							data={chainSteps}
-							keyExtractor={(item) => item.step.toString()}
-							renderItem={(item) => (
-								<ScorecardListItem itemProps={item} />
-							)}
-						/>
-					</View>
-				)}
-				<TouchableOpacity
-					style={styles.startSessionBtn}
-					onPress={() => {
-						navToProbeOrTraining();
-					}}
-				>
-					<Text style={styles.btnText}>Start the Chain</Text>
-				</TouchableOpacity>
-			</ImageBackground>
-		</View>
+			)}
+			<TouchableOpacity
+				style={styles.startSessionBtn}
+				onPress={() => {
+					navToProbeOrTraining();
+				}}
+			>
+				<Text style={styles.btnText}>Start the Chain</Text>
+			</TouchableOpacity>
+		</ImageBackground>
 	);
 };
 
@@ -83,9 +78,6 @@ const styles = StyleSheet.create({
 		margin: 0,
 		justifyContent: "flex-start",
 		alignContent: "flex-end",
-	},
-	bkgrdImage: {
-		flex: 1,
 		padding: 0,
 		resizeMode: "cover",
 	},
