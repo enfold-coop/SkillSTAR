@@ -43,6 +43,13 @@ const StepScreen: FC<Props> = (props) => {
 		setStepIndex(stepIndex);
 	};
 
+	const decIndex = () => {
+		if (stepIndex > 0) {
+			stepIndex -= 1;
+			setStepIndex(stepIndex);
+		}
+	};
+
 	const createAttempts = () => {
 		chainSteps.forEach((e, i) => {
 			session.addStepData(new StepAttempt(chainSteps[i].step));
@@ -148,22 +155,37 @@ const StepScreen: FC<Props> = (props) => {
 						</Text>
 					</View>
 				</View>
-				<Button
-					style={styles.nextButton}
-					color={CustomColors.uva.blue}
-					mode="contained"
-					onPress={() => {
-						if (stepIndex + 1 <= chainSteps.length - 1) {
-							incrIndex();
-						} else {
-							navigation.navigate("BaselineAssessmentScreen", {
-								session,
-							});
-						}
-					}}
-				>
-					NEXT
-				</Button>
+				<View style={styles.nextBackBtnsContainer}>
+					<Button
+						style={styles.backButton}
+						color={CustomColors.uva.blue}
+						mode="contained"
+						onPress={() => {
+							decIndex();
+						}}
+					>
+						BACK
+					</Button>
+					<Button
+						style={styles.nextButton}
+						color={CustomColors.uva.blue}
+						mode="contained"
+						onPress={() => {
+							if (stepIndex + 1 <= chainSteps.length - 1) {
+								incrIndex();
+							} else {
+								navigation.navigate(
+									"BaselineAssessmentScreen",
+									{
+										session,
+									}
+								);
+							}
+						}}
+					>
+						NEXT
+					</Button>
+				</View>
 			</View>
 		</View>
 	);
@@ -242,10 +264,19 @@ const styles = StyleSheet.create({
 		width: 144,
 		fontWeight: "600",
 	},
+	nextBackBtnsContainer: {
+		flexDirection: "row",
+		justifyContent: "flex-end",
+	},
 	nextButton: {
 		width: 144,
-		marginRight: 30,
-		alignSelf: "flex-end",
+		margin: 15,
+		// alignSelf: "flex-end",
+	},
+	backButton: {
+		width: 144,
+		margin: 15,
+		// alignSelf: "flex-start",
 	},
 });
 

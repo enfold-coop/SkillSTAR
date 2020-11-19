@@ -13,7 +13,6 @@ type Props = {
 
 const BaselineAssessmentScreen: FC<Props> = (props) => {
 	const navigation = useNavigation();
-	console.log(props);
 
 	let { session } = props.route.params;
 
