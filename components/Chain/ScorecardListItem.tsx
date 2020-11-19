@@ -4,20 +4,27 @@ import { useNavigation } from "@react-navigation/native";
 import { Card } from "react-native-paper";
 import { MasteryIcons } from "../../styles/MasteryIcons";
 import { AntDesign } from "@expo/vector-icons";
+import {MasteryLevel} from '../../types/CHAIN/MasteryLevel';
 
-type ListItem = {};
+interface ScorecardStepListItem {
+	attempts: StepAttempt[];
+	step: number;
+	instruction: string;
+	mastery: MasteryLevel;
+	video: string;
+}
+
+interface ListItem {
+	item: ScorecardStepListItem;
+};
+
 type Props = {
+	index?: number;
 	itemProps: ListItem;
-	// attempts: {}[];
-	// instruction: string;
-	// mastered: number;
-	// step: number;
-	// video: string;
 };
 
 const ScorecardListItem: FC<Props> = ({ ...props }) => {
 	const navigation = useNavigation();
-	console.log(props);
 	const { step, instruction, mastery } = props.itemProps.item;
 
 	return (
