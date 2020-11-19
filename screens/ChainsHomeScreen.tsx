@@ -29,7 +29,6 @@ const ChainsHomeScreen: FC<Props> = (props) => {
 
 	const apiCall = () => {
 		let { chainSteps, user } = require(url);
-		console.log(user);
 
 		setStepList(chainSteps);
 	};

@@ -4,7 +4,7 @@ interface ChallengingBehavior {
 	description?: string;
 }
 
-class StepAttempt {
+export class StepAttempt {
 	date: Date;
 	stepId: number;
 	wasPrompted?: boolean;

@@ -10,7 +10,8 @@ import { AntDesign } from "@expo/vector-icons";
 import { Video } from "expo-av";
 import CustomColors from "../styles/Colors";
 import { chainSteps } from "../data/chainSteps";
-let vid = "";
+import { Session } from "../types/CHAIN/Session";
+import { StepAttempt } from "../types/CHAIN/StepAttempt";
 
 type Props = {
 	route: RootNavProps<"StepScreen">;
@@ -27,6 +28,7 @@ const StepScreen: FC<Props> = (props) => {
 	let [visible, setVisible] = React.useState(false);
 	let [steps, setSteps] = useState([]);
 	let [stepIndex, setStepIndex] = useState(0);
+	let [session, setSession] = useState(new Session());
 
 	const toggleModal = () => {
 		setVisible(!visible);
@@ -41,8 +43,16 @@ const StepScreen: FC<Props> = (props) => {
 		setStepIndex(stepIndex);
 	};
 
+	const createAttempts = () => {
+		for (let i = 0; i < chainSteps.length; i++) {
+			session.addStepData(new StepAttempt(chainSteps[i].step));
+		}
+	};
+
 	useEffect(() => {
 		setSteps(chainSteps);
+		createAttempts();
+		console.log(session.data);
 	});
 
 	return (
@@ -142,8 +152,6 @@ const StepScreen: FC<Props> = (props) => {
 					color={CustomColors.uva.blue}
 					mode="contained"
 					onPress={() => {
-						console.log(stepIndex);
-
 						if (stepIndex + 1 <= chainSteps.length - 1) {
 							incrIndex();
 						} else {

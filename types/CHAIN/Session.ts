@@ -1,6 +1,6 @@
 //
 //
-class Session {
+export class Session {
 	date?: {};
 	data: StepAttempt[];
 

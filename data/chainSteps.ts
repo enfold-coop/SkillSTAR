@@ -2,13 +2,12 @@ export const chainSteps = [
 	{
 		step: 1,
 		instruction: "Put toothpaste on your toothbrush",
-		video: "assets/videos/1_Put_toothpaste_on_your_toothbrush.mp4",
+		video: "./assets/videos/1_Put_toothpaste_on_your_toothbrush.mp4",
 	},
 	{
 		step: 2,
 		instruction: "Put toothpaste away",
-		video:
-			"https://drive.google.com/drive/u/0/folders/1pEEH8ecn3sKnjWL7-6jWpaTTuv_0VPaV",
+		video: "./assets/videos/2_Put_toothpaste_away.mp4",
 	},
 	{
 		step: 3,
