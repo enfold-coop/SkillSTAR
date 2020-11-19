@@ -8,7 +8,7 @@ import { Button, ProgressBar } from "react-native-paper";
 import ChallengingBehavModal from "../components/ChallengingBehavior/ChallengingBehavModal";
 import AppHeader from "../components/Header/AppHeader";
 import { chainSteps } from "../data/chainSteps";
-import {videos} from '../data/videos';
+import { videos } from "../data/videos";
 import { RootNavProps } from "../navigation/root_types";
 import CustomColors from "../styles/Colors";
 import { Session } from "../types/CHAIN/Session";
@@ -121,7 +121,7 @@ const StepScreen: FC<Props> = (props) => {
 					</View>
 					<View style={styles.subVideoContainer}>
 						<Video
-							source={videos[`chain_0_${stepIndex}`]}
+							source={videos[`chain_0_${stepIndex + 1}`]}
 							rate={1.0}
 							volume={1.0}
 							isMuted={true}

@@ -47,12 +47,16 @@ const BaselineAssessmentScreen: FC<Props> = (props) => {
 		>
 			<View style={styles.container}>
 				<View style={styles.formContainer}>
-					<Text></Text>
-					<TextInput
+					<View style={styles.formItemContainer}>
+						<Text style={styles.formItemLabel}>{}</Text>
+
+						<Button style={styles.formItemButton}></Button>
+						{/* <TextInput
 						label="Email"
 						value={text}
 						onChangeText={(text) => setText(text)}
-					/>
+					/> */}
+					</View>
 				</View>
 			</View>
 			<View style={styles.nextBackBtnsContainer}>
@@ -106,6 +110,10 @@ const styles = StyleSheet.create({
 		flex: 1,
 		resizeMode: "cover",
 	},
+	formContainer: {},
+	formItemContainer: {},
+	formItemLabel: {},
+	formItemButton: {},
 	nextBackBtnsContainer: {
 		flexDirection: "row",
 		justifyContent: "flex-end",
@@ -118,6 +126,7 @@ const styles = StyleSheet.create({
 		width: 144,
 		margin: 15,
 	},
+	inputField: {},
 });
 
 export default BaselineAssessmentScreen;
