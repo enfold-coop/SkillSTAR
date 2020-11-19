@@ -93,10 +93,10 @@ const StepScreen: FC<Props> = (props) => {
 						source={require("../assets/videos/1_Put_toothpaste_on_your_toothbrush.mp4")}
 						rate={1.0}
 						volume={1.0}
-						isMuted={false}
+						isMuted={true}
 						resizeMode="cover"
-						// shouldPlay
-						isLooping
+						isLooping={false}
+						useNativeControls={true}
 						style={styles.video}
 					/>
 				</View>
