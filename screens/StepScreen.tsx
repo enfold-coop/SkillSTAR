@@ -37,12 +37,8 @@ const StepScreen: FC<Props> = (props) => {
 	};
 
 	const incrIndex = () => {
-		if (stepIndex >= chainSteps.length) {
-			navigation.navigate("BaselineAssessmentScreen");
-		} else {
-			stepIndex += 1;
-			setStepIndex(stepIndex);
-		}
+		stepIndex += 1;
+		setStepIndex(stepIndex);
 	};
 
 	useEffect(() => {
@@ -64,14 +60,12 @@ const StepScreen: FC<Props> = (props) => {
 				<View style={styles.progressContainer}>
 					<ProgressBar
 						style={styles.progressBar}
-						progress={progressBarCalculation(
-							chainSteps,
-							stepIndex + 1
-						)}
+						progress={progressBarCalculation(chainSteps, stepIndex)}
 						color={CustomColors.uva.blue}
 					/>
 					<Text style={styles.progressText}>
-						Step {chainSteps[stepIndex].step} out of {steps.length}
+						Step {chainSteps[stepIndex].step} out of{" "}
+						{chainSteps.length}
 					</Text>
 				</View>
 			</View>
@@ -113,7 +107,7 @@ const StepScreen: FC<Props> = (props) => {
 						mode="outlined"
 						onPress={() => {
 							console.log("exit");
-							navigation.navigate("SkillsHomeScreen");
+							navigation.navigate("ChainsHomeScreen");
 						}}
 					>
 						Exit
@@ -148,7 +142,13 @@ const StepScreen: FC<Props> = (props) => {
 					color={CustomColors.uva.blue}
 					mode="contained"
 					onPress={() => {
-						incrIndex();
+						console.log(stepIndex);
+
+						if (stepIndex + 1 <= chainSteps.length - 1) {
+							incrIndex();
+						} else {
+							navigation.navigate("BaselineAssessmentScreen");
+						}
 					}}
 				>
 					NEXT
