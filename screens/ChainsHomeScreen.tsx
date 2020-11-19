@@ -5,6 +5,7 @@ import ScorecardListItem from "../components/Chain/ScorecardListItem";
 import SessionDataAside from "../components/Chain/SessionDataAside";
 import AppHeader from "../components/Header/AppHeader";
 import {RootNavProps} from "../navigation/root_types";
+import CustomColors from '../styles/Colors';
 
 type Props = {
   route: RootNavProps<"ChainsHomeScreen">;
@@ -86,6 +87,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     paddingLeft: 20,
     alignSelf: "flex-start",
+    color: CustomColors.uva.white,
   },
   separator: {
     marginVertical: 30,
