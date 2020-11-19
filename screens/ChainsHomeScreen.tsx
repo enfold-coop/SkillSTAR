@@ -99,7 +99,7 @@ const styles = StyleSheet.create({
 		height: 1,
 	},
 	listContainer: {
-		height: "80%",
+		height: "70%",
 		flexDirection: "row",
 		padding: 5,
 	},
@@ -112,20 +112,18 @@ const styles = StyleSheet.create({
 	},
 	startSessionBtn: {
 		flex: 1,
-		// paddingBottom: 20,
 		margin: 20,
-		borderWidth: 5,
 		borderRadius: 10,
-		borderColor: CustomColors.uva.white,
-		backgroundColor: "rgba(0,0,0,0)",
+		backgroundColor: CustomColors.uva.blue,
 		justifyContent: "center",
 		alignItems: "center",
 	},
 	btnText: {
 		textAlign: "center",
-		color: CustomColors.uva.blue,
+		color: CustomColors.uva.white,
 		fontSize: 32,
 		fontWeight: "600",
+		height: 32,
 	},
 });
 
