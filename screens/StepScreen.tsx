@@ -1,26 +1,31 @@
 import React, { FC, useEffect, useState } from "react";
 import { StyleSheet, Text, View, Image } from "react-native";
+import {AntDesign} from "@expo/vector-icons";
+import {useNavigation} from "@react-navigation/native";
+import {StackNavigationOptions} from '@react-navigation/stack';
+import {Video} from "expo-av";
+import React, {FC, useEffect, useState} from "react";
+import {ImageBackground, StyleSheet, Text, View} from "react-native";
+import {TouchableOpacity} from "react-native-gesture-handler";
+import {Button, ProgressBar} from "react-native-paper";
 import ChallengingBehavModal from "../components/ChallengingBehavior/ChallengingBehavModal";
-import { Button, ProgressBar, Colors } from "react-native-paper";
-import { useNavigation } from "@react-navigation/native";
-import { TouchableOpacity } from "react-native-gesture-handler";
-import { RootNavProps } from "../navigation/root_types";
 import AppHeader from "../components/Header/AppHeader";
-import { AntDesign } from "@expo/vector-icons";
-import { Video } from "expo-av";
+import {DUMMY_SKILLS_ARR} from "../data/DUMMYDATA";
+import {RootNavProps} from "../navigation/root_types";
 import CustomColors from "../styles/Colors";
 import { chainSteps } from "../data/chainSteps";
 import { Session } from "../types/CHAIN/Session";
 import { StepAttempt } from "../types/CHAIN/StepAttempt";
+import {screenOpts} from '../types/NavigationOptions';
 
-type Props = {
-	route: RootNavProps<"StepScreen">;
-	navigation: RootNavProps<"StepScreen">;
+interface Props {
+  route: RootNavProps<"StepScreen">;
+  navigation: RootNavProps<"StepScreen">;
 };
 
 // Convert progress to "0.1 - 1.0" value
 const progressBarCalculation = (arr: Array, currStep: number): number => {
-	return currStep / arr.length;
+  return currStep / arr.length;
 };
 
 const StepScreen: FC<Props> = (props) => {
@@ -30,13 +35,13 @@ const StepScreen: FC<Props> = (props) => {
 	let [stepIndex, setStepIndex] = useState(0);
 	let [session, setSession] = useState(new Session());
 
-	const toggleModal = () => {
-		setVisible(!visible);
-	};
+  useEffect(() => {
+    navigation.setOptions({title: DUMMY_SKILLS_ARR[0].name});
+  });
 
-	const handleModalClose = () => {
-		toggleModal();
-	};
+  const toggleModal = () => {
+    setVisible(!visible);
+  };
 
 	const incrIndex = () => {
 		stepIndex += 1;
@@ -64,7 +69,11 @@ const StepScreen: FC<Props> = (props) => {
 	});
 
 	return (
-		<View style={styles.container}>
+    <ImageBackground
+      source={require("../assets/images/energy-burst-dark.jpg")}
+      resizeMode={'cover'}
+      style={styles.container}
+    >
 			<AppHeader name={"Brush Teeth"} />
 			{session.data[stepIndex] && (
 				<ChallengingBehavModal
@@ -190,7 +199,7 @@ const StepScreen: FC<Props> = (props) => {
 					</Button>
 				</View>
 			</View>
-		</View>
+    </ImageBackground>
 	);
 };
 

@@ -7,18 +7,20 @@ import {
 	ImageBackground,
 	TouchableOpacity,
 } from "react-native";
-import { useNavigation } from "@react-navigation/native";
-import { RootNavProps } from "../navigation/root_types";
+import {useNavigation} from "@react-navigation/native";
+import {RootNavProps} from "../navigation/root_types";
 import ScorecardListItem from "../components/Chain/ScorecardListItem";
 import AppHeader from "../components/Header/AppHeader";
 import SessionDataAside from "../components/Chain/SessionDataAside";
+import CustomColors from '../styles/Colors';
+import {globalStyles} from '../styles/Global';
 
 //
 let url = "../data/chain_steps.json";
 
 type Props = {
-	route: RootNavProps<"ChainsHomeScreen">;
-	navigation: RootNavProps<"ChainsHomeScreen">;
+  route: RootNavProps<"ChainsHomeScreen">;
+  navigation: RootNavProps<"ChainsHomeScreen">;
 };
 
 // Chain Home Screen
@@ -42,11 +44,11 @@ const ChainsHomeScreen: FC<Props> = (props) => {
 	});
 
 	return (
-		<View style={styles.container}>
-			<ImageBackground
-				source={require("../assets/images/skillstar-bkrd-muted-color.png")}
-				style={styles.bkgrdImage}
-			>
+    <ImageBackground
+      source={require("../assets/images/energy-burst-dark.jpg")}
+      resizeMode={'cover'}
+      style={styles.container}
+    >
 				<AppHeader name="Chains Home" />
 				<View style={styles.titleWrap}>
 					<Text style={styles.title}>Today's Session</Text>
@@ -73,23 +75,19 @@ const ChainsHomeScreen: FC<Props> = (props) => {
 				>
 					<Text style={styles.btnText}>Start the Chain</Text>
 				</TouchableOpacity>
-			</ImageBackground>
-		</View>
-	);
+    </ImageBackground>
+  );
 };
 
 const styles = StyleSheet.create({
-	container: {
-		flex: 1,
-		margin: 0,
-		justifyContent: "flex-start",
-		alignContent: "flex-end",
-	},
-	bkgrdImage: {
-		flex: 1,
-		padding: 0,
-		resizeMode: "cover",
-	},
+  container: {
+    flex: 1,
+    margin: 0,
+    justifyContent: "flex-start",
+    alignContent: "flex-end",
+    padding: 0,
+    resizeMode: 'cover',
+  },
 	titleWrap: {
 		flexDirection: "row",
 		justifyContent: "space-between",

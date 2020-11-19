@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from "react";
-import { StyleSheet, Image, View, Text } from "react-native";
-import { Button, TextInput } from "react-native-paper";
-import { RootNavProps as Props } from "../navigation/root_types";
+import React, {useEffect, useState} from "react";
+import {StyleSheet, Image, View, Text, ImageBackground} from "react-native";
+import {Button, TextInput} from "react-native-paper";
+import {RootNavProps as Props} from "../navigation/root_types";
 import CustomColors from "../styles/Colors";
 
 export default function LandingScreen({ navigation }: Props<"LandingScreen">) {
@@ -9,7 +9,11 @@ export default function LandingScreen({ navigation }: Props<"LandingScreen">) {
 	let [password, setPassword] = useState("");
 
 	return (
-		<View style={styles.container}>
+    <ImageBackground
+      source={require("../assets/images/energy-burst-dark.jpg")}
+      resizeMode={'cover'}
+      style={styles.container}
+    >
 			<Image
 				style={{ alignSelf: "center" }}
 				source={require("../assets/images/logo.png")}
@@ -42,30 +46,38 @@ export default function LandingScreen({ navigation }: Props<"LandingScreen">) {
 			>
 				Log In
 			</Button>
-		</View>
+    </ImageBackground>
 	);
 }
 
 const styles = StyleSheet.create({
-	container: {
-		flex: 1,
-		flexDirection: "column",
-		alignContent: "center",
-		justifyContent: "center",
-	},
-	title: {
-		fontSize: 20,
-		fontWeight: "bold",
-	},
-	input: {
-		height: 50,
-		width: 200,
-		alignSelf: "center",
-		margin: 10,
-	},
-	button: {
-		margin: 22,
-		width: 122,
-		alignSelf: "center",
-	},
+  container: {
+    flex: 1,
+    flexDirection: "column",
+    alignContent: "center",
+    justifyContent: "center",
+    padding: 0,
+    height: '100%',
+    width: '100%',
+  },
+  title: {
+    fontSize: 20,
+    fontWeight: "bold",
+  },
+  input: {
+    height: 50,
+    width: 200,
+    alignSelf: "center",
+    margin: 10,
+  },
+  button: {
+    margin: 22,
+    width: 122,
+    alignSelf: "center",
+  },
+  logo: {
+    alignSelf: 'center',
+    width: 200,
+    height: 200,
+  }
 });
