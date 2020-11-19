@@ -27,12 +27,12 @@ const styles = StyleSheet.create({
 		display: "flex",
 		flexDirection: "row",
 		justifyContent: "flex-start",
-		color: "#000",
+		color: CustomColors.uva.white,
 		paddingTop: 0,
 		paddingBottom: 10,
 		borderBottomWidth: 3,
 		borderBottomColor: CustomColors.uva.orange,
-		backgroundColor: CustomColors.uva.blue,
+		backgroundColor: 'transparent',
 	},
 	logo: {
 		width: 50,
@@ -48,7 +48,7 @@ const styles = StyleSheet.create({
 	headline: {
 		fontSize: 30,
 		fontWeight: "800",
-		color: "#000",
+		color: CustomColors.uva.white,
 		alignSelf: "center",
 	},
 	subHeadline: {

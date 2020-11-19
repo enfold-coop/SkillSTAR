@@ -1,13 +1,14 @@
 import "react-native-gesture-handler";
 
 import React, {useEffect, useState} from "react";
-import { SafeAreaProvider } from "react-native-safe-area-context";
+import {ImageBackground, StyleSheet} from 'react-native';
+import {SafeAreaProvider} from "react-native-safe-area-context";
 
 import useCachedResources from "./hooks/useCachedResources";
 import useColorScheme from "./hooks/useColorScheme";
 import Navigation from "./navigation";
 
-import { ChainProvider } from "./context/ChainProvider";
+import {ChainProvider} from "./context/ChainProvider";
 import * as Font from 'expo-font';
 
 let customFonts = {
@@ -18,28 +19,28 @@ let customFonts = {
  * Entry for the application.
  */
 export default function App() {
-	const isLoadingComplete = useCachedResources();
-	const colorScheme = useColorScheme();
-	const [fontsLoaded, setFontsLoaded] = useState<boolean>(false);
+  const isLoadingComplete = useCachedResources();
+  const colorScheme = useColorScheme();
+  const [fontsLoaded, setFontsLoaded] = useState<boolean>(false);
 
-	const _loadFonts = async () => {
-		await Font.loadAsync(customFonts);
-		setFontsLoaded(true);
-	}
+  const _loadFonts = async () => {
+    await Font.loadAsync(customFonts);
+    setFontsLoaded(true);
+  }
 
-	useEffect(() => {
-		_loadFonts();
-	});
+  useEffect(() => {
+    _loadFonts();
+  });
 
-	if (!fontsLoaded || !isLoadingComplete) {
-		return null;
-	} else {
-		return (
-			<SafeAreaProvider>
-				<ChainProvider>
-					<Navigation colorScheme={colorScheme} />
-				</ChainProvider>
-			</SafeAreaProvider>
-		);
-	}
+  if (!fontsLoaded || !isLoadingComplete) {
+    return null;
+  } else {
+    return (
+      <SafeAreaProvider>
+        <ChainProvider>
+          <Navigation colorScheme={colorScheme}/>
+        </ChainProvider>
+      </SafeAreaProvider>
+    );
+  }
 }

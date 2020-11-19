@@ -17,8 +17,8 @@ const CustomColors = {
 		tabIconSelected: tintColorDark,
 	},
 	uva: {
-		orange: "#E57202",
-		blue: "#002F6C",
+		orange: "#E57200",
+		blue: "#232D4B",
 		white: "#FEFEFE",
 		gray: "#636466",
 		mountain: "#6F7EA0",
