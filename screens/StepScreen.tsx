@@ -17,11 +17,6 @@ type Props = {
 	navigation: RootNavProps<"StepScreen">;
 };
 
-const dummy_data = {
-	stepNum: 1,
-	stepDirection: "I get my toothbrush.",
-};
-
 // Convert progress to "0.1 - 1.0" value
 const progressBarCalculation = (arr: Array, currStep: number): number => {
 	return currStep / arr.length;
@@ -32,8 +27,6 @@ const StepScreen: FC<Props> = (props) => {
 	let [visible, setVisible] = React.useState(false);
 	let [steps, setSteps] = useState([]);
 	let [stepIndex, setStepIndex] = useState(0);
-	console.log(stepIndex);
-	// let chainSteps = [];
 
 	const toggleModal = () => {
 		setVisible(!visible);
@@ -172,7 +165,6 @@ const styles = StyleSheet.create({
 	progress: {
 		flexDirection: "row",
 		justifyContent: "space-between",
-		// height: 50,
 		padding: 10,
 		paddingLeft: 20,
 		paddingRight: 20,
@@ -182,8 +174,6 @@ const styles = StyleSheet.create({
 	progressContainer: {},
 	progressText: {
 		paddingTop: 4,
-
-		// width: 400,
 	},
 	headline: {
 		width: "60%",
