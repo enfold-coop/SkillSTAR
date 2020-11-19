@@ -1,23 +1,18 @@
 import {NavigationContainer} from "@react-navigation/native";
-import {
-  createStackNavigator,
-  StackNavigationOptions,
-} from "@react-navigation/stack";
+import {createStackNavigator,} from "@react-navigation/stack";
 import * as React from "react";
-import {ColorSchemeName, ImageBackground} from "react-native";
-import LogoTitle from '../components/Header/LogoTitle';
+import {ColorSchemeName} from "react-native";
 
 import {
-	LandingScreen,
-	ChainsHomeScreen,
-	BaselineAssessmentScreen,
-	PrepareMaterialsScreen,
-	StepScreen,
+  BaselineAssessmentScreen,
+  ChainsHomeScreen,
+  LandingScreen,
+  PrepareMaterialsScreen,
+  StepScreen,
 } from "../screens";
-import CustomColors from "../styles/Colors";
 import {screenOpts} from '../types/NavigationOptions';
-
 import {RootStackParamList} from "./root_types";
+
 
 export default function Navigation({colorScheme,}: {
   colorScheme: ColorSchemeName;

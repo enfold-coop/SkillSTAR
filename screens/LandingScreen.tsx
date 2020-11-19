@@ -15,7 +15,7 @@ export default function LandingScreen({ navigation }: Props<"LandingScreen">) {
       style={styles.container}
     >
 			<Image
-				style={{ alignSelf: "center" }}
+				style={{ alignSelf: "center", width: 200, height: 200, marginBottom: 40 }}
 				source={require("../assets/images/logo.png")}
 			/>
 			{/**
