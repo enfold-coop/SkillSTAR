@@ -69,6 +69,7 @@ const StepScreen: FC<Props> = (props) => {
 			<ChallengingBehavModal
 				visible={visible}
 				toggleModal={handleModalClose}
+				attempt={session.data[stepIndex]}
 			/>
 			<View style={styles.progress}>
 				<Text style={styles.headline}>

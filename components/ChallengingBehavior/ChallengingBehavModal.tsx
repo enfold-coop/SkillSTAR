@@ -3,16 +3,20 @@ import { StyleSheet, Text, View, Modal } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { TextInput, Button, Card } from "react-native-paper";
 import CustomColors from "../../styles/Colors";
+import { StepAttempt } from "../../types/CHAIN/StepAttempt";
 
 type Props = {
 	stepComplete: string;
 	challengeOccur: string;
 	visible: boolean;
 	toggleModal: () => void;
+	attempt: StepAttempt;
 };
 
 const ChallengingBehavModal: FC<Props> = (props) => {
 	let { visible } = props;
+	console.log(props.attempt);
+
 	return (
 		<Modal
 			animationType="slide"
@@ -20,6 +24,9 @@ const ChallengingBehavModal: FC<Props> = (props) => {
 			visible={visible}
 			onRequestClose={() => {
 				props.toggleModal();
+				/**
+				 * save data to attempt and return to StepScreen
+				 */
 			}}
 		>
 			<View style={styles.container}>
@@ -34,7 +41,7 @@ const ChallengingBehavModal: FC<Props> = (props) => {
 							<Text>EXIT</Text>
 						</TouchableOpacity>
 						<Text style={styles.headline}>
-							Challenging Behavior Probe
+							Step {props.attempt.stepId} Challenging Behavior
 						</Text>
 						<Text style={styles.textInputPrompt}></Text>
 						<TextInput
