@@ -44,15 +44,16 @@ const StepScreen: FC<Props> = (props) => {
 	};
 
 	const createAttempts = () => {
-		for (let i = 0; i < chainSteps.length; i++) {
+		chainSteps.forEach((e, i) => {
 			session.addStepData(new StepAttempt(chainSteps[i].step));
-		}
+		});
 	};
 
 	useEffect(() => {
 		setSteps(chainSteps);
-		createAttempts();
-		console.log(session.data);
+		if (!session.data.length) {
+			createAttempts();
+		}
 	});
 
 	return (
@@ -155,7 +156,9 @@ const StepScreen: FC<Props> = (props) => {
 						if (stepIndex + 1 <= chainSteps.length - 1) {
 							incrIndex();
 						} else {
-							navigation.navigate("BaselineAssessmentScreen");
+							navigation.navigate("BaselineAssessmentScreen", {
+								session,
+							});
 						}
 					}}
 				>
