@@ -8,6 +8,7 @@ import { Button, ProgressBar } from "react-native-paper";
 import ChallengingBehavModal from "../components/ChallengingBehavior/ChallengingBehavModal";
 import AppHeader from "../components/Header/AppHeader";
 import { chainSteps } from "../data/chainSteps";
+import {videos} from '../data/videos';
 import { RootNavProps } from "../navigation/root_types";
 import CustomColors from "../styles/Colors";
 import { Session } from "../types/CHAIN/Session";
@@ -27,7 +28,7 @@ const StepScreen: FC<Props> = (props) => {
 	const navigation = useNavigation();
 	let [visible, setVisible] = React.useState(false);
 	let [steps, setSteps] = useState([]);
-	let [stepIndex, setStepIndex] = useState(0);
+	let [stepIndex, setStepIndex] = useState<number>(0);
 	let [session, setSession] = useState(new Session());
 
 	const toggleModal = () => {
@@ -120,7 +121,7 @@ const StepScreen: FC<Props> = (props) => {
 					</View>
 					<View style={styles.subVideoContainer}>
 						<Video
-							source={require("../assets/videos/1_Put_toothpaste_on_your_toothbrush.mp4")}
+							source={videos[`chain_0_${stepIndex}`]}
 							rate={1.0}
 							volume={1.0}
 							isMuted={true}
