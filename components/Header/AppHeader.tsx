@@ -48,7 +48,7 @@ const styles = StyleSheet.create({
 	headline: {
 		fontSize: 30,
 		fontWeight: "800",
-		color: "#000",
+		color: CustomColors.uva.blue,
 		alignSelf: "center",
 	},
 	subHeadline: {
