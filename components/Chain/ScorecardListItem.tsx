@@ -1,9 +1,10 @@
 import React, { FC } from "react";
-import { Text, StyleSheet, TouchableOpacity } from "react-native";
+import { Text, StyleSheet, TouchableOpacity, View } from "react-native";
 import { Card } from "react-native-paper";
+import * as Animatable from "react-native-animatable";
 import { MasteryIcons } from "../../styles/MasteryIcons";
 import { AntDesign } from "@expo/vector-icons";
-import {MasteryLevel} from '../../types/CHAIN/MasteryLevel';
+import { MasteryLevel } from "../../types/CHAIN/MasteryLevel";
 
 interface ScorecardStepListItem {
 	attempts: StepAttempt[];
@@ -15,19 +16,27 @@ interface ScorecardStepListItem {
 
 interface ListItem {
 	item: ScorecardStepListItem;
-};
+}
 
 type Props = {
 	index?: number;
 	itemProps: ListItem;
 };
 
+function random() {
+	return Math.floor(Math.random() * Math.floor(2000));
+}
+
 const ScorecardListItem: FC<Props> = ({ ...props }) => {
 	const { step, instruction, mastery } = props.itemProps.item;
 
 	return (
 		<Card style={styles.container}>
-			<TouchableOpacity style={styles.touchable}>
+			<Animatable.View
+				animation="bounceIn"
+				duration={random()}
+				style={styles.touchable}
+			>
 				<Text style={styles.id}>{step}. </Text>
 				<Text style={styles.skill}>{instruction}</Text>
 				<Text style={styles.score}>{MasteryIcons(mastery)}</Text>
@@ -37,7 +46,7 @@ const ScorecardListItem: FC<Props> = ({ ...props }) => {
 					color="black"
 					style={styles.nextIcon}
 				/>
-			</TouchableOpacity>
+			</Animatable.View>
 		</Card>
 	);
 };

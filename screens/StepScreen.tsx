@@ -7,6 +7,7 @@ import { TouchableOpacity } from "react-native-gesture-handler";
 import { Button, ProgressBar } from "react-native-paper";
 import ChallengingBehavModal from "../components/ChallengingBehavior/ChallengingBehavModal";
 import AppHeader from "../components/Header/AppHeader";
+import * as Animatable from "react-native-animatable";
 import { chainSteps } from "../data/chainSteps";
 import { videos } from "../data/videos";
 import { RootNavProps } from "../navigation/root_types";
@@ -81,10 +82,13 @@ const StepScreen: FC<Props> = (props) => {
 					/>
 				)}
 				<View style={styles.progress}>
-					<Text style={styles.headline}>
+					<Animatable.Text
+						animation="zoomInUp"
+						style={styles.headline}
+					>
 						Step {chainSteps[stepIndex].step}:{" "}
 						{chainSteps[stepIndex].instruction}
-					</Text>
+					</Animatable.Text>
 					<View style={styles.progressContainer}>
 						<ProgressBar
 							style={styles.progressBar}

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { StyleSheet, Image, View, Text, ImageBackground } from "react-native";
 import { Button, TextInput } from "react-native-paper";
+import * as Animatable from "react-native-animatable";
 import { RootNavProps as Props } from "../navigation/root_types";
 import CustomColors from "../styles/Colors";
 
@@ -15,15 +16,19 @@ export default function LandingScreen({ navigation }: Props<"LandingScreen">) {
 			style={styles.image}
 		>
 			<View style={styles.container}>
-				<Image
-					style={{
-						alignSelf: "center",
-						width: 400,
-						height: 400,
-						marginBottom: 40,
-					}}
-					source={require("../assets/images/logo.png")}
-				/>
+				<View style={styles.logoContainer}>
+					<Animatable.Image
+						animation="zoomIn"
+						duration={700}
+						style={{
+							alignSelf: "center",
+							width: 400,
+							height: 400,
+							marginBottom: 40,
+						}}
+						source={require("../assets/images/logo.png")}
+					/>
+				</View>
 				{/**
 				 * New user?
 				 * -- Yes: background survey,
@@ -69,6 +74,7 @@ const styles = StyleSheet.create({
 		flex: 1,
 		resizeMode: "cover",
 	},
+	logoContainer: {},
 	title: {
 		fontSize: 20,
 		fontWeight: "bold",
