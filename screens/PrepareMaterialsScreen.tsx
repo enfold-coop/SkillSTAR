@@ -3,6 +3,7 @@ import { StyleSheet, View, Image, ImageBackground } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { Button, Card, Title } from "react-native-paper";
 import { RootNavProps } from "../navigation/root_types";
+import * as Animatable from "react-native-animatable";
 import CustomColors from "../styles/Colors";
 import AppHeader from "../components/Header/AppHeader";
 
@@ -10,6 +11,10 @@ type Props = {
 	route: RootNavProps<"PrepareMaterialsScreen">;
 	navigation: RootNavProps<"PrepareMaterialsScreen">;
 };
+
+function random() {
+	Math.random() * (2000 - 500) + 500;
+}
 
 const PrepareMaterialsScreen: FC<Props> = (props) => {
 	const navigation = useNavigation();
@@ -23,49 +28,69 @@ const PrepareMaterialsScreen: FC<Props> = (props) => {
 			<View style={styles.container}>
 				<AppHeader name="Prepare Materials" />
 				<Card style={styles.listItem}>
-					<View style={styles.listItem}>
+					<Animatable.View
+						animation="bounceIn"
+						duration={random()}
+						style={styles.listItem}
+					>
 						<Image
 							style={styles.itemIcon}
 							source={require("../assets/images/prep_materials_icon/toothbrush.png")}
 						/>
 						<Title style={styles.itemTitle}>Tooth Brush</Title>
-					</View>
+					</Animatable.View>
 				</Card>
 				<Card style={styles.listItem}>
-					<View style={styles.listItem}>
+					<Animatable.View
+						animation="bounceIn"
+						duration={random()}
+						style={styles.listItem}
+					>
 						<Image
 							style={styles.itemIcon}
 							source={require("../assets/images/prep_materials_icon/toothpaste.png")}
 						/>
 						<Title style={styles.itemTitle}>Tooth Paste</Title>
-					</View>
+					</Animatable.View>
 				</Card>
 				<Card style={styles.listItem}>
-					<View style={styles.listItem}>
+					<Animatable.View
+						animation="bounceIn"
+						duration={random()}
+						style={styles.listItem}
+					>
 						<Image
 							style={styles.itemIcon}
 							source={require("../assets/images/prep_materials_icon/towel.png")}
 						/>
 						<Title style={styles.itemTitle}>Towel</Title>
-					</View>
+					</Animatable.View>
 				</Card>
 				<Card style={styles.listItem}>
-					<View style={styles.listItem}>
+					<Animatable.View
+						animation="bounceIn"
+						duration={random()}
+						style={styles.listItem}
+					>
 						<Image
 							style={styles.itemIcon}
 							source={require("../assets/images/prep_materials_icon/water.png")}
 						/>
 						<Title style={styles.itemTitle}>Cup of Water</Title>
-					</View>
+					</Animatable.View>
 				</Card>
 				<Card style={styles.listItem}>
-					<View style={styles.listItem}>
+					<Animatable.View
+						animation="bounceIn"
+						duration={random()}
+						style={styles.listItem}
+					>
 						<Image
 							style={styles.itemIcon}
 							source={require("../assets/images/prep_materials_icon/medicine.png")}
 						/>
 						<Title style={styles.itemTitle}>Cabinet</Title>
-					</View>
+					</Animatable.View>
 				</Card>
 				<Button
 					mode="contained"

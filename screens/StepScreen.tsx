@@ -58,6 +58,23 @@ const StepScreen: FC<Props> = (props) => {
 		});
 	};
 
+	const StepVideo = (i) => {
+		console.log(i.i);
+
+		return (
+			<Video
+				source={videos[`chain_0_${i.i + 1}`]}
+				rate={1.0}
+				volume={1.0}
+				isMuted={true}
+				resizeMode="cover"
+				isLooping={false}
+				useNativeControls={true}
+				style={styles.video}
+			/>
+		);
+	};
+
 	useEffect(() => {
 		navigation.setOptions({ title: chainSteps[stepIndex].name });
 		setSteps(chainSteps);
@@ -124,16 +141,7 @@ const StepScreen: FC<Props> = (props) => {
 						</Text>
 					</View>
 					<View style={styles.subVideoContainer}>
-						<Video
-							source={videos[`chain_0_${stepIndex + 1}`]}
-							rate={1.0}
-							volume={1.0}
-							isMuted={true}
-							resizeMode="cover"
-							isLooping={false}
-							useNativeControls={true}
-							style={styles.video}
-						/>
+						{<StepVideo i={stepIndex} />}
 					</View>
 					<View style={styles.bottomContainer}>
 						<Button

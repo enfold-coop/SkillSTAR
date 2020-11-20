@@ -30,7 +30,6 @@ const ChainsHomeScreen: FC<Props> = (props) => {
 	};
 
 	const navToProbeOrTraining = () => {
-		console.log("go to PrepareMaterialsScreen");
 		navigation.navigate("PrepareMaterialsScreen");
 	};
 

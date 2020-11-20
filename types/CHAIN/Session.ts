@@ -11,6 +11,5 @@ export class Session {
 
 	addStepData(step: StepAttempt) {
 		this.data.push(step);
-		console.log(this.data);
 	}
 }
