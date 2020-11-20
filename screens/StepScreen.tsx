@@ -58,12 +58,10 @@ const StepScreen: FC<Props> = (props) => {
 		});
 	};
 
-	const StepVideo = (i) => {
-		console.log(i.i);
-
+	const StepVideo = (index) => {
 		return (
 			<Video
-				source={videos[`chain_0_${i.i + 1}`]}
+				source={videos[`chain_0_${index.i + 1}`]}
 				rate={1.0}
 				volume={1.0}
 				isMuted={true}
