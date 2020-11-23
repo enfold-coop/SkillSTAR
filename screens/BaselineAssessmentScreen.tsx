@@ -5,6 +5,7 @@ import { useNavigation } from "@react-navigation/native";
 import { RootNavProps } from "../navigation/root_types";
 import { Session } from "../types/CHAIN/Session";
 import CustomColors from "../styles/Colors";
+import { DataVerificationListItem } from "../components/Probe/index";
 
 type Props = {
 	route: RootNavProps<"BaselineAssessmentScreen">;
@@ -18,6 +19,7 @@ const BaselineAssessmentScreen: FC<Props> = (props) => {
 	let [readyToSubmit, setReadyToSubmit] = useState(false);
 	let [text, setText] = useState("");
 	let { session } = props.route.params;
+	console.log(session);
 
 	const incrIndex = () => {
 		stepIndex += 1;
@@ -39,6 +41,14 @@ const BaselineAssessmentScreen: FC<Props> = (props) => {
 	 * 5.
 	 */
 
+	/**
+	 * <header></header>
+	 * title
+	 * data verification components:
+	 * -- table header: "step", "Task completion?", "Challenging behavior?"
+	 * -- table row: step name, "yes/no", "yes/no"
+	 */
+
 	return (
 		<ImageBackground
 			source={require("../assets/images/sunrise-muted.png")}
@@ -47,16 +57,12 @@ const BaselineAssessmentScreen: FC<Props> = (props) => {
 		>
 			<View style={styles.container}>
 				<View style={styles.formContainer}>
-					<View style={styles.formItemContainer}>
-						<Text style={styles.formItemLabel}>{}</Text>
-
-						<Button style={styles.formItemButton}></Button>
-						{/* <TextInput
+					<DataVerificationListItem />
+					{/* <TextInput
 						label="Email"
 						value={text}
 						onChangeText={(text) => setText(text)}
 					/> */}
-					</View>
 				</View>
 			</View>
 			<View style={styles.nextBackBtnsContainer}>
@@ -105,6 +111,8 @@ const BaselineAssessmentScreen: FC<Props> = (props) => {
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
+		flexDirection: "column",
+		justifyContent: "center",
 	},
 	image: {
 		flex: 1,
@@ -113,6 +121,7 @@ const styles = StyleSheet.create({
 	formContainer: {},
 	formItemContainer: {},
 	formItemLabel: {},
+	btnContainer: {},
 	formItemButton: {},
 	nextBackBtnsContainer: {
 		flexDirection: "row",
