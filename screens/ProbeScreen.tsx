@@ -1,40 +1,26 @@
-import React, { FC, useState, useEffect } from "react";
+import React, { FC, useState } from "react";
 import { StyleSheet, Text, View, ImageBackground } from "react-native";
-import { Button } from "react-native-paper";
+import { TextInput, Checkbox, Button, RadioButton } from "react-native-paper";
 import { useNavigation } from "@react-navigation/native";
 import { RootNavProps } from "../navigation/root_types";
 import { Session } from "../types/CHAIN/Session";
 import CustomColors from "../styles/Colors";
 import AppHeader from "../components/Header/AppHeader";
 import { DataVerificationListItem } from "../components/Probe/index";
-import { StepAttempt } from "../types/CHAIN/StepAttempt";
-import { chainSteps } from "../data/chainSteps";
 
 type Props = {
 	route: RootNavProps<"BaselineAssessmentScreen">;
 	navigation: RootNavProps<"BaselineAssessmentScreen">;
+	session: Session;
 };
 
 const BaselineAssessmentScreen: FC<Props> = (props) => {
 	const navigation = useNavigation();
 	let [stepIndex, setStepIndex] = useState(0);
 	let [readyToSubmit, setReadyToSubmit] = useState(false);
-	let [session, setSession] = useState(new Session());
 	let [text, setText] = useState("");
-
-	const createAttempts = () => {
-		chainSteps.forEach((e, i) => {
-			session.addStepData(new StepAttempt(chainSteps[i].step));
-		});
-	};
-
-	useEffect(() => {
-		navigation.setOptions({ title: chainSteps[stepIndex].name });
-		setSteps(chainSteps);
-		if (!session.data.length) {
-			createAttempts();
-		}
-	});
+	let { session } = props.route.params;
+	console.log(session);
 
 	const incrIndex = () => {
 		stepIndex += 1;
@@ -48,6 +34,22 @@ const BaselineAssessmentScreen: FC<Props> = (props) => {
 		}
 	};
 
+	/**
+	 * 1. get attempts array
+	 * 2. load first attempt into DOM
+	 * 3. increment array logic
+	 * 4. functionality to write changes to attempt items
+	 * 5.
+	 */
+
+	/**
+	 * <header></header>
+	 * title
+	 * data verification components:
+	 * -- table header: "step", "Task completion?", "Challenging behavior?"
+	 * -- table row: step name, "yes/no", "yes/no"
+	 */
+
 	return (
 		<ImageBackground
 			source={require("../assets/images/sunrise-muted.png")}
@@ -55,14 +57,7 @@ const BaselineAssessmentScreen: FC<Props> = (props) => {
 			style={styles.image}
 		>
 			<View style={styles.container}>
-				<AppHeader name="Brushing Teeth" />
-				<View style={styles.instructionContainer}>
-					<Text style={styles.screenHeader}>Probe Session</Text>
-					<Text style={styles.instruction}>
-						Please instruct the child to brush their teeth. As they
-						do, please complete this survey for each step.
-					</Text>
-				</View>
+				<AppHeader name="Probe" />
 				<View style={styles.formContainer}>
 					<DataVerificationListItem />
 					{/* <TextInput
@@ -92,6 +87,12 @@ const BaselineAssessmentScreen: FC<Props> = (props) => {
 								incrIndex();
 							} else {
 								setReadyToSubmit(true);
+								navigation.navigate(
+									"BaselineAssessmentScreen",
+									{
+										session,
+									}
+								);
 							}
 						}}
 					>
@@ -117,25 +118,11 @@ const styles = StyleSheet.create({
 	container: {
 		flex: 1,
 		flexDirection: "column",
+		justifyContent: "space-between",
 	},
 	image: {
 		flex: 1,
 		resizeMode: "cover",
-	},
-	instructionContainer: {
-		margin: 20,
-		flexDirection: "column",
-		justifyContent: "space-around",
-	},
-	screenHeader: {
-		marginTop: 20,
-		paddingBottom: 20,
-		fontSize: 22,
-		fontWeight: "600",
-	},
-	instruction: {
-		padding: 10,
-		fontSize: 22,
 	},
 	formContainer: {},
 	formItemContainer: {},
