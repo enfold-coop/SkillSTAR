@@ -5,6 +5,7 @@ import { useNavigation } from "@react-navigation/native";
 import { RootNavProps } from "../navigation/root_types";
 import { Session } from "../types/CHAIN/Session";
 import CustomColors from "../styles/Colors";
+import AppHeader from "../components/Header/AppHeader";
 import { DataVerificationListItem } from "../components/Probe/index";
 
 type Props = {
@@ -56,6 +57,7 @@ const BaselineAssessmentScreen: FC<Props> = (props) => {
 			style={styles.image}
 		>
 			<View style={styles.container}>
+				<AppHeader name="Probe" />
 				<View style={styles.formContainer}>
 					<DataVerificationListItem />
 					{/* <TextInput
@@ -64,46 +66,50 @@ const BaselineAssessmentScreen: FC<Props> = (props) => {
 						onChangeText={(text) => setText(text)}
 					/> */}
 				</View>
+
+				<View style={styles.nextBackBtnsContainer}>
+					<Button
+						style={styles.backButton}
+						color={CustomColors.uva.blue}
+						mode="contained"
+						onPress={() => {
+							decIndex();
+						}}
+					>
+						BACK
+					</Button>
+					<Button
+						style={styles.nextButton}
+						color={CustomColors.uva.blue}
+						mode="contained"
+						onPress={() => {
+							if (stepIndex + 1 <= chainSteps.length - 1) {
+								incrIndex();
+							} else {
+								setReadyToSubmit(true);
+								navigation.navigate(
+									"BaselineAssessmentScreen",
+									{
+										session,
+									}
+								);
+							}
+						}}
+					>
+						NEXT
+					</Button>
+				</View>
+				{readyToSubmit && (
+					<Button
+						mode="contained"
+						onPress={() => {
+							navigation.navigate("ChainsHomeScreen");
+						}}
+					>
+						Submit
+					</Button>
+				)}
 			</View>
-			<View style={styles.nextBackBtnsContainer}>
-				<Button
-					style={styles.backButton}
-					color={CustomColors.uva.blue}
-					mode="contained"
-					onPress={() => {
-						decIndex();
-					}}
-				>
-					BACK
-				</Button>
-				<Button
-					style={styles.nextButton}
-					color={CustomColors.uva.blue}
-					mode="contained"
-					onPress={() => {
-						if (stepIndex + 1 <= chainSteps.length - 1) {
-							incrIndex();
-						} else {
-							setReadyToSubmit(true);
-							navigation.navigate("BaselineAssessmentScreen", {
-								session,
-							});
-						}
-					}}
-				>
-					NEXT
-				</Button>
-			</View>
-			{readyToSubmit && (
-				<Button
-					mode="contained"
-					onPress={() => {
-						navigation.navigate("ChainsHomeScreen");
-					}}
-				>
-					Submit
-				</Button>
-			)}
 		</ImageBackground>
 	);
 };
@@ -126,6 +132,7 @@ const styles = StyleSheet.create({
 	nextBackBtnsContainer: {
 		flexDirection: "row",
 		justifyContent: "flex-end",
+		marginBottom: 100,
 	},
 	nextButton: {
 		width: 144,

@@ -1,6 +1,7 @@
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { Button } from "react-native-paper";
+import CustomColors from "../../styles/Colors";
 
 export const DataVerificationListItem = () => {
 	return (
@@ -34,7 +35,8 @@ export const DataVerificationListItem = () => {
 
 const styles = StyleSheet.create({
 	container: {
-		backgroundColor: "#f0f",
+		borderWidth: 1,
+		borderRadius: 5,
 		flexDirection: "column",
 		justifyContent: "space-around",
 		padding: 20,
@@ -42,24 +44,31 @@ const styles = StyleSheet.create({
 		marginLeft: 20,
 		marginRight: 20,
 	},
-	questionContainer: {},
+	questionContainer: {
+		justifyContent: "center",
+		margin: 10,
+		marginBottom: 20,
+	},
 	question: {
 		fontSize: 20,
 		fontWeight: "400",
 		paddingBottom: 10,
+		textAlign: "center",
 	},
 	stepTitle: {
-		fontSize: 20,
+		fontSize: 24,
 		fontWeight: "600",
-		textAlign: "center",
 		paddingBottom: 10,
 	},
 	btnContainer: {
-		backgroundColor: "#aaa",
+		justifyContent: "center",
 		flexDirection: "row",
 	},
 	yesNoBtn: {
 		width: 144,
 		margin: 5,
+		marginLeft: 20,
+		marginRight: 20,
+		backgroundColor: CustomColors.uva.blue,
 	},
 });
