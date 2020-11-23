@@ -29,8 +29,6 @@ const BaselineAssessmentScreen: FC<Props> = (props) => {
 	};
 
 	useEffect(() => {
-		navigation.setOptions({ title: chainSteps[stepIndex].name });
-		setSteps(chainSteps);
 		if (!session.data.length) {
 			createAttempts();
 		}
@@ -64,7 +62,10 @@ const BaselineAssessmentScreen: FC<Props> = (props) => {
 					</Text>
 				</View>
 				<View style={styles.formContainer}>
-					<DataVerificationListItem />
+					<DataVerificationListItem
+						instruction={chainSteps[stepIndex].instruction}
+						stepAttempt={session.data[stepIndex]}
+					/>
 					{/* <TextInput
 						label="Email"
 						value={text}

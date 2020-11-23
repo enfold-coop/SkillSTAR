@@ -1,12 +1,24 @@
-import React from "react";
+import React, { FC } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { Button } from "react-native-paper";
 import CustomColors from "../../styles/Colors";
 
-export const DataVerificationListItem = () => {
+type Props = {
+	instruction: string;
+	stepAttempt: {};
+};
+
+export const DataVerificationListItem: FC<Props> = (props) => {
+	let { instruction, stepAttempt } = props;
+
+	/**
+	 * - toggle active color of buttons
+	 * -
+	 */
+
 	return (
 		<View style={styles.container}>
-			<Text style={styles.stepTitle}>{"Some question"}</Text>
+			<Text style={styles.stepTitle}>{instruction}</Text>
 			<View style={styles.questionContainer}>
 				<Text style={styles.question}>Task Completed?</Text>
 				<View style={styles.btnContainer}>
