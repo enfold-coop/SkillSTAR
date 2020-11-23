@@ -147,6 +147,7 @@ const styles = StyleSheet.create({
 		flexDirection: "row",
 		justifyContent: "flex-end",
 		marginBottom: 100,
+		marginRight: 20,
 	},
 	nextButton: {
 		width: 144,
