@@ -1,7 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import React, {useContext, useEffect, useState} from "react";
+import React, {ReactElement, useContext, useEffect, useState} from "react";
 import {Image, ImageBackground, StyleSheet, View} from "react-native";
-import {Button, TextInput} from "react-native-paper";
+import {Button, Text, TextInput} from "react-native-paper";
 import {AuthContext} from '../context/AuthProvider';
 import {RootNavProps as Props} from "../navigation/root_types";
 import {ApiService} from '../services/ApiService';
@@ -12,13 +12,28 @@ import {User} from '../types/User';
 export default function LandingScreen({navigation}: Props<"LandingScreen">) {
   let [email, setEmail] = useState("");
   let [password, setPassword] = useState("");
+  let [isValid, setIsValid] = useState<boolean>(false);
+  let [errorMessage, setErrorMessage] = useState<string>('');
   const api = new ApiService();
   const context = useContext<AuthProviderProps>(AuthContext);
+
+  const _checkEmail = (inputText: string) => {
+    setErrorMessage('');
+    setIsValid(!!(inputText && password));
+    setEmail(inputText);
+  }
+
+  const _checkPassword = (inputText: string) => {
+    setErrorMessage('');
+    setIsValid(!!(email && inputText));
+    setPassword(inputText);
+  }
 
   useEffect(() => {
     AsyncStorage.getItem('user').then((userJson) => {
       if (userJson !== null) {
         const user: User = JSON.parse(userJson);
+        console.log('cached user', user);
         if (user && user.token) {
           context.state.user = user;
           navigation.navigate("BaselineAssessmentScreen");
@@ -27,9 +42,8 @@ export default function LandingScreen({navigation}: Props<"LandingScreen">) {
     }).catch(error => {
       console.error('Error retrieving user:', error)
     });
-
   });
-  
+
   return (
     <ImageBackground
       source={require("../assets/images/sunrise-muted.png")}
@@ -58,7 +72,7 @@ export default function LandingScreen({navigation}: Props<"LandingScreen">) {
           mode="outlined"
           value={email}
           style={styles.input}
-          onChangeText={(text) => setEmail(text)}
+          onChangeText={(text) => _checkEmail(text)}
         />
         <TextInput
           textContentType="password"
@@ -68,19 +82,28 @@ export default function LandingScreen({navigation}: Props<"LandingScreen">) {
           mode="outlined"
           value={password}
           style={styles.input}
-          onChangeText={(text) => setPassword(text)}
+          onChangeText={(text) => _checkPassword(text)}
         />
-        {/* </View> */}
+        <View style={{display: errorMessage === '' ? 'none' : 'flex', ...styles.container}}>
+          <Text style={styles.error}>{errorMessage}</Text>
+        </View>
         <Button
           style={styles.button}
           color={CustomColors.uva.blue}
           mode="contained"
-          onPress={() => api.login(email, password).then(user => {
-            context.state.user = user;
-            console.log('user', user);
-            navigation.navigate("BaselineAssessmentScreen");
-          })
-          }
+          disabled={!isValid}
+          onPress={() => {
+            setErrorMessage('');
+            api.login(email, password).then(user => {
+              console.log('user', user);
+              if (user) {
+                context.state.user = user;
+                navigation.navigate("BaselineAssessmentScreen");
+              } else {
+                setErrorMessage('Invalid username or password. Please check your login information and try again.');
+              }
+            })
+          }}
         >
           Log In
         </Button>
@@ -121,4 +144,12 @@ const styles = StyleSheet.create({
     width: 200,
     height: 200,
   },
+  error: {
+    textAlign: 'center',
+    alignSelf: "center",
+    color: CustomColors.uva.warning,
+    fontWeight: 'bold',
+    alignContent: "center",
+    justifyContent: "center",
+  }
 });

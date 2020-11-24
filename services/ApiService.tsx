@@ -26,12 +26,15 @@ export class ApiService {
       });
 
       const user: User = await response.json();
+      console.log('login response user', user);
 
       if (user.token) {
         await AsyncStorage.setItem("user_token", user.token);
+        await AsyncStorage.setItem("user", JSON.stringify(user));
+        return user;
+      } else {
+        return null;
       }
-      await AsyncStorage.setItem("user", JSON.stringify(user));
-      return user;
     } catch (e) {
       console.error(e);
       return null;
