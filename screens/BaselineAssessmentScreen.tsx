@@ -6,6 +6,7 @@ import { RootNavProps } from "../navigation/root_types";
 import { Session } from "../types/CHAIN/Session";
 import CustomColors from "../styles/Colors";
 import AppHeader from "../components/Header/AppHeader";
+import DataVerificationList from "../components/Probe/DataVerificationList";
 import { DataVerificationListItem } from "../components/Probe/index";
 import { StepAttempt } from "../types/CHAIN/StepAttempt";
 import { chainSteps } from "../data/chainSteps";
@@ -62,9 +63,13 @@ const BaselineAssessmentScreen: FC<Props> = (props) => {
 					</Text>
 				</View>
 				<View style={styles.formContainer}>
-					<DataVerificationListItem
+					{/* <DataVerificationListItem
 						instruction={chainSteps[stepIndex].instruction}
 						stepAttempt={session.data[stepIndex]}
+					/> */}
+					<DataVerificationList
+						session={session}
+						steps={chainSteps}
 					/>
 					{/* <TextInput
 						label="Email"

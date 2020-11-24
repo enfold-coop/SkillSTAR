@@ -52,8 +52,8 @@ const styles = StyleSheet.create({
 		alignSelf: "center",
 	},
 	switch: {
-		margin: 60,
+		margin: 20,
 		alignSelf: "center",
-		transform: [{ scaleX: 2 }, { scaleY: 2 }],
+		transform: [{ scaleX: 1 }, { scaleY: 1 }],
 	},
 });
