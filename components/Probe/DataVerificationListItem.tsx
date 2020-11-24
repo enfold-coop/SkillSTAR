@@ -3,7 +3,6 @@ import { StyleSheet, Text, View } from "react-native";
 import ToggleButtons from "../GlobalComponents/ToggleButtons";
 import CustomColors from "../../styles/Colors";
 import ListItemSwitch from "./ListItemSwitch";
-import DataItemCheckBox from "./DataItemCheckBox";
 
 type Props = {
 	instruction: string;
