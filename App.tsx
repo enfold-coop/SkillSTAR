@@ -7,8 +7,8 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 import useCachedResources from "./hooks/useCachedResources";
 import useColorScheme from "./hooks/useColorScheme";
 import Navigation from "./navigation";
-
-import { Provider } from "./context/Provider";
+import { AuthContext } from "./context/AuthProvider";
+import { ChainProvider } from "./context/ChainProvider";
 import * as Font from "expo-font";
 
 let customFonts = {
@@ -37,9 +37,11 @@ export default function App() {
 	} else {
 		return (
 			<SafeAreaProvider>
-				<Provider>
-					<Navigation colorScheme={colorScheme} />
-				</Provider>
+				<AuthContext>
+					<ChainProvider>
+						<Navigation colorScheme={colorScheme} />
+					</ChainProvider>
+				</AuthContext>
 			</SafeAreaProvider>
 		);
 	}
