@@ -3,6 +3,7 @@ import { StyleSheet, Text, View } from "react-native";
 import ToggleButtons from "../GlobalComponents/ToggleButtons";
 import CustomColors from "../../styles/Colors";
 import ListItemSwitch from "./ListItemSwitch";
+import DataItemCheckBox from "./DataItemCheckBox";
 
 type Props = {
 	instruction: string;
@@ -11,26 +12,13 @@ type Props = {
 
 export const DataVerificationListItem: FC<Props> = (props) => {
 	const { instruction, stepAttempt } = props;
-	let [instruct, setInstruction] = useState(instruction);
-
-	/**
-	 * - toggle active color of buttons
-	 */
-
-	useEffect(() => {}, [instruction]);
 
 	return (
 		<View style={styles.container}>
 			<Text style={styles.stepTitle}>Step: "{instruction}"</Text>
 			<View style={styles.questionContainer}>
 				<Text style={styles.question}>Was the task Completed?</Text>
-				{/* <View style={styles.btnContainer}> */}
 				<ListItemSwitch instruction={instruction} />
-				{/* <ToggleButtons
-						btnStyle={styles.yesNoBtn}
-						stepTitle={instruction}
-					/> */}
-				{/* </View> */}
 			</View>
 			<View style={styles.questionContainer}>
 				<Text style={styles.question}>Challenging Behavior?</Text>
