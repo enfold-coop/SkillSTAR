@@ -4,7 +4,7 @@ import { useNavigation } from "@react-navigation/native";
 import { Button, Card } from "react-native-paper";
 import { RootNavProps } from "../../navigation/root_types";
 import CustomColors from "../../styles/Colors";
-import { ChainContext } from "../../context/ChainProvider";
+import { Context } from "../../context/Provider";
 // import {
 // 	ChainStack,
 // 	ChainNavigator,

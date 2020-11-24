@@ -1,7 +1,8 @@
-import React, { FC } from "react";
+import React, { FC, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
-import { Button } from "react-native-paper";
+import { Button, ToggleButton } from "react-native-paper";
 import CustomColors from "../../styles/Colors";
+import ToggleButtons from "../GlobalComponents/ToggleButtons";
 
 type Props = {
 	instruction: string;
@@ -9,8 +10,9 @@ type Props = {
 };
 
 export const DataVerificationListItem: FC<Props> = (props) => {
-	let { instruction, stepAttempt } = props;
-
+	const { instruction, stepAttempt } = props;
+	const [activeBtn, setActiveBtn] = useState(false);
+	const [value, setValue] = React.useState("left");
 	/**
 	 * - toggle active color of buttons
 	 * -
@@ -22,23 +24,13 @@ export const DataVerificationListItem: FC<Props> = (props) => {
 			<View style={styles.questionContainer}>
 				<Text style={styles.question}>Task Completed?</Text>
 				<View style={styles.btnContainer}>
-					<Button mode="contained" style={styles.yesNoBtn}>
-						Yes
-					</Button>
-					<Button mode="contained" style={styles.yesNoBtn}>
-						No
-					</Button>
+					<ToggleButtons btnStyle={styles.yesNoBtn} />
 				</View>
 			</View>
 			<View style={styles.questionContainer}>
 				<Text style={styles.question}>Challenging Behavior?</Text>
 				<View style={styles.btnContainer}>
-					<Button mode="contained" style={styles.yesNoBtn}>
-						Yes
-					</Button>
-					<Button mode="contained" style={styles.yesNoBtn}>
-						No
-					</Button>
+					<ToggleButtons btnStyle={styles.yesNoBtn} />
 				</View>
 			</View>
 		</View>
@@ -82,6 +74,5 @@ const styles = StyleSheet.create({
 		margin: 5,
 		marginLeft: 20,
 		marginRight: 20,
-		backgroundColor: CustomColors.uva.blue,
 	},
 });
