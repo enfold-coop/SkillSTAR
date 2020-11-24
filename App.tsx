@@ -21,7 +21,7 @@ export default function App() {
   const isLoadingComplete = useCachedResources();
   const colorScheme = useColorScheme();
   const [fontsLoaded, setFontsLoaded] = useState<boolean>(false);
-  const [authState, setAuthState] = useState<AuthProviderState>({user: null});
+  const authState: AuthProviderState = {user: null};
 
   const _loadFonts = async () => {
     await Font.loadAsync(customFonts);
