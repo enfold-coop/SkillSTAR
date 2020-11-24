@@ -1,15 +1,30 @@
-import React, { FC, useState } from "react";
+import React, { FC, useState, useEffect } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { Button } from "react-native-paper";
+import CustomColors from "../../styles/Colors";
 
 type Props = {
 	btnStyle: {};
+	stepTitle: string;
 };
 
 const ToggleButtons: FC<Props> = (props) => {
-	let { btnStyle } = props;
+	let { btnStyle, stepTitle } = props;
 	let [btn1Mode, setBtn1Mode] = useState("outlined");
 	let [btn2Mode, setBtn2Mode] = useState("outlined");
+	let [title, setTitle] = useState("");
+
+	useEffect(() => {
+		if (title === "" || title != stepTitle) {
+			setTitle(stepTitle);
+			reset();
+		}
+	});
+
+	const reset = () => {
+		setBtn1Mode("outlined");
+		setBtn2Mode("outlined");
+	};
 
 	const toggleBtn = (btn: string) => {
 		if (btn === "btn1") {
@@ -28,6 +43,7 @@ const ToggleButtons: FC<Props> = (props) => {
 	return (
 		<View style={styles.container}>
 			<Button
+				color={CustomColors.uva.blue}
 				style={btnStyle}
 				mode={btn1Mode}
 				onPress={() => {
@@ -37,6 +53,7 @@ const ToggleButtons: FC<Props> = (props) => {
 				Yes
 			</Button>
 			<Button
+				color={CustomColors.uva.blue}
 				style={btnStyle}
 				mode={btn2Mode}
 				onPress={() => {

@@ -24,13 +24,19 @@ export const DataVerificationListItem: FC<Props> = (props) => {
 			<View style={styles.questionContainer}>
 				<Text style={styles.question}>Task Completed?</Text>
 				<View style={styles.btnContainer}>
-					<ToggleButtons btnStyle={styles.yesNoBtn} />
+					<ToggleButtons
+						btnStyle={styles.yesNoBtn}
+						stepTitle={instruction}
+					/>
 				</View>
 			</View>
 			<View style={styles.questionContainer}>
 				<Text style={styles.question}>Challenging Behavior?</Text>
 				<View style={styles.btnContainer}>
-					<ToggleButtons btnStyle={styles.yesNoBtn} />
+					<ToggleButtons
+						btnStyle={styles.yesNoBtn}
+						stepTitle={instruction}
+					/>
 				</View>
 			</View>
 		</View>
