@@ -1,4 +1,5 @@
-import React, {useContext, useState} from "react";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import React, {useContext, useEffect, useState} from "react";
 import {Image, ImageBackground, StyleSheet, View} from "react-native";
 import {Button, TextInput} from "react-native-paper";
 import {AuthContext} from '../context/AuthProvider';
@@ -6,6 +7,7 @@ import {RootNavProps as Props} from "../navigation/root_types";
 import {ApiService} from '../services/ApiService';
 import CustomColors from "../styles/Colors";
 import {AuthProviderProps} from '../types/AuthProvider';
+import {User} from '../types/User';
 
 export default function LandingScreen({navigation}: Props<"LandingScreen">) {
   let [email, setEmail] = useState("");
@@ -13,6 +15,21 @@ export default function LandingScreen({navigation}: Props<"LandingScreen">) {
   const api = new ApiService();
   const context = useContext<AuthProviderProps>(AuthContext);
 
+  useEffect(() => {
+    AsyncStorage.getItem('user').then((userJson) => {
+      if (userJson !== null) {
+        const user: User = JSON.parse(userJson);
+        if (user && user.token) {
+          context.state.user = user;
+          navigation.navigate("BaselineAssessmentScreen");
+        }
+      }
+    }).catch(error => {
+      console.error('Error retrieving user:', error)
+    });
+
+  });
+  
   return (
     <ImageBackground
       source={require("../assets/images/sunrise-muted.png")}
