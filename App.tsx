@@ -37,11 +37,11 @@ export default function App() {
 	} else {
 		return (
 			<SafeAreaProvider>
-				<AuthContext>
+				<AuthContext.Provider>
 					<ChainProvider>
 						<Navigation colorScheme={colorScheme} />
 					</ChainProvider>
-				</AuthContext>
+				</AuthContext.Provider>
 			</SafeAreaProvider>
 		);
 	}
