@@ -8,6 +8,7 @@ export class ApiService {
     login: `${this.apiUrl}/login_password`,
     resetPassword: `${this.apiUrl}/reset_password`,
     refreshSession: `${this.apiUrl}/session`,
+    // baselineAssessment: `${this.apiUrl}/baseline_assessment`,
   };
 
   constructor() {
@@ -36,4 +37,12 @@ export class ApiService {
       return null;
     }
   }
+
+  async logout(): Promise<void> {
+    await AsyncStorage.removeItem("user_token");
+    return AsyncStorage.removeItem("user");
+  }
+
+  // async addBaselineAssessment(data): Promise<void> {
+  // }
 }

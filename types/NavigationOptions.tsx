@@ -1,4 +1,5 @@
 import {StackNavigationOptions} from '@react-navigation/stack';
+import React from 'react';
 import CustomColors from '../styles/Colors';
 
 export const screenOpts: StackNavigationOptions = {
