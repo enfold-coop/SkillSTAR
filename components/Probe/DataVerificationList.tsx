@@ -3,24 +3,18 @@ import { StyleSheet, Text, View, FlatList } from "react-native";
 import { DataVerificationListItem } from "./DataVerificationListItem";
 
 type Props = {
-	session: undefined;
-	steps: [];
+	session: {};
 };
 
 const DataVerificationList: FC<Props> = (props) => {
-	let { session, steps } = props;
-	console.log(steps);
+	let { session } = props;
 
 	return (
 		<View>
-			<Text>testing</Text>
 			<FlatList
 				data={session.data}
 				renderItem={({ item, index }) => (
-					<DataVerificationListItem
-						instruction={steps[index].instruction}
-						stepAttempt={item}
-					/>
+					<DataVerificationListItem stepAttempt={item} />
 				)}
 				keyExtractor={(item) => item.id}
 			/>

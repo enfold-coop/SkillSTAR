@@ -25,7 +25,7 @@ const BaselineAssessmentScreen: FC<Props> = (props) => {
 
 	const createAttempts = () => {
 		chainSteps.forEach((e, i) => {
-			session.addStepData(new StepAttempt(chainSteps[i].step));
+			session.addStepData(new StepAttempt(chainSteps[i]));
 		});
 	};
 
@@ -67,10 +67,7 @@ const BaselineAssessmentScreen: FC<Props> = (props) => {
 						instruction={chainSteps[stepIndex].instruction}
 						stepAttempt={session.data[stepIndex]}
 					/> */}
-					<DataVerificationList
-						session={session}
-						steps={chainSteps}
-					/>
+					<DataVerificationList session={session} />
 					{/* <TextInput
 						label="Email"
 						value={text}

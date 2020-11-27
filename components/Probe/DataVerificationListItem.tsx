@@ -5,16 +5,17 @@ import CustomColors from "../../styles/Colors";
 import ListItemSwitch from "./ListItemSwitch";
 
 type Props = {
-	instruction: string;
 	stepAttempt: {};
 };
 
 export const DataVerificationListItem: FC<Props> = (props) => {
-	const { instruction, stepAttempt } = props;
+	const { stepId, instruction } = props.stepAttempt;
 
 	return (
 		<View style={styles.container}>
-			<Text style={styles.stepTitle}>Step: "{instruction}"</Text>
+			<Text style={styles.stepTitle}>
+				Step #{stepId}: "{instruction}"
+			</Text>
 			<View style={styles.questionContainer}>
 				<Text style={styles.question}>Was the task Completed?</Text>
 				<ListItemSwitch instruction={instruction} />
@@ -30,7 +31,7 @@ export const DataVerificationListItem: FC<Props> = (props) => {
 const styles = StyleSheet.create({
 	container: {
 		borderWidth: 1,
-		borderRadius: 5,
+		borderRadius: 10,
 		borderColor: CustomColors.uva.sky,
 		flexDirection: "column",
 		justifyContent: "space-around",
@@ -38,20 +39,22 @@ const styles = StyleSheet.create({
 		margin: 5,
 		marginLeft: 40,
 		marginRight: 40,
-		backgroundColor: "rgba(255,255,255,0.5)",
+		// backgroundColor: "rgba(255,255,255,0.9)",
+		backgroundColor: CustomColors.uva.sky,
 	},
 	questionContainer: {
 		flexDirection: "row",
 		alignContent: "space-around",
-		justifyContent: "space-around",
+		justifyContent: "space-between",
 		margin: 10,
-		marginBottom: 20,
+		marginBottom: 10,
 	},
 	question: {
-		fontSize: 30,
+		fontSize: 24,
 		fontWeight: "400",
-		textAlign: "center",
+		width: 300,
 		alignSelf: "center",
+		color: "#000",
 	},
 	stepTitle: {
 		fontSize: 24,
