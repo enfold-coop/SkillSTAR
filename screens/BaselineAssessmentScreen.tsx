@@ -27,6 +27,7 @@ const BaselineAssessmentScreen: FC<Props> = (props) => {
 		chainSteps.forEach((e, i) => {
 			session.addStepData(new StepAttempt(chainSteps[i]));
 		});
+		console.log(session.data[0]);
 	};
 
 	useEffect(() => {

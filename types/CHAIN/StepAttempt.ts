@@ -6,21 +6,18 @@ interface ChallengingBehavior {
 
 export class StepAttempt {
 	date: Date;
+	instruction: string;
 	stepId: number;
 	step: {};
 	wasPrompted?: boolean;
 	promptLevel?: number;
-	instruction: string;
 	challengingBehavior?: ChallengingBehavior;
 
-	constructor(step: {}) {
-		console.log(step);
+	constructor(step: StepAttempt) {
 		let { instruction, stepId } = step;
 		this.date = new Date();
 		this.step = step;
 		this.stepId = stepId;
-		console.log(this.stepId);
-
 		this.instruction = instruction;
 		this.challengingBehavior = {
 			didOccur: false,

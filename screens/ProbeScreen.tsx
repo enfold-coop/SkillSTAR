@@ -20,7 +20,7 @@ const BaselineAssessmentScreen: FC<Props> = (props) => {
 	let [readyToSubmit, setReadyToSubmit] = useState(false);
 	let [text, setText] = useState("");
 	let { session } = props.route.params;
-	console.log(session);
+	// console.log(session);
 
 	const incrIndex = () => {
 		stepIndex += 1;
