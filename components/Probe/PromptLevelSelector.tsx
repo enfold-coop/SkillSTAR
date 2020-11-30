@@ -20,7 +20,7 @@ export default function PromptLevelSelector(props) {
 
 const styles = StyleSheet.create({
 	container: {
-		display: "none",
+		display: "flex",
 		flex: 1,
 		marginLeft: 20,
 		backgroundColor: "#f0f",

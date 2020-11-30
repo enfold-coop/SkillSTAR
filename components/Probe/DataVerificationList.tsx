@@ -18,7 +18,7 @@ const DataVerificationList: FC<Props> = (props) => {
 				renderItem={({ item }) => (
 					<DataVerificationListItem stepAttempt={item} />
 				)}
-				keyExtractor={() => shortid}
+				keyExtractor={() => shortid()}
 			/>
 		</View>
 	);

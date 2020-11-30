@@ -3,13 +3,18 @@ import { StyleSheet, Text, View } from "react-native";
 import ToggleButtons from "../GlobalComponents/ToggleButtons";
 import CustomColors from "../../styles/Colors";
 import ListItemSwitch from "./ListItemSwitch";
+import { StepAttempt } from "../../types/CHAIN/StepAttempt";
 
 type Props = {
-	stepAttempt: {};
+	stepAttempt: StepAttempt;
 };
 
 export const DataVerificationListItem: FC<Props> = (props) => {
 	const { stepId, instruction } = props.stepAttempt;
+
+	const Switch = (props) => {
+		return <ListItemSwitch instruction={props.instruction} />;
+	};
 
 	return (
 		<View style={styles.container}>
@@ -18,11 +23,11 @@ export const DataVerificationListItem: FC<Props> = (props) => {
 			</Text>
 			<View style={styles.questionContainer}>
 				<Text style={styles.question}>Was the task Completed?</Text>
-				<ListItemSwitch instruction={instruction} />
+				<Switch instruction={instruction} />
 			</View>
 			<View style={styles.questionContainer}>
 				<Text style={styles.question}>Challenging Behavior?</Text>
-				<ListItemSwitch instruction={instruction} />
+				<Switch instruction={instruction} />
 			</View>
 		</View>
 	);
