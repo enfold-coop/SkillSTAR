@@ -64,16 +64,7 @@ const BaselineAssessmentScreen: FC<Props> = (props) => {
 					</Text>
 				</View>
 				<View style={styles.formContainer}>
-					{/* <DataVerificationListItem
-						instruction={chainSteps[stepIndex].instruction}
-						stepAttempt={session.data[stepIndex]}
-					/> */}
 					<DataVerificationList session={session.data} />
-					{/* <TextInput
-						label="Email"
-						value={text}
-						onChangeText={(text) => setText(text)}
-					/> */}
 				</View>
 
 				<View style={styles.nextBackBtnsContainer}>
