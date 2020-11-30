@@ -1,9 +1,10 @@
 import React, { FC, useState, useEffect } from "react";
 import { StyleSheet, Text, View, FlatList } from "react-native";
+import { StepAttempt } from "../../types/CHAIN/StepAttempt";
 import { DataVerificationListItem } from "./DataVerificationListItem";
 
 type Props = {
-	session: [];
+	session: StepAttempt[];
 };
 
 const DataVerificationList: FC<Props> = (props) => {
