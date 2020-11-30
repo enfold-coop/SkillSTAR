@@ -25,9 +25,9 @@ const BaselineAssessmentScreen: FC<Props> = (props) => {
 
 	const createAttempts = () => {
 		chainSteps.forEach((e, i) => {
-			session.addStepData(new StepAttempt(chainSteps[i]));
+			let { stepId, instruction } = chainSteps[i];
+			session.addStepData(new StepAttempt(stepId, instruction));
 		});
-		console.log(session.data[0]);
 	};
 
 	useEffect(() => {
@@ -68,7 +68,7 @@ const BaselineAssessmentScreen: FC<Props> = (props) => {
 						instruction={chainSteps[stepIndex].instruction}
 						stepAttempt={session.data[stepIndex]}
 					/> */}
-					<DataVerificationList session={session} />
+					<DataVerificationList session={session.data} />
 					{/* <TextInput
 						label="Email"
 						value={text}

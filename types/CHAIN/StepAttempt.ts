@@ -8,15 +8,12 @@ export class StepAttempt {
 	date: Date;
 	instruction: string;
 	stepId: number;
-	step: {};
 	wasPrompted?: boolean;
 	promptLevel?: number;
 	challengingBehavior?: ChallengingBehavior;
 
-	constructor(step: StepAttempt) {
-		let { instruction, stepId } = step;
+	constructor(stepId: number, instruction: string) {
 		this.date = new Date();
-		this.step = step;
 		this.stepId = stepId;
 		this.instruction = instruction;
 		this.challengingBehavior = {

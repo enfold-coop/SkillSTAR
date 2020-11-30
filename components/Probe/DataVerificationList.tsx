@@ -1,26 +1,22 @@
 import React, { FC, useState, useEffect } from "react";
 import { StyleSheet, Text, View, FlatList } from "react-native";
 import { DataVerificationListItem } from "./DataVerificationListItem";
-import RandomIntGenerator from "../../_util/KeyGenerator";
 
 type Props = {
-	session: {};
+	session: [];
 };
 
 const DataVerificationList: FC<Props> = (props) => {
 	let { session } = props;
-	// console.log(session);
 
 	return (
 		<View>
 			<FlatList
-				data={session.data}
-				renderItem={({ item, index }) => (
+				data={session}
+				renderItem={({ item }) => (
 					<DataVerificationListItem stepAttempt={item} />
 				)}
-				keyExtractor={() => {
-					RandomIntGenerator(session.data.length);
-				}}
+				keyExtractor={({ item, index }) => index}
 			/>
 		</View>
 	);
