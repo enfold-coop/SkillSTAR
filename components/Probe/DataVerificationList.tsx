@@ -1,4 +1,5 @@
 import React, { FC, useState, useEffect } from "react";
+import shortid from "shortid";
 import { StyleSheet, Text, View, FlatList } from "react-native";
 import { StepAttempt } from "../../types/CHAIN/StepAttempt";
 import { DataVerificationListItem } from "./DataVerificationListItem";
@@ -17,7 +18,7 @@ const DataVerificationList: FC<Props> = (props) => {
 				renderItem={({ item }) => (
 					<DataVerificationListItem stepAttempt={item} />
 				)}
-				keyExtractor={({ item, index }) => index}
+				keyExtractor={() => shortid}
 			/>
 		</View>
 	);
