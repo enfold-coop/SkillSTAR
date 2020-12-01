@@ -19,10 +19,10 @@ type Props = {
 /**
  *
  */
-function BaselineAssessmentScreen({ route }: Props): ReactNode {
+function DataVerificationScreen({ route }: Props): ReactNode {
 	const navigation = useNavigation();
 	let [stepIndex, setStepIndex] = useState(0);
-	let [sessionReady, setSessionReady] = useState(false);
+	let [readyToSubmit, setReadyToSubmit] = useState(false);
 	let [session, setSession] = useState(new Session());
 	let [text, setText] = useState("");
 
@@ -31,17 +31,29 @@ function BaselineAssessmentScreen({ route }: Props): ReactNode {
 			let { stepId, instruction } = chainSteps[i];
 			session.addStepData(new StepAttempt(stepId, instruction));
 		});
-		setSessionReady(true);
 	};
 
 	/** START: Lifecycle calls */
 	useEffect(() => {
 		if (!session.data.length) {
 			createAttempts();
-		} else {
 		}
-	}, [session.data.length]);
+	});
 	/** END: Lifecycle calls */
+
+	/** START: Indexing incrementation / decrementation */
+	const incrIndex = () => {
+		stepIndex += 1;
+		setStepIndex(stepIndex);
+	};
+
+	const decIndex = () => {
+		if (stepIndex > 0) {
+			stepIndex -= 1;
+			setStepIndex(stepIndex);
+		}
+	};
+	/** END: Indexing incrementation / decrementation */
 
 	return (
 		<ImageBackground
@@ -49,38 +61,56 @@ function BaselineAssessmentScreen({ route }: Props): ReactNode {
 			resizeMode={"cover"}
 			style={styles.image}
 		>
-			{sessionReady && (
-				<View style={styles.container}>
-					<AppHeader name="Brushing Teeth" />
-					<View style={styles.instructionContainer}>
-						<Text style={styles.screenHeader}>Probe Session</Text>
-						<Text style={styles.instruction}>
-							Please instruct the child to brush their teeth. As
-							they do, please complete this survey for each step.
-						</Text>
-					</View>
-					<View style={styles.formContainer}>
-						{<DataVerificationList session={session.data} />}
-					</View>
-
-					<View style={styles.nextBackBtnsContainer}>
-						<Button
-							style={styles.nextButton}
-							color={CustomColors.uva.blue}
-							mode="contained"
-							onPress={() => {
-								if (stepIndex + 1 <= chainSteps.length - 1) {
-									incrIndex();
-								} else {
-									setReadyToSubmit(true);
-								}
-							}}
-						>
-							NEXT
-						</Button>
-					</View>
+			<View style={styles.container}>
+				<AppHeader name="Brushing Teeth" />
+				<View style={styles.instructionContainer}>
+					<Text style={styles.screenHeader}>Probe Session</Text>
+					<Text style={styles.instruction}>
+						Please instruct the child to brush their teeth. As they
+						do, please complete this survey for each step.
+					</Text>
 				</View>
-			)}
+				<View style={styles.formContainer}>
+					<DataVerificationList session={session.data} />
+				</View>
+
+				<View style={styles.nextBackBtnsContainer}>
+					<Button
+						style={styles.backButton}
+						color={CustomColors.uva.blue}
+						mode="contained"
+						onPress={() => {
+							decIndex();
+						}}
+					>
+						BACK
+					</Button>
+					<Button
+						style={styles.nextButton}
+						color={CustomColors.uva.blue}
+						mode="contained"
+						onPress={() => {
+							if (stepIndex + 1 <= chainSteps.length - 1) {
+								incrIndex();
+							} else {
+								setReadyToSubmit(true);
+							}
+						}}
+					>
+						NEXT
+					</Button>
+				</View>
+				{readyToSubmit && (
+					<Button
+						mode="contained"
+						onPress={() => {
+							navigation.navigate("ChainsHomeScreen");
+						}}
+					>
+						Submit
+					</Button>
+				)}
+			</View>
 		</ImageBackground>
 	);
 }
@@ -131,4 +161,4 @@ const styles = StyleSheet.create({
 	inputField: {},
 });
 
-export default BaselineAssessmentScreen;
+export default DataVerificationScreen;

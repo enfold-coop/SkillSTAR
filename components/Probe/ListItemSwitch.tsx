@@ -8,6 +8,7 @@ type Props = {
 	instruction: string;
 	type: number;
 	id: number;
+	defaultValue: boolean;
 };
 
 const ListItemSwitch: FC<Props> = (props) => {
@@ -20,8 +21,8 @@ const ListItemSwitch: FC<Props> = (props) => {
 	 *
 	 */
 
-	let { instruction, type } = props;
-	const [isSwitchOn, setIsSwitchOn] = useState(false);
+	let { instruction, type, defaultValue } = props;
+	const [isSwitchOn, setIsSwitchOn] = useState(defaultValue);
 
 	let [label, setLabel] = useState("No");
 
@@ -59,9 +60,10 @@ const ListItemSwitch: FC<Props> = (props) => {
 	useEffect(() => {
 		setQuestionType();
 	}, [type]);
-	useEffect(() => {
-		setIsSwitchOn(false);
-	}, [instruction]);
+
+	// useEffect(() => {
+	// 	setIsSwitchOn(false);
+	// }, [instruction]);
 
 	useEffect(() => {
 		toggleLabel();

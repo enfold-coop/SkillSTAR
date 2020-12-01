@@ -10,7 +10,7 @@ type Props = {
 };
 
 export const DataVerificationListItem: FC<Props> = (props) => {
-	const questionTypes = {
+	const QUESTION_TYPES = {
 		completion: 0,
 		challBehav: 1,
 	};
@@ -28,7 +28,8 @@ export const DataVerificationListItem: FC<Props> = (props) => {
 				<Text style={styles.question}>Was the task Completed?</Text>
 				<ListItemSwitch
 					instruction={instruction}
-					type={questionTypes.completion}
+					type={QUESTION_TYPES.completion}
+					defaultValue={true}
 					id={stepId}
 				/>
 			</View>
@@ -36,7 +37,8 @@ export const DataVerificationListItem: FC<Props> = (props) => {
 				<Text style={styles.question}>Challenging Behavior?</Text>
 				<ListItemSwitch
 					instruction={instruction}
-					type={questionTypes.challBehav}
+					type={QUESTION_TYPES.challBehav}
+					defaultValue={false}
 					id={stepId}
 				/>
 			</View>
