@@ -7,6 +7,7 @@ import CustomColors from "../../styles/Colors";
 type Props = {
 	instruction: string;
 	type: number;
+	id: number;
 };
 
 const ListItemSwitch: FC<Props> = (props) => {
@@ -14,7 +15,8 @@ const ListItemSwitch: FC<Props> = (props) => {
 	/**
 	 *
 	 * use context api, here:
-	 * -- send collected data to Context / server
+	 * -- send collected data to Context / server:
+	 * ---- set switch value to type, on stepId
 	 *
 	 */
 

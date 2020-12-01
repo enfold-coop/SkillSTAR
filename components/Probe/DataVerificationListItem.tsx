@@ -29,6 +29,7 @@ export const DataVerificationListItem: FC<Props> = (props) => {
 				<ListItemSwitch
 					instruction={instruction}
 					type={questionTypes.completion}
+					id={stepId}
 				/>
 			</View>
 			<View style={styles.questionContainer}>
@@ -36,6 +37,7 @@ export const DataVerificationListItem: FC<Props> = (props) => {
 				<ListItemSwitch
 					instruction={instruction}
 					type={questionTypes.challBehav}
+					id={stepId}
 				/>
 			</View>
 		</View>
