@@ -1,4 +1,4 @@
-import React, { FC, useState, useEffect } from "react";
+import React, { useState, useEffect, ReactNode } from "react";
 import { StyleSheet, Text, View, ImageBackground } from "react-native";
 import { Button } from "react-native-paper";
 import { useNavigation } from "@react-navigation/native";
@@ -16,7 +16,10 @@ type Props = {
 	navigation: RootNavProps<"BaselineAssessmentScreen">;
 };
 
-const BaselineAssessmentScreen: FC<Props> = (props) => {
+/**
+ *
+ */
+function BaselineAssessmentScreen({ route }: Props): ReactNode {
 	const navigation = useNavigation();
 	let [stepIndex, setStepIndex] = useState(0);
 	let [readyToSubmit, setReadyToSubmit] = useState(false);
@@ -30,12 +33,15 @@ const BaselineAssessmentScreen: FC<Props> = (props) => {
 		});
 	};
 
+	/** START: Lifecycle calls */
 	useEffect(() => {
 		if (!session.data.length) {
 			createAttempts();
 		}
 	});
+	/** END: Lifecycle calls */
 
+	/** START: Indexing incrementation / decrementation */
 	const incrIndex = () => {
 		stepIndex += 1;
 		setStepIndex(stepIndex);
@@ -47,6 +53,7 @@ const BaselineAssessmentScreen: FC<Props> = (props) => {
 			setStepIndex(stepIndex);
 		}
 	};
+	/** END: Indexing incrementation / decrementation */
 
 	return (
 		<ImageBackground
@@ -106,7 +113,7 @@ const BaselineAssessmentScreen: FC<Props> = (props) => {
 			</View>
 		</ImageBackground>
 	);
-};
+}
 
 const styles = StyleSheet.create({
 	container: {

@@ -10,10 +10,6 @@ export default function PromptLevelSelector(props) {
 	return (
 		<View style={styles.container}>
 			<Text>YOYO</Text>
-			<Text>YOYO</Text>
-			<Text>YOYO</Text>
-			<Text>YOYO</Text>
-			<Text>YOYO</Text>
 		</View>
 	);
 }

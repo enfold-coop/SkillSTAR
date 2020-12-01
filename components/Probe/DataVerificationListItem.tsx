@@ -10,11 +10,14 @@ type Props = {
 };
 
 export const DataVerificationListItem: FC<Props> = (props) => {
-	const { stepId, instruction } = props.stepAttempt;
-
-	const Switch = (props) => {
-		return <ListItemSwitch instruction={props.instruction} />;
+	const questionTypes = {
+		completion: 0,
+		challBehav: 1,
 	};
+	/**
+	 * use context api, here:
+	 */
+	const { stepId, instruction } = props.stepAttempt;
 
 	return (
 		<View style={styles.container}>
@@ -23,11 +26,17 @@ export const DataVerificationListItem: FC<Props> = (props) => {
 			</Text>
 			<View style={styles.questionContainer}>
 				<Text style={styles.question}>Was the task Completed?</Text>
-				<Switch instruction={instruction} />
+				<ListItemSwitch
+					instruction={instruction}
+					type={questionTypes.completion}
+				/>
 			</View>
 			<View style={styles.questionContainer}>
 				<Text style={styles.question}>Challenging Behavior?</Text>
-				<Switch instruction={instruction} />
+				<ListItemSwitch
+					instruction={instruction}
+					type={questionTypes.challBehav}
+				/>
 			</View>
 		</View>
 	);
@@ -44,7 +53,6 @@ const styles = StyleSheet.create({
 		margin: 5,
 		marginLeft: 40,
 		marginRight: 40,
-		// backgroundColor: "rgba(255,255,255,0.9)",
 		backgroundColor: CustomColors.uva.sky,
 	},
 	questionContainer: {
