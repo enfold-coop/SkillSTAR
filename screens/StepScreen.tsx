@@ -20,14 +20,13 @@ interface Props {
 }
 
 // Convert progress to "0.1 - 1.0" value
-const progressBarCalculation = (arr: Array, currStep: number): number => {
-	return currStep / arr.length;
+const progressBarCalculation = (len: number, currStep: number): number => {
+	return currStep / len;
 };
 
 const StepScreen: FC<Props> = (props) => {
 	const navigation = useNavigation();
 	let [visible, setVisible] = React.useState(false);
-	let [steps, setSteps] = useState([]);
 	let [stepIndex, setStepIndex] = useState<number>(0);
 	let [session, setSession] = useState(new Session());
 
@@ -53,17 +52,16 @@ const StepScreen: FC<Props> = (props) => {
 
 	const createAttempts = () => {
 		chainSteps.forEach((e, i) => {
-			session.addStepData(new StepAttempt(chainSteps[i].step));
+			let { stepId, instruction } = chainSteps[i];
+			session.addStepData(new StepAttempt(stepId, instruction));
 		});
 	};
 
 	useEffect(() => {
-		navigation.setOptions({ title: chainSteps[stepIndex].name });
-		setSteps(chainSteps);
 		if (!session.data.length) {
 			createAttempts();
 		}
-	});
+	}, []);
 
 	return (
 		<ImageBackground
@@ -73,29 +71,29 @@ const StepScreen: FC<Props> = (props) => {
 		>
 			<View style={styles.container}>
 				<AppHeader name={"Brush Teeth"} />
-				{session.data[stepIndex] && (
+				{/* {session.data[stepIndex] && (
 					<ChallengingBehavModal
 						visible={visible}
 						toggleModal={handleModalClose}
 						attempt={session.data[stepIndex]}
 					/>
-				)}
+				)} */}
 				<View style={styles.progress}>
 					<Text style={styles.headline}>
-						Step {chainSteps[stepIndex].step}:{" "}
+						Step {chainSteps[stepIndex].stepId}:{" "}
 						{chainSteps[stepIndex].instruction}
 					</Text>
 					<View style={styles.progressContainer}>
 						<ProgressBar
 							style={styles.progressBar}
 							progress={progressBarCalculation(
-								chainSteps,
+								chainSteps.length,
 								stepIndex
 							)}
 							color={CustomColors.uva.blue}
 						/>
 						<Text style={styles.progressText}>
-							Step {chainSteps[stepIndex].step} out of{" "}
+							Step {chainSteps[stepIndex].stepId} out of{" "}
 							{chainSteps.length}
 						</Text>
 					</View>
