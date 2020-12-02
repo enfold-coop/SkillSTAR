@@ -1,5 +1,5 @@
 import React, { FC, useState } from "react";
-import {StyleSheet, View, Image, ImageBackground} from "react-native";
+import { StyleSheet, View, Image, ImageBackground } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { Button, Card, Title } from "react-native-paper";
 import { RootNavProps } from "../navigation/root_types";
@@ -15,68 +15,70 @@ const PrepareMaterialsScreen: FC<Props> = (props) => {
 	const navigation = useNavigation();
 
 	return (
-    <ImageBackground
-      source={require("../assets/images/energy-burst-dark.jpg")}
-      resizeMode={'cover'}
-      style={styles.container}
-    >
-			<AppHeader name="Prepare Materials" />
-			<Card style={styles.listItem}>
-				<View style={styles.listItem}>
-					<Image
-						style={styles.itemIcon}
-						source={require("../assets/images/prep_materials_icon/toothbrush.png")}
-					/>
-					<Title style={styles.itemTitle}>Tooth Brush</Title>
-				</View>
-			</Card>
-			<Card style={styles.listItem}>
-				<View style={styles.listItem}>
-					<Image
-						style={styles.itemIcon}
-						source={require("../assets/images/prep_materials_icon/toothpaste.png")}
-					/>
-					<Title style={styles.itemTitle}>Tooth Paste</Title>
-				</View>
-			</Card>
-			<Card style={styles.listItem}>
-				<View style={styles.listItem}>
-					<Image
-						style={styles.itemIcon}
-						source={require("../assets/images/prep_materials_icon/towel.png")}
-					/>
-					<Title style={styles.itemTitle}>Towel</Title>
-				</View>
-			</Card>
-			<Card style={styles.listItem}>
-				<View style={styles.listItem}>
-					<Image
-						style={styles.itemIcon}
-						source={require("../assets/images/prep_materials_icon/water.png")}
-					/>
-					<Title style={styles.itemTitle}>Cup of Water</Title>
-				</View>
-			</Card>
-			<Card style={styles.listItem}>
-				<View style={styles.listItem}>
-					<Image
-						style={styles.itemIcon}
-						source={require("../assets/images/prep_materials_icon/medicine.png")}
-					/>
-					<Title style={styles.itemTitle}>Cabinet</Title>
-				</View>
-			</Card>
-			<Button
-				mode="contained"
-				color={CustomColors.uva.blue}
-				style={styles.nextBtn}
-				labelStyle={{ fontSize: 20 }}
-				onPress={() => {
-					navigation.navigate("StepScreen");
-				}}
-			>
-				Next
-			</Button>
+		<ImageBackground
+			source={require("../assets/images/sunrise-muted.png")}
+			resizeMode={"cover"}
+			style={styles.image}
+		>
+			<View style={styles.container}>
+				<AppHeader name="Prepare Materials" />
+				<Card style={styles.listItem}>
+					<View style={styles.listItem}>
+						<Image
+							style={styles.itemIcon}
+							source={require("../assets/images/prep_materials_icon/toothbrush.png")}
+						/>
+						<Title style={styles.itemTitle}>Tooth Brush</Title>
+					</View>
+				</Card>
+				<Card style={styles.listItem}>
+					<View style={styles.listItem}>
+						<Image
+							style={styles.itemIcon}
+							source={require("../assets/images/prep_materials_icon/toothpaste.png")}
+						/>
+						<Title style={styles.itemTitle}>Tooth Paste</Title>
+					</View>
+				</Card>
+				<Card style={styles.listItem}>
+					<View style={styles.listItem}>
+						<Image
+							style={styles.itemIcon}
+							source={require("../assets/images/prep_materials_icon/towel.png")}
+						/>
+						<Title style={styles.itemTitle}>Towel</Title>
+					</View>
+				</Card>
+				<Card style={styles.listItem}>
+					<View style={styles.listItem}>
+						<Image
+							style={styles.itemIcon}
+							source={require("../assets/images/prep_materials_icon/water.png")}
+						/>
+						<Title style={styles.itemTitle}>Cup of Water</Title>
+					</View>
+				</Card>
+				<Card style={styles.listItem}>
+					<View style={styles.listItem}>
+						<Image
+							style={styles.itemIcon}
+							source={require("../assets/images/prep_materials_icon/medicine.png")}
+						/>
+						<Title style={styles.itemTitle}>Cabinet</Title>
+					</View>
+				</Card>
+				<Button
+					mode="contained"
+					color={CustomColors.uva.blue}
+					style={styles.nextBtn}
+					labelStyle={{ fontSize: 20 }}
+					onPress={() => {
+						navigation.navigate("StepScreen");
+					}}
+				>
+					Next
+				</Button>
+			</View>
 		</ImageBackground>
 	);
 };
@@ -84,13 +86,14 @@ const PrepareMaterialsScreen: FC<Props> = (props) => {
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
-		// padding: 20,
-		// paddingTop: 30,
+		margin: 20,
 		alignContent: "flex-start",
 		justifyContent: "flex-start",
-    padding: 0,
-    height: '100%',
-    width: '100%',
+		padding: 0,
+	},
+	image: {
+		flex: 1,
+		resizeMode: "cover",
 	},
 	headline: {
 		fontSize: 20,

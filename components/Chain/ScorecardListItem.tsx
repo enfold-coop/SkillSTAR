@@ -1,6 +1,5 @@
 import React, { FC } from "react";
 import { Text, StyleSheet, TouchableOpacity } from "react-native";
-import { useNavigation } from "@react-navigation/native";
 import { Card } from "react-native-paper";
 import { MasteryIcons } from "../../styles/MasteryIcons";
 import { AntDesign } from "@expo/vector-icons";
@@ -24,17 +23,11 @@ type Props = {
 };
 
 const ScorecardListItem: FC<Props> = ({ ...props }) => {
-	const navigation = useNavigation();
 	const { step, instruction, mastery } = props.itemProps.item;
 
 	return (
 		<Card style={styles.container}>
-			<TouchableOpacity
-				style={styles.touchable}
-				onPress={() => {
-					navigation.navigate("PrepareMaterialsScreen");
-				}}
-			>
+			<TouchableOpacity style={styles.touchable}>
 				<Text style={styles.id}>{step}. </Text>
 				<Text style={styles.skill}>{instruction}</Text>
 				<Text style={styles.score}>{MasteryIcons(mastery)}</Text>
