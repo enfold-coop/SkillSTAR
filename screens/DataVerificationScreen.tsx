@@ -6,10 +6,11 @@ import { RootNavProps } from "../navigation/root_types";
 import { Session } from "../types/CHAIN/Session";
 import CustomColors from "../styles/Colors";
 import AppHeader from "../components/Header/AppHeader";
-import DataVerificationList from "../components/Probe/DataVerificationList";
-import { DataVerificationListItem } from "../components/Probe/index";
+import { DataVerifList } from "../components/DataVerification/";
 import { StepAttempt } from "../types/CHAIN/StepAttempt";
 import { chainSteps } from "../data/chainSteps";
+// MOCK IMPORT:
+import { createSesh } from "../components/DataVerification/mock_session";
 
 type Props = {
 	session: [];
@@ -19,26 +20,29 @@ type Props = {
  *
  */
 function DataVerificationScreen({ session }: Props): ReactNode {
-	console.log(session);
-
 	const navigation = useNavigation();
 	let [stepIndex, setStepIndex] = useState(0);
 	let [readyToSubmit, setReadyToSubmit] = useState(false);
-	let [sessionData, setSessionData] = useState();
+	// let [sessionData, setSessionData] = useState(); <--COMMENTED OUT TIL DATA IMPORTED
+	let sessionData: StepAttempt[];
 	let [text, setText] = useState("");
+	let mockSesh;
 
-	// const createAttempts = () => {
-	// 	chainSteps.forEach((e, i) => {
-	// 		let { stepId, instruction } = chainSteps[i];
-	// 		session.addStepData(new StepAttempt(stepId, instruction));
-	// 	});
-	// };
+	/**
+	 * BEGIN: MOCK
+	 */
+	if (session == undefined) {
+		mockSesh = createSesh();
+		sessionData = mockSesh.data;
+	}
+	/**
+	 * BEGIN: MOCK
+	 */
 
 	/** START: Lifecycle calls */
-	useEffect(() => {
-		setSessionData(session);
-		console.log("USE EFFECT!");
-	}, []);
+	// useEffect(() => {
+	// 	setSessionData(session);
+	// }, []);
 	/** END: Lifecycle calls */
 
 	return (
@@ -57,7 +61,7 @@ function DataVerificationScreen({ session }: Props): ReactNode {
 					</Text>
 				</View>
 				<View style={styles.formContainer}>
-					<DataVerificationList session={sessionData.data} />
+					<DataVerifList session={sessionData} />
 				</View>
 
 				{readyToSubmit && (

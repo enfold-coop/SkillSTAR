@@ -48,7 +48,10 @@ export default function LandingScreen({ navigation }: Props<"LandingScreen">) {
 					style={styles.button}
 					color={CustomColors.uva.blue}
 					mode="contained"
-					onPress={() => navigation.navigate("ChainsHomeScreen")}
+					// onPress={() => navigation.navigate("ChainsHomeScreen")}
+					onPress={() =>
+						navigation.navigate("DataVerificationScreen")
+					}
 				>
 					Log In
 				</Button>

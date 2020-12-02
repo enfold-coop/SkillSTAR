@@ -36,6 +36,11 @@ function RootNavigator() {
 			screenOptions={{ headerShown: true }}
 		>
 			<Stack.Screen
+				options={{ ...screenOpts, title: "Data verification" }}
+				name="DataVerificationScreen"
+				component={DataVerificationScreen}
+			/>
+			<Stack.Screen
 				options={{ ...screenOpts, title: "Welcome" }}
 				name="LandingScreen"
 				component={LandingScreen}
@@ -50,11 +55,11 @@ function RootNavigator() {
 				name="BaselineAssessmentScreen"
 				component={BaselineAssessmentScreen}
 			/>
-			<Stack.Screen
+			{/* <Stack.Screen
 				options={{ ...screenOpts, title: "Data verification" }}
 				name="DataVerificationScreen"
 				component={DataVerificationScreen}
-			/>
+			/> */}
 			{/* <Stack.Screen
 				options={{...screenOpts, title: "Skills"}}
 				name="SkillsHomeScreen"
