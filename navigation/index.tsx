@@ -10,6 +10,7 @@ import {
 	PrepareMaterialsScreen,
 	StepScreen,
 	ProbeScreen,
+	DataVerificationScreen,
 } from "../screens";
 import { screenOpts } from "../types/NavigationOptions";
 import { RootStackParamList } from "./root_types";
@@ -48,6 +49,11 @@ function RootNavigator() {
 				options={{ ...screenOpts, title: "Baseline Assessment" }}
 				name="BaselineAssessmentScreen"
 				component={BaselineAssessmentScreen}
+			/>
+			<Stack.Screen
+				options={{ ...screenOpts, title: "Data verification" }}
+				name="DataVerificationScreen"
+				component={DataVerificationScreen}
 			/>
 			{/* <Stack.Screen
 				options={{...screenOpts, title: "Skills"}}

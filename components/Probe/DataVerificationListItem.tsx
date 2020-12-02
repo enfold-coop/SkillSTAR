@@ -3,12 +3,20 @@ import { StyleSheet, Text, View } from "react-native";
 import ToggleButtons from "../GlobalComponents/ToggleButtons";
 import CustomColors from "../../styles/Colors";
 import ListItemSwitch from "./ListItemSwitch";
+import { StepAttempt } from "../../types/CHAIN/StepAttempt";
 
 type Props = {
-	stepAttempt: {};
+	stepAttempt: StepAttempt;
 };
 
 export const DataVerificationListItem: FC<Props> = (props) => {
+	const QUESTION_TYPES = {
+		completion: 0,
+		challBehav: 1,
+	};
+	/**
+	 * use context api, here:
+	 */
 	const { stepId, instruction } = props.stepAttempt;
 
 	return (
@@ -18,11 +26,21 @@ export const DataVerificationListItem: FC<Props> = (props) => {
 			</Text>
 			<View style={styles.questionContainer}>
 				<Text style={styles.question}>Was the task Completed?</Text>
-				<ListItemSwitch instruction={instruction} />
+				<ListItemSwitch
+					instruction={instruction}
+					type={QUESTION_TYPES.completion}
+					defaultValue={true}
+					id={stepId}
+				/>
 			</View>
 			<View style={styles.questionContainer}>
 				<Text style={styles.question}>Challenging Behavior?</Text>
-				<ListItemSwitch instruction={instruction} />
+				<ListItemSwitch
+					instruction={instruction}
+					type={QUESTION_TYPES.challBehav}
+					defaultValue={false}
+					id={stepId}
+				/>
 			</View>
 		</View>
 	);
@@ -39,7 +57,6 @@ const styles = StyleSheet.create({
 		margin: 5,
 		marginLeft: 40,
 		marginRight: 40,
-		// backgroundColor: "rgba(255,255,255,0.9)",
 		backgroundColor: CustomColors.uva.sky,
 	},
 	questionContainer: {

@@ -1,4 +1,5 @@
 import React, { FC, useState, useEffect } from "react";
+import shortid from "shortid";
 import { StyleSheet, Text, View, FlatList } from "react-native";
 import { StepAttempt } from "../../types/CHAIN/StepAttempt";
 import { DataVerificationListItem } from "./DataVerificationListItem";
@@ -11,13 +12,13 @@ const DataVerificationList: FC<Props> = (props) => {
 	let { session } = props;
 
 	return (
-		<View>
+		<View style={styles.container}>
 			<FlatList
 				data={session}
 				renderItem={({ item }) => (
 					<DataVerificationListItem stepAttempt={item} />
 				)}
-				keyExtractor={({ item, index }) => index}
+				keyExtractor={() => shortid()}
 			/>
 		</View>
 	);
@@ -25,4 +26,9 @@ const DataVerificationList: FC<Props> = (props) => {
 
 export default DataVerificationList;
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+	container: {
+		marginBottom: 24,
+		paddingBottom: 200,
+	},
+});
