@@ -8,10 +8,74 @@ export class ApiService {
     login: `${this.apiUrl}/login_password`,
     resetPassword: `${this.apiUrl}/reset_password`,
     refreshSession: `${this.apiUrl}/session`,
-    // baselineAssessment: `${this.apiUrl}/baseline_assessment`,
+    baselineAssessment: `${this.apiUrl}/flow/skillstar_baseline/baseline_assessment_questionnaire`,
   };
 
   constructor() {
+  }
+
+  async addBaselineAssessment(data: any) {
+    const url = this.endpoints.baselineAssessment;
+    try {
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+      });
+
+      const dbData = await response.json();
+      console.log('response data', dbData);
+      AsyncStorage.setItem('baselineAssessmentId', dbData.id);
+      return dbData;
+    } catch (e) {
+      console.error(e);
+      return null;
+    }
+  }
+
+  async editBaselineAssessment(data: any, questionnaireId: number) {
+    const url = this.endpoints.baselineAssessment + '/' + questionnaireId;
+    try {
+      const response = await fetch(url, {
+        method: 'PUT',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+      });
+
+      const dbData = await response.json();
+      console.log('response data', dbData);
+      return dbData;
+    } catch (e) {
+      console.error(e);
+      return null;
+    }
+  }
+
+  async deleteBaselineAssessment(data: any, participantId: number) {
+    const url = this.endpoints.baselineAssessment + '/' + participantId;
+    try {
+      const response = await fetch(url, {
+        method: 'DELETE',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+      });
+
+      const dbData = await response.json();
+      console.log('response data', dbData);
+      return dbData;
+    } catch (e) {
+      console.error(e);
+      return null;
+    }
   }
 
   async login(email: string, password: string, email_token = ''): Promise<User | null> {
