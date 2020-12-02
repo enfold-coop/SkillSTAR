@@ -186,7 +186,7 @@ const StepScreen: FC<Props> = (props) => {
 									incrIndex();
 								} else {
 									navigation.navigate(
-										"BaselineAssessmentScreen",
+										"DataVerificationScreen",
 										{
 											session,
 										}

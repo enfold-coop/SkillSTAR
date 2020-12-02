@@ -12,48 +12,34 @@ import { StepAttempt } from "../types/CHAIN/StepAttempt";
 import { chainSteps } from "../data/chainSteps";
 
 type Props = {
-	route: RootNavProps<"BaselineAssessmentScreen">;
-	navigation: RootNavProps<"BaselineAssessmentScreen">;
+	session: [];
 };
 
 /**
  *
  */
-function DataVerificationScreen({ route }: Props): ReactNode {
+function DataVerificationScreen({ session }: Props): ReactNode {
+	console.log(session);
+
 	const navigation = useNavigation();
 	let [stepIndex, setStepIndex] = useState(0);
 	let [readyToSubmit, setReadyToSubmit] = useState(false);
-	let [session, setSession] = useState(new Session());
+	let [sessionData, setSessionData] = useState();
 	let [text, setText] = useState("");
 
-	const createAttempts = () => {
-		chainSteps.forEach((e, i) => {
-			let { stepId, instruction } = chainSteps[i];
-			session.addStepData(new StepAttempt(stepId, instruction));
-		});
-	};
+	// const createAttempts = () => {
+	// 	chainSteps.forEach((e, i) => {
+	// 		let { stepId, instruction } = chainSteps[i];
+	// 		session.addStepData(new StepAttempt(stepId, instruction));
+	// 	});
+	// };
 
 	/** START: Lifecycle calls */
 	useEffect(() => {
-		if (!session.data.length) {
-			createAttempts();
-		}
-	});
+		setSessionData(session);
+		console.log("USE EFFECT!");
+	}, []);
 	/** END: Lifecycle calls */
-
-	/** START: Indexing incrementation / decrementation */
-	const incrIndex = () => {
-		stepIndex += 1;
-		setStepIndex(stepIndex);
-	};
-
-	const decIndex = () => {
-		if (stepIndex > 0) {
-			stepIndex -= 1;
-			setStepIndex(stepIndex);
-		}
-	};
-	/** END: Indexing incrementation / decrementation */
 
 	return (
 		<ImageBackground
@@ -71,35 +57,9 @@ function DataVerificationScreen({ route }: Props): ReactNode {
 					</Text>
 				</View>
 				<View style={styles.formContainer}>
-					<DataVerificationList session={session.data} />
+					<DataVerificationList session={sessionData.data} />
 				</View>
 
-				<View style={styles.nextBackBtnsContainer}>
-					<Button
-						style={styles.backButton}
-						color={CustomColors.uva.blue}
-						mode="contained"
-						onPress={() => {
-							decIndex();
-						}}
-					>
-						BACK
-					</Button>
-					<Button
-						style={styles.nextButton}
-						color={CustomColors.uva.blue}
-						mode="contained"
-						onPress={() => {
-							if (stepIndex + 1 <= chainSteps.length - 1) {
-								incrIndex();
-							} else {
-								setReadyToSubmit(true);
-							}
-						}}
-					>
-						NEXT
-					</Button>
-				</View>
 				{readyToSubmit && (
 					<Button
 						mode="contained"
