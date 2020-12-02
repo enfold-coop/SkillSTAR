@@ -1,45 +1,46 @@
-import React, { FC } from "react";
+import React, { FC, useEffect, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
-import { Button } from "react-native-paper";
+import ToggleButtons from "../GlobalComponents/ToggleButtons";
 import CustomColors from "../../styles/Colors";
+import ListItemSwitch from "./ListItemSwitch";
+import { StepAttempt } from "../../types/CHAIN/StepAttempt";
 
 type Props = {
-	instruction: string;
-	stepAttempt: {};
+	stepAttempt: StepAttempt;
 };
 
 export const DataVerificationListItem: FC<Props> = (props) => {
-	let { instruction, stepAttempt } = props;
-
+	const QUESTION_TYPES = {
+		completion: 0,
+		challBehav: 1,
+	};
 	/**
-	 * - toggle active color of buttons
-	 * -
+	 * use context api, here:
 	 */
+	const { stepId, instruction } = props.stepAttempt;
 
 	return (
 		<View style={styles.container}>
-			<Text style={styles.stepTitle}>{instruction}</Text>
+			<Text style={styles.stepTitle}>
+				Step #{stepId}: "{instruction}"
+			</Text>
 			<View style={styles.questionContainer}>
-				<Text style={styles.question}>Task Completed?</Text>
-				<View style={styles.btnContainer}>
-					<Button mode="contained" style={styles.yesNoBtn}>
-						Yes
-					</Button>
-					<Button mode="contained" style={styles.yesNoBtn}>
-						No
-					</Button>
-				</View>
+				<Text style={styles.question}>Was the task Completed?</Text>
+				<ListItemSwitch
+					instruction={instruction}
+					type={QUESTION_TYPES.completion}
+					defaultValue={true}
+					id={stepId}
+				/>
 			</View>
 			<View style={styles.questionContainer}>
 				<Text style={styles.question}>Challenging Behavior?</Text>
-				<View style={styles.btnContainer}>
-					<Button mode="contained" style={styles.yesNoBtn}>
-						Yes
-					</Button>
-					<Button mode="contained" style={styles.yesNoBtn}>
-						No
-					</Button>
-				</View>
+				<ListItemSwitch
+					instruction={instruction}
+					type={QUESTION_TYPES.challBehav}
+					defaultValue={false}
+					id={stepId}
+				/>
 			</View>
 		</View>
 	);
@@ -48,25 +49,29 @@ export const DataVerificationListItem: FC<Props> = (props) => {
 const styles = StyleSheet.create({
 	container: {
 		borderWidth: 1,
-		borderRadius: 5,
+		borderRadius: 10,
+		borderColor: CustomColors.uva.sky,
 		flexDirection: "column",
 		justifyContent: "space-around",
 		padding: 20,
 		margin: 5,
-		marginLeft: 20,
-		marginRight: 20,
-		backgroundColor: "rgba(255,255,255,0.3)",
+		marginLeft: 40,
+		marginRight: 40,
+		backgroundColor: CustomColors.uva.sky,
 	},
 	questionContainer: {
-		justifyContent: "center",
+		flexDirection: "row",
+		alignContent: "space-around",
+		justifyContent: "space-between",
 		margin: 10,
-		marginBottom: 20,
+		marginBottom: 10,
 	},
 	question: {
-		fontSize: 20,
+		fontSize: 24,
 		fontWeight: "400",
-		paddingBottom: 10,
-		textAlign: "center",
+		width: 300,
+		alignSelf: "center",
+		color: "#000",
 	},
 	stepTitle: {
 		fontSize: 24,
@@ -82,6 +87,5 @@ const styles = StyleSheet.create({
 		margin: 5,
 		marginLeft: 20,
 		marginRight: 20,
-		backgroundColor: CustomColors.uva.blue,
 	},
 });

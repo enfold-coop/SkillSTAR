@@ -1,14 +1,34 @@
-import React from "react";
-import { StyleSheet, Text, View } from "react-native";
+import React, { FC, useState, useEffect } from "react";
+import shortid from "shortid";
+import { StyleSheet, Text, View, FlatList } from "react-native";
+import { StepAttempt } from "../../types/CHAIN/StepAttempt";
+import { DataVerificationListItem } from "./DataVerificationListItem";
 
-const DataVerificationList = () => {
+type Props = {
+	session: StepAttempt[];
+};
+
+const DataVerificationList: FC<Props> = (props) => {
+	let { session } = props;
+
 	return (
-		<View>
-			<Text></Text>
+		<View style={styles.container}>
+			<FlatList
+				data={session}
+				renderItem={({ item }) => (
+					<DataVerificationListItem stepAttempt={item} />
+				)}
+				keyExtractor={() => shortid()}
+			/>
 		</View>
 	);
 };
 
 export default DataVerificationList;
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+	container: {
+		marginBottom: 24,
+		paddingBottom: 200,
+	},
+});

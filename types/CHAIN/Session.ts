@@ -1,5 +1,5 @@
-//
-//
+import { StepAttempt } from "./StepAttempt";
+
 export class Session {
 	date?: {};
 	data: StepAttempt[];
@@ -11,6 +11,5 @@ export class Session {
 
 	addStepData(step: StepAttempt) {
 		this.data.push(step);
-		console.log(this.data);
 	}
 }

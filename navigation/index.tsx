@@ -11,6 +11,7 @@ import {
 	PrepareMaterialsScreen,
 	StepScreen,
 	ProbeScreen,
+	DataVerificationScreen,
 } from "../screens";
 import {ApiService} from '../services/ApiService';
 import CustomColors from '../styles/Colors';
@@ -80,6 +81,11 @@ function RootNavigator() {
 				})}
 				name="BaselineAssessmentScreen"
 				component={BaselineAssessmentScreen}
+			/>
+			<Stack.Screen
+				options={{ ...screenOpts, title: "Data verification" }}
+				name="DataVerificationScreen"
+				component={DataVerificationScreen}
 			/>
 			{/* <Stack.Screen
 				options={{...screenOpts, title: "Skills"}}

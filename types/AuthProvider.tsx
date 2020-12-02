@@ -1,3 +1,4 @@
+	state: AuthProviderState;
 import {User} from './User';
 
 export interface AuthProviderState {
