@@ -12,7 +12,7 @@ const DataVerificationList: FC<Props> = (props) => {
 	let { session } = props;
 
 	return (
-		<View>
+		<View style={styles.container}>
 			<FlatList
 				data={session}
 				renderItem={({ item }) => (
@@ -26,4 +26,9 @@ const DataVerificationList: FC<Props> = (props) => {
 
 export default DataVerificationList;
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+	container: {
+		marginBottom: 24,
+		paddingBottom: 200,
+	},
+});

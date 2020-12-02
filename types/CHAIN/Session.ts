@@ -1,5 +1,5 @@
-//
-//
+import { StepAttempt } from "./StepAttempt";
+
 export class Session {
 	date?: {};
 	data: StepAttempt[];

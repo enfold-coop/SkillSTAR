@@ -1,5 +1,11 @@
 import React, { useState, useEffect, ReactNode } from "react";
-import { StyleSheet, Text, View, ImageBackground } from "react-native";
+import {
+	StyleSheet,
+	Text,
+	View,
+	ImageBackground,
+	Dimensions,
+} from "react-native";
 import { Button } from "react-native-paper";
 import { useNavigation } from "@react-navigation/native";
 import { RootNavProps } from "../navigation/root_types";
@@ -16,10 +22,16 @@ type Props = {
 	navigation: RootNavProps<"BaselineAssessmentScreen">;
 };
 
+const windowWidth = Dimensions.get("window").width;
+const windowHeight = Dimensions.get("window").height;
+
 /**
  *
  */
 function BaselineAssessmentScreen({ route }: Props): ReactNode {
+	/**
+	 * Set session type: Probe or Training
+	 */
 	const navigation = useNavigation();
 	let [stepIndex, setStepIndex] = useState(0);
 	let [sessionReady, setSessionReady] = useState(false);
@@ -40,7 +52,7 @@ function BaselineAssessmentScreen({ route }: Props): ReactNode {
 			createAttempts();
 		} else {
 		}
-	}, [session.data.length]);
+	}, []);
 	/** END: Lifecycle calls */
 
 	return (
@@ -89,24 +101,29 @@ const styles = StyleSheet.create({
 	container: {
 		flex: 1,
 		flexDirection: "column",
+		paddingBottom: 0,
 	},
 	image: {
 		flex: 1,
 		resizeMode: "cover",
 	},
 	instructionContainer: {
-		margin: 20,
+		marginLeft: 40,
+		marginRight: 40,
+		margin: 10,
 		flexDirection: "column",
 		justifyContent: "space-around",
 	},
 	screenHeader: {
-		marginTop: 20,
-		paddingBottom: 20,
+		marginLeft: 10,
+		marginTop: 0,
+		paddingBottom: 10,
 		fontSize: 22,
 		fontWeight: "600",
 	},
 	instruction: {
-		padding: 10,
+		paddingLeft: 10,
+		paddingRight: 10,
 		fontSize: 22,
 	},
 	formContainer: {},
