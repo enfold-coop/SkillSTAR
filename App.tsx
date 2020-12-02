@@ -1,5 +1,3 @@
-import * as Font from 'expo-font';
-
 import React, { useEffect, useState } from "react";
 import { ImageBackground, StyleSheet } from "react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
@@ -37,7 +35,7 @@ export default function App() {
 	} else {
 		return (
 			<SafeAreaProvider>
-				<AuthContext.Provider>
+				<AuthContext.Provider value={{state: {user: null}}}>
 					<ChainProvider>
 						<Navigation colorScheme={colorScheme} />
 					</ChainProvider>

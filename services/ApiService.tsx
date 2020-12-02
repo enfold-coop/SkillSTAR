@@ -80,6 +80,9 @@ export class ApiService {
 
   async login(email: string, password: string, email_token = ''): Promise<User | null> {
     try {
+      console.log('email', email);
+      console.log('password', password);
+      console.log('this.endpoints.login', this.endpoints.login);
       const response = await fetch(this.endpoints.login, {
         method: 'POST',
         headers: {
@@ -88,6 +91,8 @@ export class ApiService {
         },
         body: JSON.stringify({email, password, email_token})
       });
+
+      console.log('response', response);
 
       const user: User = await response.json();
       console.log('login response user', user);
@@ -100,6 +105,7 @@ export class ApiService {
         return null;
       }
     } catch (e) {
+      console.error('Login error:');
       console.error(e);
       return null;
     }

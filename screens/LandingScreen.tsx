@@ -7,7 +7,7 @@ import {RootNavProps as Props} from "../navigation/root_types";
 import {ApiService} from '../services/ApiService';
 import CustomColors from "../styles/Colors";
 import {AuthProviderProps} from '../types/AuthProvider';
-import {User} from '../types/User';
+import {Participant, User} from '../types/User';
 
 export default function LandingScreen({navigation}: Props<"LandingScreen">) {
   let [email, setEmail] = useState("");
@@ -30,13 +30,27 @@ export default function LandingScreen({navigation}: Props<"LandingScreen">) {
   }
 
   useEffect(() => {
-    AsyncStorage.getItem('user').then((userJson) => {
+    AsyncStorage.getItem('user').then((userJson: string | null) => {
       if (userJson !== null) {
         const user: User = JSON.parse(userJson);
         console.log('cached user', user);
         if (user && user.token) {
           context.state.user = user;
-          navigation.navigate("BaselineAssessmentScreen");
+
+          if (user.participants && (user.participants.length > 0)) {
+            const dependents = user.participants.filter(p => p.relationship === 'dependent');
+
+            AsyncStorage.getItem('selected_participant').then((p: string | null) => {
+              if (p) {
+                const cachedParticipant = JSON.parse(p) as Participant;
+                const selectedParticipant = dependents.find(p => p.id === cachedParticipant.id);
+                if (selectedParticipant) {
+                  context.state.participant = selectedParticipant;
+                  navigation.navigate("BaselineAssessmentScreen");
+                }
+              }
+            });
+          }
         }
       }
     }).catch(error => {

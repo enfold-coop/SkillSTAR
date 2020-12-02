@@ -1,4 +1,16 @@
-	token_url?: string;
+export interface ParticipantIdentification {
+  first_name: string;
+  last_name: string;
+  nickname?: string;
+}
+
+export interface Participant {
+  id: number;
+  name: string;
+  relationship: string;
+  identification: ParticipantIdentification;
+}
+
 export interface User {
   id: number;
   email: string;
@@ -13,4 +25,5 @@ export interface User {
   created_password: boolean;
   identity: string;
   percent_self_registration_complete: number;
+  participants?: Participant[];
 }
