@@ -23,18 +23,21 @@ function DataVerificationScreen({ session }: Props): ReactNode {
 	const navigation = useNavigation();
 	let [stepIndex, setStepIndex] = useState(0);
 	let [readyToSubmit, setReadyToSubmit] = useState(false);
-	// let [sessionData, setSessionData] = useState(); <--COMMENTED OUT TIL DATA IMPORTED
-	let sessionData: StepAttempt[];
+	let [sessionData, setSessionData] = useState();
+	// let sessionData: StepAttempt[];
 	let [text, setText] = useState("");
 	let mockSesh;
 
 	/**
 	 * BEGIN: MOCK
 	 */
-	if (session == undefined) {
-		mockSesh = createSesh();
-		sessionData = mockSesh.data;
-	}
+
+	useEffect(() => {
+		if (session == undefined) {
+			mockSesh = createSesh();
+			setSessionData(mockSesh.data);
+		}
+	}, []);
 	/**
 	 * BEGIN: MOCK
 	 */
@@ -61,7 +64,7 @@ function DataVerificationScreen({ session }: Props): ReactNode {
 					</Text>
 				</View>
 				<View style={styles.formContainer}>
-					<DataVerifList session={sessionData} />
+					{sessionData && <DataVerifList session={sessionData} />}
 				</View>
 
 				{readyToSubmit && (

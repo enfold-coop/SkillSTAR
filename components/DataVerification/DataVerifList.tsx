@@ -1,7 +1,7 @@
 import React, { FC, useState, useEffect } from "react";
-import { StyleSheet, Text, View } from "react-native";
-import { FlatList } from "react-native-gesture-handler";
+import { StyleSheet, Text, View, FlatList } from "react-native";
 import { StepAttempt } from "../../types/CHAIN/StepAttempt";
+import { DataVerifItem } from ".";
 import "react-native-get-random-values";
 import { nanoid } from "nanoid";
 
@@ -14,7 +14,9 @@ const DataVerifList: FC<Props> = ({ session }) => {
 		<View style={styles.container}>
 			<FlatList
 				data={session}
-				renderItem={(item) => <Text>{item.item.instruction}</Text>}
+				renderItem={(item) => {
+					return <DataVerifItem stepAttempt={item.item} />;
+				}}
 				keyExtractor={() => nanoid()}
 			/>
 		</View>
