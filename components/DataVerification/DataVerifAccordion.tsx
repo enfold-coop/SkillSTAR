@@ -1,40 +1,31 @@
 import React, { FC } from "react";
-import { StyleSheet, Text, View, FlatList } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
-import "react-native-get-random-values";
-import { nanoid } from "nanoid";
 
 import CustomColors from "../../styles/Colors";
 
 type Props = {
 	question: string;
-	answerOptions: [];
+	answerOptions: string[];
 };
 
 const DataVerifAccordion: FC<Props> = (props) => {
 	const { question, answerOptions } = props;
-	// console.log(answerOptions);
 
 	return (
 		<View style={[styles.container]}>
 			<View style={[styles.subContainer]}>
 				<Text style={styles.question}>{question}</Text>
 				<View style={styles.formContainer}>
-					<FlatList
-						data={answerOptions}
-						renderItem={(item) => {
-							return (
-								// <View>
-								<TouchableOpacity>
-									<Text style={styles.input}>
-										{item.index + 1}. {item.item}
-									</Text>
-								</TouchableOpacity>
-								// </View>
-							);
-						}}
-						keyExtractor={() => nanoid()}
-					/>
+					{answerOptions.map((e, i) => {
+						return (
+							<TouchableOpacity>
+								<Text style={styles.input}>
+									{i + 1}. {e}
+								</Text>
+							</TouchableOpacity>
+						);
+					})}
 				</View>
 			</View>
 		</View>

@@ -13,7 +13,7 @@ const MOCK_PROMPT_OPTS = [
 ];
 
 const MOCK_BEHAV_OPTS = [
-	".Mild (did not interfere with task)",
+	"Mild (did not interfere with task)",
 	"Moderate (interfered with task, but we were able to work through it)",
 	"Severe (we were not able to complete the task due to the severity of the behavior)",
 ];
