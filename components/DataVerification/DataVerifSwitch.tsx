@@ -3,40 +3,52 @@ import { StyleSheet, Text, View } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { Switch } from "react-native-paper";
 import CustomColors from "../../styles/Colors";
+import * as Animatable from "react-native-animatable";
 
 type Props = {
 	instruction: string;
 	type: number;
 	id: number;
 	defaultValue: boolean;
+	handleSwitchVal: () => {};
+	accordion?: undefined;
 };
 const DataVerifSwitch: FC<Props> = (props) => {
 	const navigation = useNavigation();
 
-	let { instruction, type, defaultValue } = props;
+	let { instruction, type, defaultValue, handleSwitchVal, accordion } = props;
+
 	const [isSwitchOn, setIsSwitchOn] = useState(defaultValue);
+	const [showAccordion, setShowAccordion] = useState(false);
 
 	let [label, setLabel] = useState("No");
+
+	const handleSwitchValue = (v: boolean) => {
+		return handleSwitchVal(v);
+	};
 
 	// Checks for question type and switch value.  If results are positive
 	// navigate to ChainsHomeScreen
 	const checkTypeAgainstSwitchVal = () => {
-		if (type === 0 && isSwitchOn === false) navigateToChainsHome();
-		if (type === 1 && isSwitchOn === true) navigateToChainsHome();
+		if (type === 0 && isSwitchOn === false) handleSwitchValue(false);
+		if (type === 1 && isSwitchOn === true) handleSwitchValue(true);
 	};
 
 	// Sets question type swtich value type
 	const setQuestionType = () => {
 		if (type === 0) {
 			setIsSwitchOn(true);
+			handleSwitchValue(true);
 		} else if (type === 1) {
 			setIsSwitchOn(false);
+			handleSwitchValue(false);
 		}
 	};
+
 	// Navigate to ChainsHome
 	const navigateToChainsHome = () => {
 		// navigation.navigate("ChainsHomeScreen");
-		console.log("switch");
+		// console.log("switch");
 	};
 
 	// Toogle switch label (yes/no)
@@ -66,12 +78,16 @@ const DataVerifSwitch: FC<Props> = (props) => {
 	return (
 		<View style={styles.container}>
 			<Text style={styles.label}>{label}</Text>
+			<View style={isSwitchOn ? styles.accordion : styles.noAccordion}>
+				{accordion}
+			</View>
 			<Switch
 				value={isSwitchOn}
 				color={CustomColors.uva.orange}
 				onValueChange={onToggleSwitch}
 				style={[styles.switch]}
 			/>
+			{/* {value && <Accordion />} */}
 		</View>
 	);
 };
@@ -91,6 +107,14 @@ const styles = StyleSheet.create({
 		margin: 20,
 		alignSelf: "center",
 		transform: [{ scaleX: 1.2 }, { scaleY: 1.2 }],
+	},
+	accordion: {
+		display: "flex",
+		height: 100,
+	},
+	noAccordion: {
+		display: "none",
+		height: 0,
 	},
 });
 export default DataVerifSwitch;

@@ -1,8 +1,9 @@
 import React, { FC, useEffect, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import CustomColors from "../../styles/Colors";
-import { DataVerifSwitch } from ".";
+import { DataVerifSwitch, DataVerifAccordion } from ".";
 import { StepAttempt } from "../../types/CHAIN/StepAttempt";
+import { Accordion } from "react-native-paper/lib/typescript/src/components/List/List";
 
 type Props = {
 	stepAttempt: StepAttempt;
@@ -12,6 +13,10 @@ const DataVerifItem: FC<Props> = ({ stepAttempt }) => {
 	const QUESTION_TYPES = {
 		completion: 0,
 		challBehav: 1,
+	};
+
+	const handleSwitchVal = (v: boolean) => {
+		return v;
 	};
 	/**
 	 * use context api, here:
@@ -30,6 +35,8 @@ const DataVerifItem: FC<Props> = ({ stepAttempt }) => {
 					type={QUESTION_TYPES.completion}
 					defaultValue={true}
 					id={stepId}
+					handleSwitchVal={handleSwitchVal}
+					accordion={<DataVerifAccordion />}
 				/>
 			</View>
 			<View style={styles.questionContainer}>
@@ -39,6 +46,8 @@ const DataVerifItem: FC<Props> = ({ stepAttempt }) => {
 					type={QUESTION_TYPES.challBehav}
 					defaultValue={false}
 					id={stepId}
+					handleSwitchVal={handleSwitchVal}
+					accordion={<DataVerifAccordion />}
 				/>
 			</View>
 		</View>
