@@ -1,6 +1,7 @@
 import React, { FC } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
+import { RadioButton } from "react-native-paper";
 
 import CustomColors from "../../styles/Colors";
 
@@ -11,6 +12,7 @@ type Props = {
 
 const DataVerifAccordion: FC<Props> = (props) => {
 	const { question, answerOptions } = props;
+	const [checked, setChecked] = React.useState(false);
 
 	return (
 		<View style={[styles.container]}>
@@ -19,7 +21,7 @@ const DataVerifAccordion: FC<Props> = (props) => {
 				<View style={styles.formContainer}>
 					{answerOptions.map((e, i) => {
 						return (
-							<TouchableOpacity>
+							<TouchableOpacity style={styles.answerOption}>
 								<Text style={styles.input}>
 									{i + 1}. {e}
 								</Text>
@@ -41,8 +43,9 @@ const styles = StyleSheet.create({
 		marginBottom: 40,
 		padding: 20,
 		borderColor: CustomColors.uva.gray,
-		borderWidth: 1,
+		borderWidth: 0,
 		borderRadius: 10,
+		backgroundColor: "rgba(255,255,255,0.3)",
 	},
 	subContainer: {
 		flexDirection: "row",
@@ -56,6 +59,7 @@ const styles = StyleSheet.create({
 		width: "50%",
 	},
 	input: {
-		padding: 10,
+		padding: 5,
 	},
+	answerOption: {},
 });

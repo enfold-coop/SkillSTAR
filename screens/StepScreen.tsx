@@ -27,8 +27,9 @@ const progressBarCalculation = (len: number, currStep: number): number => {
 const StepScreen: FC<Props> = (props) => {
 	const navigation = useNavigation();
 	let [visible, setVisible] = React.useState(false);
-	let [stepIndex, setStepIndex] = useState<number>(0);
+	let [stepIndex, setStepIndex] = useState(0);
 	let [session, setSession] = useState(new Session());
+	let [video, setVideo] = useState(videos[`chain_0_${stepIndex + 1}`]);
 
 	const toggleModal = () => {
 		setVisible(!visible);
@@ -57,11 +58,37 @@ const StepScreen: FC<Props> = (props) => {
 		});
 	};
 
+	const ReturnVideoComponent = () => {
+		return (
+			<Video
+				source={videos[`chain_0_${stepIndex + 1}`]}
+				rate={1.0}
+				volume={1.0}
+				isMuted={true}
+				resizeMode="cover"
+				isLooping={false}
+				useNativeControls={true}
+				style={styles.video}
+			/>
+		);
+	};
+
+	/**
+	 * BEGIN: LIFECYCLE CALLS
+	 */
 	useEffect(() => {
 		if (!session.data.length) {
 			createAttempts();
 		}
 	}, []);
+
+	useEffect(() => {
+		// Solves issue of videos not start play at beginning
+		setVideo(videos[`chain_0_${stepIndex + 1}`]);
+	}, [stepIndex]);
+	/**
+	 * END: LIFECYCLE CALLS
+	 */
 
 	return (
 		<ImageBackground
@@ -118,16 +145,7 @@ const StepScreen: FC<Props> = (props) => {
 						</Text>
 					</View>
 					<View style={styles.subVideoContainer}>
-						<Video
-							source={videos[`chain_0_${stepIndex + 1}`]}
-							rate={1.0}
-							volume={1.0}
-							isMuted={true}
-							resizeMode="cover"
-							isLooping={false}
-							useNativeControls={true}
-							style={styles.video}
-						/>
+						{<ReturnVideoComponent />}
 					</View>
 					<View style={styles.bottomContainer}>
 						<Button

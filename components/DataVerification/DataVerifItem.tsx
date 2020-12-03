@@ -31,9 +31,13 @@ const DataVerifItem: FC<Props> = ({ stepAttempt }) => {
 		challBehav: 1,
 	};
 
+	const [behavSelected, setBehaveSelected] = useState(false);
+	const [completed, setCompleted] = useState(false);
+
 	const handleSwitchVal = (v: boolean) => {
 		return v;
 	};
+
 	/**
 	 * use context api, here:
 	 */
@@ -55,10 +59,12 @@ const DataVerifItem: FC<Props> = ({ stepAttempt }) => {
 						handleSwitchVal={handleSwitchVal}
 					/>
 				</View>
-				<DataVerifAccordion
-					question={MOCK_PROMP_Q}
-					answerOptions={MOCK_PROMPT_OPTS}
-				/>
+				{completed && (
+					<DataVerifAccordion
+						question={MOCK_PROMP_Q}
+						answerOptions={MOCK_PROMPT_OPTS}
+					/>
+				)}
 			</View>
 			<View style={styles.questionContainer}>
 				<View style={styles.questionSubContainer}>
@@ -71,10 +77,12 @@ const DataVerifItem: FC<Props> = ({ stepAttempt }) => {
 						handleSwitchVal={handleSwitchVal}
 					/>
 				</View>
-				<DataVerifAccordion
-					question={MOCK_BEHAV_Q}
-					answerOptions={MOCK_BEHAV_OPTS}
-				/>
+				{behavSelected && (
+					<DataVerifAccordion
+						question={MOCK_BEHAV_Q}
+						answerOptions={MOCK_BEHAV_OPTS}
+					/>
+				)}
 			</View>
 		</View>
 	);
