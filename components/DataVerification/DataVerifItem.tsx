@@ -5,6 +5,22 @@ import { DataVerifSwitch, DataVerifAccordion } from ".";
 import { StepAttempt } from "../../types/CHAIN/StepAttempt";
 import { Accordion } from "react-native-paper/lib/typescript/src/components/List/List";
 
+const MOCK_PROMPT_OPTS = [
+	"No Prompt (Independent)",
+	"Shadow Prompt (approximately one inch)",
+	"Partial Physical Prompt (thumb and index finger)",
+	"Full Physical Prompt (hand-over-hand)",
+];
+
+const MOCK_BEHAV_OPTS = [
+	".Mild (did not interfere with task)",
+	"Moderate (interfered with task, but we were able to work through it)",
+	"Severe (we were not able to complete the task due to the severity of the behavior)",
+];
+
+const MOCK_PROMP_Q = "What prompt did you use to complete the step?";
+const MOCK_BEHAV_Q = "How severe was the challenging behavior?";
+
 type Props = {
 	stepAttempt: StepAttempt;
 };
@@ -39,7 +55,10 @@ const DataVerifItem: FC<Props> = ({ stepAttempt }) => {
 						handleSwitchVal={handleSwitchVal}
 					/>
 				</View>
-				<DataVerifAccordion />
+				<DataVerifAccordion
+					question={MOCK_PROMP_Q}
+					answerOptions={MOCK_PROMPT_OPTS}
+				/>
 			</View>
 			<View style={styles.questionContainer}>
 				<View style={styles.questionSubContainer}>
@@ -52,7 +71,10 @@ const DataVerifItem: FC<Props> = ({ stepAttempt }) => {
 						handleSwitchVal={handleSwitchVal}
 					/>
 				</View>
-				<DataVerifAccordion />
+				<DataVerifAccordion
+					question={MOCK_BEHAV_Q}
+					answerOptions={MOCK_BEHAV_OPTS}
+				/>
 			</View>
 		</View>
 	);

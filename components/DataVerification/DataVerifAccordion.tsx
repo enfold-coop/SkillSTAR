@@ -1,35 +1,40 @@
 import React, { FC } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View, FlatList } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
-import { Divider } from "react-native-paper";
+import "react-native-get-random-values";
+import { nanoid } from "nanoid";
 
 import CustomColors from "../../styles/Colors";
 
-type Props = {};
+type Props = {
+	question: string;
+	answerOptions: [];
+};
 
 const DataVerifAccordion: FC<Props> = (props) => {
+	const { question, answerOptions } = props;
+	// console.log(answerOptions);
+
 	return (
 		<View style={[styles.container]}>
 			<View style={[styles.subContainer]}>
-				<Text style={styles.question}>
-					{"QUESTION QUESTION QUESTION QUESTION QUESTION??"}
-				</Text>
+				<Text style={styles.question}>{question}</Text>
 				<View style={styles.formContainer}>
-					<TouchableOpacity>
-						<Text style={styles.input}>INPUT</Text>
-					</TouchableOpacity>
-					<TouchableOpacity>
-						<Text style={styles.input}>INPUT</Text>
-					</TouchableOpacity>
-					<TouchableOpacity>
-						<Text style={styles.input}>INPUT</Text>
-					</TouchableOpacity>
-					<TouchableOpacity>
-						<Text style={styles.input}>INPUT</Text>
-					</TouchableOpacity>
-					<TouchableOpacity>
-						<Text style={styles.input}>INPUT</Text>
-					</TouchableOpacity>
+					<FlatList
+						data={answerOptions}
+						renderItem={(item) => {
+							return (
+								// <View>
+								<TouchableOpacity>
+									<Text style={styles.input}>
+										{item.index + 1}. {item.item}
+									</Text>
+								</TouchableOpacity>
+								// </View>
+							);
+						}}
+						keyExtractor={() => nanoid()}
+					/>
 				</View>
 			</View>
 		</View>
