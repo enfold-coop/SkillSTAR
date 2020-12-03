@@ -2,8 +2,6 @@ import React, { FC, useState, useEffect } from "react";
 import { StyleSheet, Text, View, FlatList } from "react-native";
 import { StepAttempt } from "../../types/CHAIN/StepAttempt";
 import { DataVerifItem } from ".";
-import "react-native-get-random-values";
-import { nanoid } from "nanoid";
 
 type Props = {
 	session: StepAttempt[];

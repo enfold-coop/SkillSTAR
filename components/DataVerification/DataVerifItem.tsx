@@ -9,8 +9,6 @@ type Props = {
 };
 
 const DataVerifItem: FC<Props> = ({ stepAttempt }) => {
-	console.log(stepAttempt);
-
 	const QUESTION_TYPES = {
 		completion: 0,
 		challBehav: 1,

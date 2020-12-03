@@ -4,7 +4,6 @@ import { chainSteps } from "../../data/chainSteps";
 
 export function createSesh() {
 	let SESH = new Session();
-	console.log(SESH);
 
 	chainSteps.forEach((e, i) => {
 		let s = new StepAttempt(e.stepId, e.instruction);

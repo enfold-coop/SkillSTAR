@@ -35,7 +35,8 @@ const DataVerifSwitch: FC<Props> = (props) => {
 	};
 	// Navigate to ChainsHome
 	const navigateToChainsHome = () => {
-		navigation.navigate("ChainsHomeScreen");
+		// navigation.navigate("ChainsHomeScreen");
+		console.log("switch");
 	};
 
 	// Toogle switch label (yes/no)
