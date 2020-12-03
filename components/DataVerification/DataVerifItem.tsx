@@ -29,26 +29,30 @@ const DataVerifItem: FC<Props> = ({ stepAttempt }) => {
 				Step #{stepId}: "{instruction}"
 			</Text>
 			<View style={styles.questionContainer}>
-				<Text style={styles.question}>Was the task Completed?</Text>
-				<DataVerifSwitch
-					instruction={instruction}
-					type={QUESTION_TYPES.completion}
-					defaultValue={true}
-					id={stepId}
-					handleSwitchVal={handleSwitchVal}
-					accordion={<DataVerifAccordion />}
-				/>
+				<View style={styles.questionSubContainer}>
+					<Text style={styles.question}>Was the task Completed?</Text>
+					<DataVerifSwitch
+						instruction={instruction}
+						type={QUESTION_TYPES.completion}
+						defaultValue={true}
+						id={stepId}
+						handleSwitchVal={handleSwitchVal}
+					/>
+				</View>
+				<DataVerifAccordion />
 			</View>
 			<View style={styles.questionContainer}>
-				<Text style={styles.question}>Challenging Behavior?</Text>
-				<DataVerifSwitch
-					instruction={instruction}
-					type={QUESTION_TYPES.challBehav}
-					defaultValue={false}
-					id={stepId}
-					handleSwitchVal={handleSwitchVal}
-					accordion={<DataVerifAccordion />}
-				/>
+				<View style={styles.questionSubContainer}>
+					<Text style={styles.question}>Challenging Behavior?</Text>
+					<DataVerifSwitch
+						instruction={instruction}
+						type={QUESTION_TYPES.challBehav}
+						defaultValue={false}
+						id={stepId}
+						handleSwitchVal={handleSwitchVal}
+					/>
+				</View>
+				<DataVerifAccordion />
 			</View>
 		</View>
 	);
@@ -70,11 +74,14 @@ const styles = StyleSheet.create({
 		backgroundColor: CustomColors.uva.sky,
 	},
 	questionContainer: {
-		flexDirection: "row",
-		alignContent: "space-around",
-		justifyContent: "space-between",
+		flexDirection: "column",
 		margin: 10,
 		marginBottom: 10,
+	},
+	questionSubContainer: {
+		flexDirection: "row",
+		alignContent: "space-around",
+		justifyContent: "space-around",
 	},
 	question: {
 		fontSize: 24,

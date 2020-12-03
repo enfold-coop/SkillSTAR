@@ -11,15 +11,13 @@ type Props = {
 	id: number;
 	defaultValue: boolean;
 	handleSwitchVal: () => {};
-	accordion?: undefined;
 };
 const DataVerifSwitch: FC<Props> = (props) => {
 	const navigation = useNavigation();
 
-	let { instruction, type, defaultValue, handleSwitchVal, accordion } = props;
+	let { instruction, type, defaultValue, handleSwitchVal } = props;
 
 	const [isSwitchOn, setIsSwitchOn] = useState(defaultValue);
-	const [showAccordion, setShowAccordion] = useState(false);
 
 	let [label, setLabel] = useState("No");
 
@@ -78,25 +76,24 @@ const DataVerifSwitch: FC<Props> = (props) => {
 	return (
 		<View style={styles.container}>
 			<Text style={styles.label}>{label}</Text>
-			<View style={isSwitchOn ? styles.accordion : styles.noAccordion}>
-				{accordion}
-			</View>
 			<Switch
 				value={isSwitchOn}
 				color={CustomColors.uva.orange}
 				onValueChange={onToggleSwitch}
 				style={[styles.switch]}
 			/>
-			{/* {value && <Accordion />} */}
 		</View>
 	);
 };
 
 const styles = StyleSheet.create({
 	container: {
+		flexDirection: "column",
+	},
+	subContainer: {
 		flexDirection: "row",
-		justifyContent: "center",
-		alignContent: "center",
+		// justifyContent: "center",
+		// alignContent: "center",
 	},
 	label: {
 		fontSize: 28,
