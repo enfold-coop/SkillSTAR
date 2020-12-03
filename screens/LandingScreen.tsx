@@ -66,12 +66,7 @@ export default function LandingScreen({navigation}: Props<"LandingScreen">) {
     >
       <View style={styles.container}>
         <Image
-          style={{
-            alignSelf: "center",
-            width: 400,
-            height: 400,
-            marginBottom: 40,
-          }}
+          style={styles.logo}
           source={require("../assets/images/logo.png")}
         />
         {/**
@@ -87,6 +82,7 @@ export default function LandingScreen({navigation}: Props<"LandingScreen">) {
           value={email}
           style={styles.input}
           onChangeText={(text) => _checkEmail(text)}
+          autoFocus={true}
         />
         <TextInput
           textContentType="password"
@@ -131,8 +127,9 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: "column",
     alignContent: "center",
-    justifyContent: "center",
+    justifyContent: "flex-start",
     padding: 0,
+    marginTop: 100,
   },
   image: {
     flex: 1,
@@ -157,6 +154,7 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     width: 200,
     height: 200,
+    marginBottom: 40,
   },
   error: {
     textAlign: 'center',

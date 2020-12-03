@@ -3,7 +3,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {User} from '../types/User';
 
 export class ApiService {
-  apiUrl = 'http://localhost:5000/api';
+  apiUrl = 'https://ce7c361742a7.ngrok.io/api';
+  // apiUrl = 'http://localhost:5000/api';
   endpoints = {
     login: `${this.apiUrl}/login_password`,
     resetPassword: `${this.apiUrl}/reset_password`,
