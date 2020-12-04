@@ -22,22 +22,18 @@ const DataVerifItem: FC<Props> = ({ stepAttempt }) => {
 
 	return (
 		<View style={styles.container}>
-			<Text style={styles.stepTitle}>
-				Step #{stepId}: "{instruction}"
-			</Text>
-			<View style={styles.questionContainer}>
-				<View style={styles.questionSubContainer}>
-					<Text style={styles.question}>Was the task Completed?</Text>
+			<View style={styles.defaultFormContainer}>
+				<Text style={styles.masteryIcon}>{"M L Here"}</Text>
+				<Text style={styles.stepTitle}>"{instruction}"</Text>
+				<Text style={styles.promptLevel}>{"PromptLvevevevevl"}</Text>
+				<View style={styles.questionContainer}>
 					<DataVerifSwitch
 						instruction={instruction}
 						type={QUESTION_TYPES.completion}
 						id={stepId}
 					/>
 				</View>
-			</View>
-			<View style={styles.questionContainer}>
-				<View style={styles.questionSubContainer}>
-					<Text style={styles.question}>Challenging Behavior?</Text>
+				<View style={styles.questionContainer}>
 					<DataVerifSwitch
 						instruction={instruction}
 						type={QUESTION_TYPES.challBehav}
@@ -55,14 +51,30 @@ const styles = StyleSheet.create({
 	container: {
 		borderWidth: 1,
 		borderRadius: 10,
-		borderColor: CustomColors.uva.sky,
-		flexDirection: "column",
-		justifyContent: "space-around",
-		padding: 20,
+		padding: 10,
 		margin: 5,
-		marginLeft: 40,
-		marginRight: 40,
+		marginLeft: 30,
+		marginRight: 30,
+		borderColor: CustomColors.uva.sky,
 		backgroundColor: CustomColors.uva.sky,
+	},
+	defaultFormContainer: {
+		flexDirection: "row",
+		justifyContent: "space-between",
+		alignContent: "center",
+	},
+	masteryIcon: {
+		width: "10%",
+		alignSelf: "center",
+	},
+	promptLevel: {
+		width: "10%",
+		alignSelf: "center",
+	},
+	stepTitle: {
+		width: "25%",
+		alignSelf: "center",
+		fontSize: 20,
 	},
 	questionContainer: {
 		flexDirection: "column",
@@ -73,18 +85,6 @@ const styles = StyleSheet.create({
 		flexDirection: "row",
 		alignContent: "space-around",
 		justifyContent: "space-around",
-	},
-	question: {
-		fontSize: 24,
-		fontWeight: "400",
-		width: 300,
-		alignSelf: "center",
-		color: "#000",
-	},
-	stepTitle: {
-		fontSize: 24,
-		fontWeight: "600",
-		paddingBottom: 10,
 	},
 	accordion: {
 		backgroundColor: "#f0f",
