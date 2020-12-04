@@ -2,7 +2,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useNavigation} from '@react-navigation/native';
 import React, {ReactElement, useContext, useEffect, useState} from 'react';
 import {StyleSheet, View} from 'react-native';
-import {Button, Menu, Provider, Text} from 'react-native-paper';
+import {ActivityIndicator, Button, Menu, Provider, Text} from 'react-native-paper';
 import {AuthContext} from '../../context/AuthProvider';
 import CustomColors from '../../styles/Colors';
 import {Participant} from '../../types/User';
@@ -20,28 +20,37 @@ export const SelectParticipant = (props: SelectParticipantProps): ReactElement =
   const closeMenu = () => setIsVisible(false);
   const openMenu = () => setIsVisible(true);
 
-  const selectParticipant = (selectedParticipant: Participant) => {
-    setParticipant(selectedParticipant);
-    AsyncStorage.setItem('selected_participant', JSON.stringify(selectedParticipant));
-    navigation.navigate('BaselineAssessmentScreen');
-    closeMenu();
+  const getCachedParticipant = async (): Promise<Participant | undefined> => {
+    const cachedJson = await AsyncStorage.getItem('selected_participant');
+    if (cachedJson) {
+      return JSON.parse(cachedJson) as Participant;
+    }
+  };
+
+  const selectParticipant = async (selectedParticipant: Participant) => {
+    context.state.participant = selectedParticipant;
+    await setParticipant(selectedParticipant);
+    await AsyncStorage.setItem('selected_participant', JSON.stringify(selectedParticipant));
+    await navigation.navigate('BaselineAssessmentScreen');
+    await closeMenu();
   };
 
   const participantName = (p: Participant): string => {
-    if (p.name) {
-      return p.name;
-    } else {
-      const first = p.identification.nickname || p.identification.first_name;
-      const last = p.identification.last_name;
-      return `${first} ${last}`;
-    }
+    const first = p.identification.nickname || p.identification.first_name;
+    const last = p.identification.last_name;
+    return `${first} ${last}`;
   }
 
   useEffect(() => {
     if (context && context.state) {
-      console.log('context.state', context.state);
-      if (!participant && context.state.participant) {
-        setParticipant(context.state.participant);
+      if (!participant) {
+        getCachedParticipant().then(p => {
+          if (p) {
+            setParticipant(p)
+          } else if (!participant && context.state.participant) {
+            setParticipant(context.state.participant);
+          }
+        });
       }
       if (!menuItems && context.state.user && context.state.user.participants) {
         const dependents = context.state.user.participants.filter(p => p.relationship === 'dependent');
@@ -59,6 +68,10 @@ export const SelectParticipant = (props: SelectParticipantProps): ReactElement =
       }
     }
   })
+
+  if (!menuItems || menuItems.length === 0) {
+    return <View style={styles.menuContainer}><Text style={{marginRight: 100}}>Loading...</Text></View>
+  }
 
   return (
     <View style={styles.menuContainer}>

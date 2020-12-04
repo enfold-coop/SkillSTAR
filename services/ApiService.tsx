@@ -2,6 +2,10 @@ import React from "react";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {User} from '../types/User';
 
+export interface BaselineAssessmentData {
+
+}
+
 export class ApiService {
   apiUrl = 'https://ce7c361742a7.ngrok.io/api';
   // apiUrl = 'http://localhost:5000/api';
@@ -15,7 +19,7 @@ export class ApiService {
   constructor() {
   }
 
-  async addBaselineAssessment(data: any) {
+  async addBaselineAssessment(data: BaselineAssessmentData) {
     const url = this.endpoints.baselineAssessment;
     try {
       const response = await fetch(url, {
@@ -28,16 +32,15 @@ export class ApiService {
       });
 
       const dbData = await response.json();
-      console.log('response data', dbData);
       AsyncStorage.setItem('baselineAssessmentId', dbData.id);
-      return dbData;
+      return dbData as BaselineAssessmentData;
     } catch (e) {
       console.error(e);
       return null;
     }
   }
 
-  async editBaselineAssessment(data: any, questionnaireId: number) {
+  async editBaselineAssessment(data: BaselineAssessmentData, questionnaireId: number) {
     const url = this.endpoints.baselineAssessment + '/' + questionnaireId;
     try {
       const response = await fetch(url, {
@@ -50,15 +53,14 @@ export class ApiService {
       });
 
       const dbData = await response.json();
-      console.log('response data', dbData);
-      return dbData;
+      return dbData as BaselineAssessmentData;
     } catch (e) {
       console.error(e);
       return null;
     }
   }
 
-  async deleteBaselineAssessment(data: any, participantId: number) {
+  async deleteBaselineAssessment(data: BaselineAssessmentData, participantId: number) {
     const url = this.endpoints.baselineAssessment + '/' + participantId;
     try {
       const response = await fetch(url, {
@@ -71,8 +73,7 @@ export class ApiService {
       });
 
       const dbData = await response.json();
-      console.log('response data', dbData);
-      return dbData;
+      return dbData as BaselineAssessmentData;
     } catch (e) {
       console.error(e);
       return null;
@@ -81,9 +82,6 @@ export class ApiService {
 
   async login(email: string, password: string, email_token = ''): Promise<User | null> {
     try {
-      console.log('email', email);
-      console.log('password', password);
-      console.log('this.endpoints.login', this.endpoints.login);
       const response = await fetch(this.endpoints.login, {
         method: 'POST',
         headers: {
@@ -93,10 +91,7 @@ export class ApiService {
         body: JSON.stringify({email, password, email_token})
       });
 
-      console.log('response', response);
-
       const user: User = await response.json();
-      console.log('login response user', user);
 
       if (user.token) {
         await AsyncStorage.setItem("user_token", user.token);
