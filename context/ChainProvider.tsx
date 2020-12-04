@@ -14,31 +14,16 @@ type Skill = {
 
 type ChainProviderProps = {};
 
-export const defaultContextValue: ChainProviderProps = {
-	skill: {},
-	setChainSkill: () => null,
-	getChainSkill: () => null,
-};
-
-export const ChainContext = React.createContext<ChainProviderProps>(
-	defaultContextValue
+export const ChainContext = React.createContext<Partial<ChainProviderProps>>(
+	{}
 );
 
 let initialState = {};
 
 export const ChainProvider: React.FC<ChainProviderProps> = ({ children }) => {
-	const [skill, setSkill] = useState<Skill>();
+	let [session, setSession] = useState();
+	let [stepAttempt, setStepAttempt] = useState();
+	let [authorization, setAuthorization] = useState(false);
 
-	return (
-		<ChainContext.Provider
-			value={{
-				skill,
-				setChainSkill: (s) => {
-					setSkill(s);
-				},
-			}}
-		>
-			{children}
-		</ChainContext.Provider>
-	);
+	return <ChainContext.Provider value={{}}>{children}</ChainContext.Provider>;
 };

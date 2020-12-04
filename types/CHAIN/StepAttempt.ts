@@ -1,41 +1,25 @@
-class ChallengingBehavior {
+interface ChallengingBehavior {
 	didOccur: boolean;
 	severity: number;
-	description: string;
-	constructor() {}
 }
 
-class StepAttempt {
+export class StepAttempt {
 	date: Date;
+	instruction: string;
 	stepId: number;
-	wasPrompted?: boolean;
-	promptLevel?: number;
+	wasPrompted: boolean;
+	promptLevel: number;
 	challengingBehavior?: ChallengingBehavior;
 
-	constructor(stepId: number) {
+	constructor(stepId: number, instruction: string) {
 		this.date = new Date();
 		this.stepId = stepId;
-		this.challengingBehavior = new ChallengingBehavior();
-	}
-
-	setPromptLevel(promptLevel: number) {
-		this.promptLevel = promptLevel;
-	}
-
-	getPromptLevel(): number | undefined {
-		if (this.wasPrompted && this.promptLevel != undefined)
-			return this.promptLevel;
-	}
-
-	setWasPrompted(wasPrompted: boolean) {
-		this.wasPrompted = wasPrompted;
-	}
-
-	getWasPrompted(): boolean | undefined {
-		if (this.wasPrompted != undefined) return this.wasPrompted;
-	}
-
-	setChallengingBehavior(challengingBehavior: ChallengingBehavior) {
-		this.challengingBehavior = challengingBehavior;
+		this.instruction = instruction;
+		this.wasPrompted = true;
+		this.promptLevel = 4;
+		this.challengingBehavior = {
+			didOccur: false,
+			severity: 0,
+		};
 	}
 }
