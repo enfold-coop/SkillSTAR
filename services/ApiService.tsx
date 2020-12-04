@@ -7,7 +7,7 @@ export interface BaselineAssessmentData {
 }
 
 export class ApiService {
-  apiUrl = 'https://ce7c361742a7.ngrok.io/api';
+  apiUrl = 'https://stardrive-frontend.sartography.ngrok.io/api';
   // apiUrl = 'http://localhost:5000/api';
   endpoints = {
     login: `${this.apiUrl}/login_password`,
