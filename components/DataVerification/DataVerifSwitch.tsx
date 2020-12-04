@@ -3,57 +3,67 @@ import { StyleSheet, Text, View } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { Switch } from "react-native-paper";
 import CustomColors from "../../styles/Colors";
+import { DataVerifAccordion } from ".";
 import * as Animatable from "react-native-animatable";
+
+const MOCK_PROMPT_OPTS = [
+	"No Prompt (Independent)",
+	"Shadow Prompt (approximately one inch)",
+	"Partial Physical Prompt (thumb and index finger)",
+	"Full Physical Prompt (hand-over-hand)",
+];
+
+const MOCK_BEHAV_OPTS = [
+	"Mild (did not interfere with task)",
+	"Moderate (interfered with task, but we were able to work through it)",
+	"Severe (we were not able to complete the task due to the severity of the behavior)",
+];
+
+const MOCK_PROMP_Q = "What prompt did you use to complete the step?";
+const MOCK_BEHAV_Q = "How severe was the challenging behavior?";
 
 type Props = {
 	instruction: string;
 	type: number;
 	id: number;
-	defaultValue: boolean;
-	handleSwitchVal: () => {};
 };
 const DataVerifSwitch: FC<Props> = (props) => {
 	const navigation = useNavigation();
 
-	let { instruction, type, defaultValue, handleSwitchVal } = props;
-
-	const [isSwitchOn, setIsSwitchOn] = useState(defaultValue);
+	const { instruction, type, id } = props;
+	const [isSwitchOn, setIsSwitchOn] = useState();
+	let [active, setActive] = useState(false);
+	let [Q, setQ] = useState("");
+	let [opts, setOpts] = useState([]);
 
 	let [label, setLabel] = useState("No");
-
-	const handleSwitchValue = (v: boolean, type: number) => {
-		return handleSwitchVal(v, type);
-	};
 
 	// Checks for question type and switch value.  If results are positive
 	// navigate to ChainsHomeScreen
 	const checkTypeAgainstSwitchVal = () => {
-		if (type === 0 && isSwitchOn === false)
-			handleSwitchValue(isSwitchOn, 0);
-		if (type === 1 && isSwitchOn === true) handleSwitchValue(isSwitchOn, 1);
+		if (type === 0 && isSwitchOn === false) {
+			setQ(MOCK_PROMP_Q);
+			setOpts(MOCK_PROMPT_OPTS);
+		}
+		if (type === 1 && isSwitchOn === true) {
+			setQ(MOCK_BEHAV_Q);
+			setOpts(MOCK_BEHAV_OPTS);
+		}
 	};
 
 	// Sets question type swtich value type
 	const setQuestionType = () => {
 		if (type === 0) {
 			setIsSwitchOn(true);
-			handleSwitchValue(isSwitchOn, 0);
 		} else if (type === 1) {
 			setIsSwitchOn(false);
-			handleSwitchValue(isSwitchOn, 1);
 		}
-	};
-
-	// Navigate to ChainsHome
-	const navigateToChainsHome = () => {
-		// navigation.navigate("ChainsHomeScreen");
-		// console.log("switch");
 	};
 
 	// Toogle switch label (yes/no)
 	const toggleLabel = () => {
 		setLabel((label = isSwitchOn === false ? "No" : "Yes"));
-		checkTypeAgainstSwitchVal();
+		// checkTypeAgainstSwitchVal();
 	};
 
 	// callback for setting isSwitchOn value
@@ -71,6 +81,7 @@ const DataVerifSwitch: FC<Props> = (props) => {
 
 	useEffect(() => {
 		toggleLabel();
+		setActive(!active);
 	}, [isSwitchOn]);
 	/** END: Lifecycle calls */
 
@@ -83,6 +94,7 @@ const DataVerifSwitch: FC<Props> = (props) => {
 				onValueChange={onToggleSwitch}
 				style={[styles.switch]}
 			/>
+			{active && <DataVerifAccordion question={Q} answerOptions={opts} />}
 		</View>
 	);
 };

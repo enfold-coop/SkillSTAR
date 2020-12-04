@@ -9,11 +9,10 @@ import CustomColors from "../../styles/Colors";
 type Props = {
 	question: string;
 	answerOptions: string[];
-	active: boolean;
 };
 
 const DataVerifAccordion: FC<Props> = (props) => {
-	const { question, answerOptions, active } = props;
+	const { question, answerOptions } = props;
 	const [checked, setChecked] = React.useState(false);
 	const [expanded, setExpanded] = useState(false);
 
