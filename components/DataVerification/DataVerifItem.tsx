@@ -15,15 +15,6 @@ const DataVerifItem: FC<Props> = ({ stepAttempt }) => {
 		challBehav: 1,
 	};
 
-	const [behavSelected, setBehaveSelected] = useState(false);
-	const [completed, setCompleted] = useState(true);
-
-	const handleSwitchVal = (v: boolean, type: number) => {
-		if (type === 0) setCompleted(v);
-		if (type === 1) setBehaveSelected(v);
-		return v;
-	};
-
 	/**
 	 * use context api, here:
 	 */

@@ -13,14 +13,15 @@ type Props = {
 
 const DataVerifAccordion: FC<Props> = (props) => {
 	const { question, answerOptions } = props;
+	console.log(question);
 	const [checked, setChecked] = React.useState(false);
 	const [expanded, setExpanded] = useState(false);
 
 	// { display: expanded ? "flex" : "none" }
 	return (
 		<Animatable.View style={[styles.container]}>
+			<Text style={styles.question}>{question}</Text>
 			<View style={[styles.subContainer]}>
-				<Text style={styles.question}>{question}</Text>
 				<TouchableOpacity>
 					{answerOptions.map((e, i) => {
 						return (
@@ -40,6 +41,8 @@ export default DataVerifAccordion;
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
+		flexDirection: "row",
+		width: "100%",
 		margin: 20,
 		marginBottom: 40,
 		padding: 20,
@@ -49,7 +52,7 @@ const styles = StyleSheet.create({
 		backgroundColor: "rgba(255,255,255,0.3)",
 	},
 	subContainer: {
-		flexDirection: "row",
+		flexDirection: "column",
 		justifyContent: "space-around",
 	},
 	question: {

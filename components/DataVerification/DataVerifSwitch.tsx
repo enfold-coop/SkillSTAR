@@ -75,10 +75,6 @@ const DataVerifSwitch: FC<Props> = (props) => {
 		setQuestionType();
 	}, [type]);
 
-	// useEffect(() => {
-	// 	setIsSwitchOn(false);
-	// }, [instruction]);
-
 	useEffect(() => {
 		toggleLabel();
 		setActive(!active);
@@ -86,22 +82,27 @@ const DataVerifSwitch: FC<Props> = (props) => {
 	/** END: Lifecycle calls */
 
 	return (
-		<View style={styles.container}>
-			<Text style={styles.label}>{label}</Text>
-			<Switch
-				value={isSwitchOn}
-				color={CustomColors.uva.orange}
-				onValueChange={onToggleSwitch}
-				style={[styles.switch]}
-			/>
+		<Animatable.View style={styles.container}>
+			<View style={styles.subContainer}>
+				<Text style={styles.label}>{label}</Text>
+				<Switch
+					value={isSwitchOn}
+					color={CustomColors.uva.orange}
+					onValueChange={onToggleSwitch}
+					style={[styles.switch]}
+				/>
+			</View>
 			{active && <DataVerifAccordion question={Q} answerOptions={opts} />}
-		</View>
+		</Animatable.View>
 	);
 };
 
+export default DataVerifSwitch;
+
 const styles = StyleSheet.create({
 	container: {
-		flexDirection: "column",
+		flexDirection: "row",
+		justifyContent: "flex-start",
 	},
 	subContainer: {
 		flexDirection: "row",
@@ -116,13 +117,4 @@ const styles = StyleSheet.create({
 		alignSelf: "center",
 		transform: [{ scaleX: 1.2 }, { scaleY: 1.2 }],
 	},
-	accordion: {
-		display: "flex",
-		height: 100,
-	},
-	noAccordion: {
-		display: "none",
-		height: 0,
-	},
 });
-export default DataVerifSwitch;
