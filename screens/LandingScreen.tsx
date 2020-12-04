@@ -3,6 +3,7 @@ import { StyleSheet, Image, View, Text, ImageBackground } from "react-native";
 import { Button, TextInput } from "react-native-paper";
 import { RootNavProps as Props } from "../navigation/root_types";
 import CustomColors from "../styles/Colors";
+import * as Animatable from "react-native-animatable";
 
 export default function LandingScreen({ navigation }: Props<"LandingScreen">) {
 	let [email, setEmail] = useState("");
@@ -15,15 +16,17 @@ export default function LandingScreen({ navigation }: Props<"LandingScreen">) {
 			style={styles.image}
 		>
 			<View style={styles.container}>
-				<Image
-					style={{
-						alignSelf: "center",
-						width: 400,
-						height: 400,
-						marginBottom: 40,
-					}}
-					source={require("../assets/images/logo.png")}
-				/>
+				<Animatable.View animation="zoomIn">
+					<Image
+						style={{
+							alignSelf: "center",
+							width: 400,
+							height: 400,
+							marginBottom: 40,
+						}}
+						source={require("../assets/images/logo.png")}
+					/>
+				</Animatable.View>
 				{/**
 				 * New user?
 				 * -- Yes: background survey,
@@ -49,7 +52,9 @@ export default function LandingScreen({ navigation }: Props<"LandingScreen">) {
 					color={CustomColors.uva.blue}
 					mode="contained"
 					// onPress={() => navigation.navigate("ChainsHomeScreen")}
-					onPress={() => navigation.navigate("ChainsHomeScreen")}
+					onPress={() =>
+						navigation.navigate("DataVerificationScreen")
+					}
 				>
 					Log In
 				</Button>

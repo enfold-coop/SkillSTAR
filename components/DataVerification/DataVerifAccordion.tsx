@@ -1,36 +1,38 @@
-import React, { FC } from "react";
+import React, { FC, useState, useEffect } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
-import { RadioButton } from "react-native-paper";
+import { List } from "react-native-paper";
+import * as Animatable from "react-native-animatable";
 
 import CustomColors from "../../styles/Colors";
 
 type Props = {
 	question: string;
 	answerOptions: string[];
+	active: boolean;
 };
 
 const DataVerifAccordion: FC<Props> = (props) => {
-	const { question, answerOptions } = props;
+	const { question, answerOptions, active } = props;
 	const [checked, setChecked] = React.useState(false);
+	const [expanded, setExpanded] = useState(false);
 
+	// { display: expanded ? "flex" : "none" }
 	return (
-		<View style={[styles.container]}>
+		<Animatable.View style={[styles.container]}>
 			<View style={[styles.subContainer]}>
 				<Text style={styles.question}>{question}</Text>
-				<View style={styles.formContainer}>
+				<TouchableOpacity>
 					{answerOptions.map((e, i) => {
 						return (
-							<TouchableOpacity style={styles.answerOption}>
-								<Text style={styles.input}>
-									{i + 1}. {e}
-								</Text>
-							</TouchableOpacity>
+							<Text>
+								{i + 1}. {e}
+							</Text>
 						);
 					})}
-				</View>
+				</TouchableOpacity>
 			</View>
-		</View>
+		</Animatable.View>
 	);
 };
 

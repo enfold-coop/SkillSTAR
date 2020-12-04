@@ -8,6 +8,7 @@ import {
 	TouchableOpacity,
 	View,
 } from "react-native";
+import * as Animatable from "react-native-animatable";
 import ScorecardListItem from "../components/Chain/ScorecardListItem";
 import SessionDataAside from "../components/Chain/SessionDataAside";
 import AppHeader from "../components/Header/AppHeader";
@@ -62,13 +63,20 @@ const ChainsHomeScreen: FC<Props> = (props) => {
 					/>
 				</View>
 			)}
+
 			<TouchableOpacity
 				style={styles.startSessionBtn}
 				onPress={() => {
 					navToProbeOrTraining();
 				}}
 			>
-				<Text style={styles.btnText}>Start the Chain</Text>
+				<Animatable.Text
+					animation="bounceIn"
+					duration={2000}
+					style={styles.btnText}
+				>
+					Start the Chain
+				</Animatable.Text>
 			</TouchableOpacity>
 		</ImageBackground>
 	);

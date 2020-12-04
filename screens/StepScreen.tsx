@@ -6,6 +6,7 @@ import { ImageBackground, StyleSheet, Text, View } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { Button, ProgressBar } from "react-native-paper";
 import ChallengingBehavModal from "../components/ChallengingBehavior/ChallengingBehavModal";
+import * as Animatable from "react-native-animatable";
 import AppHeader from "../components/Header/AppHeader";
 import { chainSteps } from "../data/chainSteps";
 import { videos } from "../data/videos";
@@ -144,9 +145,13 @@ const StepScreen: FC<Props> = (props) => {
 							difficulty or experiening challenging behavior.
 						</Text>
 					</View>
-					<View style={styles.subVideoContainer}>
+					<Animatable.View
+						style={styles.subVideoContainer}
+						duration={2000}
+						animation={"fadeIn"}
+					>
 						{<ReturnVideoComponent />}
-					</View>
+					</Animatable.View>
 					<View style={styles.bottomContainer}>
 						<Button
 							style={styles.exitButton}

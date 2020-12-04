@@ -21,25 +21,26 @@ const DataVerifSwitch: FC<Props> = (props) => {
 
 	let [label, setLabel] = useState("No");
 
-	const handleSwitchValue = (v: boolean) => {
-		return handleSwitchVal(v);
+	const handleSwitchValue = (v: boolean, type: number) => {
+		return handleSwitchVal(v, type);
 	};
 
 	// Checks for question type and switch value.  If results are positive
 	// navigate to ChainsHomeScreen
 	const checkTypeAgainstSwitchVal = () => {
-		if (type === 0 && isSwitchOn === false) handleSwitchValue(false);
-		if (type === 1 && isSwitchOn === true) handleSwitchValue(true);
+		if (type === 0 && isSwitchOn === false)
+			handleSwitchValue(isSwitchOn, 0);
+		if (type === 1 && isSwitchOn === true) handleSwitchValue(isSwitchOn, 1);
 	};
 
 	// Sets question type swtich value type
 	const setQuestionType = () => {
 		if (type === 0) {
 			setIsSwitchOn(true);
-			handleSwitchValue(true);
+			handleSwitchValue(isSwitchOn, 0);
 		} else if (type === 1) {
 			setIsSwitchOn(false);
-			handleSwitchValue(false);
+			handleSwitchValue(isSwitchOn, 1);
 		}
 	};
 
@@ -92,8 +93,6 @@ const styles = StyleSheet.create({
 	},
 	subContainer: {
 		flexDirection: "row",
-		// justifyContent: "center",
-		// alignContent: "center",
 	},
 	label: {
 		fontSize: 28,

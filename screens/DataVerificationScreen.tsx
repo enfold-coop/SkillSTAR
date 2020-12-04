@@ -53,65 +53,61 @@ function DataVerificationScreen({ session }: Props): ReactNode {
 	/** END: Lifecycle calls */
 
 	return (
-		<ImageBackground
-			source={require("../assets/images/sunrise-muted.png")}
-			resizeMode={"cover"}
-			style={styles.image}
-		>
-			<View style={styles.container}>
-				<AppHeader name="Brushing Teeth" />
-				<View style={styles.instructionContainer}>
-					<Text
-						style={[
-							scrolling
-								? styles.smallHeader
-								: styles.screenHeader,
-						]}
-					>
-						Probe Session
-					</Text>
-					<Animatable.Text
-						transition="fontSize"
-						duration={1000}
-						style={[
-							scrolling
-								? styles.smallInstruction
-								: styles.instruction,
-						]}
-					>
-						Please instruct the child to brush their teeth. As they
-						do, please complete this survey for each step.
-					</Animatable.Text>
-				</View>
-				<View style={styles.formContainer}>
-					{sessionData && (
-						<FlatList
-							onScrollBeginDrag={() => {
-								setScrolling(true);
-							}}
-							data={sessionData}
-							renderItem={(item) => {
-								return (
-									<DataVerifItem stepAttempt={item.item} />
-								);
-							}}
-							keyExtractor={() => nanoid()}
-						/>
-					)}
-				</View>
-
-				{readyToSubmit && (
-					<Button
-						mode="contained"
-						onPress={() => {
-							navigation.navigate("ChainsHomeScreen");
+		// <ImageBackground
+		// 	source={require("../assets/images/sunrise-muted.png")}
+		// 	resizeMode={"cover"}
+		// 	style={styles.image}
+		// >
+		<View style={styles.container}>
+			<AppHeader name="Brushing Teeth" />
+			<View style={styles.instructionContainer}>
+				<Text
+					style={[
+						scrolling ? styles.smallHeader : styles.screenHeader,
+					]}
+				>
+					Probe Session
+				</Text>
+				<Animatable.Text
+					transition="fontSize"
+					duration={1000}
+					style={[
+						scrolling
+							? styles.smallInstruction
+							: styles.instruction,
+					]}
+				>
+					Please instruct the child to brush their teeth. As they do,
+					please complete this survey for each step.
+				</Animatable.Text>
+			</View>
+			<View style={styles.formContainer}>
+				{sessionData && (
+					<FlatList
+						onScrollBeginDrag={() => {
+							setScrolling(true);
 						}}
-					>
-						Submit
-					</Button>
+						data={sessionData}
+						renderItem={(item) => {
+							return <DataVerifItem stepAttempt={item.item} />;
+						}}
+						keyExtractor={() => nanoid()}
+					/>
 				)}
 			</View>
-		</ImageBackground>
+
+			{readyToSubmit && (
+				<Button
+					mode="contained"
+					onPress={() => {
+						navigation.navigate("ChainsHomeScreen");
+					}}
+				>
+					Submit
+				</Button>
+			)}
+		</View>
+		// </ImageBackground>
 	);
 }
 

@@ -32,11 +32,24 @@ const DataVerifItem: FC<Props> = ({ stepAttempt }) => {
 	};
 
 	const [behavSelected, setBehaveSelected] = useState(false);
-	const [completed, setCompleted] = useState(false);
+	const [completed, setCompleted] = useState(true);
+	const [behavAccordion, setBehavAccord] = useState(false);
+	const [promptAccordion, setPromptAccord] = useState(false);
 
-	const handleSwitchVal = (v: boolean) => {
+	const handleSwitchVal = (v: boolean, type: number) => {
+		if (type === 0) setCompleted(v);
+		if (type === 1) setBehaveSelected(v);
 		return v;
 	};
+
+	useEffect(() => {
+		setPromptAccord(!promptAccordion);
+		console.log(promptAccordion);
+	}, [completed]);
+
+	useEffect(() => {
+		setBehavAccord(!behavAccordion);
+	}, [behavSelected]);
 
 	/**
 	 * use context api, here:
@@ -59,12 +72,18 @@ const DataVerifItem: FC<Props> = ({ stepAttempt }) => {
 						handleSwitchVal={handleSwitchVal}
 					/>
 				</View>
-				{completed && (
+				<View
+					style={[
+						styles.accordion,
+						{ display: behavSelected ? "flex" : "none" },
+					]}
+				>
 					<DataVerifAccordion
 						question={MOCK_PROMP_Q}
 						answerOptions={MOCK_PROMPT_OPTS}
+						active={promptAccordion}
 					/>
-				)}
+				</View>
 			</View>
 			<View style={styles.questionContainer}>
 				<View style={styles.questionSubContainer}>
@@ -77,12 +96,19 @@ const DataVerifItem: FC<Props> = ({ stepAttempt }) => {
 						handleSwitchVal={handleSwitchVal}
 					/>
 				</View>
-				{behavSelected && (
+
+				<View
+					style={[
+						styles.accordion,
+						{ display: promptAccordion ? "flex" : "none" },
+					]}
+				>
 					<DataVerifAccordion
 						question={MOCK_BEHAV_Q}
 						answerOptions={MOCK_BEHAV_OPTS}
+						active={behavAccordion}
 					/>
-				)}
+				</View>
 			</View>
 		</View>
 	);
@@ -124,6 +150,11 @@ const styles = StyleSheet.create({
 		fontSize: 24,
 		fontWeight: "600",
 		paddingBottom: 10,
+	},
+	accordion: {
+		backgroundColor: "#f0f",
+		width: 200,
+		height: 200,
 	},
 	btnContainer: {
 		justifyContent: "center",
