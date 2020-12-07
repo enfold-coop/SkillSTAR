@@ -1,7 +1,7 @@
 import React, { FC, useEffect, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import CustomColors from "../../styles/Colors";
-import { DataVerifSwitch, DataVerifAccordion } from ".";
+import { DataVerifSwitch } from ".";
 import { StepAttempt } from "../../types/CHAIN/StepAttempt";
 import { Accordion } from "react-native-paper/lib/typescript/src/components/List/List";
 
