@@ -8,14 +8,41 @@ import CustomColors from "../../styles/Colors";
 
 type Props = {
 	stepAttempt: StepAttempt;
+	switchVals: {};
 };
 
 const DataVerifAccordion: FC<Props> = (props) => {
 	// { display: expanded ? "flex" : "none" }
+
+	const { stepAttempt, switchVals } = props;
+
+	const [expanded, setExpanded] = useState(true);
+	const [promptData, setPromptData] = useState();
+	const [behavData, setBehavData] = useState();
+
+	const watchSwitchVals = () => {
+		if (Object.values(switchVals).indexOf(true)) {
+			// set
+		}
+	};
+
+	useEffect(() => {
+		watchSwitchVals();
+	}, [switchVals]);
+
 	return (
-		<Animatable.View style={[styles.container]}>
-			<PromptAccordion />
-			<BehavAccordion />
+		<Animatable.View
+			// style={[styles.container, { display: expanded ? "flex" : "none" }]}
+			style={[styles.container]}
+		>
+			<PromptAccordion
+				stepId={stepAttempt.stepId}
+				switched={switchVals.promptSwitch}
+			/>
+			<BehavAccordion
+				stepId={stepAttempt.stepId}
+				switched={switchVals.behavSwitch}
+			/>
 		</Animatable.View>
 	);
 };

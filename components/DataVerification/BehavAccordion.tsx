@@ -7,21 +7,26 @@ import { MOCK_BEHAV_OPTS, MOCK_BEHAV_Q } from "./mock_session";
 import CustomColors from "../../styles/Colors";
 
 type Props = {
-	question: string;
-	answerOptions: string[];
+	stepAttempt: StepAttempt;
+	switched: boolean;
 };
 
 const BehavAccordion: FC<Props> = (props) => {
-	const { question, answerOptions } = props;
-	console.log(question);
+	let { switched } = props;
 	const [checked, setChecked] = React.useState(false);
 	const [expanded, setExpanded] = useState(false);
 	let [behavQ, setBehavQ] = useState(MOCK_BEHAV_Q);
 	let [behavOpts, setBehavOpts] = useState(MOCK_BEHAV_OPTS);
 
 	// { display: expanded ? "flex" : "none" }
+	useEffect(() => {
+		setExpanded(switched);
+	}, [switched]);
+
 	return (
-		<Animatable.View style={[styles.container]}>
+		<Animatable.View
+			style={[styles.container, { display: expanded ? "flex" : "none" }]}
+		>
 			<View style={styles.behavSubContainer}>
 				<Text style={styles.question}>{behavQ}</Text>
 				<View style={[styles.behavOptsContainer]}>

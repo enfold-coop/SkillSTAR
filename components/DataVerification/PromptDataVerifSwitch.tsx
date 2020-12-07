@@ -8,12 +8,13 @@ import * as Animatable from "react-native-animatable";
 type Props = {
 	instruction: string;
 	id: number;
+	handleSwitch: any;
 };
 
 const PromptDataVerifSwitch: FC<Props> = (props) => {
 	const navigation = useNavigation();
 
-	const { instruction, id } = props;
+	const { instruction, id, handleSwitch } = props;
 	const [isSwitchOn, setIsSwitchOn] = useState(true);
 	let [active, setActive] = useState(false);
 	let [Q, setQ] = useState("");
@@ -30,6 +31,10 @@ const PromptDataVerifSwitch: FC<Props> = (props) => {
 	 * END: Accordion functionality
 	 */
 
+	const handleSwitchVal = (v: boolean) => {
+		return handleSwitch(v);
+	};
+
 	// Toogle switch label (yes/no)
 	const toggleLabel = () => {
 		setLabel((label = isSwitchOn === false ? "No" : "Yes"));
@@ -37,7 +42,10 @@ const PromptDataVerifSwitch: FC<Props> = (props) => {
 	};
 
 	// callback for setting isSwitchOn value
-	const onToggleSwitch = () => setIsSwitchOn(!isSwitchOn);
+	const onToggleSwitch = () => {
+		setIsSwitchOn(!isSwitchOn);
+		handleSwitchVal(isSwitchOn);
+	};
 	//
 
 	/** START: Lifecycle calls */
@@ -55,7 +63,9 @@ const PromptDataVerifSwitch: FC<Props> = (props) => {
 				<Switch
 					value={isSwitchOn}
 					color={CustomColors.uva.orange}
-					onValueChange={onToggleSwitch}
+					onValueChange={() => {
+						onToggleSwitch();
+					}}
 					style={[styles.switch]}
 				/>
 			</View>

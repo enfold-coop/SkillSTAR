@@ -7,6 +7,8 @@ import {
 	BehavDataVerifSwitch,
 	PromptDataVerifSwitch,
 	DataVerifAccordion,
+	BehavAccordion,
+	PromptAccordion,
 } from ".";
 import { StepAttempt } from "../../types/CHAIN/StepAttempt";
 import { Accordion } from "react-native-paper/lib/typescript/src/components/List/List";
@@ -20,27 +22,47 @@ const DataVerifItem: FC<Props> = ({ stepAttempt }) => {
 	 * use context api, here:
 	 */
 	const { stepId, instruction } = stepAttempt;
+	const [promptSwitch, setPromptSwitch] = useState(false);
+	const [behavSwitch, setBehavSwitch] = useState(false);
+
+	const handlePromptSwitch = (v: boolean) => {
+		setPromptSwitch(v);
+	};
+	const handleBehavSwitch = (v: boolean) => {
+		setBehavSwitch(v);
+	};
 
 	return (
 		<View style={styles.container}>
 			<View style={styles.defaultFormContainer}>
 				<Text style={styles.masteryIcon}>{"M L Here"}</Text>
 				<Text style={styles.stepTitle}>"{instruction}"</Text>
-				<Text style={styles.promptLevel}>{"PromptLvevevevevl"}</Text>
+				<Text style={styles.promptLevel}>{"PromptLvl"}</Text>
 				<View style={styles.questionContainer}>
 					<PromptDataVerifSwitch
 						instruction={instruction}
 						id={stepId}
+						handleSwitch={handlePromptSwitch}
 					/>
 				</View>
 				<View style={styles.questionContainer}>
 					<BehavDataVerifSwitch
 						instruction={instruction}
 						id={stepId}
+						handleSwitch={handleBehavSwitch}
 					/>
 				</View>
 			</View>
-			<DataVerifAccordion />
+			<View style={styles.accordionContainer}>
+				<PromptAccordion
+					switched={promptSwitch}
+					stepAttempt={stepAttempt}
+				/>
+				<BehavAccordion
+					switched={behavSwitch}
+					stepAttempt={stepAttempt}
+				/>
+			</View>
 		</View>
 	);
 };
@@ -63,6 +85,7 @@ const styles = StyleSheet.create({
 		justifyContent: "space-between",
 		alignContent: "center",
 	},
+	accordionContainer: {},
 	masteryIcon: {
 		width: "10%",
 		alignSelf: "center",

@@ -16,12 +16,13 @@ const MOCK_BEHAV_Q = "How severe was the challenging behavior?";
 type Props = {
 	instruction: string;
 	id: number;
+	handleSwitch: any;
 };
 
 const BehavDataVerifSwitch: FC<Props> = (props) => {
 	const navigation = useNavigation();
 
-	const { instruction, id } = props;
+	const { instruction, id, handleSwitch } = props;
 	const [isSwitchOn, setIsSwitchOn] = useState(false);
 	let [active, setActive] = useState(false);
 	let [Q, setQ] = useState("");
@@ -38,6 +39,10 @@ const BehavDataVerifSwitch: FC<Props> = (props) => {
 	 * END: Accordion functionality
 	 */
 
+	const handleSwitchVal = (v: boolean) => {
+		return handleSwitch(v);
+	};
+
 	// Toogle switch label (yes/no)
 	const toggleLabel = () => {
 		setLabel((label = isSwitchOn === false ? "No" : "Yes"));
@@ -45,7 +50,10 @@ const BehavDataVerifSwitch: FC<Props> = (props) => {
 	};
 
 	// callback for setting isSwitchOn value
-	const onToggleSwitch = () => setIsSwitchOn(!isSwitchOn);
+	const onToggleSwitch = () => {
+		setIsSwitchOn(!isSwitchOn);
+		handleSwitchVal(isSwitchOn);
+	};
 	//
 
 	/** START: Lifecycle calls */
@@ -63,7 +71,9 @@ const BehavDataVerifSwitch: FC<Props> = (props) => {
 				<Switch
 					value={isSwitchOn}
 					color={CustomColors.uva.orange}
-					onValueChange={onToggleSwitch}
+					onValueChange={() => {
+						onToggleSwitch();
+					}}
 					style={[styles.switch]}
 				/>
 			</View>

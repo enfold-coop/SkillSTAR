@@ -7,21 +7,27 @@ import { MOCK_PROMPT_OPTS, MOCK_PROMP_Q } from "./mock_session";
 import CustomColors from "../../styles/Colors";
 
 type Props = {
-	question: string;
-	answerOptions: string[];
+	stepAttempt: StepAttempt;
+	switched: boolean;
 };
 
 const PromptAccordion: FC<Props> = (props) => {
-	const { question, answerOptions } = props;
-	console.log(question);
+	let { switched } = props;
+
 	const [checked, setChecked] = React.useState(false);
 	const [expanded, setExpanded] = useState(false);
 	let [promptQ, setpromptQ] = useState(MOCK_PROMP_Q);
 	let [promptOpts, setpromptOpts] = useState(MOCK_PROMPT_OPTS);
 
+	useEffect(() => {
+		setExpanded(switched);
+	}, [switched]);
+
 	// { display: expanded ? "flex" : "none" }
 	return (
-		<Animatable.View style={[styles.container]}>
+		<Animatable.View
+			style={[styles.container, { display: expanded ? "flex" : "none" }]}
+		>
 			<Text style={styles.question}>{promptQ}</Text>
 			<View style={[styles.promptOptsContainer]}>
 				<TouchableOpacity>
