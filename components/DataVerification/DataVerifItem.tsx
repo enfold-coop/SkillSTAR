@@ -1,7 +1,13 @@
 import React, { FC, useEffect, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
+import * as Animatable from "react-native-animatable";
 import CustomColors from "../../styles/Colors";
-import { DataVerifSwitch } from ".";
+import {
+	DataVerifSwitch,
+	BehavDataVerifSwitch,
+	PromptDataVerifSwitch,
+	DataVerifAccordion,
+} from ".";
 import { StepAttempt } from "../../types/CHAIN/StepAttempt";
 import { Accordion } from "react-native-paper/lib/typescript/src/components/List/List";
 
@@ -10,11 +16,6 @@ type Props = {
 };
 
 const DataVerifItem: FC<Props> = ({ stepAttempt }) => {
-	const QUESTION_TYPES = {
-		completion: 0,
-		challBehav: 1,
-	};
-
 	/**
 	 * use context api, here:
 	 */
@@ -27,20 +28,19 @@ const DataVerifItem: FC<Props> = ({ stepAttempt }) => {
 				<Text style={styles.stepTitle}>"{instruction}"</Text>
 				<Text style={styles.promptLevel}>{"PromptLvevevevevl"}</Text>
 				<View style={styles.questionContainer}>
-					<DataVerifSwitch
+					<PromptDataVerifSwitch
 						instruction={instruction}
-						type={QUESTION_TYPES.completion}
 						id={stepId}
 					/>
 				</View>
 				<View style={styles.questionContainer}>
-					<DataVerifSwitch
+					<BehavDataVerifSwitch
 						instruction={instruction}
-						type={QUESTION_TYPES.challBehav}
 						id={stepId}
 					/>
 				</View>
 			</View>
+			<DataVerifAccordion />
 		</View>
 	);
 };

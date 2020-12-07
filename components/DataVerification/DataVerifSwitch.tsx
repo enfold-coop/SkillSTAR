@@ -5,36 +5,17 @@ import { Switch } from "react-native-paper";
 import CustomColors from "../../styles/Colors";
 import * as Animatable from "react-native-animatable";
 
-const MOCK_PROMPT_OPTS = [
-	"No Prompt (Independent)",
-	"Shadow Prompt (approximately one inch)",
-	"Partial Physical Prompt (thumb and index finger)",
-	"Full Physical Prompt (hand-over-hand)",
-];
-
-const MOCK_BEHAV_OPTS = [
-	"Mild (did not interfere with task)",
-	"Moderate (interfered with task, but we were able to work through it)",
-	"Severe (we were not able to complete the task due to the severity of the behavior)",
-];
-
-const MOCK_PROMP_Q = "What prompt did you use to complete the step?";
-const MOCK_BEHAV_Q = "How severe was the challenging behavior?";
-
 type Props = {
 	instruction: string;
-	type: number;
 	id: number;
 };
+
 const DataVerifSwitch: FC<Props> = (props) => {
 	const navigation = useNavigation();
 
-	const { instruction, type, id } = props;
+	const { instruction, id } = props;
 	const [isSwitchOn, setIsSwitchOn] = useState();
 	let [active, setActive] = useState(false);
-	let [Q, setQ] = useState("");
-	let [opts, setOpts] = useState([]);
-
 	let [label, setLabel] = useState("No");
 
 	/**
@@ -45,28 +26,6 @@ const DataVerifSwitch: FC<Props> = (props) => {
 	/**
 	 * END: Accordion functionality
 	 */
-
-	// Checks for question type and switch value.  If results are positive
-	// navigate to ChainsHomeScreen
-	const checkTypeAgainstSwitchVal = () => {
-		if (type === 0 && isSwitchOn === false) {
-			setQ(MOCK_PROMP_Q);
-			setOpts(MOCK_PROMPT_OPTS);
-		}
-		if (type === 1 && isSwitchOn === true) {
-			setQ(MOCK_BEHAV_Q);
-			setOpts(MOCK_BEHAV_OPTS);
-		}
-	};
-
-	// Sets question type swtich value type
-	const setQuestionType = () => {
-		if (type === 0) {
-			setIsSwitchOn(true);
-		} else if (type === 1) {
-			setIsSwitchOn(false);
-		}
-	};
 
 	// Toogle switch label (yes/no)
 	const toggleLabel = () => {
@@ -79,9 +38,6 @@ const DataVerifSwitch: FC<Props> = (props) => {
 	//
 
 	/** START: Lifecycle calls */
-	useEffect(() => {
-		setQuestionType();
-	}, [type]);
 
 	useEffect(() => {
 		toggleLabel();
@@ -101,20 +57,6 @@ const DataVerifSwitch: FC<Props> = (props) => {
 				/>
 			</View>
 			{/* {active && <DataVerifAccordion question={Q} answerOptions={opts} />} */}
-			<Animatable.View style={[styles.accordionContainer]}>
-				<Text style={styles.question}>{Q}</Text>
-				<View style={[styles.accordionSubContainer]}>
-					<TouchableOpacity>
-						{opts.map((e, i) => {
-							return (
-								<Text>
-									{i + 1}. {e}
-								</Text>
-							);
-						})}
-					</TouchableOpacity>
-				</View>
-			</Animatable.View>
 		</Animatable.View>
 	);
 };
