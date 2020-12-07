@@ -1,9 +1,8 @@
 import React, { FC, useState, useEffect } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { Switch } from "react-native-paper";
 import CustomColors from "../../styles/Colors";
-import { DataVerifAccordion } from ".";
 import * as Animatable from "react-native-animatable";
 
 const MOCK_PROMPT_OPTS = [
@@ -37,6 +36,15 @@ const DataVerifSwitch: FC<Props> = (props) => {
 	let [opts, setOpts] = useState([]);
 
 	let [label, setLabel] = useState("No");
+
+	/**
+	 * BEGIN: Accordion functionality
+	 */
+	const [checked, setChecked] = React.useState(false);
+	const [expanded, setExpanded] = useState(false);
+	/**
+	 * END: Accordion functionality
+	 */
 
 	// Checks for question type and switch value.  If results are positive
 	// navigate to ChainsHomeScreen
@@ -92,7 +100,21 @@ const DataVerifSwitch: FC<Props> = (props) => {
 					style={[styles.switch]}
 				/>
 			</View>
-			{active && <DataVerifAccordion question={Q} answerOptions={opts} />}
+			{/* {active && <DataVerifAccordion question={Q} answerOptions={opts} />} */}
+			<Animatable.View style={[styles.accordionContainer]}>
+				<Text style={styles.question}>{Q}</Text>
+				<View style={[styles.accordionSubContainer]}>
+					<TouchableOpacity>
+						{opts.map((e, i) => {
+							return (
+								<Text>
+									{i + 1}. {e}
+								</Text>
+							);
+						})}
+					</TouchableOpacity>
+				</View>
+			</Animatable.View>
 		</Animatable.View>
 	);
 };
@@ -106,6 +128,26 @@ const styles = StyleSheet.create({
 	},
 	subContainer: {
 		flexDirection: "row",
+	},
+	accordionContainer: {
+		flex: 1,
+		flexDirection: "row",
+		width: "100%",
+		margin: 20,
+		marginBottom: 40,
+		padding: 20,
+		borderColor: CustomColors.uva.gray,
+		borderWidth: 0,
+		borderRadius: 10,
+		backgroundColor: "rgba(255,255,255,0.3)",
+	},
+	accordionSubContainer: {
+		flexDirection: "column",
+		justifyContent: "space-around",
+	},
+	question: {
+		width: "50%",
+		paddingTop: 5,
 	},
 	label: {
 		fontSize: 28,
