@@ -37,7 +37,7 @@ const PromptAccordion: FC<Props> = (props) => {
 							<View style={styles.checkboxContainer}>
 								<View
 									style={{
-										padding: 3,
+										padding: 2,
 										borderRadius: 3,
 										borderWidth: 2,
 										borderColor: CustomColors.uva.gray,

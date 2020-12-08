@@ -45,7 +45,7 @@ const BehavAccordion: FC<Props> = (props) => {
 							<View style={styles.checkboxContainer}>
 								<View
 									style={{
-										padding: 3,
+										padding: 2,
 										borderRadius: 3,
 										borderWidth: 2,
 										borderColor: CustomColors.uva.gray,
@@ -110,6 +110,7 @@ const styles = StyleSheet.create({
 
 	behavSubContainer: {
 		paddingBottom: 10,
+		marginLeft: 20,
 	},
 	behavOptsContainer: {
 		flexDirection: "column",

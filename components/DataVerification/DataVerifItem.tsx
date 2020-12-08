@@ -33,9 +33,9 @@ const DataVerifItem: FC<Props> = ({ stepAttempt }) => {
 	return (
 		<View style={styles.container}>
 			<View style={styles.defaultFormContainer}>
-				<Text style={styles.masteryIcon}>{"M L Here"}</Text>
+				<Text style={styles.masteryIcon}>{"[...]"}</Text>
 				<Text style={styles.stepTitle}>"{instruction}"</Text>
-				<Text style={styles.promptLevel}>{"PromptLvl"}</Text>
+				<Text style={styles.promptLevel}>{"[...]"}</Text>
 				<View style={styles.questionContainer}>
 					<PromptDataVerifSwitch
 						instruction={instruction}
@@ -80,20 +80,20 @@ const styles = StyleSheet.create({
 	},
 	defaultFormContainer: {
 		flexDirection: "row",
-		justifyContent: "space-between",
+		justifyContent: "space-evenly",
 		alignContent: "center",
 	},
 	accordionContainer: {},
 	masteryIcon: {
-		width: "10%",
+		width: "5%",
 		alignSelf: "center",
 	},
 	promptLevel: {
-		width: "10%",
+		width: "5%",
 		alignSelf: "center",
 	},
 	stepTitle: {
-		width: "25%",
+		width: "40%",
 		alignSelf: "center",
 		fontSize: 20,
 	},
