@@ -19,17 +19,19 @@ const BehavAccordion: FC<Props> = (props) => {
 	let [behavQ, setBehavQ] = useState(MOCK_BEHAV_Q);
 	let [behavOpts, setBehavOpts] = useState(MOCK_BEHAV_OPTS);
 
+	/**
+	 * BEGIN: Lifecycle methods
+	 */
 	useEffect(() => {
 		if (refSwitched.current) {
-			console.log("first time");
 			refSwitched.current = false;
-			console.log(refSwitched.current);
 		} else {
-			console.log("subseq times");
-			console.log(switched);
-			setExpanded(!expanded);
+			setExpanded(switched);
 		}
 	}, [switched]);
+	/**
+	 * END: Lifecycle methods
+	 */
 
 	return (
 		<Animatable.View

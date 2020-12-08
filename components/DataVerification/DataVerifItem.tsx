@@ -3,10 +3,8 @@ import { StyleSheet, Text, View } from "react-native";
 import * as Animatable from "react-native-animatable";
 import CustomColors from "../../styles/Colors";
 import {
-	DataVerifSwitch,
 	BehavDataVerifSwitch,
 	PromptDataVerifSwitch,
-	DataVerifAccordion,
 	BehavAccordion,
 	PromptAccordion,
 } from ".";
