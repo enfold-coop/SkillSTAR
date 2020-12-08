@@ -50,8 +50,14 @@ const styles = StyleSheet.create({
 	container: {
 		flex: 1,
 		flexDirection: "column",
-		margin: 5,
+		paddingLeft: 10,
+		paddingBottom: 10,
+		marginTop: 5,
+		marginBottom: 5,
+		borderTopLeftRadius: 5,
+		borderTopRightRadius: 5,
 		width: "100%",
+		backgroundColor: CustomColors.uva.white,
 	},
 	promptSubContainer: {
 		paddingBottom: 10,

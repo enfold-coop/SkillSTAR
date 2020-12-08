@@ -59,12 +59,16 @@ export default BehavAccordion;
 
 const styles = StyleSheet.create({
 	container: {
-		display: "none",
 		flex: 1,
 		flexDirection: "column",
-		margin: 5,
+		marginTop: 5,
+		marginBottom: 5,
+		paddingLeft: 10,
+		paddingBottom: 10,
 		width: "100%",
-		// backgroundColor: "#f0f",
+		borderBottomRightRadius: 5,
+		borderBottomLeftRadius: 5,
+		backgroundColor: CustomColors.uva.white,
 	},
 	behavSubContainer: {
 		paddingBottom: 10,
