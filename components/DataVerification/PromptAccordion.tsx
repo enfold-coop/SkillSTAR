@@ -1,5 +1,6 @@
 import React, { FC, useState, useEffect } from "react";
 import { StyleSheet, Text, View } from "react-native";
+import { RadioButton } from "react-native-paper";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { StepAttempt } from "../../types/CHAIN/StepAttempt";
 import * as Animatable from "react-native-animatable";
@@ -14,7 +15,7 @@ type Props = {
 const PromptAccordion: FC<Props> = (props) => {
 	let { switched } = props;
 
-	const [checked, setChecked] = React.useState(false);
+	const [checked, setChecked] = React.useState(0);
 	const [expanded, setExpanded] = useState(false);
 	let [promptQ, setpromptQ] = useState(MOCK_PROMP_Q);
 	let [promptOpts, setpromptOpts] = useState(MOCK_PROMPT_OPTS);
@@ -28,17 +29,36 @@ const PromptAccordion: FC<Props> = (props) => {
 		<Animatable.View
 			style={[styles.container, { display: switched ? "flex" : "none" }]}
 		>
-			<Text style={styles.question}>{promptQ}</Text>
-			<View style={[styles.promptOptsContainer]}>
-				<TouchableOpacity>
+			<View style={styles.promptSubContainer}>
+				<Text style={styles.question}>{promptQ}</Text>
+				<View style={[styles.promptOptsContainer]}>
 					{promptOpts.map((e, i) => {
 						return (
-							<Text>
-								{i + 1}. {e}
-							</Text>
+							<View style={styles.checkboxContainer}>
+								<View
+									style={{
+										padding: 3,
+										borderRadius: 3,
+										borderWidth: 2,
+										borderColor: CustomColors.uva.gray,
+									}}
+								>
+									<RadioButton
+										color={CustomColors.uva.orange}
+										value={e + "YOYOYOYOYOYO"}
+										status={
+											checked === i
+												? "checked"
+												: "unchecked"
+										}
+										onPress={() => setChecked(i)}
+									/>
+								</View>
+								<Text style={styles.radioBtnText}>{e}</Text>
+							</View>
 						);
 					})}
-				</TouchableOpacity>
+				</View>
 			</View>
 		</Animatable.View>
 	);
@@ -67,10 +87,21 @@ const styles = StyleSheet.create({
 		justifyContent: "space-around",
 		marginLeft: 20,
 	},
-
+	checkboxContainer: {
+		marginRight: 5,
+		flexDirection: "row",
+		alignContent: "center",
+		margin: 5,
+	},
+	radioBtnText: {
+		alignSelf: "center",
+		paddingLeft: 10,
+		fontSize: 20,
+	},
 	question: {
-		paddingTop: 5,
-		fontSize: 16,
+		paddingTop: 10,
+		paddingBottom: 10,
+		fontSize: 20,
 		fontWeight: "600",
 	},
 	input: {

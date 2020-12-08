@@ -1,8 +1,6 @@
 import React, { FC, useState, useEffect, useRef } from "react";
 import { StyleSheet, Text, View } from "react-native";
-import CheckBox from "react-native-check-box";
-
-import { TouchableOpacity } from "react-native-gesture-handler";
+import { RadioButton } from "react-native-paper";
 import { StepAttempt } from "../../types/CHAIN/StepAttempt";
 import * as Animatable from "react-native-animatable";
 import { MOCK_BEHAV_OPTS, MOCK_BEHAV_Q } from "./mock_session";
@@ -16,13 +14,10 @@ type Props = {
 const BehavAccordion: FC<Props> = (props) => {
 	const refSwitched = useRef(true);
 	let { switched } = props;
-	const [checked, setChecked] = React.useState(false);
-	const [checked2, setChecked2] = React.useState(false);
-	const [checked3, setChecked3] = React.useState(false);
+	const [checked, setChecked] = React.useState(0);
 	const [expanded, setExpanded] = useState(false);
 	let [behavQ, setBehavQ] = useState(MOCK_BEHAV_Q);
 	let [behavOpts, setBehavOpts] = useState(MOCK_BEHAV_OPTS);
-	const [toggleCheckBox, setToggleCheckBox] = useState(false);
 
 	/**
 	 * BEGIN: Lifecycle methods
@@ -45,33 +40,41 @@ const BehavAccordion: FC<Props> = (props) => {
 			<View style={styles.behavSubContainer}>
 				<Text style={styles.question}>{behavQ}</Text>
 				<View style={[styles.behavOptsContainer]}>
-					<CheckBox
-						style={styles.checkbox}
-						color={"#f0f"}
-						onClick={() => {
-							setChecked(!checked);
-						}}
-						isChecked={checked}
-						leftText={"CheckBox"}
-					/>
-					<CheckBox
-						style={styles.checkbox}
-						color={"#f0f"}
-						onClick={() => {
-							setChecked2(!checked2);
-						}}
-						isChecked={checked2}
-						leftText={"CheckBox"}
-					/>
-					<CheckBox
+					{behavOpts.map((e, i) => {
+						return (
+							<View style={styles.checkboxContainer}>
+								<View
+									style={{
+										padding: 3,
+										borderRadius: 3,
+										borderWidth: 2,
+										borderColor: CustomColors.uva.gray,
+									}}
+								>
+									<RadioButton
+										color={CustomColors.uva.orange}
+										value={e + "YOYOYOYOYOYO"}
+										status={
+											checked === i
+												? "checked"
+												: "unchecked"
+										}
+										onPress={() => setChecked(i)}
+									/>
+								</View>
+								<Text style={styles.radioBtnText}>{e}</Text>
+							</View>
+						);
+					})}
+					{/* <CheckBox
 						style={styles.checkbox}
 						color={"#f0f"}
 						onClick={() => {
 							setChecked3(!checked3);
 						}}
 						isChecked={checked3}
-						leftText={"CheckBox"}
-					/>
+						leftText={MOCK_BEHAV_OPTS[2]}
+					/> */}
 				</View>
 			</View>
 		</Animatable.View>
@@ -89,13 +92,20 @@ const styles = StyleSheet.create({
 		paddingLeft: 10,
 		paddingBottom: 10,
 		width: "100%",
-		borderBottomRightRadius: 5,
-		borderBottomLeftRadius: 5,
+		borderRadius: 5,
 		backgroundColor: CustomColors.uva.white,
 	},
-	checkbox: {
-		backgroundColor: "#f0f",
-		padding: 10,
+	checkboxContainer: {
+		marginRight: 5,
+		flexDirection: "row",
+		alignContent: "center",
+		margin: 5,
+	},
+
+	radioBtnText: {
+		alignSelf: "center",
+		paddingLeft: 10,
+		fontSize: 20,
 	},
 
 	behavSubContainer: {
@@ -103,12 +113,13 @@ const styles = StyleSheet.create({
 	},
 	behavOptsContainer: {
 		flexDirection: "column",
-		marginLeft: 20,
-		justifyContent: "space-around",
+		justifyContent: "flex-start",
+		alignContent: "flex-start",
 	},
 	question: {
-		paddingTop: 5,
-		fontSize: 16,
+		paddingTop: 10,
+		paddingBottom: 10,
+		fontSize: 20,
 		fontWeight: "600",
 	},
 	input: {
