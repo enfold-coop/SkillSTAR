@@ -6,6 +6,7 @@ import {
 	ImageBackground,
 	FlatList,
 } from "react-native";
+import ColumnLabels from "../components/DataVerification/ColumnLabels";
 import * as Animatable from "react-native-animatable";
 import "react-native-get-random-values";
 import { nanoid } from "nanoid";
@@ -82,6 +83,7 @@ function DataVerificationScreen({ session }: Props): ReactNode {
 				</Animatable.Text>
 			</View>
 			<View style={styles.formContainer}>
+				<ColumnLabels />
 				{sessionData && (
 					<FlatList
 						onScrollBeginDrag={() => {
