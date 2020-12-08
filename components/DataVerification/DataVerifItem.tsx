@@ -26,10 +26,10 @@ const DataVerifItem: FC<Props> = ({ stepAttempt }) => {
 	const [behavSwitch, setBehavSwitch] = useState(false);
 
 	const handlePromptSwitch = (v: boolean) => {
-		setPromptSwitch(v);
+		setPromptSwitch(!promptSwitch);
 	};
 	const handleBehavSwitch = (v: boolean) => {
-		setBehavSwitch(v);
+		setBehavSwitch(!behavSwitch);
 	};
 
 	return (

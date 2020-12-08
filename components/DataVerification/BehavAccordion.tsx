@@ -1,7 +1,7 @@
-import React, { FC, useState, useEffect } from "react";
+import React, { FC, useState, useEffect, useRef } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
-import { List } from "react-native-paper";
+import { StepAttempt } from "../../types/CHAIN/StepAttempt";
 import * as Animatable from "react-native-animatable";
 import { MOCK_BEHAV_OPTS, MOCK_BEHAV_Q } from "./mock_session";
 import CustomColors from "../../styles/Colors";
@@ -12,15 +12,23 @@ type Props = {
 };
 
 const BehavAccordion: FC<Props> = (props) => {
+	const refSwitched = useRef(true);
 	let { switched } = props;
 	const [checked, setChecked] = React.useState(false);
 	const [expanded, setExpanded] = useState(false);
 	let [behavQ, setBehavQ] = useState(MOCK_BEHAV_Q);
 	let [behavOpts, setBehavOpts] = useState(MOCK_BEHAV_OPTS);
 
-	// { display: expanded ? "flex" : "none" }
 	useEffect(() => {
-		setExpanded(switched);
+		if (refSwitched.current) {
+			console.log("first time");
+			refSwitched.current = false;
+			console.log(refSwitched.current);
+		} else {
+			console.log("subseq times");
+			console.log(switched);
+			setExpanded(!expanded);
+		}
 	}, [switched]);
 
 	return (
@@ -49,6 +57,7 @@ export default BehavAccordion;
 
 const styles = StyleSheet.create({
 	container: {
+		display: "none",
 		flex: 1,
 		flexDirection: "column",
 		margin: 5,

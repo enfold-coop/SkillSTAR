@@ -1,7 +1,7 @@
 import React, { FC, useState, useEffect } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
-import { List } from "react-native-paper";
+import { StepAttempt } from "../../types/CHAIN/StepAttempt";
 import * as Animatable from "react-native-animatable";
 import { MOCK_PROMPT_OPTS, MOCK_PROMP_Q } from "./mock_session";
 import CustomColors from "../../styles/Colors";
@@ -26,7 +26,7 @@ const PromptAccordion: FC<Props> = (props) => {
 	// { display: expanded ? "flex" : "none" }
 	return (
 		<Animatable.View
-			style={[styles.container, { display: expanded ? "flex" : "none" }]}
+			style={[styles.container, { display: switched ? "flex" : "none" }]}
 		>
 			<Text style={styles.question}>{promptQ}</Text>
 			<View style={[styles.promptOptsContainer]}>

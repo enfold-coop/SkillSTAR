@@ -1,4 +1,4 @@
-import React, { FC, useState, useEffect } from "react";
+import React, { FC, useState, useEffect, useRef } from "react";
 import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { Switch } from "react-native-paper";
@@ -21,7 +21,7 @@ type Props = {
 
 const BehavDataVerifSwitch: FC<Props> = (props) => {
 	const navigation = useNavigation();
-
+	const refSwitched = useRef(true);
 	const { instruction, id, handleSwitch } = props;
 	const [isSwitchOn, setIsSwitchOn] = useState(false);
 	let [active, setActive] = useState(false);
@@ -33,8 +33,6 @@ const BehavDataVerifSwitch: FC<Props> = (props) => {
 	/**
 	 * BEGIN: Accordion functionality
 	 */
-	const [checked, setChecked] = React.useState(false);
-	const [expanded, setExpanded] = useState(false);
 	/**
 	 * END: Accordion functionality
 	 */
@@ -59,8 +57,12 @@ const BehavDataVerifSwitch: FC<Props> = (props) => {
 	/** START: Lifecycle calls */
 
 	useEffect(() => {
-		toggleLabel();
-		setActive(!active);
+		if (refSwitched.current) {
+			refSwitched.current = false;
+		} else {
+			toggleLabel();
+			setActive(!active);
+		}
 	}, [isSwitchOn]);
 	/** END: Lifecycle calls */
 

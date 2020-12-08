@@ -29,7 +29,7 @@ const DataVerifSwitch: FC<Props> = (props) => {
 
 	// Toogle switch label (yes/no)
 	const toggleLabel = () => {
-		setLabel((label = isSwitchOn === false ? "No" : "Yes"));
+		setLabel((label = !isSwitchOn ? "No" : "Yes"));
 		// checkTypeAgainstSwitchVal();
 	};
 
