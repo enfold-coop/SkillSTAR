@@ -1,5 +1,5 @@
 import React, { FC, useEffect, useState } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View, Image } from "react-native";
 import * as Animatable from "react-native-animatable";
 import CustomColors from "../../styles/Colors";
 import {
@@ -9,7 +9,7 @@ import {
 	PromptAccordion,
 } from ".";
 import { StepAttempt } from "../../types/CHAIN/StepAttempt";
-import { Accordion } from "react-native-paper/lib/typescript/src/components/List/List";
+import { MasteryIcons } from "../../styles/Icons";
 
 type Props = {
 	stepAttempt: StepAttempt;
@@ -19,9 +19,12 @@ const DataVerifItem: FC<Props> = ({ stepAttempt }) => {
 	/**
 	 * use context api, here:
 	 */
+	console.log(MasteryIcons(0));
+
 	const { stepId, instruction } = stepAttempt;
 	const [promptSwitch, setPromptSwitch] = useState(false);
 	const [behavSwitch, setBehavSwitch] = useState(false);
+	const [icon, setIcon] = useState(2);
 
 	const handlePromptSwitch = (v: boolean) => {
 		setPromptSwitch(!promptSwitch);
@@ -33,7 +36,14 @@ const DataVerifItem: FC<Props> = ({ stepAttempt }) => {
 	return (
 		<View style={styles.container}>
 			<View style={styles.defaultFormContainer}>
-				<Text style={styles.masteryIcon}>{"[...]"}</Text>
+				{icon && (
+					<Image
+						style={styles.masteryIcon}
+						source={require("../../assets/icons/waving-icon.png")}
+						resizeMode="contain"
+					/>
+				)}
+
 				<Text style={styles.stepTitle}>"{instruction}"</Text>
 				<Text style={styles.promptLevel}>{"[...]"}</Text>
 				<View style={styles.questionContainer}>
@@ -85,7 +95,8 @@ const styles = StyleSheet.create({
 	},
 	accordionContainer: {},
 	masteryIcon: {
-		width: "5%",
+		width: 50,
+		height: 50,
 		alignSelf: "center",
 	},
 	promptLevel: {

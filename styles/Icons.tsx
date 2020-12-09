@@ -6,8 +6,11 @@ export const SkillStarIcons = createIconSetFromIcoMoon(
 	"skillstar_icons.ttf"
 );
 
-export const Icons = {
-	mastered: require("../assets/icons/ribbon-icon.png"),
-	focus: require("../assets/icons/in-process-icon.png"),
-	noStarted: require("../assets/icons/waving-icon.png"),
+export const MasteryIcons = (level: number) => {
+	const icons = {
+		0: () => require("../assets/icons/ribbon-icon.png"),
+		1: () => require("../assets/icons/in-process-icon.png"),
+		2: () => require("../assets/icons/waving-icon.png"),
+	};
+	return icons.mastered;
 };
