@@ -1,60 +1,83 @@
-import { NavigationContainer } from "@react-navigation/native";
-import { createStackNavigator } from "@react-navigation/stack";
-import * as React from "react";
-import { ColorSchemeName } from "react-native";
-
+import {NavigationContainer} from "@react-navigation/native";
+import {createStackNavigator, StackNavigationProp} from "@react-navigation/stack";
+import * as React from 'react';
+import {ReactElement} from 'react';
+import {ColorSchemeName} from "react-native";
+import {Button} from 'react-native-paper';
 import {
-	BaselineAssessmentScreen,
-	ChainsHomeScreen,
-	LandingScreen,
-	PrepareMaterialsScreen,
-	StepScreen,
-	ProbeScreen,
-	DataVerificationScreen,
+  BaselineAssessmentScreen,
+  ChainsHomeScreen,
+  DataVerificationScreen,
+  LandingScreen,
+  PrepareMaterialsScreen,
+  ProbeScreen,
+  StepScreen,
 } from "../screens";
-import { screenOpts } from "../types/NavigationOptions";
-import { RootStackParamList } from "./root_types";
+import {ApiService} from '../services/ApiService';
+import CustomColors from '../styles/Colors';
+import {screenOpts} from "../types/NavigationOptions";
+import {RootStackParamList} from "./root_types";
 
-export default function Navigation({
-	colorScheme,
-}: {
-	colorScheme: ColorSchemeName;
+export default function Navigation({colorScheme}: {
+  colorScheme: ColorSchemeName;
 }) {
-	return (
-		<NavigationContainer>
-			<RootNavigator />
-		</NavigationContainer>
-	);
+  return (
+    <NavigationContainer>
+      <RootNavigator/>
+    </NavigationContainer>
+  );
+}
+
+const api = new ApiService();
+
+interface LogoutButtonProps {
+  navigation: StackNavigationProp<any>
+}
+
+const LogoutButton = (props: LogoutButtonProps): ReactElement => {
+  return (
+    <Button
+      color={CustomColors.uva.mountain}
+      onPress={() => {
+        api.logout().then(() => {
+          props.navigation.navigate("LandingScreen");
+        });
+      }}
+    >Logout</Button>
+  )
 }
 
 const Stack = createStackNavigator<RootStackParamList>();
 
 function RootNavigator() {
-	return (
-		<Stack.Navigator
-			initialRouteName="LandingScreen"
-			screenOptions={{ headerShown: true }}
-		>
-			<Stack.Screen
-				options={{ ...screenOpts, title: "Data verification" }}
-				name="DataVerificationScreen"
-				component={DataVerificationScreen}
-			/>
-			<Stack.Screen
-				options={{ ...screenOpts, title: "Welcome" }}
-				name="LandingScreen"
-				component={LandingScreen}
-			/>
-			<Stack.Screen
-				options={{ ...screenOpts, title: "Probe Session" }}
-				name="ProbeScreen"
-				component={ProbeScreen}
-			/>
-			<Stack.Screen
-				options={{ ...screenOpts, title: "Baseline Assessment" }}
-				name="BaselineAssessmentScreen"
-				component={BaselineAssessmentScreen}
-			/>
+  return (
+    <Stack.Navigator
+      initialRouteName="LandingScreen"
+      screenOptions={{headerShown: true}}
+    >
+      <Stack.Screen
+        options={{...screenOpts, title: "Welcome"}}
+        name="LandingScreen"
+        component={LandingScreen}
+      />
+      <Stack.Screen
+        options={({navigation}) => ({
+          ...screenOpts,
+          title: "Probe Session",
+          headerRight: () => (<LogoutButton navigation={navigation}/>)
+        })}
+        name="ProbeScreen"
+        component={ProbeScreen}
+      />
+      <Stack.Screen
+        options={({navigation}) => ({
+          ...screenOpts,
+          title: "Baseline Assessment",
+          headerRight: () => (<LogoutButton navigation={navigation}/>)
+        })}
+        name="BaselineAssessmentScreen"
+        component={BaselineAssessmentScreen}
+      />
 			{/* <Stack.Screen
 				options={{ ...screenOpts, title: "Data verification" }}
 				name="DataVerificationScreen"
@@ -65,21 +88,33 @@ function RootNavigator() {
 				name="SkillsHomeScreen"
 				component={SkillsHomeScreen}
 			/> */}
-			<Stack.Screen
-				options={{ ...screenOpts, title: "Chains" }}
-				name="ChainsHomeScreen"
-				component={ChainsHomeScreen}
-			/>
-			<Stack.Screen
-				options={{ ...screenOpts, title: "Prepare Materials" }}
-				name="PrepareMaterialsScreen"
-				component={PrepareMaterialsScreen}
-			/>
-			<Stack.Screen
-				options={{ ...screenOpts, title: "Step" }}
-				name="StepScreen"
-				component={StepScreen}
-			/>
-		</Stack.Navigator>
-	);
+      <Stack.Screen
+        options={({navigation}) => ({
+          ...screenOpts,
+          title: "Chains", // TODO: Replace this title with something more useful
+          headerRight: () => (<LogoutButton navigation={navigation}/>),
+        })}
+        name="ChainsHomeScreen"
+        component={ChainsHomeScreen}
+      />
+      <Stack.Screen
+        options={({navigation}) => ({
+          ...screenOpts,
+          title: "Prepare Materials",
+          headerRight: () => (<LogoutButton navigation={navigation}/>)
+        })}
+        name="PrepareMaterialsScreen"
+        component={PrepareMaterialsScreen}
+      />
+      <Stack.Screen
+        options={({navigation}) => ({
+          ...screenOpts,
+          title: "Step", // TODO: Replace this title with something more useful
+          headerRight: () => (<LogoutButton navigation={navigation}/>)
+        })}
+        name="StepScreen"
+        component={StepScreen}
+      />
+    </Stack.Navigator>
+  );
 }

@@ -34,6 +34,7 @@ const CustomColors = {
 		grayDark: "#666",
 		mountain: "#6F7EA0",
 		sky: "#E5EEF3",
+		warning: "#DF1E43",
 		red: "#EF3F6B",
 		green: "#62BB46",
 		teal: "#25CAD3",

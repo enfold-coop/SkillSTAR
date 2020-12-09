@@ -1,48 +1,47 @@
-import "react-native-gesture-handler";
-
-import React, { useEffect, useState } from "react";
-import { ImageBackground, StyleSheet } from "react-native";
-import { SafeAreaProvider } from "react-native-safe-area-context";
-
+import * as Font from "expo-font";
+import React, {useEffect, useState} from "react";
+import {Provider} from 'react-native-paper';
+import {SafeAreaProvider} from "react-native-safe-area-context";
+import {AuthContext} from "./context/AuthProvider";
+import {ChainProvider} from "./context/ChainProvider";
 import useCachedResources from "./hooks/useCachedResources";
 import useColorScheme from "./hooks/useColorScheme";
 import Navigation from "./navigation";
-import { AuthContext } from "./context/AuthProvider";
-import { ChainProvider } from "./context/ChainProvider";
-import * as Font from "expo-font";
 
 let customFonts = {
-	SkillStarIcons: require("./assets/fonts/icons/skillstar_icons.ttf"),
+  SkillStarIcons: require("./assets/fonts/icons/skillstar_icons.ttf"),
 };
 
 /**
  * Entry for the application.
  */
 export default function App() {
-	const isLoadingComplete = useCachedResources();
-	const colorScheme = useColorScheme();
-	const [fontsLoaded, setFontsLoaded] = useState<boolean>(false);
+  const isLoadingComplete = useCachedResources();
+  const colorScheme = useColorScheme();
+  const [fontsLoaded, setFontsLoaded] = useState<boolean>(false);
 
-	const _loadFonts = async () => {
-		await Font.loadAsync(customFonts);
-		setFontsLoaded(true);
-	};
+  const _loadFonts = async () => {
+    await Font.loadAsync(customFonts);
+    setFontsLoaded(true);
+  };
 
-	useEffect(() => {
-		_loadFonts();
-	});
+  useEffect(() => {
+    _loadFonts();
+  });
 
-	if (!fontsLoaded || !isLoadingComplete) {
-		return null;
-	} else {
-		return (
-			<SafeAreaProvider>
-				<AuthContext.Provider>
-					<ChainProvider>
-						<Navigation colorScheme={colorScheme} />
-					</ChainProvider>
-				</AuthContext.Provider>
-			</SafeAreaProvider>
-		);
-	}
+  if (!fontsLoaded || !isLoadingComplete) {
+    return null;
+  } else {
+    return (
+      <SafeAreaProvider>
+        <Provider>
+          <AuthContext.Provider value={{state: {user: null, participant: null}}}>
+            <ChainProvider>
+              <Navigation colorScheme={colorScheme}/>
+            </ChainProvider>
+          </AuthContext.Provider>
+        </Provider>
+      </SafeAreaProvider>
+    );
+  }
 }
