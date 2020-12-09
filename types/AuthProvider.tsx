@@ -1,9 +1,10 @@
-import { User } from "./User";
+import {Participant, User} from './User';
 
 export interface AuthProviderState {
-	user: null | User;
+  user: null | User;
+  participant: null | Participant;
 }
 
 export interface AuthProviderProps {
-	state: AuthProviderState;
+  state: AuthProviderState;
 }
