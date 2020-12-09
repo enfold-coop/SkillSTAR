@@ -23,6 +23,7 @@ const CustomColors = {
 		gray: "#636466",
 		mountain: "#6F7EA0",
 		sky: "#E5EEF3",
+		warning: "#DF1E43",
 	},
 	star: {
 		magenta: "#dd00cc",

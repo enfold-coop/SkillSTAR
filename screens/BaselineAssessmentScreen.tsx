@@ -34,6 +34,7 @@ function BaselineAssessmentScreen({ route }: Props): ReactNode {
 	 */
 	const navigation = useNavigation();
 	let [stepIndex, setStepIndex] = useState(0);
+	let [readyToSubmit, setReadyToSubmit] = useState(false);
 	let [sessionReady, setSessionReady] = useState(false);
 	let [session, setSession] = useState(new Session());
 	let [text, setText] = useState("");
@@ -54,6 +55,18 @@ function BaselineAssessmentScreen({ route }: Props): ReactNode {
 		}
 	}, []);
 	/** END: Lifecycle calls */
+
+	const incrIndex = () => {
+		stepIndex += 1;
+		setStepIndex(stepIndex);
+	};
+
+	const decIndex = () => {
+		if (stepIndex > 0) {
+			stepIndex -= 1;
+			setStepIndex(stepIndex);
+		}
+	};
 
 	return (
 		<ImageBackground
