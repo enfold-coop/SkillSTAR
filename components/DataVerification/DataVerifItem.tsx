@@ -9,7 +9,16 @@ import {
 	PromptAccordion,
 } from ".";
 import { StepAttempt } from "../../types/CHAIN/StepAttempt";
-import { MasteryIcons } from "../../styles/Icons";
+// import { MasteryIcons } from "../../styles/MasteryIcons";
+
+const MasteryIcons = (level: string) => {
+	const icons = {
+		mastered: require("../../assets/icons/ribbon-icon.png"),
+		focus: require("../../assets/icons/in-process-icon.png"),
+		notStarted: require("../../assets/icons/waving-icon.png"),
+	};
+	return icons[`${level}`];
+};
 
 type Props = {
 	stepAttempt: StepAttempt;
@@ -19,12 +28,10 @@ const DataVerifItem: FC<Props> = ({ stepAttempt }) => {
 	/**
 	 * use context api, here:
 	 */
-	console.log(MasteryIcons(0));
-
 	const { stepId, instruction } = stepAttempt;
 	const [promptSwitch, setPromptSwitch] = useState(false);
 	const [behavSwitch, setBehavSwitch] = useState(false);
-	const [icon, setIcon] = useState(2);
+	const [icon, setIcon] = useState(MasteryIcons("mastered"));
 
 	const handlePromptSwitch = (v: boolean) => {
 		setPromptSwitch(!promptSwitch);
@@ -36,13 +43,11 @@ const DataVerifItem: FC<Props> = ({ stepAttempt }) => {
 	return (
 		<View style={styles.container}>
 			<View style={styles.defaultFormContainer}>
-				{icon && (
-					<Image
-						style={styles.masteryIcon}
-						source={require("../../assets/icons/waving-icon.png")}
-						resizeMode="contain"
-					/>
-				)}
+				<Image
+					style={styles.masteryIcon}
+					source={icon}
+					resizeMode="contain"
+				/>
 
 				<Text style={styles.stepTitle}>"{instruction}"</Text>
 				<Text style={styles.promptLevel}>{"[...]"}</Text>
@@ -98,6 +103,8 @@ const styles = StyleSheet.create({
 		width: 50,
 		height: 50,
 		alignSelf: "center",
+		borderRadius: 14,
+		borderWidth: 0,
 	},
 	promptLevel: {
 		width: "5%",

@@ -7,10 +7,10 @@ export const SkillStarIcons = createIconSetFromIcoMoon(
 );
 
 export const MasteryIcons = (level: number) => {
-	const icons = {
-		0: () => require("../assets/icons/ribbon-icon.png"),
-		1: () => require("../assets/icons/in-process-icon.png"),
-		2: () => require("../assets/icons/waving-icon.png"),
-	};
-	return icons.mastered;
+	// const icons = {
+	// 	0: () => require("../../assets/icons/ribbon-icon.png"),
+	// 	1: () => require("../../assets/icons/in-process-icon.png"),
+	// 	2: () => require("../../assets/icons/waving-icon.png"),
+	// };
+	// return icons[`${level}`];
 };

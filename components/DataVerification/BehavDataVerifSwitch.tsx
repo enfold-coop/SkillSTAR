@@ -55,7 +55,6 @@ const BehavDataVerifSwitch: FC<Props> = (props) => {
 	//
 
 	/** START: Lifecycle calls */
-
 	useEffect(() => {
 		if (refSwitched.current) {
 			refSwitched.current = false;
@@ -72,7 +71,7 @@ const BehavDataVerifSwitch: FC<Props> = (props) => {
 				<Text style={styles.label}>{label}</Text>
 				<Switch
 					value={isSwitchOn}
-					color={CustomColors.uva.orange}
+					color={CustomColors.uva.teal}
 					onValueChange={() => {
 						onToggleSwitch();
 					}}
