@@ -20,11 +20,21 @@ const PromptAccordion: FC<Props> = (props) => {
 	let [promptQ, setpromptQ] = useState(MOCK_PROMP_Q);
 	let [promptOpts, setpromptOpts] = useState(MOCK_PROMPT_OPTS);
 
+	/**
+	 * BEGIN: Lifecycle methods
+	 */
 	useEffect(() => {
 		setExpanded(switched);
 	}, [switched]);
+	/**
+	 * END: Lifecycle methods
+	 */
 
-	// { display: expanded ? "flex" : "none" }
+	/**
+	 * SET DATA:
+	 * - setBehavValue([behav index "checked"])
+	 */
+
 	return (
 		<Animatable.View
 			style={[styles.container, { display: switched ? "flex" : "none" }]}

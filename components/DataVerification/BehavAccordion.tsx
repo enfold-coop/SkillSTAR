@@ -33,6 +33,13 @@ const BehavAccordion: FC<Props> = (props) => {
 	 * END: Lifecycle methods
 	 */
 
+	/**
+	 *
+	 * SET DATA:
+	 * - setBehavValue([behav index "checked"])
+	 *
+	 */
+
 	return (
 		<Animatable.View
 			style={[styles.container, { display: expanded ? "flex" : "none" }]}
@@ -53,7 +60,7 @@ const BehavAccordion: FC<Props> = (props) => {
 								>
 									<RadioButton
 										color={CustomColors.uva.orange}
-										value={e + "YOYOYOYOYOYO"}
+										value={e}
 										status={
 											checked === i
 												? "checked"
@@ -105,7 +112,7 @@ const styles = StyleSheet.create({
 	radioBtnText: {
 		alignSelf: "center",
 		paddingLeft: 10,
-		fontSize: 20,
+		fontSize: 16,
 	},
 
 	behavSubContainer: {
