@@ -1,12 +1,12 @@
 import React from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { User } from "../types/User";
+import { API_URL } from "@env";
 
 export interface BaselineAssessmentData {}
 
 export class ApiService {
-	//   apiUrl = 'https://stardrive-backend.sartography.ngrok.io/api';
-	apiUrl = "http://localhost:5000/api";
+	apiUrl = API_URL;
 	endpoints = {
 		login: `${this.apiUrl}/login_password`,
 		resetPassword: `${this.apiUrl}/reset_password`,
