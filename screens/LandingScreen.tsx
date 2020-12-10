@@ -2,13 +2,13 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import React, { ReactElement, useContext, useEffect, useState } from "react";
 import { Image, ImageBackground, StyleSheet, View } from "react-native";
 import { Button, Text, TextInput } from "react-native-paper";
+import * as Animatable from "react-native-animatable";
 import { AuthContext } from "../context/AuthProvider";
 import { RootNavProps as Props } from "../navigation/root_types";
 import { ApiService } from "../services/ApiService";
 import CustomColors from "../styles/Colors";
 import { AuthProviderProps } from "../types/AuthProvider";
 import { Participant, User } from "../types/User";
-import * as Animatable from "react-native-animatable";
 
 export default function LandingScreen({ navigation }: Props<"LandingScreen">) {
 	let [email, setEmail] = useState("");
@@ -78,67 +78,69 @@ export default function LandingScreen({ navigation }: Props<"LandingScreen">) {
 			style={styles.image}
 		>
 			<View style={styles.container}>
-				{/* <Animatable.View animation="zoomIn"> */}
-				<Image
-					style={styles.logo}
-					source={require("../assets/images/logo.png")}
-				/>
-				{/* <Animatable.View/> */}
-				{/**
-				 * New user?
-				 * -- Yes: background survey,
-				 * -- No: baseline assesssment
-				 */}
-				<TextInput
-					textContentType="emailAddress"
-					autoCompleteType="username"
-					label="Email"
-					mode="outlined"
-					value={email}
-					style={styles.input}
-					onChangeText={(text) => _checkEmail(text)}
-					autoFocus={true}
-				/>
-				<TextInput
-					textContentType="password"
-					autoCompleteType="password"
-					secureTextEntry={true}
-					label="Password"
-					mode="outlined"
-					value={password}
-					style={styles.input}
-					onChangeText={(text) => _checkPassword(text)}
-				/>
-				<View
-					style={{
-						display: errorMessage === "" ? "none" : "flex",
-						...styles.container,
-					}}
-				>
-					<Text style={styles.error}>{errorMessage}</Text>
-				</View>
-				<Button
-					style={styles.button}
-					color={CustomColors.uva.blue}
-					mode="contained"
-					disabled={!isValid}
-					onPress={() => {
-						setErrorMessage("");
-						api.login(email, password).then((user) => {
-							// console.log('user', user);
-							if (user) {
-								context.state.user = user;
-								navigation.navigate("DataVerificationScreen");
-							} else {
-								setErrorMessage(
-									"Invalid username or password. Please check your login information and try again."
-								);
-							}
-						});
-					}}
-				>
-					Log In
-				</Button>
+				<Animatable.View animation="zoomIn">
+					<Image
+						style={styles.logo}
+						source={require("../assets/images/logo.png")}
+					/>
+					{/**
+					 * New user?
+					 * -- Yes: background survey,
+					 * -- No: baseline assesssment
+					 */}
+					<TextInput
+						textContentType="emailAddress"
+						autoCompleteType="username"
+						label="Email"
+						mode="outlined"
+						value={email}
+						style={styles.input}
+						onChangeText={(text) => _checkEmail(text)}
+						autoFocus={true}
+					/>
+					<TextInput
+						textContentType="password"
+						autoCompleteType="password"
+						secureTextEntry={true}
+						label="Password"
+						mode="outlined"
+						value={password}
+						style={styles.input}
+						onChangeText={(text) => _checkPassword(text)}
+					/>
+					<View
+						style={{
+							display: errorMessage === "" ? "none" : "flex",
+							...styles.container,
+						}}
+					>
+						<Text style={styles.error}>{errorMessage}</Text>
+					</View>
+					<Button
+						style={styles.button}
+						color={CustomColors.uva.blue}
+						mode="contained"
+						disabled={!isValid}
+						onPress={() => {
+							setErrorMessage("");
+							api.login(email, password).then((user) => {
+								// console.log('user', user);
+								if (user) {
+									context.state.user = user;
+									navigation.navigate(
+										"BaselineAssessmentScreen"
+									);
+								} else {
+									setErrorMessage(
+										"Invalid username or password. Please check your login information and try again."
+									);
+								}
+							});
+						}}
+					>
+						Log In
+					</Button>
+				</Animatable.View>
 			</View>
 		</ImageBackground>
 	);
