@@ -62,7 +62,7 @@ const PromptDataVerifSwitch: FC<Props> = (props) => {
 				<Text style={styles.label}>{label}</Text>
 				<Switch
 					value={isSwitchOn}
-					color={"#F3B88A"}
+					color={CustomColors.uva.orange}
 					onValueChange={() => {
 						onToggleSwitch();
 					}}

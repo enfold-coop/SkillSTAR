@@ -71,7 +71,7 @@ const BehavDataVerifSwitch: FC<Props> = (props) => {
 				<Text style={styles.label}>{label}</Text>
 				<Switch
 					value={isSwitchOn}
-					color={CustomColors.uva.teal}
+					color={CustomColors.uva.orange}
 					onValueChange={() => {
 						onToggleSwitch();
 					}}
