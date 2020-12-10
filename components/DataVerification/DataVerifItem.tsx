@@ -26,6 +26,8 @@ type Props = {
 };
 
 const DataVerifItem: FC<Props> = ({ stepAttempt }) => {
+	console.log(stepAttempt);
+
 	/**
 	 * use context api, here:
 	 */
@@ -40,6 +42,20 @@ const DataVerifItem: FC<Props> = ({ stepAttempt }) => {
 	const handleBehavSwitch = (v: boolean) => {
 		setBehavSwitch(!behavSwitch);
 	};
+
+	const focusStepIcon = () => {
+		if (stepId == 3) {
+			setIcon(MasteryIcons("focus"));
+		} else if (stepId < 3) {
+			setIcon(MasteryIcons("mastered"));
+		} else {
+			setIcon(MasteryIcons("notStarted"));
+		}
+	};
+
+	useEffect(() => {
+		focusStepIcon();
+	}, []);
 
 	return (
 		<View style={styles.container}>
