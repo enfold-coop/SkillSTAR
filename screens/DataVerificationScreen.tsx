@@ -28,7 +28,7 @@ type Props = {
 function DataVerificationScreen({ session }: Props): ReactNode {
 	const navigation = useNavigation();
 	let [stepIndex, setStepIndex] = useState(0);
-	let [readyToSubmit, setReadyToSubmit] = useState(true);
+	let [readyToSubmit, setReadyToSubmit] = useState(false);
 	let [sessionData, setSessionData] = useState();
 	let [scrolling, setScrolling] = useState(false);
 	let [text, setText] = useState("");
@@ -88,6 +88,7 @@ function DataVerificationScreen({ session }: Props): ReactNode {
 					<FlatList
 						onScrollBeginDrag={() => {
 							setScrolling(true);
+							setReadyToSubmit(true);
 						}}
 						data={sessionData}
 						renderItem={(item) => {
@@ -105,8 +106,12 @@ function DataVerificationScreen({ session }: Props): ReactNode {
 					</Text>
 					<Button
 						mode="contained"
-						color={CustomColors.uva.redSoft}
-						labelStyle={{ fontSize: 16, fontWeight: "600" }}
+						color={CustomColors.uva.orange}
+						labelStyle={{
+							fontSize: 16,
+							fontWeight: "600",
+							color: CustomColors.uva.blue,
+						}}
 						style={styles.nextButton}
 						onPress={() => {
 							navigation.navigate("ChainsHomeScreen");
@@ -182,8 +187,10 @@ const styles = StyleSheet.create({
 		marginTop: 100,
 	},
 	btnContainerText: {
+		display: "none",
 		fontSize: 18,
 		textAlign: "center",
+		padding: 10,
 	},
 	nextButton: {
 		width: "90%",
