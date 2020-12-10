@@ -28,7 +28,7 @@ type Props = {
 function DataVerificationScreen({ session }: Props): ReactNode {
 	const navigation = useNavigation();
 	let [stepIndex, setStepIndex] = useState(0);
-	let [readyToSubmit, setReadyToSubmit] = useState(false);
+	let [readyToSubmit, setReadyToSubmit] = useState(true);
 	let [sessionData, setSessionData] = useState();
 	let [scrolling, setScrolling] = useState(false);
 	let [text, setText] = useState("");
@@ -99,14 +99,22 @@ function DataVerificationScreen({ session }: Props): ReactNode {
 			</View>
 
 			{readyToSubmit && (
-				<Button
-					mode="contained"
-					onPress={() => {
-						navigation.navigate("ChainsHomeScreen");
-					}}
-				>
-					Submit
-				</Button>
+				<View style={styles.btnContainer}>
+					<Text style={styles.btnContainerText}>
+						Please confirm your selections, then press Submit.
+					</Text>
+					<Button
+						mode="contained"
+						color={CustomColors.uva.redSoft}
+						labelStyle={{ fontSize: 16, fontWeight: "600" }}
+						style={styles.nextButton}
+						onPress={() => {
+							navigation.navigate("ChainsHomeScreen");
+						}}
+					>
+						Submit
+					</Button>
+				</View>
 			)}
 		</View>
 		// </ImageBackground>
@@ -117,6 +125,7 @@ const styles = StyleSheet.create({
 	container: {
 		flex: 1,
 		flexDirection: "column",
+		marginBottom: 100,
 	},
 	image: {
 		flex: 1,
@@ -158,7 +167,9 @@ const styles = StyleSheet.create({
 		paddingTop: 5,
 		fontSize: 18,
 	},
-	formContainer: {},
+	formContainer: {
+		height: "80%",
+	},
 	formItemContainer: {},
 	formItemLabel: {},
 	btnContainer: {},
@@ -168,12 +179,22 @@ const styles = StyleSheet.create({
 		justifyContent: "flex-end",
 		marginBottom: 100,
 		marginRight: 20,
+		marginTop: 100,
+	},
+	btnContainerText: {
+		fontSize: 18,
+		textAlign: "center",
 	},
 	nextButton: {
-		width: 144,
-		margin: 15,
+		width: "90%",
+		height: 50,
+		margin: 10,
+		justifyContent: "center",
+		alignSelf: "center",
+		fontWeight: "600",
 	},
 	backButton: {
+		flex: 1,
 		width: 144,
 		margin: 15,
 	},

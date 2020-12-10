@@ -1,5 +1,6 @@
 import React, { FC, useEffect, useState } from "react";
 import { StyleSheet, Text, View, Image } from "react-native";
+import { Button } from "react-native-paper";
 import * as Animatable from "react-native-animatable";
 import CustomColors from "../../styles/Colors";
 import {
@@ -140,4 +141,5 @@ const styles = StyleSheet.create({
 		marginLeft: 20,
 		marginRight: 20,
 	},
+	nextBtnContainer: {},
 });

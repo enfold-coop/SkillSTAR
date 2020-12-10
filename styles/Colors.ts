@@ -36,6 +36,7 @@ const CustomColors = {
 		sky: "#E5EEF3",
 		warning: "#DF1E43",
 		red: "#EF3F6B",
+		redSoft: "#F8A6AF",
 		green: "#62BB46",
 		teal: "#25CAD3",
 		yellow: "#FDDA24",
