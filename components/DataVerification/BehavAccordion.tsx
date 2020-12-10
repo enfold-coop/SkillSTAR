@@ -1,6 +1,8 @@
 import React, { FC, useState, useEffect, useRef } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { RadioButton } from "react-native-paper";
+import "react-native-get-random-values";
+import { nanoid } from "nanoid";
 import { StepAttempt } from "../../types/CHAIN/StepAttempt";
 import * as Animatable from "react-native-animatable";
 import { MOCK_BEHAV_OPTS, MOCK_BEHAV_Q } from "./mock_session";
@@ -49,7 +51,10 @@ const BehavAccordion: FC<Props> = (props) => {
 				<View style={[styles.behavOptsContainer]}>
 					{behavOpts.map((e, i) => {
 						return (
-							<View style={styles.checkboxContainer}>
+							<View
+								style={styles.checkboxContainer}
+								key={nanoid()}
+							>
 								<View
 									style={{
 										padding: 2,

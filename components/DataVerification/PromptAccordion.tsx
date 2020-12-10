@@ -2,8 +2,10 @@ import React, { FC, useState, useEffect } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { RadioButton } from "react-native-paper";
 import { TouchableOpacity } from "react-native-gesture-handler";
-import { StepAttempt } from "../../types/CHAIN/StepAttempt";
 import * as Animatable from "react-native-animatable";
+import "react-native-get-random-values";
+import { nanoid } from "nanoid";
+import { StepAttempt } from "../../types/CHAIN/StepAttempt";
 import { MOCK_PROMPT_OPTS, MOCK_PROMP_Q } from "./mock_session";
 import CustomColors from "../../styles/Colors";
 
@@ -44,7 +46,10 @@ const PromptAccordion: FC<Props> = (props) => {
 				<View style={[styles.promptOptsContainer]}>
 					{promptOpts.map((e, i) => {
 						return (
-							<View style={styles.checkboxContainer}>
+							<View
+								style={styles.checkboxContainer}
+								key={nanoid()}
+							>
 								<View
 									style={{
 										padding: 2,

@@ -49,7 +49,6 @@ const PromptDataVerifSwitch: FC<Props> = (props) => {
 	//
 
 	/** START: Lifecycle calls */
-
 	useEffect(() => {
 		toggleLabel();
 		setActive(!active);

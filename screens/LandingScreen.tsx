@@ -1,5 +1,5 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import React, { ReactElement, useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Image, ImageBackground, StyleSheet, View } from "react-native";
 import { Button, Text, TextInput } from "react-native-paper";
 import * as Animatable from "react-native-animatable";
@@ -11,20 +11,22 @@ import { AuthProviderProps } from "../types/AuthProvider";
 import { Participant, User } from "../types/User";
 
 export default function LandingScreen({ navigation }: Props<"LandingScreen">) {
-	let [email, setEmail] = useState("");
-	let [password, setPassword] = useState("");
+	let [email, setEmail] = useState("daniel.h.funk@gmail.com");
+	let [password, setPassword] = useState("Trillian Frogstar Beeblebrox 12");
 	let [isValid, setIsValid] = useState<boolean>(false);
 	let [errorMessage, setErrorMessage] = useState<string>("");
 	const api = new ApiService();
 	const context = useContext<AuthProviderProps>(AuthContext);
 
 	const _checkEmail = (inputText: string) => {
+		inputText = "daniel.h.funk@gmail.com";
 		setErrorMessage("");
 		setIsValid(!!(inputText && password));
 		setEmail(inputText);
 	};
 
 	const _checkPassword = (inputText: string) => {
+		inputText = "Trillian Frogstar Beeblebrox 12";
 		setErrorMessage("");
 		setIsValid(!!(email && inputText));
 		setPassword(inputText);
@@ -56,7 +58,7 @@ export default function LandingScreen({ navigation }: Props<"LandingScreen">) {
 										if (selectedParticipant) {
 											context.state.participant = selectedParticipant;
 											navigation.navigate(
-												"BaselineAssessmentScreen"
+												"DataVerificationScreen"
 											);
 										}
 									}
@@ -128,7 +130,7 @@ export default function LandingScreen({ navigation }: Props<"LandingScreen">) {
 								if (user) {
 									context.state.user = user;
 									navigation.navigate(
-										"BaselineAssessmentScreen"
+										"DataVerificationScreen"
 									);
 								} else {
 									setErrorMessage(
