@@ -26,15 +26,13 @@ type Props = {
 };
 
 const DataVerifItem: FC<Props> = ({ stepAttempt }) => {
-	console.log(stepAttempt);
-
 	/**
 	 * use context api, here:
 	 */
 	const { stepId, instruction } = stepAttempt;
 	const [promptSwitch, setPromptSwitch] = useState(false);
 	const [behavSwitch, setBehavSwitch] = useState(false);
-	const [icon, setIcon] = useState(MasteryIcons("mastered"));
+	const [icon, setIcon] = useState();
 
 	const handlePromptSwitch = (v: boolean) => {
 		setPromptSwitch(!promptSwitch);
@@ -55,7 +53,7 @@ const DataVerifItem: FC<Props> = ({ stepAttempt }) => {
 
 	useEffect(() => {
 		focusStepIcon();
-	}, []);
+	}, [stepId]);
 
 	return (
 		<View style={styles.container}>
@@ -117,8 +115,8 @@ const styles = StyleSheet.create({
 	},
 	accordionContainer: {},
 	masteryIcon: {
-		width: 50,
-		height: 50,
+		width: 40,
+		height: 40,
 		alignSelf: "center",
 		borderRadius: 14,
 		borderWidth: 0,
@@ -128,7 +126,7 @@ const styles = StyleSheet.create({
 		alignSelf: "center",
 	},
 	stepTitle: {
-		width: "40%",
+		width: "38%",
 		alignSelf: "center",
 		fontSize: 20,
 	},

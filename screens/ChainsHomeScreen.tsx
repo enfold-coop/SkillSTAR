@@ -122,18 +122,18 @@ const styles = StyleSheet.create({
 		flex: 1,
 		// paddingBottom: 20,
 		margin: 20,
-		borderWidth: 1,
+		// borderWidth: 1,
 		borderRadius: 10,
 		// borderColor: CustomColors.uva.white,
-		backgroundColor: CustomColors.uva.blue,
+		backgroundColor: CustomColors.uva.orange,
 		justifyContent: "center",
 		alignItems: "center",
 	},
 	btnText: {
 		textAlign: "center",
-		color: CustomColors.uva.sky,
+		color: CustomColors.uva.white,
 		fontSize: 32,
-		fontWeight: "400",
+		fontWeight: "500",
 	},
 });
 

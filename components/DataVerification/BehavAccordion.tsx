@@ -57,9 +57,10 @@ const BehavAccordion: FC<Props> = (props) => {
 							>
 								<View
 									style={{
-										padding: 2,
-										borderRadius: 3,
+										padding: 0,
+										borderRadius: 100,
 										borderWidth: 2,
+										backgroundColor: CustomColors.uva.white,
 										borderColor: CustomColors.uva.gray,
 									}}
 								>
