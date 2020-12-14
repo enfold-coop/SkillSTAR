@@ -13,6 +13,8 @@ import { nanoid } from "nanoid";
 import { Button } from "react-native-paper";
 import { useNavigation } from "@react-navigation/native";
 import CustomColors from "../styles/Colors";
+import { OnSubmitModal } from "../components/GlobalComponents/";
+import ChallengingBehavModal from "../components/ChallengingBehavior/ChallengingBehavModal";
 import AppHeader from "../components/Header/AppHeader";
 import { DataVerifItem } from "../components/DataVerification/";
 // MOCK IMPORT:
@@ -33,6 +35,8 @@ function DataVerificationScreen({ session }: Props): ReactNode {
 	let [scrolling, setScrolling] = useState(false);
 	let [text, setText] = useState("");
 	let mockSesh;
+
+	const verifySubmission = () => {};
 
 	/**
 	 * BEGIN: MOCK
@@ -61,6 +65,7 @@ function DataVerificationScreen({ session }: Props): ReactNode {
 		// >
 		<View style={styles.container}>
 			<AppHeader name="Brushing Teeth" />
+			<OnSubmitModal />
 			<View style={styles.instructionContainer}>
 				<Text
 					style={[

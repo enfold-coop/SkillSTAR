@@ -18,8 +18,6 @@ const MasteryIcons = (level: string) => {
 		focus: require("../../assets/icons/in-process-icon.png"),
 		notStarted: require("../../assets/icons/waving-icon.png"),
 	};
-	console.log(icons[`${level}`]);
-	return icons[`${level}`];
 };
 const PromptIcons = (level: string) => {
 	const icons = {
@@ -43,7 +41,6 @@ const DataVerifItem: FC<Props> = ({ stepAttempt }) => {
 	 */
 
 	const { stepId, instruction, promptLevel } = stepAttempt;
-	console.log(promptLevel);
 
 	const [promptSwitch, setPromptSwitch] = useState(false);
 	const [behavSwitch, setBehavSwitch] = useState(false);
