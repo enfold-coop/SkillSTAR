@@ -1,10 +1,34 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef, FC } from "react";
 import { StyleSheet, Text, View, Modal } from "react-native";
 import { Portal, Provider, Button } from "react-native-paper";
 import CustomColors from "../../styles/Colors";
 
-const OnSubmitModal = (props) => {
-	const [isActive, setIsActive] = useState(true);
+type Props = {
+	verify: () => void;
+	isVisible: boolean;
+};
+
+const OnSubmitModal: FC<Props> = (props) => {
+	let { verify, isVisible } = props;
+	const refIsActive = useRef(false);
+	const [isActive, setIsActive] = useState(false);
+	console.log(isVisible);
+
+	useEffect(() => {
+		if (!refIsActive.current) {
+			setIsActive(!isActive);
+			refIsActive.current = true;
+		} else {
+			setIsActive(!isActive);
+		}
+	}, [isVisible]);
+
+	const handleVerification = (b: boolean) => {
+		console.log(b);
+		setIsActive(false);
+		return verify(b);
+	};
+
 	return (
 		<Modal
 			// animationType="slide"
@@ -25,6 +49,7 @@ const OnSubmitModal = (props) => {
 							color={CustomColors.uva.gray}
 							mode="contained"
 							onPress={() => {
+								handleVerification(false);
 								setIsActive(false);
 							}}
 						>
@@ -34,6 +59,7 @@ const OnSubmitModal = (props) => {
 							style={styles.submitBtn}
 							mode="contained"
 							onPress={() => {
+								handleVerification(true);
 								console.log("submit");
 							}}
 						>

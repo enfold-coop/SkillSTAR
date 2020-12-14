@@ -31,12 +31,21 @@ function DataVerificationScreen({ session }: Props): ReactNode {
 	const navigation = useNavigation();
 	let [stepIndex, setStepIndex] = useState(0);
 	let [readyToSubmit, setReadyToSubmit] = useState(false);
+	let [confirmSubmit, setConfirmSubmit] = useState(false);
 	let [sessionData, setSessionData] = useState();
 	let [scrolling, setScrolling] = useState(false);
-	let [text, setText] = useState("");
+
 	let mockSesh;
 
-	const verifySubmission = () => {};
+	const submitAndNavigate = () => {
+		setConfirmSubmit(false);
+		postData();
+		navigation.navigate("ChainsHomeScreen");
+	};
+
+	const postData = () => {
+		console.log("POSTING DATA");
+	};
 
 	/**
 	 * BEGIN: MOCK
@@ -58,14 +67,8 @@ function DataVerificationScreen({ session }: Props): ReactNode {
 	/** END: Lifecycle calls */
 
 	return (
-		// <ImageBackground
-		// 	source={require("../assets/images/sunrise-muted.png")}
-		// 	resizeMode={"cover"}
-		// 	style={styles.image}
-		// >
 		<View style={styles.container}>
 			<AppHeader name="Brushing Teeth" />
-			<OnSubmitModal />
 			<View style={styles.instructionContainer}>
 				<Text
 					style={[
@@ -119,15 +122,18 @@ function DataVerificationScreen({ session }: Props): ReactNode {
 						}}
 						style={styles.nextButton}
 						onPress={() => {
-							navigation.navigate("ChainsHomeScreen");
+							if (confirmSubmit) {
+								submitAndNavigate();
+							} else {
+								setConfirmSubmit(true);
+							}
 						}}
 					>
-						Submit
+						{confirmSubmit ? "Confirm and Submit" : "Submit"}
 					</Button>
 				</View>
 			)}
 		</View>
-		// </ImageBackground>
 	);
 }
 
