@@ -12,7 +12,6 @@ const OnSubmitModal: FC<Props> = (props) => {
 	let { verify, isVisible } = props;
 	const refIsActive = useRef(false);
 	const [isActive, setIsActive] = useState(false);
-	console.log(isVisible);
 
 	useEffect(() => {
 		if (!refIsActive.current) {
@@ -24,7 +23,6 @@ const OnSubmitModal: FC<Props> = (props) => {
 	}, [isVisible]);
 
 	const handleVerification = (b: boolean) => {
-		console.log(b);
 		setIsActive(false);
 		return verify(b);
 	};

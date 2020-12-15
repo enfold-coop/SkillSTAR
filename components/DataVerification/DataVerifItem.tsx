@@ -18,6 +18,7 @@ const MasteryIcons = (level: string) => {
 		focus: require("../../assets/icons/in-process-icon.png"),
 		notStarted: require("../../assets/icons/waving-icon.png"),
 	};
+	return icons[`${level}`];
 };
 const PromptIcons = (level: string) => {
 	const icons = {
@@ -92,7 +93,7 @@ const DataVerifItem: FC<Props> = ({ stepAttempt }) => {
 				/>
 
 				<Text style={styles.stepTitle}>"{instruction}"</Text>
-				<Text style={styles.promptLevelIcon}>{"PP"}</Text>
+				<Text style={styles.promptLevelIcon}>{"FP"}</Text>
 				{/* <Image
 					style={styles.promptLevelIcon}
 					source={promptIcon}

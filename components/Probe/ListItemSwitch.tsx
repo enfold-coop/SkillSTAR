@@ -49,7 +49,6 @@ const ListItemSwitch: FC<Props> = (props) => {
 	// Toogle switch label (yes/no)
 	const toggleLabel = () => {
 		setLabel((label = isSwitchOn === false ? "No" : "Yes"));
-		checkTypeAgainstSwitchVal();
 	};
 
 	// callback for setting isSwitchOn value

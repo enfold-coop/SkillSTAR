@@ -39,6 +39,10 @@ function BaselineAssessmentScreen({ route }: Props): ReactNode {
 	let [session, setSession] = useState(new Session());
 	let [text, setText] = useState("");
 
+	/** CONTEXT API **
+	 * set session data aftter createAttempts finished
+	 */
+
 	const createAttempts = () => {
 		chainSteps.forEach((e, i) => {
 			let { stepId, instruction } = chainSteps[i];
@@ -55,16 +59,9 @@ function BaselineAssessmentScreen({ route }: Props): ReactNode {
 	}, []);
 	/** END: Lifecycle calls */
 
-	const incrIndex = () => {
-		stepIndex += 1;
-		setStepIndex(stepIndex);
-	};
-
-	const decIndex = () => {
-		if (stepIndex > 0) {
-			stepIndex -= 1;
-			setStepIndex(stepIndex);
-		}
+	const setSessionData = () => {
+		// Context API set session data
+		// navigate to chainshomescreen
 	};
 
 	return (
@@ -91,15 +88,14 @@ function BaselineAssessmentScreen({ route }: Props): ReactNode {
 					<View style={styles.nextBackBtnsContainer}>
 						<Button
 							style={styles.nextButton}
-							color={CustomColors.uva.blue}
-							mode="contained"
-							onPress={() => {
-								if (stepIndex + 1 <= chainSteps.length - 1) {
-									incrIndex();
-								} else {
-									setReadyToSubmit(true);
-								}
+							color={CustomColors.uva.orange}
+							labelStyle={{
+								fontSize: 16,
+								fontWeight: "600",
+								color: CustomColors.uva.blue,
 							}}
+							mode="contained"
+							onPress={() => {}}
 						>
 							NEXT
 						</Button>

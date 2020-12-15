@@ -1,26 +1,22 @@
 {
-    "user": {
-        "username": "",
-        "password": "",
-        "full_name": "",
-        "sessions": [{
+    "sessions": [{
+        "date": "",
+        "sessionType": "Probe",
+        "completed": false,
+        "stepAttempts": [{
             "date": "",
-            "sessionType": "Probe",
+            "stepId": 0,
+            "step_status": "not_complete",
+            "instruction": "",
             "completed": false,
-            "stepAttempts": [{
-                "date": "",
-                "stepId": 0,
-                "step_status": "not_complete",
-                "instruction": "",
-                "completed": false,
-                "was_prompted": false,
-                "prompt_level": 0,
-                "challenging_behavior": {
-                    "did_occur": false,
-                    "severity": 0
-                }
+            "was_prompted": false,
+            "prompt_level": 0,
+            "challenging_behavior": {
+                "did_occur": false,
+                "severity": 0
+            }
 
-            }]
         }]
-    }
+    }]
+
 }
