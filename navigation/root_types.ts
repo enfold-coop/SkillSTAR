@@ -1,5 +1,6 @@
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RouteProp } from "@react-navigation/native";
+import { ApiService } from "../services/ApiService";
 
 export type RootStackParamList = {
 	LandingScreen: undefined;

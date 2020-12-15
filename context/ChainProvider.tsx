@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useReducer } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { StepAttempt } from "../types/CHAIN/StepAttempt";
 import initState from "./initial_states/initialSession";
@@ -9,20 +9,14 @@ export const ChainContext = React.createContext<Partial<ChainProviderProps>>(
 	{}
 );
 
-let initialState = {
-	session: {
-		date: "",
-		sessionType: "",
-		completed: false,
-		stepAttempts: [{}],
-	},
-};
+let initialState = {};
 
 export const ChainProvider: React.FC<ChainProviderProps> = ({ children }) => {
-	initState();
+	let initialState = initState();
+	console.log(initialState);
+	const [sessionState, setSessionState] = useReducer(session, initialState);
 	let [session, setSession] = useState();
 	let [stepAttempt, setStepAttempt] = useState();
-	let [authorization, setAuthorization] = useState(false);
 
 	return <ChainContext.Provider value={{}}>{children}</ChainContext.Provider>;
 };

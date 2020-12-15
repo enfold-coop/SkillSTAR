@@ -97,7 +97,7 @@ const styles = StyleSheet.create({
 		alignSelf: "center",
 	},
 	switch: {
-		margin: 20,
+		margin: 10,
 		alignSelf: "center",
 		transform: [{ scaleX: 1.2 }, { scaleY: 1.2 }],
 	},

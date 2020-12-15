@@ -5,17 +5,18 @@
         "full_name": "",
         "sessions": [{
             "date": "",
-            "sessionType": "",
+            "sessionType": "Probe",
             "completed": false,
             "stepAttempts": [{
                 "date": "",
                 "stepId": 0,
+                "step_status": "not_complete",
                 "instruction": "",
                 "completed": false,
-                "wasPrompted": false,
-                "promptLevel": 0,
-                "challengingBehavior": {
-                    "didOccur": false,
+                "was_prompted": false,
+                "prompt_level": 0,
+                "challenging_behavior": {
+                    "did_occur": false,
                     "severity": 0
                 }
 

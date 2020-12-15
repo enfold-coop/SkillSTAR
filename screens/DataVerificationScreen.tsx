@@ -37,12 +37,14 @@ function DataVerificationScreen({ session }: Props): ReactNode {
 
 	let mockSesh;
 
+	// Called on 2nd press of Submit button
 	const submitAndNavigate = () => {
 		setConfirmSubmit(false);
 		postData();
 		navigation.navigate("ChainsHomeScreen");
 	};
 
+	// Post state data to API
 	const postData = () => {
 		console.log("POSTING DATA");
 	};
@@ -159,7 +161,6 @@ const styles = StyleSheet.create({
 		fontSize: 16,
 		flexDirection: "column",
 		justifyContent: "space-around",
-		backgroundColor: "#f0f",
 	},
 	screenHeader: {
 		marginTop: 20,
@@ -211,12 +212,6 @@ const styles = StyleSheet.create({
 		alignSelf: "center",
 		fontWeight: "600",
 	},
-	backButton: {
-		flex: 1,
-		width: 144,
-		margin: 15,
-	},
-	inputField: {},
 });
 
 export default DataVerificationScreen;
