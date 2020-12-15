@@ -58,7 +58,7 @@ export default function LandingScreen({ navigation }: Props<"LandingScreen">) {
 										if (selectedParticipant) {
 											context.state.participant = selectedParticipant;
 											navigation.navigate(
-												"DataVerificationScreen"
+												"ChainsHomeScreen"
 											);
 										}
 									}

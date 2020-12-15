@@ -52,7 +52,11 @@ const ChainsHomeScreen: FC<Props> = (props) => {
 			</View>
 			{chainSteps && (
 				<View style={styles.listContainer}>
-					<SessionDataAside historicalData={{}} name={"Moxy"} />
+					<SessionDataAside
+						historicalData={{}}
+						name={"Moxy"}
+						sessionNumber={1}
+					/>
 					<FlatList
 						style={styles.list}
 						data={chainSteps}

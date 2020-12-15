@@ -41,6 +41,7 @@ const ListItemSwitch: FC<Props> = (props) => {
 			setIsSwitchOn(false);
 		}
 	};
+
 	// Navigate to ChainsHome
 	const navigateToChainsHome = () => {
 		navigation.navigate("ChainsHomeScreen");
