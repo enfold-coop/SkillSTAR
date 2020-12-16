@@ -36,7 +36,6 @@ const ScorecardListItem: FC<Props> = ({ ...props }) => {
 				<TouchableOpacity
 					style={[styles.touchable]}
 					onPress={() => {
-						console.log("PRESSED");
 						setIsPressed(!isPressed);
 					}}
 				>

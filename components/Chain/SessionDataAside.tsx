@@ -36,8 +36,8 @@ const SessionDataAside: FC<Props> = (props) => {
 							<Text style={styles.date}>{today}</Text>
 						</View>
 						<View style={styles.taskInfoContainer}>
-							{/* <ProbeAside /> */}
-							<TrainingAside />
+							<ProbeAside />
+							{/* <TrainingAside /> */}
 							{/* <Text style={styles.isProbeTrainingSession}>
 								{isTraining
 									? "Training Session"
@@ -142,6 +142,7 @@ const styles = StyleSheet.create({
 	upNextContainer: { padding: 10 },
 	upNextLabel: {
 		fontWeight: "600",
+		fontSize: 18,
 	},
 	focusStep: {
 		fontWeight: "600",
