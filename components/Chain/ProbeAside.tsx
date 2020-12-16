@@ -25,11 +25,7 @@ const ProbeAside = () => {
 export default ProbeAside;
 
 const styles = StyleSheet.create({
-	container: {
-		// padding: 10,
-		// height: 200,
-		// backgroundColor: "#d0d",
-	},
+	container: {},
 	headerText: {
 		fontSize: 18,
 		fontWeight: "600",

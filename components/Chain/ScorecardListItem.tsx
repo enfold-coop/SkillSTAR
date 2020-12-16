@@ -55,19 +55,27 @@ const ScorecardListItem: FC<Props> = ({ ...props }) => {
 					<View style={styles.dropDownContainer}>
 						<Text style={styles.dropDownLabel}>
 							Date Introduced:
-							<Text>{date.format(new Date(), "MM/DD/YYYY")}</Text>
+							<Text style={styles.dropDownItemDate}>
+								{date.format(new Date(), "MM/DD/YYYY")}
+							</Text>
 						</Text>
 						<Text style={styles.dropDownLabel}>
 							Date Mastered:{" "}
-							<Text>{date.format(new Date(), "MM/DD/YYYY")}</Text>
+							<Text style={styles.dropDownItemDate}>
+								{date.format(new Date(), "MM/DD/YYYY")}
+							</Text>
 						</Text>
 						<Text style={styles.dropDownLabel}>
 							Date Booster training initiated:{" "}
-							<Text>{date.format(new Date(), "MM/DD/YYYY")}</Text>
+							<Text style={styles.dropDownItemDate}>
+								{date.format(new Date(), "MM/DD/YYYY")}
+							</Text>
 						</Text>
 						<Text style={styles.dropDownLabel}>
 							Date Mastered Booster training:{" "}
-							<Text>{date.format(new Date(), "MM/DD/YYYY")}</Text>
+							<Text style={styles.dropDownItemDate}>
+								{date.format(new Date(), "MM/DD/YYYY")}
+							</Text>
 						</Text>
 					</View>
 				)}
@@ -108,6 +116,9 @@ const styles = StyleSheet.create({
 		paddingLeft: 40,
 		fontWeight: "600",
 		alignSelf: "flex-start",
+	},
+	dropDownItemDate: {
+		color: CustomColors.uva.grayDark,
 	},
 	id: {
 		padding: 5,

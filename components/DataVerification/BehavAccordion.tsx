@@ -79,15 +79,6 @@ const BehavAccordion: FC<Props> = (props) => {
 							</View>
 						);
 					})}
-					{/* <CheckBox
-						style={styles.checkbox}
-						color={"#f0f"}
-						onClick={() => {
-							setChecked3(!checked3);
-						}}
-						isChecked={checked3}
-						leftText={MOCK_BEHAV_OPTS[2]}
-					/> */}
 				</View>
 			</View>
 		</Animatable.View>
