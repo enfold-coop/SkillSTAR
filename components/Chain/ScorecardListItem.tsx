@@ -28,13 +28,13 @@ type Props = {
 
 const ScorecardListItem: FC<Props> = ({ ...props }) => {
 	const { step, instruction, mastery } = props.itemProps.item;
-	const [isPressed, setIsPressed] = useState(true);
+	const [isPressed, setIsPressed] = useState(false);
 
 	return (
 		<Animatable.View animation="fadeIn" duration={300 * step}>
 			<Card style={styles.container}>
 				<TouchableOpacity
-					style={styles.touchable}
+					style={[styles.touchable]}
 					onPress={() => {
 						console.log("PRESSED");
 						setIsPressed(!isPressed);
@@ -47,7 +47,9 @@ const ScorecardListItem: FC<Props> = ({ ...props }) => {
 						name="caretright"
 						size={24}
 						color="black"
-						style={styles.nextIcon}
+						style={[
+							isPressed ? styles.nextIcon90 : styles.nextIcon,
+						]}
 					/>
 				</TouchableOpacity>
 				{isPressed && (
@@ -57,17 +59,14 @@ const ScorecardListItem: FC<Props> = ({ ...props }) => {
 							<Text>{date.format(new Date(), "MM/DD/YYYY")}</Text>
 						</Text>
 						<Text style={styles.dropDownLabel}>
-							{" "}
 							Date Mastered:{" "}
 							<Text>{date.format(new Date(), "MM/DD/YYYY")}</Text>
 						</Text>
 						<Text style={styles.dropDownLabel}>
-							{" "}
 							Date Booster training initiated:{" "}
 							<Text>{date.format(new Date(), "MM/DD/YYYY")}</Text>
 						</Text>
 						<Text style={styles.dropDownLabel}>
-							{" "}
 							Date Mastered Booster training:{" "}
 							<Text>{date.format(new Date(), "MM/DD/YYYY")}</Text>
 						</Text>
@@ -94,29 +93,33 @@ const styles = StyleSheet.create({
 	dropDownContainer: {
 		flexDirection: "column",
 		justifyContent: "space-around",
-		alignContent: "flex-end",
+		alignContent: "flex-start",
 		marginLeft: 10,
 		marginRight: 10,
 		marginBottom: 10,
 		paddingRight: 20,
 		padding: 20,
-		backgroundColor: CustomColors.uva.grayMedium,
+		backgroundColor: CustomColors.uva.white,
+		borderRadius: 2,
+		borderWidth: 1,
+		borderColor: CustomColors.uva.graySoft,
 	},
 	dropDownLabel: {
 		padding: 5,
+		paddingLeft: 40,
 		fontWeight: "600",
-		alignSelf: "flex-end",
+		alignSelf: "flex-start",
 	},
 	id: {
 		padding: 5,
-		fontSize: 14,
+		fontSize: 16,
 		fontWeight: "bold",
 	},
 	skill: {
 		width: 300,
 		flexWrap: "wrap",
 		padding: 5,
-		fontSize: 14,
+		fontSize: 16,
 		fontWeight: "bold",
 	},
 	score: {
@@ -126,6 +129,13 @@ const styles = StyleSheet.create({
 		marginLeft: "auto",
 		padding: 10,
 		paddingRight: 20,
+		transform: [{ rotate: "0deg" }],
+	},
+	nextIcon90: {
+		marginLeft: "auto",
+		padding: 10,
+		paddingRight: 20,
+		transform: [{ rotate: "90deg" }],
 	},
 
 	title: {

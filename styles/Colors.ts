@@ -27,10 +27,12 @@ const CustomColors = {
 	},
 	uva: {
 		orange: "#F3B88A",
+		orangeSoft: "#ffd8ba",
 		blue: "#232D4B",
 		white: "#FEFEFE",
 		gray: "#636466",
 		grayMedium: "#DADADA",
+		graySoft: "#ededed",
 		grayDark: "#666",
 		mountain: "#6F7EA0",
 		sky: "#E5EEF3",
