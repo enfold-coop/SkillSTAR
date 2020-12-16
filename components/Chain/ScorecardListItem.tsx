@@ -1,10 +1,13 @@
-import React, { FC } from "react";
-import { Text, StyleSheet, TouchableOpacity } from "react-native";
+import React, { FC, useState, useEffect } from "react";
+import { Text, StyleSheet, TouchableOpacity, View } from "react-native";
 import { Card } from "react-native-paper";
 import { MasteryIcons } from "../../styles/MasteryIcons";
+import { MasteryLevel as ML } from "../../types/CHAIN/MasteryLevel";
 import { AntDesign } from "@expo/vector-icons";
 import { MasteryLevel } from "../../types/CHAIN/MasteryLevel";
 import * as Animatable from "react-native-animatable";
+import date from "date-and-time";
+import CustomColors from "../../styles/Colors";
 
 interface ScorecardStepListItem {
 	attempts: StepAttempt[];
@@ -25,14 +28,22 @@ type Props = {
 
 const ScorecardListItem: FC<Props> = ({ ...props }) => {
 	const { step, instruction, mastery } = props.itemProps.item;
+	const [isPressed, setIsPressed] = useState(true);
+	console.log(ML);
 
 	return (
 		<Animatable.View animation="fadeIn" duration={300 * step}>
 			<Card style={styles.container}>
-				<TouchableOpacity style={styles.touchable}>
+				<TouchableOpacity
+					style={styles.touchable}
+					onPress={() => {
+						console.log("PRESSED");
+						setIsPressed(!isPressed);
+					}}
+				>
 					<Text style={styles.id}>{step}. </Text>
 					<Text style={styles.skill}>{instruction}</Text>
-					<Text style={styles.score}>{MasteryIcons(mastery)}</Text>
+					<Text style={styles.score}>{MasteryIcons(1)}</Text>
 					<AntDesign
 						name="caretright"
 						size={24}
@@ -40,6 +51,29 @@ const ScorecardListItem: FC<Props> = ({ ...props }) => {
 						style={styles.nextIcon}
 					/>
 				</TouchableOpacity>
+				{isPressed && (
+					<View style={styles.dropDownContainer}>
+						<Text style={styles.dropDownLabel}>
+							Date Introduced:
+							<Text>{date.format(new Date(), "MM/DD/YYYY")}</Text>
+						</Text>
+						<Text style={styles.dropDownLabel}>
+							{" "}
+							Date Mastered:{" "}
+							<Text>{date.format(new Date(), "MM/DD/YYYY")}</Text>
+						</Text>
+						<Text style={styles.dropDownLabel}>
+							{" "}
+							Date Booster training initiated:{" "}
+							<Text>{date.format(new Date(), "MM/DD/YYYY")}</Text>
+						</Text>
+						<Text style={styles.dropDownLabel}>
+							{" "}
+							Date Mastered Booster training:{" "}
+							<Text>{date.format(new Date(), "MM/DD/YYYY")}</Text>
+						</Text>
+					</View>
+				)}
 			</Card>
 		</Animatable.View>
 	);
@@ -48,6 +82,7 @@ const ScorecardListItem: FC<Props> = ({ ...props }) => {
 const styles = StyleSheet.create({
 	container: {
 		marginBottom: 3,
+		flexDirection: "row",
 	},
 	touchable: {
 		flexDirection: "row",
@@ -56,6 +91,22 @@ const styles = StyleSheet.create({
 		paddingTop: 10,
 		paddingBottom: 10,
 		paddingLeft: 20,
+	},
+	dropDownContainer: {
+		flexDirection: "column",
+		justifyContent: "space-around",
+		alignContent: "flex-end",
+		marginLeft: 10,
+		marginRight: 10,
+		marginBottom: 10,
+		paddingRight: 20,
+		padding: 20,
+		backgroundColor: CustomColors.uva.grayMedium,
+	},
+	dropDownLabel: {
+		padding: 5,
+		fontWeight: "600",
+		alignSelf: "flex-end",
 	},
 	id: {
 		padding: 5,
