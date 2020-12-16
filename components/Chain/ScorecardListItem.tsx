@@ -60,19 +60,19 @@ const ScorecardListItem: FC<Props> = ({ ...props }) => {
 							</Text>
 						</Text>
 						<Text style={styles.dropDownLabel}>
-							{`${"\u2022"} Date Mastered:{" "}`}
+							{`${"\u2022"} Date Mastered: `}
 							<Text style={styles.dropDownItemDate}>
 								{date.format(new Date(), "MM/DD/YYYY")}
 							</Text>
 						</Text>
 						<Text style={styles.dropDownLabel}>
-							{`${"\u2022"} Date Booster training initiated:{" "}`}
+							{`${"\u2022"} Date Booster training initiated: `}
 							<Text style={styles.dropDownItemDate}>
 								{date.format(new Date(), "MM/DD/YYYY")}
 							</Text>
 						</Text>
 						<Text style={styles.dropDownLabel}>
-							{`${"\u2022"} Date Mastered Booster training:{" "}`}
+							{`${"\u2022"} Date Mastered Booster training: `}
 							<Text style={styles.dropDownItemDate}>
 								{date.format(new Date(), "MM/DD/YYYY")}
 							</Text>
