@@ -29,7 +29,6 @@ type Props = {
 const ScorecardListItem: FC<Props> = ({ ...props }) => {
 	const { step, instruction, mastery } = props.itemProps.item;
 	const [isPressed, setIsPressed] = useState(true);
-	console.log(ML);
 
 	return (
 		<Animatable.View animation="fadeIn" duration={300 * step}>

@@ -1,6 +1,7 @@
 import React, { FC, useState, useEffect } from "react";
 import { StyleSheet, Text, View, TouchableOpacity, Image } from "react-native";
 import { Button, Card } from "react-native-paper";
+import { ProbeAside, TrainingAside } from "./index";
 import CustomColors from "../../styles/Colors";
 import date from "date-and-time";
 
@@ -35,7 +36,9 @@ const SessionDataAside: FC<Props> = (props) => {
 							<Text style={styles.date}>{today}</Text>
 						</View>
 						<View style={styles.taskInfoContainer}>
-							<Text style={styles.isProbeTrainingSession}>
+							{/* <ProbeAside /> */}
+							<TrainingAside />
+							{/* <Text style={styles.isProbeTrainingSession}>
 								{isTraining
 									? "Training Session"
 									: "Probe Session"}
@@ -57,6 +60,11 @@ const SessionDataAside: FC<Props> = (props) => {
 								<Text style={styles.masteryLevel}>
 									{masteryLevel}
 								</Text>
+							</Text> */}
+						</View>
+						<View style={styles.upNextContainer}>
+							<Text style={styles.upNextLabel}>
+								Up next: <Text>{"Focus Step #3"}</Text>
 							</Text>
 						</View>
 						<TouchableOpacity>
@@ -130,6 +138,10 @@ const styles = StyleSheet.create({
 		textDecorationLine: "underline",
 		textDecorationStyle: "solid",
 		textDecorationColor: CustomColors.uva.grayMedium,
+	},
+	upNextContainer: { padding: 10 },
+	upNextLabel: {
+		fontWeight: "600",
 	},
 	focusStep: {
 		fontWeight: "600",
