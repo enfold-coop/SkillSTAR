@@ -1,10 +1,14 @@
-import React from "react";
+import React, { FC, useState, useEffect } from "react";
 import { StyleSheet, Text, View, Dimensions } from "react-native";
 import { LineChart } from "react-native-chart-kit";
 
-type Props = {};
+type Props = {
+	dimensions: {};
+};
 
-const LineGraph = () => {
+const LineGraph: FC<Props> = (props) => {
+	const { dimensions } = props;
+	console.log(dimensions);
 	return (
 		<View style={styles.container}>
 			<LineChart
@@ -30,8 +34,8 @@ const LineGraph = () => {
 						},
 					],
 				}}
-				width={Dimensions.get("window").width} // from react-native
-				height={220}
+				width={dimensions.width ? dimensions.width - 20 : 200} // from react-native
+				height={dimensions.width ? dimensions.width / 2 - 20 : 200}
 				yAxisLabel="$"
 				yAxisSuffix="k"
 				yAxisInterval={1} // optional, defaults to 1
@@ -65,5 +69,8 @@ const LineGraph = () => {
 export default LineGraph;
 
 const styles = StyleSheet.create({
-	container: {},
+	container: {
+		justifyContent: "center",
+		alignItems: "center",
+	},
 });

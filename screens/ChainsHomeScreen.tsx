@@ -46,7 +46,7 @@ const ChainsHomeScreen: FC<Props> = (props) => {
 			style={styles.container}
 		>
 			<AppHeader name="Chains Home" />
-			<LineGraph />
+			{/* <LineGraph /> */}
 			<View style={styles.titleWrap}>
 				{/* <Text style={styles.title}>Today's Session</Text>
 				<Text style={styles.title}>Steps</Text> */}

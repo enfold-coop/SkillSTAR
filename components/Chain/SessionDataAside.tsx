@@ -2,6 +2,7 @@ import React, { FC, useState, useEffect } from "react";
 import { StyleSheet, Text, View, TouchableOpacity, Image } from "react-native";
 import { Button, Card } from "react-native-paper";
 import { ProbeAside, TrainingAside } from "./index";
+import LineGraph from "../DataGraph/LineGraph";
 import CustomColors from "../../styles/Colors";
 import date from "date-and-time";
 
@@ -25,6 +26,7 @@ const SessionDataAside: FC<Props> = (props) => {
 	const [today, setToday] = useState(date.format(new Date(), "MM/DD/YYYY"));
 	const [promptLevel, setPromptLevel] = useState("Full Physical");
 	const [masteryLevel, setMasteryLevel] = useState("Focus");
+	const [graphContainerDimens, setGraphContainerDimens] = useState({});
 
 	return (
 		<View style={styles.container}>
@@ -67,26 +69,19 @@ const SessionDataAside: FC<Props> = (props) => {
 								Up next: <Text>{"Focus Step #3"}</Text>
 							</Text>
 						</View>
-						<TouchableOpacity>
-							<Button
-								color={CustomColors.uva.orange}
-								labelStyle={{ fontSize: 12, fontWeight: "800" }}
-								contentStyle={styles.moreDetailsBtn}
-								style={styles.moreDetailsBtn}
-								mode="outlined"
-							>
-								See more details
-							</Button>
-						</TouchableOpacity>
 					</Card>
 				</View>
-				<View style={styles.graphIconContainer}>
+				<View
+					style={styles.graphIconContainer}
+					onLayout={(e) => {
+						setGraphContainerDimens(e.nativeEvent.layout);
+					}}
+				>
 					<TouchableOpacity>
 						<Card>
-							<Image
-								resizeMode="contain"
+							<LineGraph
+								dimensions={graphContainerDimens}
 								style={styles.graphIcon}
-								source={require("../../assets/images/graph.png")}
 							/>
 							<Text style={styles.graphText}>
 								View your progress
@@ -190,7 +185,7 @@ const styles = StyleSheet.create({
 		// height: 200,
 	},
 	graphIcon: {
-		padding: 5,
+		padding: 100,
 	},
 	graphText: {
 		fontSize: 16,
