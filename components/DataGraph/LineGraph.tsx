@@ -2,6 +2,8 @@ import React from "react";
 import { StyleSheet, Text, View, Dimensions } from "react-native";
 import { LineChart } from "react-native-chart-kit";
 
+type Props = {};
+
 const LineGraph = () => {
 	return (
 		<View style={styles.container}>
