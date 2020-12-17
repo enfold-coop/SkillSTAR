@@ -4,7 +4,6 @@ import {
 	FlatList,
 	ImageBackground,
 	StyleSheet,
-	Text,
 	TouchableOpacity,
 	View,
 } from "react-native";
@@ -12,6 +11,7 @@ import * as Animatable from "react-native-animatable";
 import ScorecardListItem from "../components/Chain/ScorecardListItem";
 import SessionDataAside from "../components/Chain/SessionDataAside";
 import AppHeader from "../components/Header/AppHeader";
+import LineGraph from "../components/DataGraph/LineGraph";
 import { RootNavProps } from "../navigation/root_types";
 import CustomColors from "../styles/Colors";
 
@@ -46,6 +46,7 @@ const ChainsHomeScreen: FC<Props> = (props) => {
 			style={styles.container}
 		>
 			<AppHeader name="Chains Home" />
+			<LineGraph />
 			<View style={styles.titleWrap}>
 				{/* <Text style={styles.title}>Today's Session</Text>
 				<Text style={styles.title}>Steps</Text> */}
