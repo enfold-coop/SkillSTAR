@@ -3,6 +3,7 @@ import { StyleSheet, Text, View, TouchableOpacity, Image } from "react-native";
 import { Button, Card } from "react-native-paper";
 import { ProbeAside, TrainingAside } from "./index";
 import LineGraph from "../DataGraph/LineGraph";
+import GraphModal from "../DataGraph/GraphModal";
 import CustomColors from "../../styles/Colors";
 import date from "date-and-time";
 
@@ -27,9 +28,15 @@ const SessionDataAside: FC<Props> = (props) => {
 	const [promptLevel, setPromptLevel] = useState("Full Physical");
 	const [masteryLevel, setMasteryLevel] = useState("Focus");
 	const [graphContainerDimens, setGraphContainerDimens] = useState({});
+	const [modalVis, setModalVis] = useState(false);
+
+	const handleModal = (v: boolean) => {
+		setModalVis(!modalVis);
+	};
 
 	return (
 		<View style={styles.container}>
+			<GraphModal visible={modalVis} handleVis={handleModal} />
 			<View>
 				<View>
 					<Card>
@@ -77,7 +84,11 @@ const SessionDataAside: FC<Props> = (props) => {
 						setGraphContainerDimens(e.nativeEvent.layout);
 					}}
 				>
-					<TouchableOpacity>
+					<TouchableOpacity
+						onPress={() => {
+							setModalVis(true);
+						}}
+					>
 						<Card>
 							<LineGraph
 								dimensions={graphContainerDimens}

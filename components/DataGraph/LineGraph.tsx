@@ -8,7 +8,7 @@ type Props = {
 
 const LineGraph: FC<Props> = (props) => {
 	const { dimensions } = props;
-	console.log(dimensions);
+
 	return (
 		<View style={styles.container}>
 			<LineChart
