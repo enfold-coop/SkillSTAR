@@ -58,7 +58,7 @@ export default function LandingScreen({ navigation }: Props<"LandingScreen">) {
 										if (selectedParticipant) {
 											context.state.participant = selectedParticipant;
 											navigation.navigate(
-												"DataVerificationScreen"
+												"ChainsHomeScreen"
 											);
 										}
 									}
@@ -85,11 +85,6 @@ export default function LandingScreen({ navigation }: Props<"LandingScreen">) {
 						style={styles.logo}
 						source={require("../assets/images/logo.png")}
 					/>
-					{/**
-					 * New user?
-					 * -- Yes: background survey,
-					 * -- No: baseline assesssment
-					 */}
 					<TextInput
 						textContentType="emailAddress"
 						autoCompleteType="username"

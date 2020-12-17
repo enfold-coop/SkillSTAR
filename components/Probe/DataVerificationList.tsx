@@ -28,7 +28,9 @@ export default DataVerificationList;
 
 const styles = StyleSheet.create({
 	container: {
-		marginBottom: 24,
-		paddingBottom: 200,
+		flex: 1,
+		flexDirection: "column",
+		justifyContent: "flex-start",
+		// paddingBottom: 20,
 	},
 });

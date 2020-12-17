@@ -41,6 +41,7 @@ const ListItemSwitch: FC<Props> = (props) => {
 			setIsSwitchOn(false);
 		}
 	};
+
 	// Navigate to ChainsHome
 	const navigateToChainsHome = () => {
 		navigation.navigate("ChainsHomeScreen");
@@ -49,7 +50,6 @@ const ListItemSwitch: FC<Props> = (props) => {
 	// Toogle switch label (yes/no)
 	const toggleLabel = () => {
 		setLabel((label = isSwitchOn === false ? "No" : "Yes"));
-		checkTypeAgainstSwitchVal();
 	};
 
 	// callback for setting isSwitchOn value
@@ -97,7 +97,7 @@ const styles = StyleSheet.create({
 		alignSelf: "center",
 	},
 	switch: {
-		margin: 20,
+		margin: 10,
 		alignSelf: "center",
 		transform: [{ scaleX: 1.2 }, { scaleY: 1.2 }],
 	},

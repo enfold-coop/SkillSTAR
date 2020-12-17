@@ -52,8 +52,10 @@ const PromptAccordion: FC<Props> = (props) => {
 							>
 								<View
 									style={{
-										padding: 2,
-										borderRadius: 3,
+										height: 40,
+										width: 40,
+										padding: 0,
+										borderRadius: 100,
 										borderWidth: 2,
 										borderColor: CustomColors.uva.gray,
 									}}

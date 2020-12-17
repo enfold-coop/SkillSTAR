@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from "react";
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import React, { useEffect, useState, useReducer } from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { StepAttempt } from "../types/CHAIN/StepAttempt";
+import { session } from "./initial_states/initialSession";
 
 type ChainProviderProps = {};
 
@@ -8,34 +9,20 @@ export const ChainContext = React.createContext<Partial<ChainProviderProps>>(
 	{}
 );
 
-type ChallBehav = {
-	didOccur: boolean;
-	severity: number;
-};
-
-type Session = {
-	date: Date;
-	attempt: Attempt[];
-};
-
-type Attempt = {
-	date: Date;
-	instruction: string;
-	stepId: number;
-	wasPrompted: boolean;
-	promptLevel: number;
-	challengingBehavior?: ChallBehav;
-};
-
-let initialState = {
-	authorization: false,
-	session: null,
-};
+let initialState = {};
 
 export const ChainProvider: React.FC<ChainProviderProps> = ({ children }) => {
-	let [session, setSession] = useState();
-	let [stepAttempt, setStepAttempt] = useState();
-	let [authorization, setAuthorization] = useState(false);
+	// let initialState = session;
+	// // console.log(initialState);
+	// const [sessionState, setSessionState] = useReducer(session, initialState);
+	// let [session, setSession] = useState();
+	// let [stepAttempt, setStepAttempt] = useState();
 
 	return <ChainContext.Provider value={{}}>{children}</ChainContext.Provider>;
 };
+
+/**
+ * - initialize Session Context Provider
+ * - setting/getting state in Context API
+ *
+ */

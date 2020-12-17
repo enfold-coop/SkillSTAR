@@ -1,30 +1,72 @@
 import React, { FC, useState, useEffect } from "react";
 import { StyleSheet, Text, View, TouchableOpacity, Image } from "react-native";
 import { Button, Card } from "react-native-paper";
+import { ProbeAside, TrainingAside } from "./index";
 import CustomColors from "../../styles/Colors";
+import date from "date-and-time";
 
 type Props = {
 	historicalData: {};
 	name: string;
+	sessionNumber: number;
 };
 
-const SessionDataAside: FC<Props> = ({ name }) => {
+/**
+ * NEEDS:
+ * ** Session type: Probe or Training,
+ * ** today's FOCUS STEP (instructions, stepnumber)
+ * ** today's PROMPT LEVEL
+ * **
+ */
+
+const SessionDataAside: FC<Props> = (props) => {
+	const { sessionNumber, name } = props;
+	const [isTraining, setIsTraining] = useState(true);
+	const [today, setToday] = useState(date.format(new Date(), "MM/DD/YYYY"));
+	const [promptLevel, setPromptLevel] = useState("Full Physical");
+	const [masteryLevel, setMasteryLevel] = useState("Focus");
+
 	return (
 		<View style={styles.container}>
 			<View>
 				<View>
 					<Card>
-						<Text style={styles.sessionNum}>Session #{1}</Text>
-						<Text style={styles.isProbeTrainingSession}></Text>
-						<Text style={styles.focusStep}>
-							Focus Step: {"Put toothpaste on brush"}
-						</Text>
-						<Text style={styles.promptLevel}>
-							Prompt Level: {"Full Phys."}
-						</Text>
-						<Text style={styles.masteryLevel}>
-							Mastery: {"Focus Step"}
-						</Text>
+						<View style={styles.sessionNumbAndDateContainer}>
+							<Text style={styles.sessionNum}>Session #{1}</Text>
+							<Text style={styles.date}>{today}</Text>
+						</View>
+						<View style={styles.taskInfoContainer}>
+							<ProbeAside />
+							{/* <TrainingAside /> */}
+							{/* <Text style={styles.isProbeTrainingSession}>
+								{isTraining
+									? "Training Session"
+									: "Probe Session"}
+							</Text>
+							<Text style={styles.focusStep}>
+								Focus Step:{" "}
+								<Text style={styles.focusStepInstruction}>
+									{"Put toothpaste on brush"}
+								</Text>
+							</Text>
+							<Text style={styles.promptLevelLabel}>
+								Prompt Level:{" "}
+								<Text style={styles.promptLevel}>
+									{promptLevel}
+								</Text>
+							</Text>
+							<Text style={styles.masteryLevelLabel}>
+								Mastery:{" "}
+								<Text style={styles.masteryLevel}>
+									{masteryLevel}
+								</Text>
+							</Text> */}
+						</View>
+						<View style={styles.upNextContainer}>
+							<Text style={styles.upNextLabel}>
+								Up next: <Text>{"Focus Step #3"}</Text>
+							</Text>
+						</View>
 						<TouchableOpacity>
 							<Button
 								color={CustomColors.uva.orange}
@@ -60,9 +102,9 @@ const SessionDataAside: FC<Props> = ({ name }) => {
 const styles = StyleSheet.create({
 	container: {
 		width: 300,
-		margin: 10,
-		marginLeft: 15,
-		padding: 0,
+		// margin: 10,
+		marginLeft: 10,
+		padding: 10,
 		borderRadius: 10,
 		fontSize: 22,
 	},
@@ -71,18 +113,36 @@ const styles = StyleSheet.create({
 		marginTop: 0,
 		flexDirection: "row",
 	},
+
+	sessionNumbAndDateContainer: {
+		flexDirection: "row",
+		justifyContent: "space-between",
+		alignContent: "center",
+		padding: 10,
+	},
+	date: {
+		fontSize: 18,
+		fontWeight: "600",
+	},
 	sessionNum: {
 		fontWeight: "600",
 		fontSize: 18,
-		padding: 5,
-		paddingTop: 15,
-		paddingLeft: 10,
+	},
+	taskInfoContainer: {
+		padding: 10,
 	},
 	isProbeTrainingSession: {
 		fontWeight: "600",
 		fontSize: 18,
-		padding: 2,
-		paddingLeft: 10,
+		padding: 5,
+		textDecorationLine: "underline",
+		textDecorationStyle: "solid",
+		textDecorationColor: CustomColors.uva.grayMedium,
+	},
+	upNextContainer: { padding: 10 },
+	upNextLabel: {
+		fontWeight: "600",
+		fontSize: 18,
 	},
 	focusStep: {
 		fontWeight: "600",
@@ -90,8 +150,23 @@ const styles = StyleSheet.create({
 		padding: 2,
 		paddingLeft: 10,
 	},
+	focusStepInstruction: {
+		fontWeight: "400",
+	},
+	promptLevelLabel: {
+		fontWeight: "600",
+		fontSize: 18,
+		padding: 2,
+		paddingLeft: 10,
+	},
 	promptLevel: {
 		fontWeight: "400",
+		fontSize: 18,
+		padding: 2,
+		paddingLeft: 10,
+	},
+	masteryLevelLabel: {
+		fontWeight: "600",
 		fontSize: 18,
 		padding: 2,
 		paddingLeft: 10,

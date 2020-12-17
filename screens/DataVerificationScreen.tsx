@@ -13,6 +13,8 @@ import { nanoid } from "nanoid";
 import { Button } from "react-native-paper";
 import { useNavigation } from "@react-navigation/native";
 import CustomColors from "../styles/Colors";
+import { OnSubmitModal } from "../components/GlobalComponents/";
+import ChallengingBehavModal from "../components/ChallengingBehavior/ChallengingBehavModal";
 import AppHeader from "../components/Header/AppHeader";
 import { DataVerifItem } from "../components/DataVerification/";
 // MOCK IMPORT:
@@ -29,10 +31,23 @@ function DataVerificationScreen({ session }: Props): ReactNode {
 	const navigation = useNavigation();
 	let [stepIndex, setStepIndex] = useState(0);
 	let [readyToSubmit, setReadyToSubmit] = useState(false);
+	let [confirmSubmit, setConfirmSubmit] = useState(false);
 	let [sessionData, setSessionData] = useState();
 	let [scrolling, setScrolling] = useState(false);
-	let [text, setText] = useState("");
+
 	let mockSesh;
+
+	// Called on 2nd press of Submit button
+	const submitAndNavigate = () => {
+		setConfirmSubmit(false);
+		postData();
+		navigation.navigate("ChainsHomeScreen");
+	};
+
+	// Post state data to API
+	const postData = () => {
+		console.log("POSTING DATA");
+	};
 
 	/**
 	 * BEGIN: MOCK
@@ -54,11 +69,6 @@ function DataVerificationScreen({ session }: Props): ReactNode {
 	/** END: Lifecycle calls */
 
 	return (
-		// <ImageBackground
-		// 	source={require("../assets/images/sunrise-muted.png")}
-		// 	resizeMode={"cover"}
-		// 	style={styles.image}
-		// >
 		<View style={styles.container}>
 			<AppHeader name="Brushing Teeth" />
 			<View style={styles.instructionContainer}>
@@ -88,6 +98,7 @@ function DataVerificationScreen({ session }: Props): ReactNode {
 					<FlatList
 						onScrollBeginDrag={() => {
 							setScrolling(true);
+							setReadyToSubmit(true);
 						}}
 						data={sessionData}
 						renderItem={(item) => {
@@ -99,17 +110,32 @@ function DataVerificationScreen({ session }: Props): ReactNode {
 			</View>
 
 			{readyToSubmit && (
-				<Button
-					mode="contained"
-					onPress={() => {
-						navigation.navigate("ChainsHomeScreen");
-					}}
-				>
-					Submit
-				</Button>
+				<View style={styles.btnContainer}>
+					<Text style={styles.btnContainerText}>
+						Please confirm your selections, then press Submit.
+					</Text>
+					<Button
+						mode="contained"
+						color={CustomColors.uva.orange}
+						labelStyle={{
+							fontSize: 16,
+							fontWeight: "600",
+							color: CustomColors.uva.blue,
+						}}
+						style={styles.nextButton}
+						onPress={() => {
+							if (confirmSubmit) {
+								submitAndNavigate();
+							} else {
+								setConfirmSubmit(true);
+							}
+						}}
+					>
+						{confirmSubmit ? "Confirm and Submit" : "Submit"}
+					</Button>
+				</View>
 			)}
 		</View>
-		// </ImageBackground>
 	);
 }
 
@@ -117,6 +143,7 @@ const styles = StyleSheet.create({
 	container: {
 		flex: 1,
 		flexDirection: "column",
+		marginBottom: 100,
 	},
 	image: {
 		flex: 1,
@@ -134,7 +161,6 @@ const styles = StyleSheet.create({
 		fontSize: 16,
 		flexDirection: "column",
 		justifyContent: "space-around",
-		backgroundColor: "#f0f",
 	},
 	screenHeader: {
 		marginTop: 20,
@@ -158,7 +184,9 @@ const styles = StyleSheet.create({
 		paddingTop: 5,
 		fontSize: 18,
 	},
-	formContainer: {},
+	formContainer: {
+		height: "80%",
+	},
 	formItemContainer: {},
 	formItemLabel: {},
 	btnContainer: {},
@@ -168,16 +196,22 @@ const styles = StyleSheet.create({
 		justifyContent: "flex-end",
 		marginBottom: 100,
 		marginRight: 20,
+		marginTop: 100,
+	},
+	btnContainerText: {
+		display: "none",
+		fontSize: 18,
+		textAlign: "center",
+		padding: 10,
 	},
 	nextButton: {
-		width: 144,
-		margin: 15,
+		width: "90%",
+		height: 50,
+		margin: 10,
+		justifyContent: "center",
+		alignSelf: "center",
+		fontWeight: "600",
 	},
-	backButton: {
-		width: 144,
-		margin: 15,
-	},
-	inputField: {},
 });
 
 export default DataVerificationScreen;

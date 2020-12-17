@@ -1,5 +1,6 @@
 import React, { FC, useEffect, useState } from "react";
 import { StyleSheet, Text, View, Image } from "react-native";
+import { Button } from "react-native-paper";
 import * as Animatable from "react-native-animatable";
 import CustomColors from "../../styles/Colors";
 import {
@@ -19,6 +20,17 @@ const MasteryIcons = (level: string) => {
 	};
 	return icons[`${level}`];
 };
+const PromptIcons = (level: string) => {
+	const icons = {
+		ip: require("../../assets/icons/ip_prompt_icon.png"),
+		sp: require("../../assets/icons/sp_prompt_icon.png"),
+		pp: require("../../assets/icons/pp_prompt_icon.png"),
+		fp: require("../../assets/icons/fp_prompt_icon.png"),
+	};
+
+	// return icons[`${level}`];
+	// return
+};
 
 type Props = {
 	stepAttempt: StepAttempt;
@@ -28,10 +40,13 @@ const DataVerifItem: FC<Props> = ({ stepAttempt }) => {
 	/**
 	 * use context api, here:
 	 */
-	const { stepId, instruction } = stepAttempt;
+
+	const { stepId, instruction, promptLevel } = stepAttempt;
+
 	const [promptSwitch, setPromptSwitch] = useState(false);
 	const [behavSwitch, setBehavSwitch] = useState(false);
-	const [icon, setIcon] = useState(MasteryIcons("mastered"));
+	const [icon, setIcon] = useState();
+	const [promptIcon, setPromptIcon] = useState();
 
 	const handlePromptSwitch = (v: boolean) => {
 		setPromptSwitch(!promptSwitch);
@@ -39,6 +54,34 @@ const DataVerifItem: FC<Props> = ({ stepAttempt }) => {
 	const handleBehavSwitch = (v: boolean) => {
 		setBehavSwitch(!behavSwitch);
 	};
+
+	const focusStepIcon = () => {
+		if (stepId == 3) {
+			setIcon(MasteryIcons("focus"));
+		} else if (stepId < 3) {
+			setIcon(MasteryIcons("mastered"));
+		} else {
+			setIcon(MasteryIcons("notStarted"));
+		}
+	};
+	const promptLevelIcon = () => {
+		if (promptLevel === 4) {
+			setPromptIcon(PromptIcons("sp"));
+		} else if (promptLevel === 3) {
+			setPromptIcon(PromptIcons("sp"));
+		} else if (promptLevel === 2) {
+			setPromptIcon(PromptIcons("pp"));
+		} else {
+			setPromptIcon(PromptIcons("fp"));
+		}
+	};
+
+	useEffect(() => {
+		focusStepIcon();
+	}, [stepId]);
+	useEffect(() => {
+		promptLevelIcon();
+	}, [promptLevel]);
 
 	return (
 		<View style={styles.container}>
@@ -50,20 +93,27 @@ const DataVerifItem: FC<Props> = ({ stepAttempt }) => {
 				/>
 
 				<Text style={styles.stepTitle}>"{instruction}"</Text>
-				<Text style={styles.promptLevel}>{"[...]"}</Text>
-				<View style={styles.questionContainer}>
-					<PromptDataVerifSwitch
-						instruction={instruction}
-						id={stepId}
-						handleSwitch={handlePromptSwitch}
-					/>
-				</View>
-				<View style={styles.questionContainer}>
-					<BehavDataVerifSwitch
-						instruction={instruction}
-						id={stepId}
-						handleSwitch={handleBehavSwitch}
-					/>
+				<Text style={styles.promptLevelIcon}>{"FP"}</Text>
+				{/* <Image
+					style={styles.promptLevelIcon}
+					source={promptIcon}
+					resizeMode="contain"
+				/> */}
+				<View style={styles.switchContainer}>
+					<View style={styles.questionContainer}>
+						<PromptDataVerifSwitch
+							instruction={instruction}
+							id={stepId}
+							handleSwitch={handlePromptSwitch}
+						/>
+					</View>
+					<View style={styles.questionContainer}>
+						<BehavDataVerifSwitch
+							instruction={instruction}
+							id={stepId}
+							handleSwitch={handleBehavSwitch}
+						/>
+					</View>
 				</View>
 			</View>
 			<View style={styles.accordionContainer}>
@@ -95,25 +145,39 @@ const styles = StyleSheet.create({
 	},
 	defaultFormContainer: {
 		flexDirection: "row",
-		justifyContent: "space-evenly",
+		justifyContent: "space-between",
 		alignContent: "center",
 	},
 	accordionContainer: {},
 	masteryIcon: {
-		width: 50,
-		height: 50,
+		width: 40,
+		height: 40,
 		alignSelf: "center",
 		borderRadius: 14,
 		borderWidth: 0,
 	},
-	promptLevel: {
-		width: "5%",
+	promptLevelIcon: {
+		// width: 30,
+		// height: 30,
+		fontSize: 20,
+		fontWeight: "800",
+		borderRadius: 5,
+		borderWidth: 2,
+		borderColor: CustomColors.uva.gray,
+		color: CustomColors.uva.gray,
+		padding: 5,
+		textAlign: "center",
 		alignSelf: "center",
 	},
 	stepTitle: {
-		width: "40%",
+		width: "30%",
 		alignSelf: "center",
 		fontSize: 20,
+	},
+	switchContainer: {
+		flexDirection: "row",
+		justifyContent: "center",
+		alignContent: "center",
 	},
 	questionContainer: {
 		flexDirection: "column",
@@ -140,4 +204,5 @@ const styles = StyleSheet.create({
 		marginLeft: 20,
 		marginRight: 20,
 	},
+	nextBtnContainer: {},
 });
