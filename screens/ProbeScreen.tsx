@@ -6,7 +6,7 @@ import { RootNavProps } from "../navigation/root_types";
 import { Session } from "../types/CHAIN/Session";
 import CustomColors from "../styles/Colors";
 import AppHeader from "../components/Header/AppHeader";
-import { DataVerificationListItem } from "../components/Probe/index";
+import { DataVerificationListItem } from "../components/Probe/";
 
 type Props = {
 	route: RootNavProps<"BaselineAssessmentScreen">;
@@ -20,7 +20,6 @@ const BaselineAssessmentScreen: FC<Props> = (props) => {
 	let [readyToSubmit, setReadyToSubmit] = useState(false);
 	let [text, setText] = useState("");
 	let { session } = props.route.params;
-	// console.log(session);
 
 	const incrIndex = () => {
 		stepIndex += 1;

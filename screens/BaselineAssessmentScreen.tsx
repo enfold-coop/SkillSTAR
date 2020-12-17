@@ -39,6 +39,10 @@ function BaselineAssessmentScreen({ route }: Props): ReactNode {
 	let [session, setSession] = useState(new Session());
 	let [text, setText] = useState("");
 
+	/** CONTEXT API **
+	 * set session data aftter createAttempts finished
+	 */
+
 	const createAttempts = () => {
 		chainSteps.forEach((e, i) => {
 			let { stepId, instruction } = chainSteps[i];
@@ -51,34 +55,27 @@ function BaselineAssessmentScreen({ route }: Props): ReactNode {
 	useEffect(() => {
 		if (!session.data.length) {
 			createAttempts();
-		} else {
 		}
 	}, []);
 	/** END: Lifecycle calls */
 
-	const incrIndex = () => {
-		stepIndex += 1;
-		setStepIndex(stepIndex);
-	};
-
-	const decIndex = () => {
-		if (stepIndex > 0) {
-			stepIndex -= 1;
-			setStepIndex(stepIndex);
-		}
+	const setSessionData = () => {
+		// Context API set session data
+		// navigate to chainshomescreen
 	};
 
 	return (
-		<ImageBackground
-			source={require("../assets/images/sunrise-muted.png")}
-			resizeMode={"cover"}
-			style={styles.image}
-		>
+		// <ImageBackground
+		// 	source={require("../assets/images/sunrise-muted.png")}
+		// 	resizeMode={"cover"}
+		// 	style={styles.image}
+		// >
+		<View style={styles.image}>
 			{sessionReady && (
 				<View style={styles.container}>
 					<AppHeader name="Brushing Teeth" />
 					<View style={styles.instructionContainer}>
-						<Text style={styles.screenHeader}>Probe Session</Text>
+						{/* <Text style={styles.screenHeader}>Probe Session</Text> */}
 						<Text style={styles.instruction}>
 							Please instruct the child to brush their teeth. As
 							they do, please complete this survey for each step.
@@ -91,22 +88,22 @@ function BaselineAssessmentScreen({ route }: Props): ReactNode {
 					<View style={styles.nextBackBtnsContainer}>
 						<Button
 							style={styles.nextButton}
-							color={CustomColors.uva.blue}
-							mode="contained"
-							onPress={() => {
-								if (stepIndex + 1 <= chainSteps.length - 1) {
-									incrIndex();
-								} else {
-									setReadyToSubmit(true);
-								}
+							color={CustomColors.uva.orange}
+							labelStyle={{
+								fontSize: 16,
+								fontWeight: "600",
+								color: CustomColors.uva.blue,
 							}}
+							mode="contained"
+							onPress={() => {}}
 						>
 							NEXT
 						</Button>
 					</View>
 				</View>
 			)}
-		</ImageBackground>
+		</View>
+		// </ImageBackground>
 	);
 }
 
@@ -139,26 +136,23 @@ const styles = StyleSheet.create({
 		paddingRight: 10,
 		fontSize: 22,
 	},
-	formContainer: {},
-	formItemContainer: {},
-	formItemLabel: {},
-	btnContainer: {},
-	formItemButton: {},
+	formContainer: {
+		height: "75%",
+		paddingBottom: 10,
+	},
 	nextBackBtnsContainer: {
+		marginTop: 10,
 		flexDirection: "row",
-		justifyContent: "flex-end",
+		justifyContent: "center",
 		marginBottom: 100,
-		marginRight: 20,
 	},
 	nextButton: {
-		width: 144,
-		margin: 15,
+		width: "90%",
+		height: 50,
+		justifyContent: "center",
+		alignSelf: "center",
+		fontWeight: "600",
 	},
-	backButton: {
-		width: 144,
-		margin: 15,
-	},
-	inputField: {},
 });
 
 export default BaselineAssessmentScreen;

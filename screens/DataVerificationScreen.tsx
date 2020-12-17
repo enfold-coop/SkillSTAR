@@ -1,117 +1,141 @@
 import React, { useState, useEffect, ReactNode } from "react";
-import { StyleSheet, Text, View, ImageBackground } from "react-native";
+import {
+	StyleSheet,
+	Text,
+	View,
+	ImageBackground,
+	FlatList,
+} from "react-native";
+import ColumnLabels from "../components/DataVerification/ColumnLabels";
+import * as Animatable from "react-native-animatable";
+import "react-native-get-random-values";
+import { nanoid } from "nanoid";
 import { Button } from "react-native-paper";
 import { useNavigation } from "@react-navigation/native";
-import { RootNavProps } from "../navigation/root_types";
-import { Session } from "../types/CHAIN/Session";
 import CustomColors from "../styles/Colors";
+import { OnSubmitModal } from "../components/GlobalComponents/";
+import ChallengingBehavModal from "../components/ChallengingBehavior/ChallengingBehavModal";
 import AppHeader from "../components/Header/AppHeader";
-import DataVerificationList from "../components/Probe/DataVerificationList";
-import { DataVerificationListItem } from "../components/Probe/index";
-import { StepAttempt } from "../types/CHAIN/StepAttempt";
-import { chainSteps } from "../data/chainSteps";
+import { DataVerifItem } from "../components/DataVerification/";
+// MOCK IMPORT:
+import { createSesh } from "../components/DataVerification/mock_session";
 
 type Props = {
-	route: RootNavProps<"BaselineAssessmentScreen">;
-	navigation: RootNavProps<"BaselineAssessmentScreen">;
+	session: [];
 };
 
 /**
  *
  */
-function DataVerificationScreen({ route }: Props): ReactNode {
+function DataVerificationScreen({ session }: Props): ReactNode {
 	const navigation = useNavigation();
 	let [stepIndex, setStepIndex] = useState(0);
 	let [readyToSubmit, setReadyToSubmit] = useState(false);
-	let [session, setSession] = useState(new Session());
-	let [text, setText] = useState("");
+	let [confirmSubmit, setConfirmSubmit] = useState(false);
+	let [sessionData, setSessionData] = useState();
+	let [scrolling, setScrolling] = useState(false);
 
-	const createAttempts = () => {
-		chainSteps.forEach((e, i) => {
-			let { stepId, instruction } = chainSteps[i];
-			session.addStepData(new StepAttempt(stepId, instruction));
-		});
+	let mockSesh;
+
+	// Called on 2nd press of Submit button
+	const submitAndNavigate = () => {
+		setConfirmSubmit(false);
+		postData();
+		navigation.navigate("ChainsHomeScreen");
 	};
+
+	// Post state data to API
+	const postData = () => {
+		console.log("POSTING DATA");
+	};
+
+	/**
+	 * BEGIN: MOCK
+	 */
+	useEffect(() => {
+		if (session == undefined) {
+			mockSesh = createSesh();
+			setSessionData(mockSesh.data);
+		}
+	}, []);
+	/**
+	 * END: MOCK
+	 */
 
 	/** START: Lifecycle calls */
-	useEffect(() => {
-		if (!session.data.length) {
-			createAttempts();
-		}
-	});
+	// useEffect(() => {
+	// 	setSessionData(session);
+	// }, []);
 	/** END: Lifecycle calls */
 
-	/** START: Indexing incrementation / decrementation */
-	const incrIndex = () => {
-		stepIndex += 1;
-		setStepIndex(stepIndex);
-	};
-
-	const decIndex = () => {
-		if (stepIndex > 0) {
-			stepIndex -= 1;
-			setStepIndex(stepIndex);
-		}
-	};
-	/** END: Indexing incrementation / decrementation */
-
 	return (
-		<ImageBackground
-			source={require("../assets/images/sunrise-muted.png")}
-			resizeMode={"cover"}
-			style={styles.image}
-		>
-			<View style={styles.container}>
-				<AppHeader name="Brushing Teeth" />
-				<View style={styles.instructionContainer}>
-					<Text style={styles.screenHeader}>Probe Session</Text>
-					<Text style={styles.instruction}>
-						Please instruct the child to brush their teeth. As they
-						do, please complete this survey for each step.
-					</Text>
-				</View>
-				<View style={styles.formContainer}>
-					<DataVerificationList session={session.data} />
-				</View>
-
-				<View style={styles.nextBackBtnsContainer}>
-					<Button
-						style={styles.backButton}
-						color={CustomColors.uva.blue}
-						mode="contained"
-						onPress={() => {
-							decIndex();
+		<View style={styles.container}>
+			<AppHeader name="Brushing Teeth" />
+			<View style={styles.instructionContainer}>
+				<Text
+					style={[
+						scrolling ? styles.smallHeader : styles.screenHeader,
+					]}
+				>
+					Probe Session
+				</Text>
+				<Animatable.Text
+					transition="fontSize"
+					duration={1000}
+					style={[
+						scrolling
+							? styles.smallInstruction
+							: styles.instruction,
+					]}
+				>
+					Please instruct the child to brush their teeth. As they do,
+					please complete this survey for each step.
+				</Animatable.Text>
+			</View>
+			<View style={styles.formContainer}>
+				<ColumnLabels />
+				{sessionData && (
+					<FlatList
+						onScrollBeginDrag={() => {
+							setScrolling(true);
+							setReadyToSubmit(true);
 						}}
-					>
-						BACK
-					</Button>
+						data={sessionData}
+						renderItem={(item) => {
+							return <DataVerifItem stepAttempt={item.item} />;
+						}}
+						keyExtractor={() => nanoid()}
+					/>
+				)}
+			</View>
+
+			{readyToSubmit && (
+				<View style={styles.btnContainer}>
+					<Text style={styles.btnContainerText}>
+						Please confirm your selections, then press Submit.
+					</Text>
 					<Button
-						style={styles.nextButton}
-						color={CustomColors.uva.blue}
 						mode="contained"
+						color={CustomColors.uva.orange}
+						labelStyle={{
+							fontSize: 16,
+							fontWeight: "600",
+							color: CustomColors.uva.blue,
+						}}
+						style={styles.nextButton}
 						onPress={() => {
-							if (stepIndex + 1 <= chainSteps.length - 1) {
-								incrIndex();
+							if (confirmSubmit) {
+								submitAndNavigate();
 							} else {
-								setReadyToSubmit(true);
+								setConfirmSubmit(true);
 							}
 						}}
 					>
-						NEXT
+						{confirmSubmit ? "Confirm and Submit" : "Submit"}
 					</Button>
 				</View>
-				{readyToSubmit && (
-					<Button
-						mode="contained"
-						onPress={() => {
-							navigation.navigate("ChainsHomeScreen");
-						}}
-					>
-						Submit
-					</Button>
-				)}
-			</View>
-		</ImageBackground>
+			)}
+		</View>
 	);
 }
 
@@ -119,6 +143,7 @@ const styles = StyleSheet.create({
 	container: {
 		flex: 1,
 		flexDirection: "column",
+		marginBottom: 100,
 	},
 	image: {
 		flex: 1,
@@ -129,17 +154,39 @@ const styles = StyleSheet.create({
 		flexDirection: "column",
 		justifyContent: "space-around",
 	},
+	smallinstructionContainer: {
+		margin: 20,
+		marginBottom: 1,
+		marginTop: 1,
+		fontSize: 16,
+		flexDirection: "column",
+		justifyContent: "space-around",
+	},
 	screenHeader: {
 		marginTop: 20,
 		paddingBottom: 20,
 		fontSize: 22,
 		fontWeight: "600",
 	},
+	smallHeader: {
+		display: "none",
+	},
+
 	instruction: {
-		padding: 10,
+		padding: 40,
+		paddingBottom: 10,
+		paddingTop: 10,
 		fontSize: 22,
 	},
-	formContainer: {},
+	smallInstruction: {
+		padding: 20,
+		paddingBottom: 5,
+		paddingTop: 5,
+		fontSize: 18,
+	},
+	formContainer: {
+		height: "80%",
+	},
 	formItemContainer: {},
 	formItemLabel: {},
 	btnContainer: {},
@@ -149,16 +196,22 @@ const styles = StyleSheet.create({
 		justifyContent: "flex-end",
 		marginBottom: 100,
 		marginRight: 20,
+		marginTop: 100,
+	},
+	btnContainerText: {
+		display: "none",
+		fontSize: 18,
+		textAlign: "center",
+		padding: 10,
 	},
 	nextButton: {
-		width: 144,
-		margin: 15,
+		width: "90%",
+		height: 50,
+		margin: 10,
+		justifyContent: "center",
+		alignSelf: "center",
+		fontWeight: "600",
 	},
-	backButton: {
-		width: 144,
-		margin: 15,
-	},
-	inputField: {},
 });
 
 export default DataVerificationScreen;

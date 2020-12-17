@@ -8,6 +8,7 @@ import {
 	TouchableOpacity,
 	View,
 } from "react-native";
+import * as Animatable from "react-native-animatable";
 import ScorecardListItem from "../components/Chain/ScorecardListItem";
 import SessionDataAside from "../components/Chain/SessionDataAside";
 import AppHeader from "../components/Header/AppHeader";
@@ -51,7 +52,11 @@ const ChainsHomeScreen: FC<Props> = (props) => {
 			</View>
 			{chainSteps && (
 				<View style={styles.listContainer}>
-					<SessionDataAside historicalData={{}} name={"Moxy"} />
+					<SessionDataAside
+						historicalData={{}}
+						name={"Moxy"}
+						sessionNumber={1}
+					/>
 					<FlatList
 						style={styles.list}
 						data={chainSteps}
@@ -62,13 +67,20 @@ const ChainsHomeScreen: FC<Props> = (props) => {
 					/>
 				</View>
 			)}
+
 			<TouchableOpacity
 				style={styles.startSessionBtn}
 				onPress={() => {
 					navToProbeOrTraining();
 				}}
 			>
-				<Text style={styles.btnText}>Start the Chain</Text>
+				<Animatable.Text
+					animation="bounceIn"
+					duration={2000}
+					style={styles.btnText}
+				>
+					Start the Chain
+				</Animatable.Text>
 			</TouchableOpacity>
 		</ImageBackground>
 	);
@@ -114,18 +126,18 @@ const styles = StyleSheet.create({
 		flex: 1,
 		// paddingBottom: 20,
 		margin: 20,
-		borderWidth: 1,
+		// borderWidth: 1,
 		borderRadius: 10,
 		// borderColor: CustomColors.uva.white,
-		backgroundColor: CustomColors.uva.blue,
+		backgroundColor: CustomColors.uva.orange,
 		justifyContent: "center",
 		alignItems: "center",
 	},
 	btnText: {
 		textAlign: "center",
-		color: CustomColors.uva.sky,
+		color: CustomColors.uva.white,
 		fontSize: 32,
-		fontWeight: "400",
+		fontWeight: "500",
 	},
 });
 

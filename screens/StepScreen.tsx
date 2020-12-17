@@ -6,6 +6,7 @@ import { ImageBackground, StyleSheet, Text, View } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { Button, ProgressBar } from "react-native-paper";
 import ChallengingBehavModal from "../components/ChallengingBehavior/ChallengingBehavModal";
+import * as Animatable from "react-native-animatable";
 import AppHeader from "../components/Header/AppHeader";
 import { chainSteps } from "../data/chainSteps";
 import { videos } from "../data/videos";
@@ -20,16 +21,16 @@ interface Props {
 }
 
 // Convert progress to "0.1 - 1.0" value
-const progressBarCalculation = (arr: Array, currStep: number): number => {
-	return currStep / arr.length;
+const progressBarCalculation = (len: number, currStep: number): number => {
+	return currStep / len;
 };
 
 const StepScreen: FC<Props> = (props) => {
 	const navigation = useNavigation();
 	let [visible, setVisible] = React.useState(false);
-	let [steps, setSteps] = useState([]);
-	let [stepIndex, setStepIndex] = useState<number>(0);
+	let [stepIndex, setStepIndex] = useState(0);
 	let [session, setSession] = useState(new Session());
+	let [video, setVideo] = useState(videos[`chain_0_${stepIndex + 1}`]);
 
 	const toggleModal = () => {
 		setVisible(!visible);
@@ -53,17 +54,42 @@ const StepScreen: FC<Props> = (props) => {
 
 	const createAttempts = () => {
 		chainSteps.forEach((e, i) => {
-			session.addStepData(new StepAttempt(chainSteps[i].step));
+			let { stepId, instruction } = chainSteps[i];
+			session.addStepData(new StepAttempt(stepId, instruction));
 		});
 	};
 
+	const ReturnVideoComponent = () => {
+		return (
+			<Video
+				source={videos[`chain_0_${stepIndex + 1}`]}
+				rate={1.0}
+				volume={1.0}
+				isMuted={true}
+				resizeMode="cover"
+				isLooping={false}
+				useNativeControls={true}
+				style={styles.video}
+			/>
+		);
+	};
+
+	/**
+	 * BEGIN: LIFECYCLE CALLS
+	 */
 	useEffect(() => {
-		navigation.setOptions({ title: chainSteps[stepIndex].name });
-		setSteps(chainSteps);
 		if (!session.data.length) {
 			createAttempts();
 		}
-	});
+	}, []);
+
+	useEffect(() => {
+		// Solves issue of videos not start play at beginning
+		setVideo(videos[`chain_0_${stepIndex + 1}`]);
+	}, [stepIndex]);
+	/**
+	 * END: LIFECYCLE CALLS
+	 */
 
 	return (
 		<ImageBackground
@@ -73,29 +99,29 @@ const StepScreen: FC<Props> = (props) => {
 		>
 			<View style={styles.container}>
 				<AppHeader name={"Brush Teeth"} />
-				{session.data[stepIndex] && (
+				{/* {session.data[stepIndex] && (
 					<ChallengingBehavModal
 						visible={visible}
 						toggleModal={handleModalClose}
 						attempt={session.data[stepIndex]}
 					/>
-				)}
+				)} */}
 				<View style={styles.progress}>
 					<Text style={styles.headline}>
-						Step {chainSteps[stepIndex].step}:{" "}
+						Step {chainSteps[stepIndex].stepId}:{" "}
 						{chainSteps[stepIndex].instruction}
 					</Text>
 					<View style={styles.progressContainer}>
 						<ProgressBar
 							style={styles.progressBar}
 							progress={progressBarCalculation(
-								chainSteps,
+								chainSteps.length,
 								stepIndex
 							)}
 							color={CustomColors.uva.blue}
 						/>
 						<Text style={styles.progressText}>
-							Step {chainSteps[stepIndex].step} out of{" "}
+							Step {chainSteps[stepIndex].stepId} out of{" "}
 							{chainSteps.length}
 						</Text>
 					</View>
@@ -119,18 +145,13 @@ const StepScreen: FC<Props> = (props) => {
 							difficulty or experiening challenging behavior.
 						</Text>
 					</View>
-					<View style={styles.subVideoContainer}>
-						<Video
-							source={videos[`chain_0_${stepIndex + 1}`]}
-							rate={1.0}
-							volume={1.0}
-							isMuted={true}
-							resizeMode="cover"
-							isLooping={false}
-							useNativeControls={true}
-							style={styles.video}
-						/>
-					</View>
+					<Animatable.View
+						style={styles.subVideoContainer}
+						duration={2000}
+						animation={"fadeIn"}
+					>
+						{<ReturnVideoComponent />}
+					</Animatable.View>
 					<View style={styles.bottomContainer}>
 						<Button
 							style={styles.exitButton}
@@ -188,7 +209,7 @@ const StepScreen: FC<Props> = (props) => {
 									incrIndex();
 								} else {
 									navigation.navigate(
-										"BaselineAssessmentScreen",
+										"DataVerificationScreen",
 										{
 											session,
 										}

@@ -6,6 +6,12 @@ module.exports = function(api) {
       production: {
         plugins: ['react-native-paper/babel'],
       },
-    }
+    },
+    plugins: [
+      ["module:react-native-dotenv", {
+        "moduleName": "@env",
+        "path": ".env",
+      }]
+    ],
   };
 };

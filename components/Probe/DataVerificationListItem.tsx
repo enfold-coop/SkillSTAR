@@ -48,12 +48,14 @@ export const DataVerificationListItem: FC<Props> = (props) => {
 
 const styles = StyleSheet.create({
 	container: {
+		height: 300,
 		borderWidth: 1,
 		borderRadius: 10,
 		borderColor: CustomColors.uva.sky,
 		flexDirection: "column",
 		justifyContent: "space-around",
-		padding: 20,
+		padding: 10,
+		paddingLeft: 20,
 		margin: 5,
 		marginLeft: 40,
 		marginRight: 40,
