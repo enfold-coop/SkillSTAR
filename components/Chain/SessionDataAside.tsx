@@ -6,6 +6,7 @@ import LineGraph from "../DataGraph/LineGraph";
 import GraphModal from "../DataGraph/GraphModal";
 import CustomColors from "../../styles/Colors";
 import date from "date-and-time";
+import { PlotlyLineGraph } from "../DataGraph/index";
 
 type Props = {
 	historicalData: {};
@@ -89,19 +90,16 @@ const SessionDataAside: FC<Props> = (props) => {
 							setModalVis(true);
 						}}
 					>
-						<Card
+						{/* <Card
 							style={{
 								backgroundColor: CustomColors.uva.white,
 							}}
-						>
-							<LineGraph
-								dimensions={graphContainerDimens}
-								style={styles.graphIcon}
-							/>
-							<Text style={styles.graphText}>
-								View your progress
-							</Text>
-						</Card>
+						> */}
+						{/* <View style={styles.plotlyContainer}> */}
+						<PlotlyLineGraph dimensions={graphContainerDimens} />
+						{/* </View> */}
+						<Text style={styles.graphText}>View your progress</Text>
+						{/* </Card> */}
 					</TouchableOpacity>
 				</View>
 			</View>
@@ -191,16 +189,20 @@ const styles = StyleSheet.create({
 		margin: 10,
 	},
 	graphIconContainer: {
+		width: "100%",
+		height: 200,
 		flexDirection: "column",
 		justifyContent: "center",
 		alignContent: "center",
 		marginTop: 10,
 		padding: 2,
 	},
-	graphIcon: {
-		padding: 100,
+	plotlyContainer: {
+		justifyContent: "center",
+		alignContent: "center",
 	},
 	graphText: {
+		backgroundColor: "#f0f",
 		fontSize: 16,
 		color: CustomColors.uva.grayDark,
 		alignSelf: "center",

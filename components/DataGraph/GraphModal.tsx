@@ -3,6 +3,7 @@ import { StyleSheet, Text, View, Modal } from "react-native";
 import { Button } from "react-native-paper";
 import LineGraph from "./LineGraph";
 import CustomColors from "../../styles/Colors";
+import { PlotlyLineGraph } from ".";
 
 type Props = {
 	visible: boolean;
@@ -31,14 +32,15 @@ const GraphModal: FC<Props> = (props) => {
 			presentationStyle="overFullScreen"
 			transparent={true}
 		>
-			<View></View>
 			<View
 				style={styles.graphContainer}
 				onLayout={(e) => {
 					setGraphDimens(e.nativeEvent.layout);
 				}}
 			>
-				<LineGraph dimensions={graphDimens} />
+				{graphDimens.height && (
+					<PlotlyLineGraph dimensions={graphDimens} />
+				)}
 				<Button
 					style={styles.closeBtn}
 					labelStyle={{ fontSize: 16 }}
@@ -62,9 +64,8 @@ const styles = StyleSheet.create({
 	container: {},
 	graphContainer: {
 		flex: 1,
-		padding: 100,
-		paddingTop: 200,
-		justifyContent: "center",
+		padding: 10,
+		justifyContent: "flex-start",
 		alignContent: "center",
 		backgroundColor: "rgba(0,0,0,0.9)",
 	},
