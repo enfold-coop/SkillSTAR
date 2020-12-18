@@ -71,7 +71,7 @@ const ChainsHomeScreen: FC<Props> = (props) => {
 			)}
 
 			<TouchableOpacity
-				style={styles.startSessionBtn}
+				style={[styles.startSessionBtn, { marginBottom: 0 }]}
 				onPress={() => {
 					navToProbeOrTraining();
 				}}
@@ -132,6 +132,7 @@ const styles = StyleSheet.create({
 		// borderWidth: 1,
 		borderRadius: 10,
 		// borderColor: CustomColors.uva.white,
+		marginBottom: 0,
 		backgroundColor: CustomColors.uva.orange,
 		justifyContent: "center",
 		alignItems: "center",

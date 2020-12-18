@@ -89,7 +89,11 @@ const SessionDataAside: FC<Props> = (props) => {
 							setModalVis(true);
 						}}
 					>
-						<Card>
+						<Card
+							style={{
+								backgroundColor: CustomColors.uva.white,
+							}}
+						>
 							<LineGraph
 								dimensions={graphContainerDimens}
 								style={styles.graphIcon}
@@ -108,7 +112,6 @@ const SessionDataAside: FC<Props> = (props) => {
 const styles = StyleSheet.create({
 	container: {
 		width: 300,
-		// margin: 10,
 		marginLeft: 10,
 		padding: 10,
 		borderRadius: 10,
@@ -193,14 +196,13 @@ const styles = StyleSheet.create({
 		alignContent: "center",
 		marginTop: 10,
 		padding: 2,
-		// height: 200,
 	},
 	graphIcon: {
 		padding: 100,
 	},
 	graphText: {
 		fontSize: 16,
-		fontWeight: "200",
+		color: CustomColors.uva.grayDark,
 		alignSelf: "center",
 		padding: 5,
 	},

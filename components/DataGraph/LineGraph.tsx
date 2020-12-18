@@ -38,8 +38,7 @@ const LineGraph: FC<Props> = (props) => {
 				width={dimensions.width ? dimensions.width - 20 : 200} // from react-native
 				height={dimensions.width ? dimensions.width / 2 - 20 : 200}
 				yAxisLabel="x"
-				yAxisSuffix=""
-				yAxisInterval={1} // optional, defaults to 1
+				yAxisInterval={10} //
 				chartConfig={{
 					backgroundColor: CustomColors.uva.white,
 					backgroundGradientFrom: CustomColors.uva.cyanSoft,
@@ -58,7 +57,6 @@ const LineGraph: FC<Props> = (props) => {
 						stroke: CustomColors.uva.orangeSoft,
 					},
 				}}
-				bezier
 				style={{
 					marginVertical: 8,
 					borderRadius: 5,
