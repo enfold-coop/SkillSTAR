@@ -40,11 +40,12 @@ const ChainsHomeScreen: FC<Props> = (props) => {
 	});
 
 	return (
-		<ImageBackground
-			source={require("../assets/images/sunrise-muted.png")}
-			resizeMode={"cover"}
-			style={styles.container}
-		>
+		// <ImageBackground
+		// 	source={require("../assets/images/sunrise-muted.png")}
+		// 	resizeMode={"cover"}
+		// 	style={styles.container}
+		// >
+		<View>
 			<AppHeader name="Chains Home" />
 			{/* <LineGraph /> */}
 			<View style={styles.titleWrap}>
@@ -83,7 +84,8 @@ const ChainsHomeScreen: FC<Props> = (props) => {
 					Start the Chain
 				</Animatable.Text>
 			</TouchableOpacity>
-		</ImageBackground>
+			{/* </ImageBackground> */}
+		</View>
 	);
 };
 

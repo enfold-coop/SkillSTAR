@@ -1,6 +1,7 @@
 import React, { FC, useState, useEffect } from "react";
 import { StyleSheet, Text, View, Dimensions } from "react-native";
 import { LineChart } from "react-native-chart-kit";
+import CustomColors from "../../styles/Colors";
 
 type Props = {
 	dimensions: {};
@@ -24,42 +25,43 @@ const LineGraph: FC<Props> = (props) => {
 					datasets: [
 						{
 							data: [
-								Math.random() * 100,
-								Math.random() * 100,
-								Math.random() * 100,
-								Math.random() * 100,
-								Math.random() * 100,
-								Math.random() * 100,
+								Math.random() * 10,
+								Math.random() * 10,
+								Math.random() * 10,
+								Math.random() * 10,
+								Math.random() * 10,
+								Math.random() * 10,
 							],
 						},
 					],
 				}}
 				width={dimensions.width ? dimensions.width - 20 : 200} // from react-native
 				height={dimensions.width ? dimensions.width / 2 - 20 : 200}
-				yAxisLabel="$"
-				yAxisSuffix="k"
+				yAxisLabel="x"
+				yAxisSuffix=""
 				yAxisInterval={1} // optional, defaults to 1
 				chartConfig={{
-					backgroundColor: "#e26a00",
-					backgroundGradientFrom: "#fb8c00",
-					backgroundGradientTo: "#ffa726",
-					decimalPlaces: 2, // optional, defaults to 2dp
+					backgroundColor: CustomColors.uva.white,
+					backgroundGradientFrom: CustomColors.uva.cyanSoft,
+					backgroundGradientTo: CustomColors.uva.cyan,
+					decimalPlaces: 0, // optional, defaults to 2dp
 					color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
 					labelColor: (opacity = 1) =>
 						`rgba(255, 255, 255, ${opacity})`,
+
 					style: {
 						borderRadius: 16,
 					},
 					propsForDots: {
 						r: "6",
 						strokeWidth: "2",
-						stroke: "#ffa726",
+						stroke: CustomColors.uva.orangeSoft,
 					},
 				}}
 				bezier
 				style={{
 					marginVertical: 8,
-					borderRadius: 16,
+					borderRadius: 5,
 				}}
 			/>
 		</View>

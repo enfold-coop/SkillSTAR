@@ -114,7 +114,7 @@ const styles = StyleSheet.create({
 	dropDownLabel: {
 		padding: 5,
 		paddingLeft: 40,
-		fontWeight: "600",
+		fontWeight: "500",
 		alignSelf: "flex-start",
 	},
 	dropDownItemDate: {

@@ -30,7 +30,7 @@ const SessionDataAside: FC<Props> = (props) => {
 	const [graphContainerDimens, setGraphContainerDimens] = useState({});
 	const [modalVis, setModalVis] = useState(false);
 
-	const handleModal = (v: boolean) => {
+	const handleModal = () => {
 		setModalVis(!modalVis);
 	};
 

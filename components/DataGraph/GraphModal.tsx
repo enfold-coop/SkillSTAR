@@ -2,6 +2,7 @@ import React, { FC, useState, useEffect } from "react";
 import { StyleSheet, Text, View, Modal } from "react-native";
 import { Button } from "react-native-paper";
 import LineGraph from "./LineGraph";
+import CustomColors from "../../styles/Colors";
 
 type Props = {
 	visible: boolean;
@@ -40,13 +41,15 @@ const GraphModal: FC<Props> = (props) => {
 				<LineGraph dimensions={graphDimens} />
 				<Button
 					style={styles.closeBtn}
-					mode="contained"
+					labelStyle={{ fontSize: 16 }}
+					color={CustomColors.uva.graySoft}
+					mode="outlined"
 					onPress={() => {
 						setVisible(!vis);
 						handleIsVis();
 					}}
 				>
-					XXXX
+					Close
 				</Button>
 			</View>
 		</Modal>
@@ -56,9 +59,7 @@ const GraphModal: FC<Props> = (props) => {
 export default GraphModal;
 
 const styles = StyleSheet.create({
-	container: {
-		flex: 1,
-	},
+	container: {},
 	graphContainer: {
 		flex: 1,
 		padding: 100,
@@ -69,6 +70,6 @@ const styles = StyleSheet.create({
 	},
 	closeBtn: {
 		width: 200,
-		height: 50,
+		alignSelf: "center",
 	},
 });
