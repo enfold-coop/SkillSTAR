@@ -24,13 +24,16 @@ const GraphModal: FC<Props> = (props) => {
 		setVisible(visible);
 	}, [visible]);
 
+	useEffect(() => {
+		console.log("????");
+	});
+
 	return (
 		<Modal
 			visible={vis}
-			style={styles.container}
 			animationType="slide"
-			presentationStyle="overFullScreen"
-			transparent={true}
+			presentationStyle="fullScreen"
+			// transparent={true}
 		>
 			<View
 				style={styles.graphContainer}
@@ -39,7 +42,7 @@ const GraphModal: FC<Props> = (props) => {
 				}}
 			>
 				{graphDimens.height && (
-					<PlotlyLineGraph dimensions={graphDimens} />
+					<PlotlyLineGraph modal={true} dimensions={graphDimens} />
 				)}
 				<Button
 					style={styles.closeBtn}
@@ -61,10 +64,9 @@ const GraphModal: FC<Props> = (props) => {
 export default GraphModal;
 
 const styles = StyleSheet.create({
-	container: {},
 	graphContainer: {
 		flex: 1,
-		padding: 10,
+		padding: 20,
 		justifyContent: "flex-start",
 		alignContent: "center",
 		backgroundColor: "rgba(0,0,0,0.9)",

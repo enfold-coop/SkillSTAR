@@ -96,7 +96,10 @@ const SessionDataAside: FC<Props> = (props) => {
 							}}
 						> */}
 						{/* <View style={styles.plotlyContainer}> */}
-						<PlotlyLineGraph dimensions={graphContainerDimens} />
+						<PlotlyLineGraph
+							modal={modalVis}
+							dimensions={graphContainerDimens}
+						/>
 						{/* </View> */}
 						<Text style={styles.graphText}>View your progress</Text>
 						{/* </Card> */}

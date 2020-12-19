@@ -5,31 +5,39 @@ import Plotly from "react-native-plotly";
 
 type Props = {
 	dimensions: {};
+	modal: boolean;
 };
 
 const PlotlyLineGraph: FC<Props> = (props) => {
-	const { dimensions } = props;
-	console.log(dimensions);
-	const [thisHeight, setHeight] = useState();
-	const [thisWidth, setWidth] = useState();
-
-	useEffect(() => {
-		setHeight(dimensions.height - 100);
-		setWidth(dimensions.width - 100);
-	}, [dimensions]);
+	const { dimensions, modal } = props;
+	const [thisHeight, setHeight] = useState(null);
+	const [thisWidth, setWidth] = useState(null);
+	const [isModal, setIsModal] = useState(false);
 
 	const data = [
 		{
 			x: [1, 2, 3, 4, 5],
 			y: [1, 2, 3, 4, 8],
-			type: "lines",
+			mode: "lines",
 		},
 		{
-			x: [4, 7, 9, 9, 5],
-			y: [1, 2, 4, 4, 1],
-			type: "lines+markers",
+			x: [4, 2, 4, 4, 5],
+			y: [2, 3, 4, 5, 6],
+			mode: "markers",
 		},
 	];
+
+	useEffect(() => {
+		setIsModal(modal);
+		if (isModal === true) {
+			setHeight(dimensions.height - 100);
+			setWidth(dimensions.width - 50);
+		} else {
+			setHeight(dimensions.height);
+			setWidth(dimensions.width);
+		}
+	});
+
 	const layout = {
 		title: "SkillStar",
 		height: thisHeight,
@@ -37,16 +45,13 @@ const PlotlyLineGraph: FC<Props> = (props) => {
 	};
 
 	return (
-		<View
-			style={{
-				height: thisHeight,
-				width: thisWidth,
-				alignSelf: "center",
-				paddingTop: 44,
-			}}
-		>
-			<Plotly data={data} layout={layout} style={styles.graph} />
-		</View>
+		<Plotly
+			update={() => {}}
+			data={data}
+			layout={layout}
+			enableFullPlotly={true}
+			style={styles.graph}
+		/>
 	);
 };
 
