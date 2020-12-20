@@ -5,7 +5,6 @@ import React, { FC, useEffect, useState } from "react";
 import { ImageBackground, StyleSheet, Text, View } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { Button, ProgressBar } from "react-native-paper";
-import ChallengingBehavModal from "../components/ChallengingBehavior/ChallengingBehavModal";
 import * as Animatable from "react-native-animatable";
 import AppHeader from "../components/Header/AppHeader";
 import { chainSteps } from "../data/chainSteps";
@@ -14,6 +13,10 @@ import { RootNavProps } from "../navigation/root_types";
 import CustomColors from "../styles/Colors";
 import { Session } from "../types/CHAIN/Session";
 import { StepAttempt } from "../types/CHAIN/StepAttempt";
+import {
+	StepAttemptStars,
+	StarsNIconsContainer,
+} from "../components/Steps/index";
 
 interface Props {
 	route: RootNavProps<"StepScreen">;
@@ -99,18 +102,12 @@ const StepScreen: FC<Props> = (props) => {
 		>
 			<View style={styles.container}>
 				<AppHeader name={"Brush Teeth"} />
-				{/* {session.data[stepIndex] && (
-					<ChallengingBehavModal
-						visible={visible}
-						toggleModal={handleModalClose}
-						attempt={session.data[stepIndex]}
-					/>
-				)} */}
 				<View style={styles.progress}>
 					<Text style={styles.headline}>
 						Step {chainSteps[stepIndex].stepId}:{" "}
 						{chainSteps[stepIndex].instruction}
 					</Text>
+					<StarsNIconsContainer />
 					<View style={styles.progressContainer}>
 						<ProgressBar
 							style={styles.progressBar}
