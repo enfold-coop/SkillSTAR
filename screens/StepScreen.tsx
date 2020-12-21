@@ -35,14 +35,6 @@ const StepScreen: FC<Props> = (props) => {
 	let [session, setSession] = useState(new Session());
 	let [video, setVideo] = useState(videos[`chain_0_${stepIndex + 1}`]);
 
-	const toggleModal = () => {
-		setVisible(!visible);
-	};
-
-	const handleModalClose = () => {
-		toggleModal();
-	};
-
 	const incrIndex = () => {
 		stepIndex += 1;
 		setStepIndex(stepIndex);
@@ -107,7 +99,6 @@ const StepScreen: FC<Props> = (props) => {
 						Step {chainSteps[stepIndex].stepId}:{" "}
 						{chainSteps[stepIndex].instruction}
 					</Text>
-					<StarsNIconsContainer />
 					<View style={styles.progressContainer}>
 						<ProgressBar
 							style={styles.progressBar}
@@ -123,25 +114,8 @@ const StepScreen: FC<Props> = (props) => {
 						</Text>
 					</View>
 				</View>
+				<StarsNIconsContainer />
 				<View style={styles.subContainer}>
-					<View style={styles.challengingBehavior}>
-						<TouchableOpacity
-							onPress={() => {
-								toggleModal();
-							}}
-						>
-							<AntDesign
-								name="exclamationcircleo"
-								size={50}
-								color="black"
-								style={styles.difficultyButton}
-							/>
-						</TouchableOpacity>
-						<Text style={styles.difficultyParagraph}>
-							Click on this icon anytime your child is having
-							difficulty or experiening challenging behavior.
-						</Text>
-					</View>
 					<Animatable.View
 						style={styles.subVideoContainer}
 						duration={2000}
@@ -240,7 +214,10 @@ const styles = StyleSheet.create({
 		marginLeft: 20,
 		marginRight: 20,
 	},
-	progressContainer: {},
+	progressContainer: {
+		flexDirection: "column",
+		justifyContent: "flex-start",
+	},
 	progressText: {
 		paddingTop: 4,
 	},
@@ -258,16 +235,6 @@ const styles = StyleSheet.create({
 		paddingLeft: 80,
 		alignContent: "center",
 		justifyContent: "flex-start",
-	},
-	difficultyButton: {
-		margin: 0,
-		padding: 0,
-	},
-	difficultyParagraph: {
-		width: 300,
-		padding: 0,
-		paddingLeft: 40,
-		fontWeight: "600",
 	},
 	icon: {
 		padding: 10,
