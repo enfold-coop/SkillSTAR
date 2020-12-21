@@ -40,7 +40,7 @@ const styles = StyleSheet.create({
 	},
 	iconContainer: {
 		padding: 10,
-		backgroundColor: CustomColors.uva.grayMedium,
+		// backgroundColor: CustomColors.uva.grayMedium,
 		borderRadius: 5,
 	},
 	difficultyParagraph: {

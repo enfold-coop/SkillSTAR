@@ -25,7 +25,7 @@ const GraphModal: FC<Props> = (props) => {
 	}, [visible]);
 
 	useEffect(() => {
-		console.log("????");
+		// console.log("????");
 	});
 
 	return (
