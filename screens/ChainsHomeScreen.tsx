@@ -4,7 +4,6 @@ import {
 	FlatList,
 	ImageBackground,
 	StyleSheet,
-	Text,
 	TouchableOpacity,
 	View,
 } from "react-native";
@@ -12,6 +11,7 @@ import * as Animatable from "react-native-animatable";
 import ScorecardListItem from "../components/Chain/ScorecardListItem";
 import SessionDataAside from "../components/Chain/SessionDataAside";
 import AppHeader from "../components/Header/AppHeader";
+import LineGraph from "../components/DataGraph/LineGraph";
 import { RootNavProps } from "../navigation/root_types";
 import CustomColors from "../styles/Colors";
 
@@ -40,12 +40,14 @@ const ChainsHomeScreen: FC<Props> = (props) => {
 	});
 
 	return (
-		<ImageBackground
-			source={require("../assets/images/sunrise-muted.png")}
-			resizeMode={"cover"}
-			style={styles.container}
-		>
+		// <ImageBackground
+		// 	source={require("../assets/images/sunrise-muted.png")}
+		// 	resizeMode={"cover"}
+		// 	style={styles.container}
+		// >
+		<View>
 			<AppHeader name="Chains Home" />
+			{/* <LineGraph /> */}
 			<View style={styles.titleWrap}>
 				{/* <Text style={styles.title}>Today's Session</Text>
 				<Text style={styles.title}>Steps</Text> */}
@@ -69,7 +71,7 @@ const ChainsHomeScreen: FC<Props> = (props) => {
 			)}
 
 			<TouchableOpacity
-				style={styles.startSessionBtn}
+				style={[styles.startSessionBtn, { marginBottom: 0 }]}
 				onPress={() => {
 					navToProbeOrTraining();
 				}}
@@ -82,7 +84,8 @@ const ChainsHomeScreen: FC<Props> = (props) => {
 					Start the Chain
 				</Animatable.Text>
 			</TouchableOpacity>
-		</ImageBackground>
+			{/* </ImageBackground> */}
+		</View>
 	);
 };
 
@@ -129,6 +132,7 @@ const styles = StyleSheet.create({
 		// borderWidth: 1,
 		borderRadius: 10,
 		// borderColor: CustomColors.uva.white,
+		marginBottom: 0,
 		backgroundColor: CustomColors.uva.orange,
 		justifyContent: "center",
 		alignItems: "center",

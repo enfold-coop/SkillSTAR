@@ -5,7 +5,6 @@ import React, { FC, useEffect, useState } from "react";
 import { ImageBackground, StyleSheet, Text, View } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { Button, ProgressBar } from "react-native-paper";
-import ChallengingBehavModal from "../components/ChallengingBehavior/ChallengingBehavModal";
 import * as Animatable from "react-native-animatable";
 import AppHeader from "../components/Header/AppHeader";
 import { chainSteps } from "../data/chainSteps";
@@ -14,6 +13,10 @@ import { RootNavProps } from "../navigation/root_types";
 import CustomColors from "../styles/Colors";
 import { Session } from "../types/CHAIN/Session";
 import { StepAttempt } from "../types/CHAIN/StepAttempt";
+import {
+	StepAttemptStars,
+	StarsNIconsContainer,
+} from "../components/Steps/index";
 
 interface Props {
 	route: RootNavProps<"StepScreen">;
@@ -31,14 +34,6 @@ const StepScreen: FC<Props> = (props) => {
 	let [stepIndex, setStepIndex] = useState(0);
 	let [session, setSession] = useState(new Session());
 	let [video, setVideo] = useState(videos[`chain_0_${stepIndex + 1}`]);
-
-	const toggleModal = () => {
-		setVisible(!visible);
-	};
-
-	const handleModalClose = () => {
-		toggleModal();
-	};
 
 	const incrIndex = () => {
 		stepIndex += 1;
@@ -99,13 +94,6 @@ const StepScreen: FC<Props> = (props) => {
 		>
 			<View style={styles.container}>
 				<AppHeader name={"Brush Teeth"} />
-				{/* {session.data[stepIndex] && (
-					<ChallengingBehavModal
-						visible={visible}
-						toggleModal={handleModalClose}
-						attempt={session.data[stepIndex]}
-					/>
-				)} */}
 				<View style={styles.progress}>
 					<Text style={styles.headline}>
 						Step {chainSteps[stepIndex].stepId}:{" "}
@@ -126,25 +114,8 @@ const StepScreen: FC<Props> = (props) => {
 						</Text>
 					</View>
 				</View>
+				<StarsNIconsContainer />
 				<View style={styles.subContainer}>
-					<View style={styles.challengingBehavior}>
-						<TouchableOpacity
-							onPress={() => {
-								toggleModal();
-							}}
-						>
-							<AntDesign
-								name="exclamationcircleo"
-								size={50}
-								color="black"
-								style={styles.difficultyButton}
-							/>
-						</TouchableOpacity>
-						<Text style={styles.difficultyParagraph}>
-							Click on this icon anytime your child is having
-							difficulty or experiening challenging behavior.
-						</Text>
-					</View>
 					<Animatable.View
 						style={styles.subVideoContainer}
 						duration={2000}
@@ -164,30 +135,6 @@ const StepScreen: FC<Props> = (props) => {
 						>
 							Exit
 						</Button>
-						<View
-							style={{
-								flexDirection: "row",
-								justifyContent: "space-between",
-							}}
-						>
-							<AntDesign
-								name="exclamationcircleo"
-								size={24}
-								color="black"
-								style={styles.focusStepIcon}
-							/>
-							<Text
-								style={{
-									fontSize: 14,
-									fontWeight: "700",
-									paddingLeft: 10,
-									paddingTop: 3,
-									alignContent: "center",
-								}}
-							>
-								{"Focus Step"}
-							</Text>
-						</View>
 					</View>
 					<View style={styles.nextBackBtnsContainer}>
 						<Button
@@ -237,13 +184,17 @@ const styles = StyleSheet.create({
 	progress: {
 		flexDirection: "row",
 		justifyContent: "space-between",
-		padding: 10,
-		paddingLeft: 20,
-		paddingRight: 20,
+		// padding: 10,
+		paddingLeft: 10,
+		paddingRight: 10,
 		marginLeft: 20,
 		marginRight: 20,
+		// backgroundColor: "#a0a",
 	},
-	progressContainer: {},
+	progressContainer: {
+		flexDirection: "column",
+		justifyContent: "flex-start",
+	},
 	progressText: {
 		paddingTop: 4,
 	},
@@ -261,16 +212,6 @@ const styles = StyleSheet.create({
 		paddingLeft: 80,
 		alignContent: "center",
 		justifyContent: "flex-start",
-	},
-	difficultyButton: {
-		margin: 0,
-		padding: 0,
-	},
-	difficultyParagraph: {
-		width: 300,
-		padding: 0,
-		paddingLeft: 40,
-		fontWeight: "600",
 	},
 	icon: {
 		padding: 10,

@@ -2,8 +2,11 @@ import React, { FC, useState, useEffect } from "react";
 import { StyleSheet, Text, View, TouchableOpacity, Image } from "react-native";
 import { Button, Card } from "react-native-paper";
 import { ProbeAside, TrainingAside } from "./index";
+import LineGraph from "../DataGraph/LineGraph";
+import GraphModal from "../DataGraph/GraphModal";
 import CustomColors from "../../styles/Colors";
 import date from "date-and-time";
+import { PlotlyLineGraph } from "../DataGraph/index";
 
 type Props = {
 	historicalData: {};
@@ -25,9 +28,16 @@ const SessionDataAside: FC<Props> = (props) => {
 	const [today, setToday] = useState(date.format(new Date(), "MM/DD/YYYY"));
 	const [promptLevel, setPromptLevel] = useState("Full Physical");
 	const [masteryLevel, setMasteryLevel] = useState("Focus");
+	const [graphContainerDimens, setGraphContainerDimens] = useState({});
+	const [modalVis, setModalVis] = useState(false);
+
+	const handleModal = () => {
+		setModalVis(!modalVis);
+	};
 
 	return (
 		<View style={styles.container}>
+			<GraphModal visible={modalVis} handleVis={handleModal} />
 			<View>
 				<View>
 					<Card>
@@ -67,31 +77,32 @@ const SessionDataAside: FC<Props> = (props) => {
 								Up next: <Text>{"Focus Step #3"}</Text>
 							</Text>
 						</View>
-						<TouchableOpacity>
-							<Button
-								color={CustomColors.uva.orange}
-								labelStyle={{ fontSize: 12, fontWeight: "800" }}
-								contentStyle={styles.moreDetailsBtn}
-								style={styles.moreDetailsBtn}
-								mode="outlined"
-							>
-								See more details
-							</Button>
-						</TouchableOpacity>
 					</Card>
 				</View>
-				<View style={styles.graphIconContainer}>
-					<TouchableOpacity>
-						<Card>
-							<Image
-								resizeMode="contain"
-								style={styles.graphIcon}
-								source={require("../../assets/images/graph.png")}
-							/>
-							<Text style={styles.graphText}>
-								View your progress
-							</Text>
-						</Card>
+				<View
+					style={styles.graphIconContainer}
+					onLayout={(e) => {
+						setGraphContainerDimens(e.nativeEvent.layout);
+					}}
+				>
+					<TouchableOpacity
+						onPress={() => {
+							setModalVis(true);
+						}}
+					>
+						{/* <Card
+							style={{
+								backgroundColor: CustomColors.uva.white,
+							}}
+						> */}
+						{/* <View style={styles.plotlyContainer}> */}
+						<PlotlyLineGraph
+							modal={modalVis}
+							dimensions={graphContainerDimens}
+						/>
+						{/* </View> */}
+						<Text style={styles.graphText}>View your progress</Text>
+						{/* </Card> */}
 					</TouchableOpacity>
 				</View>
 			</View>
@@ -102,7 +113,6 @@ const SessionDataAside: FC<Props> = (props) => {
 const styles = StyleSheet.create({
 	container: {
 		width: 300,
-		// margin: 10,
 		marginLeft: 10,
 		padding: 10,
 		borderRadius: 10,
@@ -182,19 +192,22 @@ const styles = StyleSheet.create({
 		margin: 10,
 	},
 	graphIconContainer: {
+		width: "100%",
+		height: 200,
 		flexDirection: "column",
 		justifyContent: "center",
 		alignContent: "center",
 		marginTop: 10,
 		padding: 2,
-		// height: 200,
 	},
-	graphIcon: {
-		padding: 5,
+	plotlyContainer: {
+		justifyContent: "center",
+		alignContent: "center",
 	},
 	graphText: {
+		backgroundColor: "#f0f",
 		fontSize: 16,
-		fontWeight: "200",
+		color: CustomColors.uva.grayDark,
 		alignSelf: "center",
 		padding: 5,
 	},
