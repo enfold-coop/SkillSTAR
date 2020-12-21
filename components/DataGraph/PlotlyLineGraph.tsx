@@ -11,8 +11,8 @@ type Props = {
 
 const PlotlyLineGraph: FC<Props> = (props) => {
 	const { dimensions, modal } = props;
-	const [thisHeight, setHeight] = useState(null);
-	const [thisWidth, setWidth] = useState(null);
+	const [thisHeight, setHeight] = useState();
+	const [thisWidth, setWidth] = useState();
 	const [isModal, setIsModal] = useState(false);
 
 	const data = [
@@ -48,33 +48,41 @@ const PlotlyLineGraph: FC<Props> = (props) => {
 		title: "SkillStar",
 		height: thisHeight,
 		width: thisWidth,
-		plot_bgcolor: CustomColors.uva.mountain,
+		plot_bgcolor: CustomColors.uva.sky,
+	};
+
+	const setDimensions = () => {
+		console.log(isModal);
+		console.log(dimensions);
+		setHeight(dimensions.height - 100);
+		setWidth(dimensions.width - 40);
 	};
 
 	useEffect(() => {
 		setIsModal(modal);
-		if (isModal === true) {
-			setHeight(dimensions.height - 100);
-			setWidth(dimensions.width - 50);
-		} else {
-			setHeight(dimensions.height);
-			setWidth(dimensions.width);
-		}
-	}, [layout]);
+		setDimensions();
+	});
 
 	return (
-		<Plotly
-			update={() => {}}
-			data={data}
-			layout={layout}
-			enableFullPlotly={true}
-			style={styles.graph}
-		/>
+		<View style={[styles.container]}>
+			<Plotly
+				update={() => {}}
+				data={data}
+				layout={layout}
+				enableFullPlotly={true}
+			/>
+		</View>
 	);
 };
 
 export default PlotlyLineGraph;
 
 const styles = StyleSheet.create({
+	container: {
+		width: "100%",
+		height: "96%",
+		justifyContent: "center",
+		alignContent: "center",
+	},
 	graph: {},
 });
