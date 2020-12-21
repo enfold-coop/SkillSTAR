@@ -13,10 +13,12 @@ const ChallengingBehavBtn: FC<Props> = (props) => {
 	const flagIcon = require("../../assets/icons/CB_flag_icon_v3.png");
 	return (
 		<View style={styles.container}>
-			<TouchableOpacity>
-				{/* <SvgUri width="100%" height="100%" uri={flagIcon} /> */}
-				<Image source={flagIcon} style={styles.img} />
-			</TouchableOpacity>
+			<View style={styles.iconContainer}>
+				<TouchableOpacity>
+					{/* <SvgUri width="100%" height="100%" uri={flagIcon} /> */}
+					<Image source={flagIcon} style={styles.img} />
+				</TouchableOpacity>
+			</View>
 			<Text style={styles.difficultyParagraph}>
 				Click on this icon anytime your child is having difficulty or
 				experiening challenging behavior.
@@ -30,24 +32,31 @@ export default ChallengingBehavBtn;
 const styles = StyleSheet.create({
 	container: {
 		width: "44%",
+		paddingRight: 20,
 		paddingBottom: 0,
 		flexDirection: "row",
-		justifyContent: "space-around",
-		alignContent: "center",
+		justifyContent: "flex-end",
+		alignContent: "flex-end",
+	},
+	iconContainer: {
+		padding: 10,
+		backgroundColor: CustomColors.uva.grayMedium,
+		borderRadius: 5,
 	},
 	difficultyParagraph: {
-		width: "70%",
+		width: "60%",
 		padding: 0,
-		paddingLeft: 0,
+		paddingLeft: 10,
 		fontWeight: "600",
 		alignSelf: "center",
+		fontSize: 12,
+		fontStyle: "italic",
 	},
 	img: {
-		height: 60,
-		width: 60,
+		height: 40,
+		width: 40,
 		alignSelf: "center",
 		color: CustomColors.uva.magenta75Soft,
 		resizeMode: "contain",
-		// margin: 10,
 	},
 });

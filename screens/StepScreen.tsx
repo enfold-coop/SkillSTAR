@@ -135,30 +135,6 @@ const StepScreen: FC<Props> = (props) => {
 						>
 							Exit
 						</Button>
-						<View
-							style={{
-								flexDirection: "row",
-								justifyContent: "space-between",
-							}}
-						>
-							<AntDesign
-								name="exclamationcircleo"
-								size={24}
-								color="black"
-								style={styles.focusStepIcon}
-							/>
-							<Text
-								style={{
-									fontSize: 14,
-									fontWeight: "700",
-									paddingLeft: 10,
-									paddingTop: 3,
-									alignContent: "center",
-								}}
-							>
-								{"Focus Step"}
-							</Text>
-						</View>
 					</View>
 					<View style={styles.nextBackBtnsContainer}>
 						<Button
@@ -208,11 +184,12 @@ const styles = StyleSheet.create({
 	progress: {
 		flexDirection: "row",
 		justifyContent: "space-between",
-		padding: 10,
-		paddingLeft: 20,
-		paddingRight: 20,
+		// padding: 10,
+		paddingLeft: 10,
+		paddingRight: 10,
 		marginLeft: 20,
 		marginRight: 20,
+		// backgroundColor: "#a0a",
 	},
 	progressContainer: {
 		flexDirection: "column",

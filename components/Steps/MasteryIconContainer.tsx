@@ -17,7 +17,7 @@ const styles = StyleSheet.create({
 	container: {
 		justifyContent: "center",
 		alignContent: "center",
-		// padding: 10,
+		paddingBottom: 10,
 	},
 	img: {
 		height: 50,

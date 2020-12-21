@@ -12,10 +12,10 @@ type Props = {};
 const StarsNIconsContainer: FC<Props> = (props) => {
 	return (
 		<View style={styles.container}>
-			<ChallengingBehavBtn />
+			<MasteryIconContainer />
 			<View style={styles.subContainer}>
 				<StepAttemptStars promptType={"FP"} attemptsWPromptType={1} />
-				<MasteryIconContainer />
+				<ChallengingBehavBtn />
 			</View>
 		</View>
 	);
@@ -26,7 +26,7 @@ export default StarsNIconsContainer;
 const styles = StyleSheet.create({
 	container: {
 		width: "100%",
-		flexDirection: "row",
+		flexDirection: "column",
 		justifyContent: "space-between",
 		alignContent: "center",
 		margin: 10,
@@ -35,8 +35,9 @@ const styles = StyleSheet.create({
 		paddingBottom: 0,
 	},
 	subContainer: {
-		alignSelf: "flex-end",
+		width: "100%",
+		alignSelf: "flex-start",
 		flexDirection: "row",
-		justifyContent: "space-around",
+		justifyContent: "space-between",
 	},
 });
