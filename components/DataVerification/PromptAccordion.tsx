@@ -5,7 +5,7 @@ import { TouchableOpacity } from "react-native-gesture-handler";
 import * as Animatable from "react-native-animatable";
 import "react-native-get-random-values";
 import { nanoid } from "nanoid";
-import { StepAttempt } from "../../types/CHAIN/StepAttempt";
+import { StepAttempt } from "../../types/Chain/StepAttempt";
 import { MOCK_PROMPT_OPTS, MOCK_PROMP_Q } from "./mock_session";
 import CustomColors from "../../styles/Colors";
 

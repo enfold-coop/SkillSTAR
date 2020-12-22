@@ -9,7 +9,7 @@ import {
 	BehavAccordion,
 	PromptAccordion,
 } from ".";
-import { StepAttempt } from "../../types/CHAIN/StepAttempt";
+import { StepAttempt } from "../../types/Chain/StepAttempt";
 // import { MasteryIcons } from "../../styles/MasteryIcons";
 
 const MasteryIcons = (level: string) => {

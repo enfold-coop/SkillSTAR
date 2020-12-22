@@ -3,7 +3,7 @@ import { StyleSheet, Text, View, ImageBackground } from "react-native";
 import { TextInput, Checkbox, Button, RadioButton } from "react-native-paper";
 import { useNavigation } from "@react-navigation/native";
 import { RootNavProps } from "../navigation/root_types";
-import { Session } from "../types/CHAIN/Session";
+import { ChainSession } from "../types/Chain/ChainSession";
 import CustomColors from "../styles/Colors";
 import AppHeader from "../components/Header/AppHeader";
 import { DataVerificationListItem } from "../components/Probe/";
@@ -11,7 +11,7 @@ import { DataVerificationListItem } from "../components/Probe/";
 type Props = {
 	route: RootNavProps<"BaselineAssessmentScreen">;
 	navigation: RootNavProps<"BaselineAssessmentScreen">;
-	session: Session;
+	session: ChainSession;
 };
 
 const BaselineAssessmentScreen: FC<Props> = (props) => {

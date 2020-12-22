@@ -3,7 +3,7 @@ import { StyleSheet, Text, View } from "react-native";
 import { RadioButton } from "react-native-paper";
 import "react-native-get-random-values";
 import { nanoid } from "nanoid";
-import { StepAttempt } from "../../types/CHAIN/StepAttempt";
+import { StepAttempt } from "../../types/Chain/StepAttempt";
 import * as Animatable from "react-native-animatable";
 import { MOCK_BEHAV_OPTS, MOCK_BEHAV_Q } from "./mock_session";
 import CustomColors from "../../styles/Colors";

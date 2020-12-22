@@ -3,7 +3,7 @@ import { StyleSheet, Text, View, Modal } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { TextInput, Button, Card } from "react-native-paper";
 import CustomColors from "../../styles/Colors";
-import { StepAttempt } from "../../types/CHAIN/StepAttempt";
+import { StepAttempt } from "../../types/Chain/StepAttempt";
 
 type Props = {
 	stepComplete: string;

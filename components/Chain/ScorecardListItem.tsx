@@ -2,12 +2,13 @@ import React, { FC, useState, useEffect } from "react";
 import { Text, StyleSheet, TouchableOpacity, View } from "react-native";
 import { Card } from "react-native-paper";
 import { MasteryIcons } from "../../styles/MasteryIcons";
-import { MasteryLevel as ML } from "../../types/CHAIN/MasteryLevel";
+import { MasteryLevel as ML } from "../../types/Chain/MasteryLevel";
 import { AntDesign } from "@expo/vector-icons";
-import { MasteryLevel } from "../../types/CHAIN/MasteryLevel";
+import { MasteryLevel } from "../../types/Chain/MasteryLevel";
 import * as Animatable from "react-native-animatable";
 import date from "date-and-time";
 import CustomColors from "../../styles/Colors";
+import {StepAttempt} from '../../types/Chain/StepAttempt';
 
 interface ScorecardStepListItem {
 	attempts: StepAttempt[];

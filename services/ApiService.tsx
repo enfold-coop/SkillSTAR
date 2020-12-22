@@ -3,7 +3,6 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { User } from "../types/User";
 import { API_URL } from "@env";
 
-export interface BaselineAssessmentData {}
 
 export class ApiService {
 	apiUrl = API_URL;
@@ -11,13 +10,14 @@ export class ApiService {
 		login: `${this.apiUrl}/login_password`,
 		resetPassword: `${this.apiUrl}/reset_password`,
 		refreshSession: `${this.apiUrl}/session`,
-		baselineAssessment: `${this.apiUrl}/flow/skillstar_baseline/baseline_assessment_questionnaire`,
+		chain: `${this.apiUrl}/flow/skillstar/chain_questionnaire`,
+		chainSession: `${this.apiUrl}/q/chain_questionnaire/<questionnaire_id>`,
 	};
 
 	constructor() {}
 
 	async addBaselineAssessment(data: BaselineAssessmentData) {
-		const url = this.endpoints.baselineAssessment;
+		const url = this.endpoints.chain;
 		try {
 			const response = await fetch(url, {
 				method: "POST",
@@ -41,7 +41,7 @@ export class ApiService {
 		data: BaselineAssessmentData,
 		questionnaireId: number
 	) {
-		const url = this.endpoints.baselineAssessment + "/" + questionnaireId;
+		const url = this.endpoints.chain + "/" + questionnaireId;
 		try {
 			const response = await fetch(url, {
 				method: "PUT",
@@ -64,7 +64,7 @@ export class ApiService {
 		data: BaselineAssessmentData,
 		participantId: number
 	) {
-		const url = this.endpoints.baselineAssessment + "/" + participantId;
+		const url = this.endpoints.chain + "/" + participantId;
 		try {
 			const response = await fetch(url, {
 				method: "DELETE",
@@ -89,8 +89,12 @@ export class ApiService {
 		email_token = ""
 	): Promise<User | null> {
 		try {
+			const url = this.endpoints.login;
+			console.log('url', url);
+
 			const response = await fetch(this.endpoints.login, {
 				method: "POST",
+				mode: "cors",
 				headers: {
 					Accept: "application/json",
 					"Content-Type": "application/json",

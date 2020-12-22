@@ -11,8 +11,8 @@ import { chainSteps } from "../data/chainSteps";
 import { videos } from "../data/videos";
 import { RootNavProps } from "../navigation/root_types";
 import CustomColors from "../styles/Colors";
-import { Session } from "../types/CHAIN/Session";
-import { StepAttempt } from "../types/CHAIN/StepAttempt";
+import { ChainSession } from "../types/Chain/ChainSession";
+import { StepAttempt } from "../types/Chain/StepAttempt";
 import {
 	StepAttemptStars,
 	StarsNIconsContainer,
@@ -32,7 +32,9 @@ const StepScreen: FC<Props> = (props) => {
 	const navigation = useNavigation();
 	let [visible, setVisible] = React.useState(false);
 	let [stepIndex, setStepIndex] = useState(0);
-	let [session, setSession] = useState(new Session());
+	let [session, setSession] = useState<ChainSession>({
+		step_attempts: [],
+	});
 	let [video, setVideo] = useState(videos[`chain_0_${stepIndex + 1}`]);
 
 	const incrIndex = () => {
@@ -50,7 +52,7 @@ const StepScreen: FC<Props> = (props) => {
 	const createAttempts = () => {
 		chainSteps.forEach((e, i) => {
 			let { stepId, instruction } = chainSteps[i];
-			session.addStepData(new StepAttempt(stepId, instruction));
+			session?.step_attempts.push({chain_step_id: stepId});
 		});
 	};
 
@@ -73,7 +75,7 @@ const StepScreen: FC<Props> = (props) => {
 	 * BEGIN: LIFECYCLE CALLS
 	 */
 	useEffect(() => {
-		if (!session.data.length) {
+		if (!session?.step_attempts || (session?.step_attempts.length === 0)) {
 			createAttempts();
 		}
 	}, []);

@@ -1,15 +1,15 @@
-import { Session } from "../../types/CHAIN/Session";
-import { StepAttempt } from "../../types/CHAIN/StepAttempt";
+import { ChainSession } from "../../types/Chain/ChainSession";
+import { StepAttempt } from "../../types/Chain/StepAttempt";
 import { chainSteps } from "../../data/chainSteps";
 
 export function createSesh() {
-	let SESH = new Session();
+	let chainSession: ChainSession = {step_attempts: []};
 
 	chainSteps.forEach((e, i) => {
-		let s = new StepAttempt(e.stepId, e.instruction);
-		SESH.addStepData(s);
+		chainSession.step_attempts.push({chain_step_id: e.stepId});
 	});
-	return SESH;
+
+	return chainSession;
 }
 
 const MOCK_PROMPT_OPTS = [

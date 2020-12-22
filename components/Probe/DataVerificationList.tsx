@@ -1,7 +1,7 @@
 import React, { FC, useState, useEffect } from "react";
 import shortid from "shortid";
 import { StyleSheet, Text, View, FlatList } from "react-native";
-import { StepAttempt } from "../../types/CHAIN/StepAttempt";
+import { StepAttempt } from "../../types/Chain/StepAttempt";
 import { DataVerificationListItem } from "./DataVerificationListItem";
 
 type Props = {

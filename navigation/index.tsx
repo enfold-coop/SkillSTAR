@@ -59,7 +59,7 @@ const Stack = createStackNavigator<RootStackParamList>();
 function RootNavigator() {
 	return (
 		<Stack.Navigator
-			initialRouteName="ChainsHomeScreen"
+			initialRouteName="LandingScreen"
 			screenOptions={{ headerShown: true }}
 		>
 			<Stack.Screen

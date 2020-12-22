@@ -3,7 +3,7 @@ import { StyleSheet, Text, View } from "react-native";
 import ToggleButtons from "../GlobalComponents/ToggleButtons";
 import CustomColors from "../../styles/Colors";
 import ListItemSwitch from "./ListItemSwitch";
-import { StepAttempt } from "../../types/CHAIN/StepAttempt";
+import { StepAttempt } from "../../types/Chain/StepAttempt";
 
 type Props = {
 	stepAttempt: StepAttempt;

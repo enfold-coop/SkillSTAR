@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useReducer } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { StepAttempt } from "../types/CHAIN/StepAttempt";
+import { StepAttempt } from "../types/Chain/StepAttempt";
 import { session } from "./initial_states/initialSession";
 
 type ChainProviderProps = {};

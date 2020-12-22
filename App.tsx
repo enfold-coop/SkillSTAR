@@ -1,3 +1,4 @@
+import {Ionicons} from '@expo/vector-icons';
 import * as Font from "expo-font";
 import React, {useEffect, useState} from "react";
 import {Provider} from 'react-native-paper';
@@ -9,6 +10,8 @@ import useColorScheme from "./hooks/useColorScheme";
 import Navigation from "./navigation";
 
 let customFonts = {
+  ...Ionicons.font,
+  'space-mono': require('./assets/fonts/SpaceMono-Regular.ttf'),
   SkillStarIcons: require("./assets/fonts/icons/skillstar_icons.ttf"),
 };
 

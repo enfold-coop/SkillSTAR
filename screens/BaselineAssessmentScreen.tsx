@@ -9,12 +9,12 @@ import {
 import { Button } from "react-native-paper";
 import { useNavigation } from "@react-navigation/native";
 import { RootNavProps } from "../navigation/root_types";
-import { Session } from "../types/CHAIN/Session";
+import { ChainSession } from "../types/Chain/ChainSession";
 import CustomColors from "../styles/Colors";
 import AppHeader from "../components/Header/AppHeader";
 import DataVerificationList from "../components/Probe/DataVerificationList";
 import { DataVerificationListItem } from "../components/Probe/index";
-import { StepAttempt } from "../types/CHAIN/StepAttempt";
+import { StepAttempt } from "../types/Chain/StepAttempt";
 import { chainSteps } from "../data/chainSteps";
 
 type Props = {
@@ -36,24 +36,24 @@ function BaselineAssessmentScreen({ route }: Props): ReactNode {
 	let [stepIndex, setStepIndex] = useState(0);
 	let [readyToSubmit, setReadyToSubmit] = useState(false);
 	let [sessionReady, setSessionReady] = useState(false);
-	let [session, setSession] = useState(new Session());
+	let [session, setSession] = useState<ChainSession>({step_attempts: []});
 	let [text, setText] = useState("");
 
 	/** CONTEXT API **
-	 * set session data aftter createAttempts finished
+	 * set session data after createAttempts finished
 	 */
 
 	const createAttempts = () => {
 		chainSteps.forEach((e, i) => {
 			let { stepId, instruction } = chainSteps[i];
-			session.addStepData(new StepAttempt(stepId, instruction));
+			session?.step_attempts.push({chain_step_id: stepId});
 		});
 		setSessionReady(true);
 	};
 
 	/** START: Lifecycle calls */
 	useEffect(() => {
-		if (!session.data.length) {
+		if (!session.step_attempts || (session.step_attempts.length === 0)) {
 			createAttempts();
 		}
 	}, []);
@@ -82,7 +82,7 @@ function BaselineAssessmentScreen({ route }: Props): ReactNode {
 						</Text>
 					</View>
 					<View style={styles.formContainer}>
-						{<DataVerificationList session={session.data} />}
+						{<DataVerificationList session={session.step_attempts} />}
 					</View>
 
 					<View style={styles.nextBackBtnsContainer}>
