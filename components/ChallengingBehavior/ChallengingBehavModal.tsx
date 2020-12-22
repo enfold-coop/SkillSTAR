@@ -40,7 +40,7 @@ const ChallengingBehavModal: FC<Props> = (props) => {
 							<Text>EXIT</Text>
 						</TouchableOpacity>
 						<Text style={styles.headline}>
-							Step {props.attempt.stepId} Challenging Behavior
+							Step {props.attempt.chain_step_id} Challenging Behavior
 						</Text>
 						<Text style={styles.textInputPrompt}></Text>
 						<TextInput

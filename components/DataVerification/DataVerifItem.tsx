@@ -1,35 +1,23 @@
-import React, { FC, useEffect, useState } from "react";
-import { StyleSheet, Text, View, Image } from "react-native";
-import { Button } from "react-native-paper";
-import * as Animatable from "react-native-animatable";
+import React, {FC, useEffect, useState} from "react";
+import {Image, StyleSheet, Text, View} from "react-native";
+import {BehavAccordion, BehavDataVerifSwitch, PromptAccordion, PromptDataVerifSwitch,} from ".";
 import CustomColors from "../../styles/Colors";
-import {
-	BehavDataVerifSwitch,
-	PromptDataVerifSwitch,
-	BehavAccordion,
-	PromptAccordion,
-} from ".";
-import { StepAttempt } from "../../types/Chain/StepAttempt";
+import {StepAttempt, StepAttemptPromptLevel} from "../../types/Chain/StepAttempt";
 // import { MasteryIcons } from "../../styles/MasteryIcons";
 
-const MasteryIcons = (level: string) => {
-	const icons = {
-		mastered: require("../../assets/icons/ribbon-icon.png"),
-		focus: require("../../assets/icons/in-process-icon.png"),
-		notStarted: require("../../assets/icons/waving-icon.png"),
-	};
-	return icons[`${level}`];
-};
-const PromptIcons = (level: string) => {
-	const icons = {
-		ip: require("../../assets/icons/ip_prompt_icon.png"),
-		sp: require("../../assets/icons/sp_prompt_icon.png"),
-		pp: require("../../assets/icons/pp_prompt_icon.png"),
-		fp: require("../../assets/icons/fp_prompt_icon.png"),
-	};
+export type IconMap = {[key: string]: any};
 
-	// return icons[`${level}`];
-	// return
+const MasteryIcons: IconMap = {
+	mastered: require("../../assets/icons/ribbon-icon.png"),
+	focus: require("../../assets/icons/in-process-icon.png"),
+	notStarted: require("../../assets/icons/waving-icon.png"),
+};
+
+const PromptIcons: IconMap = {
+	none: require("../../assets/icons/ip_prompt_icon.png"),
+	shadow: require("../../assets/icons/sp_prompt_icon.png"),
+	partial_physical: require("../../assets/icons/pp_prompt_icon.png"),
+	full_physical: require("../../assets/icons/fp_prompt_icon.png"),
 };
 
 type Props = {
@@ -41,12 +29,14 @@ const DataVerifItem: FC<Props> = ({ stepAttempt }) => {
 	 * use context api, here:
 	 */
 
-	const { stepId, instruction, promptLevel } = stepAttempt;
+	const stepId = stepAttempt.chain_step_id
+	const instruction = stepAttempt.chain_step ? stepAttempt.chain_step.instruction : '';
+	const promptLevel = stepAttempt.prompt_level;
 
 	const [promptSwitch, setPromptSwitch] = useState(false);
 	const [behavSwitch, setBehavSwitch] = useState(false);
-	const [icon, setIcon] = useState();
-	const [promptIcon, setPromptIcon] = useState();
+	const [icon, setIcon] = useState<any>();
+	const [promptIcon, setPromptIcon] = useState<any>();
 
 	const handlePromptSwitch = (v: boolean) => {
 		setPromptSwitch(!promptSwitch);
@@ -57,22 +47,22 @@ const DataVerifItem: FC<Props> = ({ stepAttempt }) => {
 
 	const focusStepIcon = () => {
 		if (stepId == 3) {
-			setIcon(MasteryIcons("focus"));
+			setIcon(MasteryIcons.focus);
 		} else if (stepId < 3) {
-			setIcon(MasteryIcons("mastered"));
+			setIcon(MasteryIcons.mastered);
 		} else {
-			setIcon(MasteryIcons("notStarted"));
+			setIcon(MasteryIcons.notStarted);
 		}
 	};
 	const promptLevelIcon = () => {
-		if (promptLevel === 4) {
-			setPromptIcon(PromptIcons("sp"));
-		} else if (promptLevel === 3) {
-			setPromptIcon(PromptIcons("sp"));
-		} else if (promptLevel === 2) {
-			setPromptIcon(PromptIcons("pp"));
+		if (promptLevel === StepAttemptPromptLevel.none) {
+			setPromptIcon(PromptIcons[promptLevel.valueOf()]);
+		} else if (promptLevel === StepAttemptPromptLevel.shadow) {
+			setPromptIcon(PromptIcons.sp);
+		} else if (promptLevel === StepAttemptPromptLevel.partial_physical) {
+			setPromptIcon(PromptIcons.pp);
 		} else {
-			setPromptIcon(PromptIcons("fp"));
+			setPromptIcon(PromptIcons.fp);
 		}
 	};
 

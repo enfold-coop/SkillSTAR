@@ -1,5 +1,7 @@
 import React from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { ChainQuestionnaire } from "../types/Chain/ChainQuestionnaire";
+import {ChainStep} from '../types/Chain/ChainStep';
 import { User } from "../types/User";
 import { API_URL } from "@env";
 
@@ -12,11 +14,52 @@ export class ApiService {
 		refreshSession: `${this.apiUrl}/session`,
 		chain: `${this.apiUrl}/flow/skillstar/chain_questionnaire`,
 		chainSession: `${this.apiUrl}/q/chain_questionnaire/<questionnaire_id>`,
+		chainSteps: `${this.apiUrl}/chain_steps`,
 	};
 
 	constructor() {}
 
-	async addBaselineAssessment(data: BaselineAssessmentData) {
+	async getChainSteps() {
+		const url = this.endpoints.chainSteps;
+		try {
+			const response = await fetch(url, {
+				method: "GET",
+				headers: {
+					Accept: "application/json",
+					"Content-Type": "application/json",
+				},
+			});
+
+			const dbData = await response.json();
+			AsyncStorage.setItem("chainSteps", JSON.stringify(dbData));
+			return dbData as ChainStep[];
+		} catch (e) {
+			console.error(e);
+			return null;
+		}
+	}
+
+	async getChainData() {
+		const url = this.endpoints.chain;
+		try {
+			const response = await fetch(url, {
+				method: "GET",
+				headers: {
+					Accept: "application/json",
+					"Content-Type": "application/json",
+				},
+			});
+
+			const dbData = await response.json();
+			AsyncStorage.setItem("chainQuestionnaireId", dbData.id);
+			return dbData as ChainQuestionnaire;
+		} catch (e) {
+			console.error(e);
+			return null;
+		}
+	}
+
+	async addChainData(data: ChainQuestionnaire) {
 		const url = this.endpoints.chain;
 		try {
 			const response = await fetch(url, {
@@ -29,16 +72,16 @@ export class ApiService {
 			});
 
 			const dbData = await response.json();
-			AsyncStorage.setItem("baselineAssessmentId", dbData.id);
-			return dbData as BaselineAssessmentData;
+			AsyncStorage.setItem("chainQuestionnaireId", dbData.id);
+			return dbData as ChainQuestionnaire;
 		} catch (e) {
 			console.error(e);
 			return null;
 		}
 	}
 
-	async editBaselineAssessment(
-		data: BaselineAssessmentData,
+	async editChainData(
+		data: ChainQuestionnaire,
 		questionnaireId: number
 	) {
 		const url = this.endpoints.chain + "/" + questionnaireId;
@@ -53,15 +96,15 @@ export class ApiService {
 			});
 
 			const dbData = await response.json();
-			return dbData as BaselineAssessmentData;
+			return dbData as ChainQuestionnaire;
 		} catch (e) {
 			console.error(e);
 			return null;
 		}
 	}
 
-	async deleteBaselineAssessment(
-		data: BaselineAssessmentData,
+	async deleteChainData(
+		data: ChainQuestionnaire,
 		participantId: number
 	) {
 		const url = this.endpoints.chain + "/" + participantId;
@@ -76,7 +119,7 @@ export class ApiService {
 			});
 
 			const dbData = await response.json();
-			return dbData as BaselineAssessmentData;
+			return dbData as ChainQuestionnaire;
 		} catch (e) {
 			console.error(e);
 			return null;
@@ -124,6 +167,6 @@ export class ApiService {
 		return AsyncStorage.removeItem("user");
 	}
 
-	// async addBaselineAssessment(data): Promise<void> {
+	// async addChainData(data): Promise<void> {
 	// }
 }

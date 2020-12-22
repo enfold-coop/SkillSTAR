@@ -9,11 +9,13 @@ import {
 import { Button } from "react-native-paper";
 import { useNavigation } from "@react-navigation/native";
 import { RootNavProps } from "../navigation/root_types";
+import {ApiService} from '../services/ApiService';
 import { ChainSession } from "../types/Chain/ChainSession";
 import CustomColors from "../styles/Colors";
 import AppHeader from "../components/Header/AppHeader";
 import DataVerificationList from "../components/Probe/DataVerificationList";
 import { DataVerificationListItem } from "../components/Probe/index";
+import {ChainStep} from '../types/Chain/ChainStep';
 import { StepAttempt } from "../types/Chain/StepAttempt";
 import { chainSteps } from "../data/chainSteps";
 
@@ -33,10 +35,12 @@ function BaselineAssessmentScreen({ route }: Props): ReactNode {
 	 * Set session type: Probe or Training
 	 */
 	const navigation = useNavigation();
+	const api = new ApiService();
 	let [stepIndex, setStepIndex] = useState(0);
 	let [readyToSubmit, setReadyToSubmit] = useState(false);
 	let [sessionReady, setSessionReady] = useState(false);
 	let [session, setSession] = useState<ChainSession>({step_attempts: []});
+	let [chainSteps, setChainSteps] = useState<ChainStep[]>([]);
 	let [text, setText] = useState("");
 
 	/** CONTEXT API **
@@ -44,11 +48,21 @@ function BaselineAssessmentScreen({ route }: Props): ReactNode {
 	 */
 
 	const createAttempts = () => {
-		chainSteps.forEach((e, i) => {
-			let { stepId, instruction } = chainSteps[i];
-			session?.step_attempts.push({chain_step_id: stepId});
+		api.getChainSteps().then(cs => {
+			if (cs !== null && session) {
+				setChainSteps(cs);
+
+				session.step_attempts = cs.map(step => {
+					return {
+						chain_step_id: step.id,
+						chain_step: step,
+					}
+				});
+
+				setSessionReady(true);
+			}
 		});
-		setSessionReady(true);
+
 	};
 
 	/** START: Lifecycle calls */
