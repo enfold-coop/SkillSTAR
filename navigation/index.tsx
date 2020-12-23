@@ -15,6 +15,7 @@ import {
 	PrepareMaterialsScreen,
 	ProbeScreen,
 	StepScreen,
+	RewardsScreens,
 } from "../screens";
 import { ApiService } from "../services/ApiService";
 import CustomColors from "../styles/Colors";
@@ -60,13 +61,9 @@ function RootNavigator() {
 	return (
 		<Stack.Navigator
 			initialRouteName="LandingScreen"
-			screenOptions={{ headerShown: true }}
+			// screenOptions={{ headerShown: true }}
 		>
-			<Stack.Screen
-				options={{ ...screenOpts, title: "Welcome" }}
-				name="LandingScreen"
-				component={LandingScreen}
-			/>
+			<Stack.Screen name="LandingScreen" component={LandingScreen} />
 			<Stack.Screen
 				options={({ navigation }) => ({
 					...screenOpts,
@@ -85,6 +82,7 @@ function RootNavigator() {
 				name="BaselineAssessmentScreen"
 				component={BaselineAssessmentScreen}
 			/>
+
 			<Stack.Screen
 				options={{ ...screenOpts, title: "Data verification" }}
 				name="DataVerificationScreen"
@@ -121,6 +119,11 @@ function RootNavigator() {
 				})}
 				name="StepScreen"
 				component={StepScreen}
+			/>
+			<Stack.Screen
+				options={{ ...screenOpts, title: "Congrats!" }}
+				name="RewardsScreens"
+				component={RewardsScreens}
 			/>
 		</Stack.Navigator>
 	);

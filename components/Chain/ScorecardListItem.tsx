@@ -54,7 +54,7 @@ const ScorecardListItem: FC<Props> = ({ ...props }) => {
 				{isPressed && (
 					<View style={styles.dropDownContainer}>
 						<Text style={styles.dropDownLabel}>
-							{`${"\u2022"} "Date Introduced: "`}
+							{`${"\u2022"} Date Introduced: `}
 							<Text style={styles.dropDownItemDate}>
 								{date.format(new Date(), "MM/DD/YYYY")}
 							</Text>
@@ -114,7 +114,7 @@ const styles = StyleSheet.create({
 	dropDownLabel: {
 		padding: 5,
 		paddingLeft: 40,
-		fontWeight: "600",
+		fontWeight: "500",
 		alignSelf: "flex-start",
 	},
 	dropDownItemDate: {
