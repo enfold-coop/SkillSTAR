@@ -12,14 +12,10 @@ const AppHeader: FC<Props> = (props) => {
 	const { portrait } = useDeviceOrientation();
 	const [orient, setOrient] = useState(false);
 
-	const toggleOrientationStyles = (v: boolean) => {
-		console.log("toggle styles");
-	};
-
 	useEffect(() => {
 		setOrient(portrait);
-		toggleOrientationStyles(portrait);
 	}, [portrait]);
+
 	return (
 		<View style={styles.container}>
 			<View style={styles.skillTextContainer}>
