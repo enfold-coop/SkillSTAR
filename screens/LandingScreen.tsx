@@ -9,30 +9,30 @@ import { ApiService } from "../services/ApiService";
 import CustomColors from "../styles/Colors";
 import { AuthProviderProps } from "../types/AuthProvider";
 import { Participant, User } from "../types/User";
+import { DEFAULT_USER_EMAIL, DEFAULT_USER_PASSWORD} from "@env";
 
 export default function LandingScreen({ navigation }: Props<"LandingScreen">) {
-	let [email, setEmail] = useState("daniel.h.funk@gmail.com");
-	let [password, setPassword] = useState("Trillian Frogstar Beeblebrox 12");
+	let [email, setEmail] = useState(DEFAULT_USER_EMAIL);
+	let [password, setPassword] = useState(DEFAULT_USER_PASSWORD);
 	let [isValid, setIsValid] = useState<boolean>(false);
 	let [errorMessage, setErrorMessage] = useState<string>("");
 	const api = new ApiService();
 	const context = useContext<AuthProviderProps>(AuthContext);
 
 	const _checkEmail = (inputText: string) => {
-		inputText = "daniel.h.funk@gmail.com";
 		setErrorMessage("");
 		setIsValid(!!(inputText && password));
 		setEmail(inputText);
 	};
 
 	const _checkPassword = (inputText: string) => {
-		inputText = "Trillian Frogstar Beeblebrox 12";
 		setErrorMessage("");
 		setIsValid(!!(email && inputText));
 		setPassword(inputText);
 	};
 
 	useEffect(() => {
+		setIsValid(!!(email && password));
 		AsyncStorage.getItem("user")
 			.then((userJson: string | null) => {
 				if (userJson !== null) {
