@@ -22,6 +22,13 @@ type Props = {
 
 // Chain Home Screen
 const ChainsHomeScreen: FC<Props> = (props) => {
+	/**
+	 * TODO:
+	 * - determine if Probe or Training,
+	 * - set Probe or Training state,
+	 * - navigate to Probe form OR chain step
+	 * - supply Probe OR Training data to this screen
+	 */
 	const navigation = useNavigation();
 
 	let [chainSteps, setStepList] = useState();

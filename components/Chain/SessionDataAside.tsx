@@ -199,13 +199,13 @@ const styles = StyleSheet.create({
 		alignContent: "center",
 		marginTop: 10,
 		padding: 2,
+		backgroundColor: "#fff",
 	},
 	plotlyContainer: {
 		justifyContent: "center",
 		alignContent: "center",
 	},
 	graphText: {
-		backgroundColor: "#f0f",
 		fontSize: 16,
 		color: CustomColors.uva.grayDark,
 		alignSelf: "center",

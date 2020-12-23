@@ -74,72 +74,70 @@ export default function LandingScreen({ navigation }: Props<"LandingScreen">) {
 	});
 
 	return (
-		<ImageBackground
-			source={require("../assets/images/sunrise-muted.png")}
-			resizeMode={"cover"}
-			style={styles.image}
-		>
-			<View style={styles.container}>
-				<Animatable.View animation="zoomIn">
-					<Image
-						style={styles.logo}
-						source={require("../assets/images/logo.png")}
-					/>
-					<TextInput
-						textContentType="emailAddress"
-						autoCompleteType="username"
-						label="Email"
-						mode="outlined"
-						value={email}
-						style={styles.input}
-						onChangeText={(text) => _checkEmail(text)}
-						autoFocus={true}
-					/>
-					<TextInput
-						textContentType="password"
-						autoCompleteType="password"
-						secureTextEntry={true}
-						label="Password"
-						mode="outlined"
-						value={password}
-						style={styles.input}
-						onChangeText={(text) => _checkPassword(text)}
-					/>
-					<View
-						style={{
-							display: errorMessage === "" ? "none" : "flex",
-							...styles.container,
-						}}
-					>
-						<Text style={styles.error}>{errorMessage}</Text>
-					</View>
-					<Button
-						style={styles.button}
-						color={CustomColors.uva.blue}
-						mode="contained"
-						disabled={!isValid}
-						onPress={() => {
-							setErrorMessage("");
-							api.login(email, password).then((user) => {
-								// console.log('user', user);
-								if (user) {
-									context.state.user = user;
-									navigation.navigate(
-										"DataVerificationScreen"
-									);
-								} else {
-									setErrorMessage(
-										"Invalid username or password. Please check your login information and try again."
-									);
-								}
-							});
-						}}
-					>
-						Log In
-					</Button>
-				</Animatable.View>
+		// <ImageBackground
+		// 	source={require("../assets/images/sunrise-muted.png")}
+		// 	resizeMode={"cover"}
+		// 	style={styles.image}
+		// >
+		<View style={styles.container}>
+			<Animatable.View animation="zoomIn">
+				<Image
+					style={styles.logo}
+					source={require("../assets/images/logo.png")}
+				/>
+			</Animatable.View>
+			<TextInput
+				textContentType="emailAddress"
+				autoCompleteType="username"
+				label="Email"
+				mode="outlined"
+				value={email}
+				style={styles.input}
+				onChangeText={(text) => _checkEmail(text)}
+				autoFocus={true}
+			/>
+			<TextInput
+				textContentType="password"
+				autoCompleteType="password"
+				secureTextEntry={true}
+				label="Password"
+				mode="outlined"
+				value={password}
+				style={styles.input}
+				onChangeText={(text) => _checkPassword(text)}
+			/>
+			<View
+				style={{
+					display: errorMessage === "" ? "none" : "flex",
+					...styles.container,
+				}}
+			>
+				<Text style={styles.error}>{errorMessage}</Text>
 			</View>
-		</ImageBackground>
+			<Button
+				style={styles.button}
+				color={CustomColors.uva.blue}
+				mode="contained"
+				disabled={!isValid}
+				onPress={() => {
+					setErrorMessage("");
+					api.login(email, password).then((user) => {
+						// console.log('user', user);
+						if (user) {
+							context.state.user = user;
+							navigation.navigate("ChainsHomeScreen");
+						} else {
+							setErrorMessage(
+								"Invalid username or password. Please check your login information and try again."
+							);
+						}
+					});
+				}}
+			>
+				Log In
+			</Button>
+		</View>
+		// </ImageBackground>
 	);
 }
 
@@ -173,8 +171,8 @@ const styles = StyleSheet.create({
 	},
 	logo: {
 		alignSelf: "center",
-		width: 200,
-		height: 200,
+		width: 400,
+		height: 400,
 		marginBottom: 40,
 	},
 	error: {

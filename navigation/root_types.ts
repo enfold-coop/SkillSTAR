@@ -10,6 +10,7 @@ export type RootStackParamList = {
 	StepScreen: undefined;
 	ProbeScreen: undefined;
 	DataVerificationScreen: undefined;
+	RewardsScreen: undefined;
 };
 
 // A generic used to provide propTypes to Root Screens.
