@@ -85,13 +85,12 @@ const SessionDataAside: FC<Props> = (props) => {
 						setGraphContainerDimens(e.nativeEvent.layout);
 					}}
 				>
+					<ChainsHomeGraph dimensions={graphContainerDimens} />
 					<TouchableOpacity
 						onPress={() => {
 							setModalVis(true);
 						}}
 					>
-						<ChainsHomeGraph dimensions={graphContainerDimens} />
-
 						<Text style={styles.graphText}>View your progress</Text>
 					</TouchableOpacity>
 				</View>
@@ -183,15 +182,15 @@ const styles = StyleSheet.create({
 	},
 	graphIconContainer: {
 		width: 280,
-		height: 200,
 		flexDirection: "column",
 		justifyContent: "center",
 		alignContent: "center",
 		marginTop: 20,
-		// backgroundColor: "#fff",
+		paddingBottom: 10,
+		backgroundColor: "#fff",
 	},
 	graphText: {
-		fontSize: 16,
+		fontSize: 18,
 		color: CustomColors.uva.grayDark,
 		alignSelf: "center",
 		padding: 5,
