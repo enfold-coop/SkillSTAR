@@ -56,7 +56,7 @@ const styles = StyleSheet.create({
 		height: 40,
 		width: 40,
 		alignSelf: "center",
-		color: CustomColors.uva.magenta75Soft,
+		// color: CustomColors.uva.magenta75Soft,
 		resizeMode: "contain",
 	},
 });

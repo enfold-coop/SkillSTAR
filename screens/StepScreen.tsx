@@ -135,17 +135,28 @@ const StepScreen: FC<Props> = (props) => {
 						>
 							Exit
 						</Button>
+						<Button
+							style={styles.exitButton}
+							color={CustomColors.uva.blue}
+							mode="contained"
+							onPress={() => {
+								console.log("exit");
+								navigation.navigate("ChainsHomeScreen");
+							}}
+						>
+							Needed Additional Prompting
+						</Button>
 					</View>
 					<View style={styles.nextBackBtnsContainer}>
 						<Button
 							style={styles.backButton}
 							color={CustomColors.uva.blue}
-							mode="contained"
+							mode="outlined"
 							onPress={() => {
 								decIndex();
 							}}
 						>
-							BACK
+							Previous Step
 						</Button>
 						<Button
 							style={styles.nextButton}
@@ -164,7 +175,7 @@ const StepScreen: FC<Props> = (props) => {
 								}
 							}}
 						>
-							NEXT
+							Step Complete
 						</Button>
 					</View>
 				</View>
@@ -184,12 +195,10 @@ const styles = StyleSheet.create({
 	progress: {
 		flexDirection: "row",
 		justifyContent: "space-between",
-		// padding: 10,
 		paddingLeft: 10,
 		paddingRight: 10,
 		marginLeft: 20,
 		marginRight: 20,
-		// backgroundColor: "#a0a",
 	},
 	progressContainer: {
 		flexDirection: "column",
@@ -241,20 +250,19 @@ const styles = StyleSheet.create({
 		height: 30,
 	},
 	exitButton: {
-		width: 144,
 		fontWeight: "600",
 	},
 	nextBackBtnsContainer: {
 		flexDirection: "row",
-		justifyContent: "flex-end",
+		justifyContent: "space-between",
 	},
 	nextButton: {
-		width: 144,
+		width: 244,
+		// paddingHorizontal: 20,
 		margin: 15,
-		// alignSelf: "flex-end",
 	},
 	backButton: {
-		width: 144,
+		// width: 244,
 		margin: 15,
 		// alignSelf: "flex-start",
 	},
