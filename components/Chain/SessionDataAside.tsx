@@ -2,7 +2,7 @@ import React, { FC, useState, useEffect } from "react";
 import { StyleSheet, Text, View, TouchableOpacity, Image } from "react-native";
 import { Button, Card } from "react-native-paper";
 import { ProbeAside, TrainingAside } from "./index";
-import LineGraph from "../DataGraph/LineGraph";
+import { ChainsHomeGraph } from "../DataGraph/index";
 import GraphModal from "../DataGraph/GraphModal";
 import CustomColors from "../../styles/Colors";
 import date from "date-and-time";
@@ -90,19 +90,9 @@ const SessionDataAside: FC<Props> = (props) => {
 							setModalVis(true);
 						}}
 					>
-						{/* <Card
-							style={{
-								backgroundColor: CustomColors.uva.white,
-							}}
-						> */}
-						{/* <View style={styles.plotlyContainer}> */}
-						<PlotlyLineGraph
-							modal={modalVis}
-							dimensions={graphContainerDimens}
-						/>
-						{/* </View> */}
+						<ChainsHomeGraph dimensions={graphContainerDimens} />
+
 						<Text style={styles.graphText}>View your progress</Text>
-						{/* </Card> */}
 					</TouchableOpacity>
 				</View>
 			</View>
@@ -192,18 +182,13 @@ const styles = StyleSheet.create({
 		margin: 10,
 	},
 	graphIconContainer: {
-		width: "100%",
+		width: 280,
 		height: 200,
 		flexDirection: "column",
 		justifyContent: "center",
 		alignContent: "center",
-		marginTop: 10,
-		padding: 2,
-		backgroundColor: "#fff",
-	},
-	plotlyContainer: {
-		justifyContent: "center",
-		alignContent: "center",
+		marginTop: 20,
+		// backgroundColor: "#fff",
 	},
 	graphText: {
 		fontSize: 16,

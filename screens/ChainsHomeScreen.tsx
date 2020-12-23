@@ -11,7 +11,6 @@ import * as Animatable from "react-native-animatable";
 import ScorecardListItem from "../components/Chain/ScorecardListItem";
 import SessionDataAside from "../components/Chain/SessionDataAside";
 import AppHeader from "../components/Header/AppHeader";
-import LineGraph from "../components/DataGraph/LineGraph";
 import { RootNavProps } from "../navigation/root_types";
 import CustomColors from "../styles/Colors";
 

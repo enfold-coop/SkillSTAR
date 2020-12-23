@@ -1,18 +1,19 @@
-import React, { FC, useState, useEffect } from "react";
+import React, { useEffect, useState, FC } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import Plotly from "react-native-plotly";
 import CustomColors from "../../styles/Colors";
 
 type Props = {
 	dimensions: {};
-	modal: boolean;
 };
 
-const PlotlyLineGraph: FC<Props> = (props) => {
-	const { dimensions, modal } = props;
-	const [thisHeight, setHeight] = useState();
-	const [thisWidth, setWidth] = useState();
-	const [isModal, setIsModal] = useState(false);
+const ChainsHomeGraph: FC<Props> = (props) => {
+	const { dimensions } = props;
+	const [dimens, setDimens] = useState({});
+
+	useEffect(() => {
+		setDimens(dimensions);
+	}, []);
 
 	const data = [
 		{
@@ -44,23 +45,20 @@ const PlotlyLineGraph: FC<Props> = (props) => {
 	];
 
 	const layout = {
-		title: "SkillStar",
-		height: thisHeight,
-		width: thisWidth,
+		width: 270,
+		height: 190,
 		plot_bgcolor: CustomColors.uva.sky,
+		margin: {
+			r: 0,
+			l: 10,
+			b: 0,
+			t: 10,
+			pad: 0,
+		},
+		showlegend: false,
 	};
 
-	const setDimensions = () => {
-		console.log(isModal);
-		console.log(dimensions);
-		setHeight(dimensions.height - 100);
-		setWidth(dimensions.width - 40);
-	};
-
-	useEffect(() => {
-		setIsModal(modal);
-		setDimensions();
-	});
+	useEffect(() => {});
 
 	return (
 		<View style={[styles.container]}>
@@ -69,17 +67,20 @@ const PlotlyLineGraph: FC<Props> = (props) => {
 				data={data}
 				layout={layout}
 				enableFullPlotly={true}
+				config={{
+					displayModeBar: false,
+				}}
 			/>
 		</View>
 	);
 };
 
-export default PlotlyLineGraph;
+export default ChainsHomeGraph;
 
 const styles = StyleSheet.create({
 	container: {
-		width: "100%",
-		height: "96%",
+		width: 280,
+		height: 200,
 		justifyContent: "center",
 		alignContent: "center",
 	},
