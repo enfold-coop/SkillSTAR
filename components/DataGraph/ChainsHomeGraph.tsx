@@ -17,8 +17,8 @@ const ChainsHomeGraph: FC<Props> = (props) => {
 
 	const data = [
 		{
-			x: [1, 2, 33, 4, 5],
-			y: [1, 2, 3, 44, 8],
+			x: [1, 2, 3, 4, 5],
+			y: [1, 4, 3, 4, 8],
 			mode: "markers",
 			name: "Probe Session",
 			marker: {
@@ -31,7 +31,7 @@ const ChainsHomeGraph: FC<Props> = (props) => {
 			},
 		},
 		{
-			x: [4, 2, 44, 4, 5],
+			x: [4, 2, 4, 4, 5],
 			y: [2, 3, 4, 5, 6],
 			mode: "lines",
 			name: "Training Session",
@@ -50,12 +50,20 @@ const ChainsHomeGraph: FC<Props> = (props) => {
 		plot_bgcolor: CustomColors.uva.sky,
 		margin: {
 			r: 0,
-			l: 10,
+			l: 15,
 			b: 0,
 			t: 10,
 			pad: 0,
 		},
 		showlegend: false,
+		xAxis: {
+			ticks: "",
+			ticktext: "",
+		},
+		yAxis: {
+			ticks: "",
+			ticktext: "",
+		},
 	};
 
 	useEffect(() => {});
