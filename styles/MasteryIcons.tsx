@@ -3,7 +3,7 @@ import React from "react";
 import { StyleSheet, View } from "react-native";
 import CustomColor from "../styles/Colors";
 import { MasteryLevel, MasteryStatus } from "../types/CHAIN/MasteryLevel";
-import { SkillStarIcons, Icons } from "./Icons";
+import { SkillStarIcons } from "./Icons";
 
 export function MasteryIcons(mastery: MasteryLevel = MasteryLevel.NotStarted) {
 	const index = mastery.valueOf();

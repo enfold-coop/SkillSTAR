@@ -41,7 +41,7 @@ function DataVerificationScreen({ session }: Props): ReactNode {
 	const submitAndNavigate = () => {
 		setConfirmSubmit(false);
 		postData();
-		navigation.navigate("ChainsHomeScreen");
+		navigation.navigate("RewardsScreens");
 	};
 
 	// Post state data to API
