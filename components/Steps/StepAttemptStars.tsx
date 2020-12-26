@@ -12,24 +12,27 @@ const StepAttemptStars: FC<Props> = (props) => {
 	return (
 		<View style={styles.container}>
 			<View style={styles.subContainer}></View>
-			<AntDesign
-				name="star"
-				size={50}
-				color={CustomColors.uva.magenta}
-				style={styles.star}
-			/>
-			<AntDesign
-				name="staro"
-				size={50}
-				color={CustomColors.uva.magenta}
-				style={styles.star}
-			/>
-			<AntDesign
-				name="staro"
-				size={50}
-				color={CustomColors.uva.magenta}
-				style={styles.star}
-			/>
+			<View style={styles.starContainer}>
+				<Text style={styles.promptTypeText}>{props.promptType}</Text>
+				<AntDesign
+					name="star"
+					size={50}
+					color={CustomColors.uva.magenta}
+					style={styles.star}
+				/>
+				<AntDesign
+					name="staro"
+					size={50}
+					color={CustomColors.uva.magenta}
+					style={styles.star}
+				/>
+				<AntDesign
+					name="staro"
+					size={50}
+					color={CustomColors.uva.magenta}
+					style={styles.star}
+				/>
+			</View>
 		</View>
 	);
 };
@@ -42,6 +45,15 @@ const styles = StyleSheet.create({
 		width: "33%",
 	},
 	subContainer: {},
-	starContainer: {},
+	promptTypeText: {
+		textAlign: "center",
+		alignSelf: "center",
+		paddingRight: 20,
+		fontSize: 20,
+		fontWeight: "600",
+	},
+	starContainer: {
+		flexDirection: "row",
+	},
 	star: {},
 });

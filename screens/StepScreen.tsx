@@ -4,7 +4,7 @@ import { Video } from "expo-av";
 import React, { FC, useEffect, useState } from "react";
 import { ImageBackground, StyleSheet, Text, View } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
-import { Button, ProgressBar } from "react-native-paper";
+import { Button } from "react-native-paper";
 import * as Animatable from "react-native-animatable";
 import AppHeader from "../components/Header/AppHeader";
 import { chainSteps } from "../data/chainSteps";
@@ -16,17 +16,14 @@ import { StepAttempt } from "../types/CHAIN/StepAttempt";
 import {
 	StepAttemptStars,
 	StarsNIconsContainer,
+	MasteryIconContainer,
+	ProgressBar,
 } from "../components/Steps/index";
 
 interface Props {
 	route: RootNavProps<"StepScreen">;
 	navigation: RootNavProps<"StepScreen">;
 }
-
-// Convert progress to "0.1 - 1.0" value
-const progressBarCalculation = (len: number, currStep: number): number => {
-	return currStep / len;
-};
 
 const StepScreen: FC<Props> = (props) => {
 	const navigation = useNavigation();
@@ -95,24 +92,32 @@ const StepScreen: FC<Props> = (props) => {
 		<View style={styles.container}>
 			<AppHeader name={"Brush Teeth"} />
 			<View style={styles.progress}>
-				<Text style={styles.headline}>
-					Step {chainSteps[stepIndex].stepId}:{" "}
-					{chainSteps[stepIndex].instruction}
-				</Text>
+				<MasteryIconContainer masteryLevel={"focus"} />
 				<View style={styles.progressContainer}>
 					<ProgressBar
+						currStep={stepIndex}
+						totalSteps={session.data.length}
+						masteryLevel={"focus"}
+					/>
+					{/* <ProgressBar
 						style={styles.progressBar}
 						progress={progressBarCalculation(
 							chainSteps.length,
 							stepIndex
 						)}
 						color={CustomColors.uva.blue}
-					/>
+					/> */}
 					<Text style={styles.progressText}>
 						Step {chainSteps[stepIndex].stepId} out of{" "}
 						{chainSteps.length}
 					</Text>
 				</View>
+			</View>
+			<View style={styles.instructionContainer}>
+				<Text style={styles.headline}>
+					Step {chainSteps[stepIndex].stepId}:{" "}
+					{chainSteps[stepIndex].instruction}
+				</Text>
 			</View>
 			<StarsNIconsContainer />
 			<View style={styles.subContainer}>
@@ -192,7 +197,7 @@ const styles = StyleSheet.create({
 	progress: {
 		flexDirection: "row",
 		justifyContent: "space-between",
-		paddingHorizontal: 20,
+		paddingHorizontal: 0,
 		marginTop: 20,
 		marginLeft: 20,
 		marginRight: 20,
@@ -203,6 +208,9 @@ const styles = StyleSheet.create({
 	},
 	progressText: {
 		paddingTop: 4,
+	},
+	instructionContainer: {
+		paddingLeft: 20,
 	},
 	headline: {
 		width: "60%",
@@ -234,8 +242,10 @@ const styles = StyleSheet.create({
 		width: "100%",
 	},
 	progressBar: {
-		width: 122,
-		height: 20,
+		width: 200,
+		height: 40,
+		borderWidth: 0,
+		borderRadius: 5,
 	},
 	bottomContainer: {
 		flexDirection: "row",
