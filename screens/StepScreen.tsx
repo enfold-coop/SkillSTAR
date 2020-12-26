@@ -87,100 +87,97 @@ const StepScreen: FC<Props> = (props) => {
 	 */
 
 	return (
-		<ImageBackground
-			source={require("../assets/images/sunrise-muted.png")}
-			resizeMode={"cover"}
-			style={styles.image}
-		>
-			<View style={styles.container}>
-				<AppHeader name={"Brush Teeth"} />
-				<View style={styles.progress}>
-					<Text style={styles.headline}>
-						Step {chainSteps[stepIndex].stepId}:{" "}
-						{chainSteps[stepIndex].instruction}
+		// <ImageBackground
+		// 	source={require("../assets/images/sunrise-muted.png")}
+		// 	resizeMode={"cover"}
+		// 	style={styles.image}
+		// >
+		<View style={styles.container}>
+			<AppHeader name={"Brush Teeth"} />
+			<View style={styles.progress}>
+				<Text style={styles.headline}>
+					Step {chainSteps[stepIndex].stepId}:{" "}
+					{chainSteps[stepIndex].instruction}
+				</Text>
+				<View style={styles.progressContainer}>
+					<ProgressBar
+						style={styles.progressBar}
+						progress={progressBarCalculation(
+							chainSteps.length,
+							stepIndex
+						)}
+						color={CustomColors.uva.blue}
+					/>
+					<Text style={styles.progressText}>
+						Step {chainSteps[stepIndex].stepId} out of{" "}
+						{chainSteps.length}
 					</Text>
-					<View style={styles.progressContainer}>
-						<ProgressBar
-							style={styles.progressBar}
-							progress={progressBarCalculation(
-								chainSteps.length,
-								stepIndex
-							)}
-							color={CustomColors.uva.blue}
-						/>
-						<Text style={styles.progressText}>
-							Step {chainSteps[stepIndex].stepId} out of{" "}
-							{chainSteps.length}
-						</Text>
-					</View>
-				</View>
-				<StarsNIconsContainer />
-				<View style={styles.subContainer}>
-					<Animatable.View
-						style={styles.subVideoContainer}
-						duration={2000}
-						animation={"fadeIn"}
-					>
-						{<ReturnVideoComponent />}
-					</Animatable.View>
-					<View style={styles.bottomContainer}>
-						<Button
-							style={styles.exitButton}
-							color={CustomColors.uva.blue}
-							mode="outlined"
-							onPress={() => {
-								console.log("exit");
-								navigation.navigate("ChainsHomeScreen");
-							}}
-						>
-							Exit
-						</Button>
-						<Button
-							style={styles.exitButton}
-							color={CustomColors.uva.blue}
-							mode="contained"
-							onPress={() => {
-								console.log("exit");
-								navigation.navigate("ChainsHomeScreen");
-							}}
-						>
-							Needed Additional Prompting
-						</Button>
-					</View>
-					<View style={styles.nextBackBtnsContainer}>
-						<Button
-							style={styles.backButton}
-							color={CustomColors.uva.blue}
-							mode="outlined"
-							onPress={() => {
-								decIndex();
-							}}
-						>
-							Previous Step
-						</Button>
-						<Button
-							style={styles.nextButton}
-							color={CustomColors.uva.blue}
-							mode="contained"
-							onPress={() => {
-								if (stepIndex + 1 <= chainSteps.length - 1) {
-									incrIndex();
-								} else {
-									navigation.navigate(
-										"DataVerificationScreen",
-										{
-											session,
-										}
-									);
-								}
-							}}
-						>
-							Step Complete
-						</Button>
-					</View>
 				</View>
 			</View>
-		</ImageBackground>
+			<StarsNIconsContainer />
+			<View style={styles.subContainer}>
+				<Animatable.View
+					style={styles.subVideoContainer}
+					duration={2000}
+					animation={"fadeIn"}
+				>
+					{<ReturnVideoComponent />}
+				</Animatable.View>
+				<View style={styles.bottomContainer}>
+					<Button
+						style={styles.exitButton}
+						color={CustomColors.uva.blue}
+						mode="outlined"
+						onPress={() => {
+							console.log("exit");
+							navigation.navigate("ChainsHomeScreen");
+						}}
+					>
+						Exit
+					</Button>
+					<Button
+						style={styles.exitButton}
+						color={CustomColors.uva.blue}
+						mode="contained"
+						onPress={() => {
+							console.log("exit");
+							navigation.navigate("ChainsHomeScreen");
+						}}
+					>
+						Needed Additional Prompting
+					</Button>
+				</View>
+				<View style={styles.nextBackBtnsContainer}>
+					<Button
+						style={styles.backButton}
+						color={CustomColors.uva.blue}
+						mode="outlined"
+						onPress={() => {
+							decIndex();
+						}}
+					>
+						Previous Step
+					</Button>
+					<Button
+						style={styles.nextButton}
+						color={CustomColors.uva.blue}
+						mode="contained"
+						onPress={() => {
+							if (stepIndex + 1 <= chainSteps.length - 1) {
+								incrIndex();
+							} else {
+								navigation.navigate("DataVerificationScreen", {
+									session,
+								});
+							}
+						}}
+					>
+						Step Complete
+					</Button>
+				</View>
+			</View>
+		</View>
+		// </ImageBackground>
 	);
 };
 
@@ -195,8 +192,8 @@ const styles = StyleSheet.create({
 	progress: {
 		flexDirection: "row",
 		justifyContent: "space-between",
-		paddingLeft: 10,
-		paddingRight: 10,
+		paddingHorizontal: 20,
+		marginTop: 20,
 		marginLeft: 20,
 		marginRight: 20,
 	},
