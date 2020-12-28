@@ -21,11 +21,11 @@ const ProgressBar: FC<Props> = (props) => {
 
 	const getMasteryLevel = () => {
 		if (mastery === "mastered") {
-			setBarColor(CustomColors.uva.greenSoft);
+			setBarColor(CustomColors.uva.cyan);
 		} else if (mastery === "focus") {
 			setBarColor(CustomColors.uva.magenta);
 		} else {
-			setBarColor(CustomColors.uva.cyan);
+			setBarColor(CustomColors.uva.gray);
 		}
 	};
 

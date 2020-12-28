@@ -2,7 +2,13 @@ import { AntDesign } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { Video } from "expo-av";
 import React, { FC, useEffect, useState } from "react";
-import { ImageBackground, StyleSheet, Text, View } from "react-native";
+import {
+	ImageBackground,
+	StyleSheet,
+	Text,
+	View,
+	Dimensions,
+} from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { Button } from "react-native-paper";
 import * as Animatable from "react-native-animatable";
@@ -19,6 +25,7 @@ import {
 	MasteryIconContainer,
 	ProgressBar,
 } from "../components/Steps/index";
+import { SvgUri } from "react-native-svg";
 
 interface Props {
 	route: RootNavProps<"StepScreen">;
@@ -121,61 +128,58 @@ const StepScreen: FC<Props> = (props) => {
 					>
 						{<ReturnVideoComponent />}
 					</Animatable.View>
-					<View style={styles.bottomContainer}>
-						<Button
-							style={styles.exitButton}
-							color={CustomColors.uva.blue}
-							mode="outlined"
-							onPress={() => {
-								console.log("exit");
-								navigation.navigate("ChainsHomeScreen");
-							}}
-						>
-							Exit
-						</Button>
-						<Button
-							style={styles.exitButton}
-							color={CustomColors.uva.blue}
-							mode="contained"
-							onPress={() => {
-								console.log("exit");
-								navigation.navigate("ChainsHomeScreen");
-							}}
-						>
-							Needed Additional Prompting
-						</Button>
-					</View>
-					<View style={styles.nextBackBtnsContainer}>
-						<Button
-							style={styles.backButton}
-							color={CustomColors.uva.blue}
-							mode="outlined"
-							onPress={() => {
-								decIndex();
-							}}
-						>
-							Previous Step
-						</Button>
-						<Button
-							style={styles.nextButton}
-							color={CustomColors.uva.blue}
-							mode="contained"
-							onPress={() => {
-								if (stepIndex + 1 <= chainSteps.length - 1) {
-									incrIndex();
-								} else {
-									navigation.navigate(
-										"DataVerificationScreen",
-										{
-											session,
-										}
-									);
-								}
-							}}
-						>
-							Step Complete
-						</Button>
-					</View>
+				</View>
+				<View style={styles.bottomContainer}>
+					{/* <Button
+						style={styles.exitButton}
+						color={CustomColors.uva.blue}
+						mode="outlined"
+						onPress={() => {
+							console.log("exit");
+							navigation.navigate("ChainsHomeScreen");
+						}}
+					>
+						Exit
+					</Button> */}
+					<Button
+						style={styles.neededPromptingBtn}
+						color={CustomColors.uva.orange}
+						mode="contained"
+						onPress={() => {
+							console.log("exit");
+							navigation.navigate("ChainsHomeScreen");
+						}}
+					>
+						Needed Additional Prompting
+					</Button>
+				</View>
+				<View style={styles.nextBackBtnsContainer}>
+					<Button
+						style={styles.backButton}
+						color={CustomColors.uva.blue}
+						mode="outlined"
+						onPress={() => {
+							decIndex();
+						}}
+					>
+						Previous Step
+					</Button>
+					<Button
+						style={styles.nextButton}
+						color={CustomColors.uva.blue}
+						mode="contained"
+						onPress={() => {
+							if (stepIndex + 1 <= chainSteps.length - 1) {
+								incrIndex();
+							} else {
+								navigation.navigate("DataVerificationScreen", {
+									session,
+								});
+							}
+						}}
+					>
+						Step Complete
+					</Button>
 				</View>
 			</View>
 		</ImageBackground>
@@ -243,31 +247,28 @@ const styles = StyleSheet.create({
 		borderWidth: 0,
 		borderRadius: 5,
 	},
-	bottomContainer: {
-		flexDirection: "row",
-		padding: 20,
-		margin: 10,
-		justifyContent: "space-between",
-	},
 	focusStepIcon: {
 		height: 30,
 	},
-	exitButton: {
-		fontWeight: "600",
+	bottomContainer: {
+		flexDirection: "row",
+		justifyContent: "center",
+		alignContent: "center",
+		paddingVertical: 15,
+		margin: 15,
 	},
+	neededPromptingBtn: {},
+	exitButton: {},
 	nextBackBtnsContainer: {
 		flexDirection: "row",
 		justifyContent: "space-between",
 	},
 	nextButton: {
 		width: 244,
-		// paddingHorizontal: 20,
 		margin: 15,
 	},
 	backButton: {
-		// width: 244,
 		margin: 15,
-		// alignSelf: "flex-start",
 	},
 });
 

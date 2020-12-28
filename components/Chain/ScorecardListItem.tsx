@@ -47,7 +47,14 @@ const ScorecardListItem: FC<Props> = ({ ...props }) => {
 					<Text style={styles.skill}>{instruction}</Text>
 					{/* <Text style={styles.score}>{MasteryIcons(1)}</Text> */}
 					<Image
-						style={[{ width: 30, height: 30 }]}
+						style={[
+							{
+								width: 28,
+								height: 28,
+								alignSelf: "center",
+								padding: 2,
+							},
+						]}
 						source={focusIcon}
 					/>
 					<AntDesign
