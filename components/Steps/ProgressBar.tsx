@@ -11,8 +11,8 @@ type Props = {
 
 const ProgressBar: FC<Props> = (props) => {
 	const { totalSteps, currStep, masteryLevel } = props;
-	const [mastery, setMastery] = useState("mastered");
-	const [barColor, setBarColor] = useState(CustomColors.uva.redEmergency);
+	const [mastery, setMastery] = useState("focus");
+	const [barColor, setBarColor] = useState(CustomColors.uva.magenta);
 
 	// Convert progress to "0.1 - 1.0" value
 	const progressBarCalculation = (len: number, currStep: number): number => {

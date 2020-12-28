@@ -146,8 +146,7 @@ const StepScreen: FC<Props> = (props) => {
 						color={CustomColors.uva.orange}
 						mode="contained"
 						onPress={() => {
-							console.log("exit");
-							navigation.navigate("ChainsHomeScreen");
+							console.log("NEEDING PROMPTING");
 						}}
 					>
 						Needed Additional Prompting

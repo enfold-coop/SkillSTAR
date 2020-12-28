@@ -14,7 +14,10 @@ const StarsNIconsContainer: FC<Props> = (props) => {
 		<View style={styles.container}>
 			{/* <MasteryIconContainer /> */}
 			<View style={styles.subContainer}>
-				<StepAttemptStars promptType={"FP"} attemptsWPromptType={1} />
+				<StepAttemptStars
+					promptType={"FP"}
+					attemptsWPromptType={[true, true, false]}
+				/>
 				<ChallengingBehavBtn />
 			</View>
 		</View>
