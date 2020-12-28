@@ -17,7 +17,7 @@ const PrepareMaterialsScreen: FC<Props> = (props) => {
 
 	return (
 		<ImageBackground
-			source={require("../assets/images/sunrise-muted.png")}
+			source={require("../assets/images/sunrise-muted.jpg")}
 			resizeMode={"cover"}
 			style={styles.image}
 		>

@@ -9,7 +9,7 @@ import { ApiService } from "../services/ApiService";
 import CustomColors from "../styles/Colors";
 import { AuthProviderProps } from "../types/AuthProvider";
 import { Participant, User } from "../types/User";
-import { DEFAULT_USER_EMAIL, DEFAULT_USER_PASSWORD} from "@env";
+import { DEFAULT_USER_EMAIL, DEFAULT_USER_PASSWORD } from "@env";
 
 export default function LandingScreen({ navigation }: Props<"LandingScreen">) {
 	let [email, setEmail] = useState(DEFAULT_USER_EMAIL);
@@ -74,70 +74,70 @@ export default function LandingScreen({ navigation }: Props<"LandingScreen">) {
 	});
 
 	return (
-		// <ImageBackground
-		// 	source={require("../assets/images/sunrise-muted.png")}
-		// 	resizeMode={"cover"}
-		// 	style={styles.image}
-		// >
-		<View style={styles.container}>
-			<Animatable.View animation="zoomIn">
-				<Image
-					style={styles.logo}
-					source={require("../assets/images/logo.png")}
+		<ImageBackground
+			source={require("../assets/images/sunrise-muted.jpg")}
+			resizeMode={"cover"}
+			style={styles.image}
+		>
+			<View style={styles.container}>
+				<Animatable.View animation="zoomIn">
+					<Image
+						style={styles.logo}
+						source={require("../assets/images/logo.png")}
+					/>
+				</Animatable.View>
+				<TextInput
+					textContentType="emailAddress"
+					autoCompleteType="username"
+					label="Email"
+					mode="outlined"
+					value={email}
+					style={styles.input}
+					onChangeText={(text) => _checkEmail(text)}
+					autoFocus={true}
 				/>
-			</Animatable.View>
-			<TextInput
-				textContentType="emailAddress"
-				autoCompleteType="username"
-				label="Email"
-				mode="outlined"
-				value={email}
-				style={styles.input}
-				onChangeText={(text) => _checkEmail(text)}
-				autoFocus={true}
-			/>
-			<TextInput
-				textContentType="password"
-				autoCompleteType="password"
-				secureTextEntry={true}
-				label="Password"
-				mode="outlined"
-				value={password}
-				style={styles.input}
-				onChangeText={(text) => _checkPassword(text)}
-			/>
-			<View
-				style={{
-					display: errorMessage === "" ? "none" : "flex",
-					...styles.container,
-				}}
-			>
-				<Text style={styles.error}>{errorMessage}</Text>
+				<TextInput
+					textContentType="password"
+					autoCompleteType="password"
+					secureTextEntry={true}
+					label="Password"
+					mode="outlined"
+					value={password}
+					style={styles.input}
+					onChangeText={(text) => _checkPassword(text)}
+				/>
+				<View
+					style={{
+						display: errorMessage === "" ? "none" : "flex",
+						...styles.container,
+					}}
+				>
+					<Text style={styles.error}>{errorMessage}</Text>
+				</View>
+				<Button
+					style={styles.button}
+					color={CustomColors.uva.blue}
+					mode="contained"
+					disabled={!isValid}
+					onPress={() => {
+						setErrorMessage("");
+						api.login(email, password).then((user) => {
+							// console.log('user', user);
+							if (user) {
+								context.state.user = user;
+								navigation.navigate("ChainsHomeScreen");
+							} else {
+								setErrorMessage(
+									"Invalid username or password. Please check your login information and try again."
+								);
+							}
+						});
+					}}
+				>
+					Log In
+				</Button>
 			</View>
-			<Button
-				style={styles.button}
-				color={CustomColors.uva.blue}
-				mode="contained"
-				disabled={!isValid}
-				onPress={() => {
-					setErrorMessage("");
-					api.login(email, password).then((user) => {
-						// console.log('user', user);
-						if (user) {
-							context.state.user = user;
-							navigation.navigate("ChainsHomeScreen");
-						} else {
-							setErrorMessage(
-								"Invalid username or password. Please check your login information and try again."
-							);
-						}
-					});
-				}}
-			>
-				Log In
-			</Button>
-		</View>
-		// </ImageBackground>
+		</ImageBackground>
 	);
 }
 

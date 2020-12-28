@@ -53,47 +53,49 @@ const ChainsHomeScreen: FC<Props> = (props) => {
 	});
 
 	return (
-		// <ImageBackground
-		// 	source={require("../assets/images/sunrise-muted.png")}
-		// 	resizeMode={"cover"}
-		// 	style={styles.container}
-		// >
-		<View style={portrait ? styles.container : styles.landscapeContainer}>
-			<AppHeader name="Chains Home" />
-			{chainSteps && (
-				<View style={styles.listContainer}>
-					<SessionDataAside
-						historicalData={{}}
-						name={"Moxy"}
-						sessionNumber={1}
-					/>
-					<FlatList
-						style={styles.list}
-						data={chainSteps}
-						keyExtractor={(item) => item.step.toString()}
-						renderItem={(item) => (
-							<ScorecardListItem itemProps={item} />
-						)}
-					/>
-				</View>
-			)}
-
-			<TouchableOpacity
-				style={[styles.startSessionBtn, { marginBottom: 0 }]}
-				onPress={() => {
-					navToProbeOrTraining();
-				}}
+		<ImageBackground
+			source={require("../assets/images/sunrise-muted.jpg")}
+			resizeMode={"cover"}
+			style={styles.container}
+		>
+			<View
+				style={portrait ? styles.container : styles.landscapeContainer}
 			>
-				<Animatable.Text
-					animation="bounceIn"
-					duration={2000}
-					style={styles.btnText}
+				<AppHeader name="Chains Home" />
+				{chainSteps && (
+					<View style={styles.listContainer}>
+						<SessionDataAside
+							historicalData={{}}
+							name={"Moxy"}
+							sessionNumber={1}
+						/>
+						<FlatList
+							style={styles.list}
+							data={chainSteps}
+							keyExtractor={(item) => item.step.toString()}
+							renderItem={(item) => (
+								<ScorecardListItem itemProps={item} />
+							)}
+						/>
+					</View>
+				)}
+
+				<TouchableOpacity
+					style={[styles.startSessionBtn, { marginBottom: 0 }]}
+					onPress={() => {
+						navToProbeOrTraining();
+					}}
 				>
-					Start the Chain
-				</Animatable.Text>
-			</TouchableOpacity>
-			{/* </ImageBackground> */}
-		</View>
+					<Animatable.Text
+						animation="bounceIn"
+						duration={2000}
+						style={styles.btnText}
+					>
+						Start the Chain
+					</Animatable.Text>
+				</TouchableOpacity>
+			</View>
+		</ImageBackground>
 	);
 };
 

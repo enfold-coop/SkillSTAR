@@ -1,5 +1,5 @@
 import React, { FC, useState, useEffect } from "react";
-import { Text, StyleSheet, TouchableOpacity, View } from "react-native";
+import { Text, StyleSheet, TouchableOpacity, View, Image } from "react-native";
 import { Card } from "react-native-paper";
 import { MasteryIcons } from "../../styles/MasteryIcons";
 import { MasteryLevel as ML } from "../../types/CHAIN/MasteryLevel";
@@ -30,6 +30,10 @@ const ScorecardListItem: FC<Props> = ({ ...props }) => {
 	const { step, instruction, mastery } = props.itemProps.item;
 	const [isPressed, setIsPressed] = useState(false);
 
+	const masteredIcon = require("../../assets/icons/ribbon-icon_1.png");
+	const focusIcon = require("../../assets/icons/in-progress-icon_1.png");
+	const notStartedIcon = require("../../assets/icons/waving-icon.png");
+
 	return (
 		<Animatable.View animation="fadeIn" duration={300 * step}>
 			<Card style={styles.container}>
@@ -41,7 +45,11 @@ const ScorecardListItem: FC<Props> = ({ ...props }) => {
 				>
 					<Text style={styles.id}>{step}. </Text>
 					<Text style={styles.skill}>{instruction}</Text>
-					<Text style={styles.score}>{MasteryIcons(1)}</Text>
+					{/* <Text style={styles.score}>{MasteryIcons(1)}</Text> */}
+					<Image
+						style={[{ width: 30, height: 30 }]}
+						source={focusIcon}
+					/>
 					<AntDesign
 						name="caretright"
 						size={24}

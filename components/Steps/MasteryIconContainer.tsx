@@ -9,10 +9,10 @@ type Props = {
 
 const MasteryIconContainer: FC<Props> = (props) => {
 	const { masteryLevel } = props;
-	const masteredIcon = require("../../assets/icons/ribbon-icon.png");
-	const focusIcon = require("../../assets/icons/in-process-icon.png");
-	const notStartedIcon = require("../../assets/icons/ribbon-icon.png");
-	const [icon, setIcon] = useState(focusIcon);
+	const masteredIcon = require("../../assets/icons/ribbon-icon_1.png");
+	const focusIcon = require("../../assets/icons/in-progress-icon.png");
+	const notStartedIcon = require("../../assets/icons/waving-icon.png");
+	const [icon, setIcon] = useState(masteredIcon);
 
 	const getMasteryLevel = () => {
 		if (masteryLevel === "mastered") {
