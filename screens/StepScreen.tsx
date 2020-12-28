@@ -100,24 +100,20 @@ const StepScreen: FC<Props> = (props) => {
 			<View style={styles.container}>
 				<AppHeader name={"Brush Teeth"} />
 				<View style={styles.progress}>
-					<MasteryIconContainer masteryLevel={"focus"} />
-					<View style={styles.progressContainer}>
-						<ProgressBar
-							currStep={stepIndex}
-							totalSteps={session.data.length}
-							masteryLevel={"focus"}
-						/>
-						<Text style={styles.progressText}>
-							Step {chainSteps[stepIndex].stepId} out of{" "}
-							{chainSteps.length}
-						</Text>
-					</View>
-				</View>
-				<View style={styles.instructionContainer}>
 					<Text style={styles.headline}>
 						Step {chainSteps[stepIndex].stepId}:{" "}
 						{chainSteps[stepIndex].instruction}
 					</Text>
+
+					<View style={styles.progressContainer}>
+						<MasteryIconContainer masteryLevel={"focus"} />
+						<ProgressBar
+							currStep={stepIndex}
+							totalSteps={session.data.length}
+							masteryLevel={"focus"}
+							steps={chainSteps}
+						/>
+					</View>
 				</View>
 				<StarsNIconsContainer />
 				<View style={styles.subContainer}>
@@ -198,23 +194,17 @@ const styles = StyleSheet.create({
 		justifyContent: "space-between",
 		paddingHorizontal: 0,
 		marginTop: 20,
-		marginLeft: 20,
-		marginRight: 20,
 	},
 	progressContainer: {
-		flexDirection: "column",
-		justifyContent: "flex-start",
+		flexDirection: "row",
 	},
-	progressText: {
-		paddingTop: 4,
-	},
-	instructionContainer: {
-		paddingLeft: 20,
-	},
+	instructionContainer: {},
 	headline: {
 		width: "60%",
-		fontSize: 20,
+		// textAlign: "",
+		fontSize: 22,
 		fontWeight: "600",
+		padding: 10,
 	},
 	subContainer: {
 		flexDirection: "column",

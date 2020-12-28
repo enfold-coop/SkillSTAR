@@ -39,14 +39,15 @@ export default MasteryIconContainer;
 
 const styles = StyleSheet.create({
 	container: {
-		justifyContent: "flex-start",
+		justifyContent: "center",
 		alignContent: "center",
 		paddingBottom: 10,
 	},
 	img: {
-		margin: 0,
-		height: 45,
-		width: 45,
+		alignSelf: "center",
+		marginRight: 10,
+		height: 50,
+		width: 50,
 		resizeMode: "contain",
 	},
 });

@@ -7,10 +7,13 @@ type Props = {
 	masteryLevel: string;
 	currStep: number;
 	totalSteps: number;
+	steps: {}[];
 };
 
 const ProgressBar: FC<Props> = (props) => {
-	const { totalSteps, currStep, masteryLevel } = props;
+	const { totalSteps, currStep, masteryLevel, steps } = props;
+	console.log(steps);
+
 	const [mastery, setMastery] = useState("focus");
 	const [barColor, setBarColor] = useState(CustomColors.uva.magenta);
 
@@ -37,12 +40,15 @@ const ProgressBar: FC<Props> = (props) => {
 	}, [masteryLevel]);
 
 	return (
-		<View>
+		<View style={styles.container}>
 			<ProgBar
 				style={styles.progressBar}
 				progress={progressBarCalculation(totalSteps, currStep)}
 				color={barColor}
 			/>
+			<Text style={styles.progressText}>
+				Step {steps[currStep].stepId} out of {steps.length}
+			</Text>
 		</View>
 	);
 };
@@ -50,10 +56,20 @@ const ProgressBar: FC<Props> = (props) => {
 export default ProgressBar;
 
 const styles = StyleSheet.create({
+	container: {
+		justifyContent: "flex-start",
+		alignContent: "flex-start",
+	},
 	progressBar: {
+		justifyContent: "center",
 		width: 200,
 		height: 40,
 		borderWidth: 0,
 		borderRadius: 5,
+	},
+	progressText: {
+		fontSize: 16,
+		paddingTop: 5,
+		paddingLeft: 5,
 	},
 });

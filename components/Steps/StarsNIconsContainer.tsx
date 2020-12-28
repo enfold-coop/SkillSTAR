@@ -12,7 +12,6 @@ type Props = {};
 const StarsNIconsContainer: FC<Props> = (props) => {
 	return (
 		<View style={styles.container}>
-			{/* <MasteryIconContainer /> */}
 			<View style={styles.subContainer}>
 				<StepAttemptStars
 					promptType={"FP"}
