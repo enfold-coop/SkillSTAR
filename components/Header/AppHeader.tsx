@@ -36,7 +36,6 @@ const AppHeader: FC<Props> = (props) => {
 
 const styles = StyleSheet.create({
 	container: {
-		width: "95%",
 		alignSelf: "center",
 		display: "flex",
 		flexDirection: "row",
