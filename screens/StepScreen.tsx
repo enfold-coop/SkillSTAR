@@ -2,9 +2,15 @@ import { AntDesign } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { Video } from "expo-av";
 import React, { FC, useEffect, useState } from "react";
-import { ImageBackground, StyleSheet, Text, View } from "react-native";
+import {
+	ImageBackground,
+	StyleSheet,
+	Text,
+	View,
+	Dimensions,
+} from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
-import { Button, ProgressBar } from "react-native-paper";
+import { Button } from "react-native-paper";
 import * as Animatable from "react-native-animatable";
 import AppHeader from "../components/Header/AppHeader";
 import { chainSteps } from "../data/chainSteps";
@@ -16,17 +22,15 @@ import { StepAttempt } from "../types/CHAIN/StepAttempt";
 import {
 	StepAttemptStars,
 	StarsNIconsContainer,
+	MasteryIconContainer,
+	ProgressBar,
 } from "../components/Steps/index";
+import { SvgUri } from "react-native-svg";
 
 interface Props {
 	route: RootNavProps<"StepScreen">;
 	navigation: RootNavProps<"StepScreen">;
 }
-
-// Convert progress to "0.1 - 1.0" value
-const progressBarCalculation = (len: number, currStep: number): number => {
-	return currStep / len;
-};
 
 const StepScreen: FC<Props> = (props) => {
 	const navigation = useNavigation();
@@ -34,6 +38,7 @@ const StepScreen: FC<Props> = (props) => {
 	let [stepIndex, setStepIndex] = useState(0);
 	let [session, setSession] = useState(new Session());
 	let [video, setVideo] = useState(videos[`chain_0_${stepIndex + 1}`]);
+	console.log(session);
 
 	const incrIndex = () => {
 		stepIndex += 1;
@@ -88,7 +93,7 @@ const StepScreen: FC<Props> = (props) => {
 
 	return (
 		<ImageBackground
-			source={require("../assets/images/sunrise-muted.png")}
+			source={require("../assets/images/sunrise-muted.jpg")}
 			resizeMode={"cover"}
 			style={styles.image}
 		>
@@ -99,19 +104,15 @@ const StepScreen: FC<Props> = (props) => {
 						Step {chainSteps[stepIndex].stepId}:{" "}
 						{chainSteps[stepIndex].instruction}
 					</Text>
+
 					<View style={styles.progressContainer}>
+						<MasteryIconContainer masteryLevel={"focus"} />
 						<ProgressBar
-							style={styles.progressBar}
-							progress={progressBarCalculation(
-								chainSteps.length,
-								stepIndex
-							)}
-							color={CustomColors.uva.blue}
+							currStep={stepIndex}
+							totalSteps={session.data.length}
+							masteryLevel={"focus"}
+							steps={chainSteps}
 						/>
-						<Text style={styles.progressText}>
-							Step {chainSteps[stepIndex].stepId} out of{" "}
-							{chainSteps.length}
-						</Text>
 					</View>
 				</View>
 				<StarsNIconsContainer />
@@ -123,50 +124,57 @@ const StepScreen: FC<Props> = (props) => {
 					>
 						{<ReturnVideoComponent />}
 					</Animatable.View>
-					<View style={styles.bottomContainer}>
-						<Button
-							style={styles.exitButton}
-							color={CustomColors.uva.blue}
-							mode="outlined"
-							onPress={() => {
-								console.log("exit");
-								navigation.navigate("ChainsHomeScreen");
-							}}
-						>
-							Exit
-						</Button>
-					</View>
-					<View style={styles.nextBackBtnsContainer}>
-						<Button
-							style={styles.backButton}
-							color={CustomColors.uva.blue}
-							mode="contained"
-							onPress={() => {
-								decIndex();
-							}}
-						>
-							BACK
-						</Button>
-						<Button
-							style={styles.nextButton}
-							color={CustomColors.uva.blue}
-							mode="contained"
-							onPress={() => {
-								if (stepIndex + 1 <= chainSteps.length - 1) {
-									incrIndex();
-								} else {
-									navigation.navigate(
-										"DataVerificationScreen",
-										{
-											session,
-										}
-									);
-								}
-							}}
-						>
-							NEXT
-						</Button>
-					</View>
+				</View>
+				<View style={styles.bottomContainer}>
+					{/* <Button
+						style={styles.exitButton}
+						color={CustomColors.uva.blue}
+						mode="outlined"
+						onPress={() => {
+							console.log("exit");
+							navigation.navigate("ChainsHomeScreen");
+						}}
+					>
+						Exit
+					</Button> */}
+					<Button
+						style={styles.neededPromptingBtn}
+						color={CustomColors.uva.orange}
+						mode="contained"
+						onPress={() => {
+							console.log("NEEDING PROMPTING");
+						}}
+					>
+						Needed Additional Prompting
+					</Button>
+				</View>
+				<View style={styles.nextBackBtnsContainer}>
+					<Button
+						style={styles.backButton}
+						color={CustomColors.uva.blue}
+						mode="outlined"
+						onPress={() => {
+							decIndex();
+						}}
+					>
+						Previous Step
+					</Button>
+					<Button
+						style={styles.nextButton}
+						color={CustomColors.uva.blue}
+						mode="contained"
+						onPress={() => {
+							if (stepIndex + 1 <= chainSteps.length - 1) {
+								incrIndex();
+							} else {
+								navigation.navigate("DataVerificationScreen", {
+									session,
+								});
+							}
+						}}
+					>
+						Step Complete
+					</Button>
 				</View>
 			</View>
 		</ImageBackground>
@@ -184,24 +192,19 @@ const styles = StyleSheet.create({
 	progress: {
 		flexDirection: "row",
 		justifyContent: "space-between",
-		// padding: 10,
-		paddingLeft: 10,
-		paddingRight: 10,
-		marginLeft: 20,
-		marginRight: 20,
-		// backgroundColor: "#a0a",
+		paddingHorizontal: 0,
+		marginTop: 20,
 	},
 	progressContainer: {
-		flexDirection: "column",
-		justifyContent: "flex-start",
+		flexDirection: "row",
 	},
-	progressText: {
-		paddingTop: 4,
-	},
+	instructionContainer: {},
 	headline: {
 		width: "60%",
-		fontSize: 20,
+		// textAlign: "",
+		fontSize: 22,
 		fontWeight: "600",
+		padding: 10,
 	},
 	subContainer: {
 		flexDirection: "column",
@@ -228,35 +231,33 @@ const styles = StyleSheet.create({
 		width: "100%",
 	},
 	progressBar: {
-		width: 122,
-		height: 20,
-	},
-	bottomContainer: {
-		flexDirection: "row",
-		padding: 20,
-		margin: 10,
-		justifyContent: "space-between",
+		width: 200,
+		height: 40,
+		borderWidth: 0,
+		borderRadius: 5,
 	},
 	focusStepIcon: {
 		height: 30,
 	},
-	exitButton: {
-		width: 144,
-		fontWeight: "600",
+	bottomContainer: {
+		flexDirection: "row",
+		justifyContent: "center",
+		alignContent: "center",
+		paddingVertical: 15,
+		margin: 15,
 	},
+	neededPromptingBtn: {},
+	exitButton: {},
 	nextBackBtnsContainer: {
 		flexDirection: "row",
-		justifyContent: "flex-end",
+		justifyContent: "space-between",
 	},
 	nextButton: {
-		width: 144,
+		width: 244,
 		margin: 15,
-		// alignSelf: "flex-end",
 	},
 	backButton: {
-		width: 144,
 		margin: 15,
-		// alignSelf: "flex-start",
 	},
 });
 

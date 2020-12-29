@@ -51,8 +51,6 @@ const PlotlyLineGraph: FC<Props> = (props) => {
 	};
 
 	const setDimensions = () => {
-		console.log(isModal);
-		console.log(dimensions);
 		setHeight(dimensions.height - 100);
 		setWidth(dimensions.width - 40);
 	};

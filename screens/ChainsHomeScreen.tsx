@@ -13,6 +13,7 @@ import SessionDataAside from "../components/Chain/SessionDataAside";
 import AppHeader from "../components/Header/AppHeader";
 import { RootNavProps } from "../navigation/root_types";
 import CustomColors from "../styles/Colors";
+import { useDeviceOrientation } from "@react-native-community/hooks";
 
 type Props = {
 	route: RootNavProps<"ChainsHomeScreen">;
@@ -21,6 +22,12 @@ type Props = {
 
 // Chain Home Screen
 const ChainsHomeScreen: FC<Props> = (props) => {
+	const { portrait } = useDeviceOrientation();
+	const [orient, setOrient] = useState(false);
+
+	useEffect(() => {
+		setOrient(portrait);
+	}, [portrait]);
 	/**
 	 * TODO:
 	 * - determine if Probe or Training,
@@ -46,52 +53,49 @@ const ChainsHomeScreen: FC<Props> = (props) => {
 	});
 
 	return (
-		// <ImageBackground
-		// 	source={require("../assets/images/sunrise-muted.png")}
-		// 	resizeMode={"cover"}
-		// 	style={styles.container}
-		// >
-		<View>
-			<AppHeader name="Chains Home" />
-			{/* <LineGraph /> */}
-			<View style={styles.titleWrap}>
-				{/* <Text style={styles.title}>Today's Session</Text>
-				<Text style={styles.title}>Steps</Text> */}
-			</View>
-			{chainSteps && (
-				<View style={styles.listContainer}>
-					<SessionDataAside
-						historicalData={{}}
-						name={"Moxy"}
-						sessionNumber={1}
-					/>
-					<FlatList
-						style={styles.list}
-						data={chainSteps}
-						keyExtractor={(item) => item.step.toString()}
-						renderItem={(item) => (
-							<ScorecardListItem itemProps={item} />
-						)}
-					/>
-				</View>
-			)}
-
-			<TouchableOpacity
-				style={[styles.startSessionBtn, { marginBottom: 0 }]}
-				onPress={() => {
-					navToProbeOrTraining();
-				}}
+		<ImageBackground
+			source={require("../assets/images/sunrise-muted.jpg")}
+			resizeMode={"cover"}
+			style={styles.container}
+		>
+			<View
+				style={portrait ? styles.container : styles.landscapeContainer}
 			>
-				<Animatable.Text
-					animation="bounceIn"
-					duration={2000}
-					style={styles.btnText}
+				<AppHeader name="Chains Home" />
+				{chainSteps && (
+					<View style={styles.listContainer}>
+						<SessionDataAside
+							historicalData={{}}
+							name={"Moxy"}
+							sessionNumber={1}
+						/>
+						<FlatList
+							style={styles.list}
+							data={chainSteps}
+							keyExtractor={(item) => item.step.toString()}
+							renderItem={(item) => (
+								<ScorecardListItem itemProps={item} />
+							)}
+						/>
+					</View>
+				)}
+
+				<TouchableOpacity
+					style={[styles.startSessionBtn, { marginBottom: 0 }]}
+					onPress={() => {
+						navToProbeOrTraining();
+					}}
 				>
-					Start the Chain
-				</Animatable.Text>
-			</TouchableOpacity>
-			{/* </ImageBackground> */}
-		</View>
+					<Animatable.Text
+						animation="bounceIn"
+						duration={2000}
+						style={styles.btnText}
+					>
+						Start the Chain
+					</Animatable.Text>
+				</TouchableOpacity>
+			</View>
+		</ImageBackground>
 	);
 };
 
@@ -100,14 +104,17 @@ const styles = StyleSheet.create({
 		flex: 1,
 		margin: 0,
 		justifyContent: "flex-start",
-		alignContent: "flex-end",
-		padding: 0,
-		resizeMode: "cover",
+		alignContent: "flex-start",
+		padding: 10,
+		paddingBottom: 80,
 	},
-	titleWrap: {
-		flexDirection: "row",
-		justifyContent: "space-between",
-		paddingRight: 50,
+	landscapeContainer: {
+		flex: 1,
+		margin: 0,
+		justifyContent: "flex-start",
+		alignContent: "flex-start",
+		padding: 10,
+		paddingBottom: 80,
 	},
 	title: {
 		fontSize: 30,
@@ -120,11 +127,12 @@ const styles = StyleSheet.create({
 		height: 1,
 	},
 	listContainer: {
-		height: "80%",
+		height: "90%",
 		flexDirection: "row",
 		padding: 5,
 	},
 	list: {
+		// height: "90%",
 		margin: 5,
 		marginBottom: 4,
 		padding: 5,
@@ -132,16 +140,13 @@ const styles = StyleSheet.create({
 		borderRadius: 5,
 	},
 	startSessionBtn: {
-		flex: 1,
-		// paddingBottom: 20,
-		margin: 20,
-		// borderWidth: 1,
+		width: "90%",
+		alignSelf: "center",
+		margin: 10,
+		// marginBottom: 20,
 		borderRadius: 10,
-		// borderColor: CustomColors.uva.white,
-		marginBottom: 0,
+		paddingVertical: 10,
 		backgroundColor: CustomColors.uva.orange,
-		justifyContent: "center",
-		alignItems: "center",
 	},
 	btnText: {
 		textAlign: "center",
