@@ -30,6 +30,7 @@ const ScorecardListItem: FC<Props> = ({ ...props }) => {
 	const { step, instruction, mastery } = props.itemProps.item;
 	const [isPressed, setIsPressed] = useState(false);
 
+	// Mastery algorithm
 	const masteredIcon = require("../../assets/icons/ribbon-icon_1.png");
 	const focusIcon = require("../../assets/icons/in-progress-icon_1.png");
 	const notStartedIcon = require("../../assets/icons/waving-icon.png");
