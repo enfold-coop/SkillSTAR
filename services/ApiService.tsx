@@ -12,6 +12,7 @@ export class ApiService {
 		login: `${this.apiUrl}/login_password`,
 		resetPassword: `${this.apiUrl}/reset_password`,
 		refreshSession: `${this.apiUrl}/session`,
+		chainsForParticipant: `${this.apiUrl}/flow/skillstar/<participant_id>`,
 		chain: `${this.apiUrl}/flow/skillstar/chain_questionnaire`,
 		chainSession: `${this.apiUrl}/q/chain_questionnaire/<questionnaire_id>`,
 		chainSteps: `${this.apiUrl}/chain_steps`,
