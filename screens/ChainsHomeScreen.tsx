@@ -22,6 +22,7 @@ type Props = {
 
 // Chain Home Screen
 const ChainsHomeScreen: FC<Props> = (props) => {
+	const navigation = useNavigation();
 	const { portrait } = useDeviceOrientation();
 	const [orient, setOrient] = useState(false);
 
@@ -35,7 +36,6 @@ const ChainsHomeScreen: FC<Props> = (props) => {
 	 * - navigate to Probe form OR chain step
 	 * - supply Probe OR Training data to this screen
 	 */
-	const navigation = useNavigation();
 
 	let [chainSteps, setStepList] = useState();
 	const apiCall = () => {
