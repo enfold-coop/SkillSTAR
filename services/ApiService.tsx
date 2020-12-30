@@ -40,6 +40,29 @@ export class ApiService {
 		}
 	}
 
+	async getChainQuestionnaireId(participantId: number) {
+		const url = this.endpoints.chainsForParticipant.replace('<participant_id>', participantId.toString());
+		try {
+			const response = await fetch(url, {
+				method: "GET",
+				headers: {
+					Accept: "application/json",
+					"Content-Type": "application/json",
+				},
+			});
+
+			const dbData = await response.json();
+			if (dbData && dbData.hasOwnProperty('steps') && dbData.steps && dbData.steps.length > 0) {
+				const questionnaireId = dbData.steps[0].questionnaire_id;
+				AsyncStorage.setItem("chainQuestionnaireId", questionnaireId);
+				return questionnaireId;
+			}
+		} catch (e) {
+			console.error(e);
+			return null;
+		}
+	}
+
 	async getChainData() {
 		const url = this.endpoints.chain;
 		try {
