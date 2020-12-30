@@ -1,3 +1,4 @@
+//
 function isProbe() {
 	/**
 	 * - user has completed Probe session?
