@@ -1,5 +1,4 @@
-import { useNavigation } from "@react-navigation/native";
-import React, { FC, useEffect, useState } from "react";
+import React, { FC, useEffect, useState, useContext } from "react";
 import {
 	FlatList,
 	ImageBackground,
@@ -7,6 +6,9 @@ import {
 	TouchableOpacity,
 	View,
 } from "react-native";
+import { useNavigation } from "@react-navigation/native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { store } from "../context/ChainProvider";
 import { ApiService } from "../services/ApiService";
 import * as Animatable from "react-native-animatable";
 import ScorecardListItem from "../components/Chain/ScorecardListItem";
@@ -23,24 +25,30 @@ type Props = {
 
 // Chain Home Screen
 const ChainsHomeScreen: FC<Props> = (props) => {
+	const state = useContext(store);
+	const { dispatch } = state;
 	const navigation = useNavigation();
+	let api = new ApiService();
 	const { portrait } = useDeviceOrientation();
 	const [orient, setOrient] = useState(false);
-	let api = new ApiService();
+	let [chainSteps, setStepList] = useState();
+
+	useEffect(() => {
+		dispatch({ type: "addSession" });
+		AsyncStorage.getItem("chainSteps").then((steps) => {
+			console.log(steps);
+		});
+		apiCall();
+	}, []);
 
 	useEffect(() => {
 		setOrient(portrait);
 	}, [portrait]);
 
-	/**
-	 * TODO:
-	 * - determine if Probe or Training,
-	 * - set Probe or Training state,
-	 * - navigate to Probe form OR chain step
-	 * - supply Probe OR Training data to this screen
-	 */
-	let [chainSteps, setStepList] = useState();
 	const apiCall = () => {
+		api.getChainSteps().then((res) => {
+			console.log(res);
+		});
 		let { chainSteps, user } = require("../data/chain_steps.json");
 		setStepList(chainSteps);
 	};
@@ -49,10 +57,6 @@ const ChainsHomeScreen: FC<Props> = (props) => {
 		console.log("go to PrepareMaterialsScreen");
 		navigation.navigate("PrepareMaterialsScreen");
 	};
-
-	useEffect(() => {
-		apiCall();
-	});
 
 	return (
 		<ImageBackground

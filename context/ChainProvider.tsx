@@ -5,22 +5,26 @@ import { session } from "./initial_states/initialSession";
 
 type ChainProviderProps = {};
 
-export const ChainContext = React.createContext<Partial<ChainProviderProps>>(
-	{}
-);
+const initialState = {
+	session: null,
+};
+const store = React.createContext<Partial<ChainProviderProps>>(initialState);
 
-let initialState = {};
+const { Provider } = store;
 
-export const ChainProvider: React.FC<ChainProviderProps> = ({ children }) => {
-	// let initialState = session;
-	// // console.log(initialState);
-	// const [sessionState, setSessionState] = useReducer(session, initialState);
-	// let [session, setSession] = useState();
-	// let [stepAttempt, setStepAttempt] = useState();
-
-	return <ChainContext.Provider value={{}}>{children}</ChainContext.Provider>;
+const ChainProvider: React.FC = ({ children }) => {
+	const [state, dispatch] = useReducer((state, action) => {
+		switch (action.type) {
+			case "addSession":
+				return { ...state, session: {} };
+			default:
+				throw new Error();
+		}
+	}, initialState);
+	return <Provider value={{ state, dispatch }}>{children}</Provider>;
 };
 
+export { store, ChainProvider };
 /**
  * - initialize Session Context Provider
  * - setting/getting state in Context API
