@@ -20,15 +20,15 @@ type Props = {
 };
 
 const ScorecardListItem: FC<Props> = (props) => {
-	// console.log(props);
-	const { index } = props;
-
 	const { id, instruction } = props.itemProps.item;
 	const { sessionStepData } = props;
-	console.log(id);
 	const [isPressed, setIsPressed] = useState(false);
 	const [icon, setIcon] = useState();
 	const [stepData, setStepData] = useState({});
+	const [dateIntro, setDateIntro] = useState();
+	const [dateMast, setDateMast] = useState();
+	const [dateBoost, setDateBoosts] = useState();
+	const [dateBoostMast, setDateBoostMast] = useState();
 
 	const determineMastery = () => {
 		if (id === 0 && stepData) {
@@ -38,6 +38,10 @@ const ScorecardListItem: FC<Props> = (props) => {
 		} else {
 			console.log("mastered icon??");
 		}
+	};
+
+	const setDropDownDates = () => {
+		//
 	};
 
 	useEffect(() => {
