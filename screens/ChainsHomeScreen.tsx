@@ -32,11 +32,22 @@ const ChainsHomeScreen: FC<Props> = (props) => {
 	const { portrait } = useDeviceOrientation();
 	const [orient, setOrient] = useState(false);
 	let [chainSteps, setStepList] = useState();
+	let [session, setSession] = useState();
 
 	useEffect(() => {
 		dispatch({ type: "addSession" });
+		// setStepList()
+		getSteps();
 		apiCall();
 	}, []);
+
+	const getSteps = async () => {
+		const s = await api.getChainSteps();
+		// console.log(s);
+		if (s != undefined) {
+			setStepList(s);
+		}
+	};
 
 	useEffect(() => {
 		setOrient(portrait);
@@ -53,11 +64,34 @@ const ChainsHomeScreen: FC<Props> = (props) => {
 			if (participant && participant.hasOwnProperty("id")) {
 				const _id = await api.getChainQuestionnaireId(participant.id);
 				const data = await api.getChainData(_id);
-				console.log(data);
+
+				setProbeOrTraining(data?.sessions);
 			}
 		}
 		// let { chainSteps, user } = require("../data/chain_steps.json");
 		// setStepList(chainSteps);
+	};
+
+	const setProbeOrTraining = (sessions: []) => {
+		if (!sessions.length) {
+			// set probe
+		} else if (sessions.length && sessions[sessions.length - 1]) {
+			if (sessions[sessions.length - 1].session_type === "probe") {
+				// set probe
+			} else if (
+				sessions[sessions.length - 1].session_type === "training"
+			) {
+				// set training session
+			} else {
+				console.error("Issue with session data");
+			}
+		} else {
+			console.error("Trouble getting session data");
+		}
+	};
+
+	const setPromptLevels = (session: {}) => {
+		//
 	};
 
 	const navToProbeOrTraining = () => {
@@ -85,7 +119,7 @@ const ChainsHomeScreen: FC<Props> = (props) => {
 						<FlatList
 							style={styles.list}
 							data={chainSteps}
-							keyExtractor={(item) => item.step.toString()}
+							keyExtractor={(item) => item.instruction.toString()}
 							renderItem={(item) => (
 								<ScorecardListItem itemProps={item} />
 							)}

@@ -216,7 +216,4 @@ export class ApiService {
 		await AsyncStorage.removeItem("user_token");
 		return AsyncStorage.removeItem("user");
 	}
-
-	// async addChainData(data): Promise<void> {
-	// }
 }
