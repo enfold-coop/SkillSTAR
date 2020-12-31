@@ -21,17 +21,22 @@ type Props = {
 
 const ScorecardListItem: FC<Props> = (props) => {
 	// console.log(props);
-	const {} = props.itemProps;
+	const { index } = props;
+
 	const { id, instruction } = props.itemProps.item;
 	const { sessionStepData } = props;
-	console.log(props.itemProps);
+	console.log(id);
 	const [isPressed, setIsPressed] = useState(false);
-	const [icon, setIcon] = useState(notStartedIcon);
+	const [icon, setIcon] = useState();
 	const [stepData, setStepData] = useState({});
 
 	const determineMastery = () => {
-		if (stepData === {}) {
-			// if(!)
+		if (id === 0 && stepData) {
+			setIcon(focusIcon);
+		} else if (id > 0) {
+			setIcon(notStartedIcon);
+		} else {
+			console.log("mastered icon??");
 		}
 	};
 
@@ -39,6 +44,7 @@ const ScorecardListItem: FC<Props> = (props) => {
 		// determine mastery
 		// 1.
 		setStepData(sessionStepData());
+		determineMastery();
 	}, []);
 
 	return (

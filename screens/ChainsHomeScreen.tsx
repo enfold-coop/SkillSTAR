@@ -68,7 +68,7 @@ const ChainsHomeScreen: FC<Props> = (props) => {
 				setUserData(data);
 				// console.log(data);
 				setSession(data?.sessions[data.sessions.length - 1]);
-				// console.log(data?.sessions[data.sessions.length - 1]);
+				console.log(session.step_attempts[1]);
 
 				setProbeOrTraining(data?.sessions);
 			}
@@ -150,7 +150,10 @@ const ChainsHomeScreen: FC<Props> = (props) => {
 								<ScorecardListItem
 									itemProps={item}
 									sessionStepData={() => {
-										if (session.step_attempts[index]) {
+										if (
+											session.step_attempts[index] !=
+											undefined
+										) {
 											return session.step_attempts[index];
 										} else {
 											return {};
