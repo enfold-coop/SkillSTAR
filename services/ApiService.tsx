@@ -4,6 +4,7 @@ import { ChainQuestionnaire } from "../types/Chain/ChainQuestionnaire";
 import { ChainStep } from "../types/Chain/ChainStep";
 import { User } from "../types/User";
 import { API_URL } from "@env";
+import axios from "axios";
 
 export class ApiService {
 	apiUrl = API_URL;
@@ -14,7 +15,7 @@ export class ApiService {
 		chainsForParticipant: `${this.apiUrl}/flow/skillstar/<participant_id>`,
 		chain: `${this.apiUrl}/flow/skillstar/chain_questionnaire`,
 		chainSession: `${this.apiUrl}/q/chain_questionnaire/<questionnaire_id>`,
-		chainSteps: `${this.apiUrl}/chain_steps`,
+		chainSteps: `${this.apiUrl}/chain_step`,
 	};
 
 	constructor() {}
@@ -29,7 +30,6 @@ export class ApiService {
 					"Content-Type": "application/json",
 				},
 			});
-
 			const dbData = await response.json();
 			AsyncStorage.setItem("chainSteps", JSON.stringify(dbData));
 			return dbData as ChainStep[];
@@ -39,19 +39,28 @@ export class ApiService {
 		}
 	}
 
+	async getHeaderInit() {
+		const token = await AsyncStorage.getItem("user_token");
+		return {
+			method: "GET",
+			headers: {
+				Accept: "application/json",
+				"Content-Type": "application/json",
+				Authorization: `Bearer ${token}`,
+			},
+		};
+	}
+
 	async getChainQuestionnaireId(participantId: number) {
 		const url = this.endpoints.chainsForParticipant.replace(
 			"<participant_id>",
 			participantId.toString()
 		);
+		console.log(url);
+
 		try {
-			const response = await fetch(url, {
-				method: "GET",
-				headers: {
-					Accept: "application/json",
-					"Content-Type": "application/json",
-				},
-			});
+			const header = await this.getHeaderInit();
+			const response = await fetch(url, header);
 
 			const dbData = await response.json();
 			if (
@@ -61,7 +70,10 @@ export class ApiService {
 				dbData.steps.length > 0
 			) {
 				const questionnaireId = dbData.steps[0].questionnaire_id;
-				AsyncStorage.setItem("chainQuestionnaireId", questionnaireId);
+				AsyncStorage.setItem(
+					"chainQuestionnaireId",
+					questionnaireId.toString()
+				);
 				return questionnaireId;
 			}
 		} catch (e) {
@@ -70,37 +82,41 @@ export class ApiService {
 		}
 	}
 
-	async getChainData() {
-		const url = this.endpoints.chain;
+	async getChainData(questionnaireId: number) {
+		const url = this.endpoints.chainSession.replace(
+			"<questionnaire_id>",
+			questionnaireId.toString()
+		);
 		try {
-			const response = await fetch(url, {
-				method: "GET",
-				headers: {
-					Accept: "application/json",
-					"Content-Type": "application/json",
-				},
-			});
+			const header = await this.getHeaderInit();
+			const response = await fetch(url, header);
 
 			const dbData = await response.json();
-			AsyncStorage.setItem("chainQuestionnaireId", dbData.id);
+			// AsyncStorage.setItem("chainQuestionnaireId", dbData.id);
 			return dbData as ChainQuestionnaire;
 		} catch (e) {
 			console.error(e);
 			return null;
 		}
+	}
+
+	async setDataHeader(data: any) {
+		const token = await AsyncStorage.getItem("user_token");
+		return {
+			method: "POST",
+			headers: {
+				Accept: "application/json",
+				"Content-Type": "application/json",
+				Authorization: `Bearer ${token}`,
+			},
+			body: JSON.stringify(data),
+		};
 	}
 
 	async addChainData(data: ChainQuestionnaire) {
 		const url = this.endpoints.chain;
 		try {
-			const response = await fetch(url, {
-				method: "POST",
-				headers: {
-					Accept: "application/json",
-					"Content-Type": "application/json",
-				},
-				body: JSON.stringify(data),
-			});
+			const response = await fetch(url);
 
 			const dbData = await response.json();
 			AsyncStorage.setItem("chainQuestionnaireId", dbData.id);
@@ -111,18 +127,24 @@ export class ApiService {
 		}
 	}
 
+	async putDataHeader(data: any) {
+		const token = await AsyncStorage.getItem("user_token");
+		return {
+			method: "PUT",
+			headers: {
+				Accept: "application/json",
+				"Content-Type": "application/json",
+				Authorization: `Bearer ${token}`,
+			},
+			body: JSON.stringify(data),
+		};
+	}
+
 	async editChainData(data: ChainQuestionnaire, questionnaireId: number) {
 		const url = this.endpoints.chain + "/" + questionnaireId;
 		try {
-			const response = await fetch(url, {
-				method: "PUT",
-				headers: {
-					Accept: "application/json",
-					"Content-Type": "application/json",
-				},
-				body: JSON.stringify(data),
-			});
-
+			const header = await this.putDataHeader(data);
+			const response = await fetch(url, header);
 			const dbData = await response.json();
 			return dbData as ChainQuestionnaire;
 		} catch (e) {
@@ -176,6 +198,9 @@ export class ApiService {
 				console.log("user.token", user.token);
 				await AsyncStorage.setItem("user_token", user.token);
 				await AsyncStorage.setItem("user", JSON.stringify(user));
+				let u = await AsyncStorage.getItem("user_token");
+				console.log(u);
+
 				return user;
 			} else {
 				return null;

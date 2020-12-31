@@ -35,9 +35,6 @@ const ChainsHomeScreen: FC<Props> = (props) => {
 
 	useEffect(() => {
 		dispatch({ type: "addSession" });
-		AsyncStorage.getItem("chainSteps").then((steps) => {
-			console.log(steps);
-		});
 		apiCall();
 	}, []);
 
@@ -45,12 +42,22 @@ const ChainsHomeScreen: FC<Props> = (props) => {
 		setOrient(portrait);
 	}, [portrait]);
 
-	const apiCall = () => {
-		api.getChainSteps().then((res) => {
-			console.log(res);
-		});
-		let { chainSteps, user } = require("../data/chain_steps.json");
-		setStepList(chainSteps);
+	const apiCall = async () => {
+		const participantJson = await AsyncStorage.getItem(
+			"selected_participant"
+		);
+
+		if (participantJson) {
+			const participant = JSON.parse(participantJson);
+
+			if (participant && participant.hasOwnProperty("id")) {
+				const _id = await api.getChainQuestionnaireId(participant.id);
+				const data = await api.getChainData(_id);
+				console.log(data);
+			}
+		}
+		// let { chainSteps, user } = require("../data/chain_steps.json");
+		// setStepList(chainSteps);
 	};
 
 	const navToProbeOrTraining = () => {

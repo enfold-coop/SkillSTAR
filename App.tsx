@@ -37,9 +37,11 @@ export default function App() {
 				<AuthContext.Provider
 					value={{ state: { user: null, participant: null } }}
 				>
-					<ChainProvider>
-						<Navigation colorScheme={colorScheme} />
-					</ChainProvider>
+					<Provider>
+						<ChainProvider>
+							<Navigation colorScheme={colorScheme} />
+						</ChainProvider>
+					</Provider>
 				</AuthContext.Provider>
 			</SafeAreaProvider>
 		);

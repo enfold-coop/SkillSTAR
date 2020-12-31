@@ -122,7 +122,7 @@ export default function LandingScreen({ navigation }: Props<"LandingScreen">) {
 					onPress={() => {
 						setErrorMessage("");
 						api.login(email, password).then((user) => {
-							// console.log('user', user);
+							// console.log("user", user);
 							if (user) {
 								context.state.user = user;
 								navigation.navigate("ChainsHomeScreen");
