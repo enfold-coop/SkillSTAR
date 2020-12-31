@@ -13,35 +13,36 @@ const masteredIcon = require("../../assets/icons/ribbon-icon_1.png");
 const focusIcon = require("../../assets/icons/in-progress-icon_1.png");
 const notStartedIcon = require("../../assets/icons/waving-icon.png");
 
-interface ScorecardStepListItem {
-	step: number;
-	instruction: string;
-	mastery: MasteryLevel;
-}
-
-interface ListItem {
-	item: ScorecardStepListItem;
-}
-
 type Props = {
 	index?: number;
-	itemProps: ListItem;
+	itemProps: {};
+	sessionStepData?: {};
 };
 
 const ScorecardListItem: FC<Props> = (props) => {
-	console.log(props);
-
-	const { step, instruction, mastery } = props.itemProps.item;
+	// console.log(props);
+	const {} = props.itemProps;
+	const { id, instruction } = props.itemProps.item;
+	const { sessionStepData } = props;
+	console.log(props.itemProps);
 	const [isPressed, setIsPressed] = useState(false);
 	const [icon, setIcon] = useState(notStartedIcon);
+	const [stepData, setStepData] = useState({});
+
+	const determineMastery = () => {
+		if (stepData === {}) {
+			// if(!)
+		}
+	};
 
 	useEffect(() => {
 		// determine mastery
 		// 1.
+		setStepData(sessionStepData());
 	}, []);
 
 	return (
-		<Animatable.View animation="fadeIn" duration={300 * step}>
+		<Animatable.View animation="fadeIn" duration={300 * id}>
 			<Card style={styles.container}>
 				<TouchableOpacity
 					style={[styles.touchable]}
@@ -49,7 +50,7 @@ const ScorecardListItem: FC<Props> = (props) => {
 						setIsPressed(!isPressed);
 					}}
 				>
-					<Text style={styles.id}>{step}. </Text>
+					<Text style={styles.id}>{id + 1}. </Text>
 					<Text style={styles.skill}>{instruction}</Text>
 					{/* <Text style={styles.score}>{MasteryIcons(1)}</Text> */}
 					<Image

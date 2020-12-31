@@ -33,6 +33,7 @@ const ChainsHomeScreen: FC<Props> = (props) => {
 	const [orient, setOrient] = useState(false);
 	let [chainSteps, setStepList] = useState();
 	let [session, setSession] = useState();
+	const [userData, setUserData] = useState();
 
 	useEffect(() => {
 		dispatch({ type: "addSession" });
@@ -64,7 +65,10 @@ const ChainsHomeScreen: FC<Props> = (props) => {
 			if (participant && participant.hasOwnProperty("id")) {
 				const _id = await api.getChainQuestionnaireId(participant.id);
 				const data = await api.getChainData(_id);
-				console.log(data);
+				setUserData(data);
+				// console.log(data);
+				setSession(data?.sessions[data.sessions.length - 1]);
+				// console.log(data?.sessions[data.sessions.length - 1]);
 
 				setProbeOrTraining(data?.sessions);
 			}
@@ -119,6 +123,8 @@ const ChainsHomeScreen: FC<Props> = (props) => {
 		navigation.navigate("PrepareMaterialsScreen");
 	};
 
+	const determineSessionStepData = (index: number) => {};
+
 	return (
 		<ImageBackground
 			source={require("../assets/images/sunrise-muted.jpg")}
@@ -140,10 +146,16 @@ const ChainsHomeScreen: FC<Props> = (props) => {
 							style={styles.list}
 							data={chainSteps}
 							keyExtractor={(item) => item.instruction.toString()}
-							renderItem={(item) => (
+							renderItem={(item, index) => (
 								<ScorecardListItem
 									itemProps={item}
-									userData={}
+									sessionStepData={() => {
+										if (session.step_attempts[index]) {
+											return session.step_attempts[index];
+										} else {
+											return {};
+										}
+									}}
 								/>
 							)}
 						/>
