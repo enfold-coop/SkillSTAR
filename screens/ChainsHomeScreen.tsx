@@ -75,12 +75,27 @@ const ChainsHomeScreen: FC<Props> = (props) => {
 
 	const setProbeOrTraining = (sessions: []) => {
 		if (!sessions.length) {
-			// set probe
+			// set probe:
+			// - set probe start button text
+			// - set probe aside text:
+			// ---- probe session #
+			// ---- probe session instructions
 		} else if (sessions.length && sessions[sessions.length - 1]) {
 			if (sessions[sessions.length - 1].session_type === "probe") {
 				// set probe
+				// - set probe start button text
+				// - set probe aside text:
+				// ---- probe session #
+				// ---- probe session instructions
 			} else if (
 				sessions[sessions.length - 1].session_type === "training"
+				// set training
+				// - set training start button text
+				// - set TRAINING aside text:
+				// ---- TRAINING session #
+				// ---- TRAINING CURRENT session FOCUS STEP & INSTRUCTIONS
+				// ---- TRAINING session PROMPT LEVEL
+				// ---- TRAINING MASTERY LEVEL PROMPT LEVEL
 			) {
 				// set training session
 			} else {
@@ -126,7 +141,10 @@ const ChainsHomeScreen: FC<Props> = (props) => {
 							data={chainSteps}
 							keyExtractor={(item) => item.instruction.toString()}
 							renderItem={(item) => (
-								<ScorecardListItem itemProps={item} />
+								<ScorecardListItem
+									itemProps={item}
+									userData={}
+								/>
 							)}
 						/>
 					</View>

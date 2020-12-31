@@ -9,6 +9,10 @@ import * as Animatable from "react-native-animatable";
 import date from "date-and-time";
 import CustomColors from "../../styles/Colors";
 
+const masteredIcon = require("../../assets/icons/ribbon-icon_1.png");
+const focusIcon = require("../../assets/icons/in-progress-icon_1.png");
+const notStartedIcon = require("../../assets/icons/waving-icon.png");
+
 interface ScorecardStepListItem {
 	step: number;
 	instruction: string;
@@ -29,11 +33,12 @@ const ScorecardListItem: FC<Props> = (props) => {
 
 	const { step, instruction, mastery } = props.itemProps.item;
 	const [isPressed, setIsPressed] = useState(false);
+	const [icon, setIcon] = useState(notStartedIcon);
 
-	// Mastery algorithm
-	const masteredIcon = require("../../assets/icons/ribbon-icon_1.png");
-	const focusIcon = require("../../assets/icons/in-progress-icon_1.png");
-	const notStartedIcon = require("../../assets/icons/waving-icon.png");
+	useEffect(() => {
+		// determine mastery
+		// 1.
+	}, []);
 
 	return (
 		<Animatable.View animation="fadeIn" duration={300 * step}>
@@ -56,7 +61,7 @@ const ScorecardListItem: FC<Props> = (props) => {
 								padding: 2,
 							},
 						]}
-						source={focusIcon}
+						source={icon}
 					/>
 					<AntDesign
 						name="caretright"
