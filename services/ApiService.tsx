@@ -1,9 +1,9 @@
 import React from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { ChainQuestionnaire } from "../types/Chain/ChainQuestionnaire";
+import { ChainStep } from "../types/Chain/ChainStep";
 import { User } from "../types/User";
 import { API_URL } from "@env";
-
-export interface BaselineAssessmentData {}
 
 export class ApiService {
 	apiUrl = API_URL;
@@ -11,13 +11,87 @@ export class ApiService {
 		login: `${this.apiUrl}/login_password`,
 		resetPassword: `${this.apiUrl}/reset_password`,
 		refreshSession: `${this.apiUrl}/session`,
-		baselineAssessment: `${this.apiUrl}/flow/skillstar_baseline/baseline_assessment_questionnaire`,
+		chainsForParticipant: `${this.apiUrl}/flow/skillstar/<participant_id>`,
+		chain: `${this.apiUrl}/flow/skillstar/chain_questionnaire`,
+		chainSession: `${this.apiUrl}/q/chain_questionnaire/<questionnaire_id>`,
+		chainSteps: `${this.apiUrl}/chain_steps`,
 	};
 
 	constructor() {}
 
-	async addBaselineAssessment(data: BaselineAssessmentData) {
-		const url = this.endpoints.baselineAssessment;
+	async getChainSteps() {
+		const url = this.endpoints.chainSteps;
+		try {
+			const response = await fetch(url, {
+				method: "GET",
+				headers: {
+					Accept: "application/json",
+					"Content-Type": "application/json",
+				},
+			});
+
+			const dbData = await response.json();
+			AsyncStorage.setItem("chainSteps", JSON.stringify(dbData));
+			return dbData as ChainStep[];
+		} catch (e) {
+			console.error(e);
+			return null;
+		}
+	}
+
+	async getChainQuestionnaireId(participantId: number) {
+		const url = this.endpoints.chainsForParticipant.replace(
+			"<participant_id>",
+			participantId.toString()
+		);
+		try {
+			const response = await fetch(url, {
+				method: "GET",
+				headers: {
+					Accept: "application/json",
+					"Content-Type": "application/json",
+				},
+			});
+
+			const dbData = await response.json();
+			if (
+				dbData &&
+				dbData.hasOwnProperty("steps") &&
+				dbData.steps &&
+				dbData.steps.length > 0
+			) {
+				const questionnaireId = dbData.steps[0].questionnaire_id;
+				AsyncStorage.setItem("chainQuestionnaireId", questionnaireId);
+				return questionnaireId;
+			}
+		} catch (e) {
+			console.error(e);
+			return null;
+		}
+	}
+
+	async getChainData() {
+		const url = this.endpoints.chain;
+		try {
+			const response = await fetch(url, {
+				method: "GET",
+				headers: {
+					Accept: "application/json",
+					"Content-Type": "application/json",
+				},
+			});
+
+			const dbData = await response.json();
+			AsyncStorage.setItem("chainQuestionnaireId", dbData.id);
+			return dbData as ChainQuestionnaire;
+		} catch (e) {
+			console.error(e);
+			return null;
+		}
+	}
+
+	async addChainData(data: ChainQuestionnaire) {
+		const url = this.endpoints.chain;
 		try {
 			const response = await fetch(url, {
 				method: "POST",
@@ -29,19 +103,16 @@ export class ApiService {
 			});
 
 			const dbData = await response.json();
-			AsyncStorage.setItem("baselineAssessmentId", dbData.id);
-			return dbData as BaselineAssessmentData;
+			AsyncStorage.setItem("chainQuestionnaireId", dbData.id);
+			return dbData as ChainQuestionnaire;
 		} catch (e) {
 			console.error(e);
 			return null;
 		}
 	}
 
-	async editBaselineAssessment(
-		data: BaselineAssessmentData,
-		questionnaireId: number
-	) {
-		const url = this.endpoints.baselineAssessment + "/" + questionnaireId;
+	async editChainData(data: ChainQuestionnaire, questionnaireId: number) {
+		const url = this.endpoints.chain + "/" + questionnaireId;
 		try {
 			const response = await fetch(url, {
 				method: "PUT",
@@ -53,18 +124,15 @@ export class ApiService {
 			});
 
 			const dbData = await response.json();
-			return dbData as BaselineAssessmentData;
+			return dbData as ChainQuestionnaire;
 		} catch (e) {
 			console.error(e);
 			return null;
 		}
 	}
 
-	async deleteBaselineAssessment(
-		data: BaselineAssessmentData,
-		participantId: number
-	) {
-		const url = this.endpoints.baselineAssessment + "/" + participantId;
+	async deleteChainData(data: ChainQuestionnaire, participantId: number) {
+		const url = this.endpoints.chain + "/" + participantId;
 		try {
 			const response = await fetch(url, {
 				method: "DELETE",
@@ -76,7 +144,7 @@ export class ApiService {
 			});
 
 			const dbData = await response.json();
-			return dbData as BaselineAssessmentData;
+			return dbData as ChainQuestionnaire;
 		} catch (e) {
 			console.error(e);
 			return null;
@@ -89,8 +157,12 @@ export class ApiService {
 		email_token = ""
 	): Promise<User | null> {
 		try {
+			const url = this.endpoints.login;
+			console.log("url", url);
+
 			const response = await fetch(this.endpoints.login, {
 				method: "POST",
+				mode: "cors",
 				headers: {
 					Accept: "application/json",
 					"Content-Type": "application/json",
@@ -101,7 +173,7 @@ export class ApiService {
 			const user: User = await response.json();
 
 			if (user.token) {
-				console.log('user.token', user.token);
+				console.log("user.token", user.token);
 				await AsyncStorage.setItem("user_token", user.token);
 				await AsyncStorage.setItem("user", JSON.stringify(user));
 				return user;
@@ -120,6 +192,6 @@ export class ApiService {
 		return AsyncStorage.removeItem("user");
 	}
 
-	// async addBaselineAssessment(data): Promise<void> {
+	// async addChainData(data): Promise<void> {
 	// }
 }

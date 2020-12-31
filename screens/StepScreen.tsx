@@ -38,7 +38,6 @@ const StepScreen: FC<Props> = (props) => {
 	let [stepIndex, setStepIndex] = useState(0);
 	let [session, setSession] = useState(new Session());
 	let [video, setVideo] = useState(videos[`chain_0_${stepIndex + 1}`]);
-	console.log(session);
 
 	const incrIndex = () => {
 		stepIndex += 1;
@@ -53,6 +52,8 @@ const StepScreen: FC<Props> = (props) => {
 	};
 
 	const createAttempts = () => {
+		console.log(chainSteps);
+
 		chainSteps.forEach((e, i) => {
 			let { stepId, instruction } = chainSteps[i];
 			session.addStepData(new StepAttempt(stepId, instruction));
@@ -62,7 +63,7 @@ const StepScreen: FC<Props> = (props) => {
 	const ReturnVideoComponent = () => {
 		return (
 			<Video
-				source={videos[`chain_0_${stepIndex + 1}`]}
+				source={videos[`step_${stepIndex + 1}`]}
 				rate={1.0}
 				volume={1.0}
 				isMuted={true}

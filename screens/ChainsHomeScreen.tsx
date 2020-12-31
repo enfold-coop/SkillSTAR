@@ -7,6 +7,7 @@ import {
 	TouchableOpacity,
 	View,
 } from "react-native";
+import { ApiService } from "../services/ApiService";
 import * as Animatable from "react-native-animatable";
 import ScorecardListItem from "../components/Chain/ScorecardListItem";
 import SessionDataAside from "../components/Chain/SessionDataAside";
@@ -25,10 +26,12 @@ const ChainsHomeScreen: FC<Props> = (props) => {
 	const navigation = useNavigation();
 	const { portrait } = useDeviceOrientation();
 	const [orient, setOrient] = useState(false);
+	let api = new ApiService();
 
 	useEffect(() => {
 		setOrient(portrait);
 	}, [portrait]);
+
 	/**
 	 * TODO:
 	 * - determine if Probe or Training,
@@ -36,7 +39,6 @@ const ChainsHomeScreen: FC<Props> = (props) => {
 	 * - navigate to Probe form OR chain step
 	 * - supply Probe OR Training data to this screen
 	 */
-
 	let [chainSteps, setStepList] = useState();
 	const apiCall = () => {
 		let { chainSteps, user } = require("../data/chain_steps.json");
