@@ -64,6 +64,7 @@ const ChainsHomeScreen: FC<Props> = (props) => {
 			if (participant && participant.hasOwnProperty("id")) {
 				const _id = await api.getChainQuestionnaireId(participant.id);
 				const data = await api.getChainData(_id);
+				console.log(data);
 
 				setProbeOrTraining(data?.sessions);
 			}
@@ -88,6 +89,10 @@ const ChainsHomeScreen: FC<Props> = (props) => {
 		} else {
 			console.error("Trouble getting session data");
 		}
+	};
+
+	const setFocusStep = () => {
+		//
 	};
 
 	const setPromptLevels = (session: {}) => {

@@ -10,11 +10,9 @@ import date from "date-and-time";
 import CustomColors from "../../styles/Colors";
 
 interface ScorecardStepListItem {
-	attempts: StepAttempt[];
 	step: number;
 	instruction: string;
 	mastery: MasteryLevel;
-	video: string;
 }
 
 interface ListItem {
@@ -26,7 +24,9 @@ type Props = {
 	itemProps: ListItem;
 };
 
-const ScorecardListItem: FC<Props> = ({ ...props }) => {
+const ScorecardListItem: FC<Props> = (props) => {
+	console.log(props);
+
 	const { step, instruction, mastery } = props.itemProps.item;
 	const [isPressed, setIsPressed] = useState(false);
 
