@@ -25,9 +25,8 @@ type Props = {
 
 const SessionDataAside: FC<Props> = (props) => {
 	const { sessionNumber, name, asideContent } = props;
-	console.log(asideContent);
 
-	const [isTraining, setIsTraining] = useState(true);
+	const [isTraining, setIsTraining] = useState(false);
 	const [today, setToday] = useState(date.format(new Date(), "MM/DD/YYYY"));
 	const [promptLevel, setPromptLevel] = useState("Full Physical");
 	const [masteryLevel, setMasteryLevel] = useState("Focus");
@@ -36,6 +35,14 @@ const SessionDataAside: FC<Props> = (props) => {
 
 	const handleModal = () => {
 		setModalVis(!modalVis);
+	};
+
+	const setAsideContent = () => {
+		if (isTraining) {
+			return <TrainingAside />;
+		} else {
+			return <ProbeAside />;
+		}
 	};
 
 	return (
@@ -49,7 +56,7 @@ const SessionDataAside: FC<Props> = (props) => {
 							<Text style={styles.date}>{today}</Text>
 						</View>
 						<View style={styles.taskInfoContainer}>
-							<ProbeAside />
+							{setAsideContent()}
 							{/* <TrainingAside /> */}
 							{/* <Text style={styles.isProbeTrainingSession}>
 								{isTraining

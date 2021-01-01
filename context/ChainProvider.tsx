@@ -19,8 +19,6 @@ const ChainProvider: React.FC = ({ children }) => {
 			case "addSession":
 				return { ...state, session: action.payload };
 			case "addUserData":
-				// console.log(action.payload);
-				console.log(action.payload);
 				return { ...state, userData: action.payload };
 			default:
 				throw new Error();

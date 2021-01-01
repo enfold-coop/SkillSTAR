@@ -82,7 +82,7 @@ const ChainsHomeScreen: FC<Props> = (props) => {
 				setUserData(data);
 				setSession(data?.sessions[data.sessions.length - 1]);
 				dispatch({ type: "addUserData", payload: data });
-				dispatch({ type: "addSession", payload: "fgsdfgsdfgsdfg" });
+				dispatch({ type: "addSession", payload: session });
 				setProbeOrTraining(data?.sessions);
 				setSessionType(
 					data.sessions[data.sessions.length - 1].session_type
@@ -139,11 +139,7 @@ const ChainsHomeScreen: FC<Props> = (props) => {
 	};
 
 	const navToProbeOrTraining = () => {
-		console.log("go to PrepareMaterialsScreen");
-		console.log(type);
-
 		let t = () => type;
-
 		navigation.navigate("PrepareMaterialsScreen", {
 			sessionType: t(),
 		});
