@@ -32,13 +32,13 @@ const ChainProvider: React.FC = ({ children }) => {
 			case ADD_USER_DATA:
 				return { ...state, userData: action.payload };
 			case ADD_CURR_SESSION_NMBR:
-				return { ...state, userData: action.payload };
+				return { ...state, currSessionNmbr: action.payload };
 			default:
 				throw new Error();
 		}
 	}, initialState);
-	// console.log("state");
-	// console.log(state);
+	console.log("state");
+	console.log(state);
 
 	return <Provider value={{ state, dispatch }}>{children}</Provider>;
 };

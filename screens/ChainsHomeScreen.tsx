@@ -81,10 +81,10 @@ const ChainsHomeScreen: FC<Props> = (props) => {
 		const participantJson = await AsyncStorage.getItem(
 			"selected_participant"
 		);
+
 		// console.log(participantJson);
 		if (participantJson) {
 			const participant = JSON.parse(participantJson);
-			// console.log(participant.id);
 
 			if (participant && participant.hasOwnProperty("id")) {
 				const _id = await api.getChainQuestionnaireId(participant.id);
@@ -93,7 +93,7 @@ const ChainsHomeScreen: FC<Props> = (props) => {
 
 				setSession(data?.sessions[data.sessions.length - 1]);
 				dispatch({ type: ADD_USER_DATA, payload: data });
-				dispatch({ type: ADD_SESSION_TYPE, payload: data });
+				// dispatch({ type: ADD_SESSION_TYPE, payload: data });
 				setProbeOrTraining(data?.sessions);
 				setType(data.sessions[data.sessions.length - 1].session_type);
 				setSessionTypeAndNmbr(data);
@@ -111,23 +111,26 @@ const ChainsHomeScreen: FC<Props> = (props) => {
 		let lastSess = d.sessions.length
 			? d.sessions[d.sessions.length - 1]
 			: null;
-		let sessNmbr = 0;
+		let sessNmbr = 0,
+			sType = "";
 		if (lastSess === null) {
-			setType("probe");
+			sType = "probe";
 			sessNmbr = 1;
 		}
 		if (lastSess) {
 			if (lastSess.session_type === "training" && !lastSess.completed) {
-				setType("training");
+				sType = "training";
 				sessNmbr = d.sessions.length + 1;
 			}
 			if (lastSess.session_type === "probe" && !lastSess.completed) {
-				setType("probe");
+				sType = "probe";
 				sessNmbr = d.sessions.length + 1;
 			}
 		}
 		setSessionNmbr(sessNmbr);
+		setType(sType);
 		dispatch({ type: ADD_CURR_SESSION_NMBR, payload: sessNmbr });
+		dispatch({ type: ADD_SESSION_TYPE, payload: sType });
 	};
 
 	const setElemsValues = () => {
@@ -139,8 +142,6 @@ const ChainsHomeScreen: FC<Props> = (props) => {
 			setBtnText(START_TRAINING_SESSION_BTN);
 		}
 	};
-
-	const setProbeOrTraining = (sessions: []) => {};
 
 	const navToProbeOrTraining = () => {
 		let t = () => type;
