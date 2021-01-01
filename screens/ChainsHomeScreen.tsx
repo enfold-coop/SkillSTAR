@@ -48,7 +48,7 @@ const ChainsHomeScreen: FC<Props> = (props) => {
 	const [chainSteps, setStepList] = useState();
 	const [session, setSession] = useState();
 	const [userData, setUserData] = useState();
-	const [sessionNumb, setSessionNumb] = useState();
+	const [sessionNmbr, setSessionNmbr] = useState(0);
 	const [type, setType] = useState("type");
 
 	useEffect(() => {
@@ -90,7 +90,8 @@ const ChainsHomeScreen: FC<Props> = (props) => {
 				dispatch({ type: "addSessionType", payload: data });
 				setProbeOrTraining(data?.sessions);
 				setType(data.sessions[data.sessions.length - 1].session_type);
-				setSessionType(data);
+				setSessionTypeAndNmbr(data);
+				setElemsValues();
 			}
 		}
 		// let { chainSteps, user } = require("../data/chain_steps.json");
@@ -100,28 +101,24 @@ const ChainsHomeScreen: FC<Props> = (props) => {
 	/**
 	 * UTIL function (can be moved to another file)
 	 */
-	const setSessionType = (d) => {
+	const setSessionTypeAndNmbr = (d: any) => {
 		let lastSess = d.sessions.length
 			? d.sessions[d.sessions.length - 1]
 			: null;
 
-		if (lastSess === null) setType("probe");
+		if (lastSess === null) {
+			setType("probe");
+			setSessionNmbr(1);
+		}
 		if (lastSess) {
 			if (lastSess.session_type === "training" && !lastSess.completed) {
 				setType("training");
+				setSessionNmbr(d.sessions.length + 1);
 			}
 			if (lastSess.session_type === "probe" && !lastSess.completed) {
 				setType("probe");
+				setSessionNmbr(d.sessions.length + 1);
 			}
-		}
-		if (lastSess.session_type === "probe") {
-			if (lastSess.completed) {
-				setType("training");
-			} else {
-				setType("probe");
-			}
-		} else {
-			setType("training");
 		}
 	};
 
@@ -135,53 +132,7 @@ const ChainsHomeScreen: FC<Props> = (props) => {
 		}
 	};
 
-	const setProbeOrTraining = (sessions: []) => {
-		if (!sessions.length) {
-			// set probe:
-			// - set probe start button text
-			setBtnText(START_PROBE_SESSION_BTN);
-			setAsideContents(PROBE_INSTRUCTIONS);
-			// - set probe aside text:
-			// ---- probe session #
-			// ---- probe session instructions
-		} else if (sessions.length) {
-			if (
-				sessions[sessions.length - 1].session_type === "probe" &&
-				REQUIRED_PROBE_TOTAL > COMPLETED_PROBE_SESSIONS
-			) {
-				setBtnText(START_PROBE_SESSION_BTN);
-				setAsideContents(PROBE_INSTRUCTIONS);
-				// set probe
-				// - set probe start button text
-				// - set probe aside text:
-				// ---- probe session #
-				// ---- probe session instructions
-			} else if (
-				sessions[sessions.length - 1].session_type === "training"
-			) {
-				// set training
-				// - set training start button text
-				// - set TRAINING aside text:
-				// ---- TRAINING session #
-				// ---- TRAINING CURRENT session FOCUS STEP & INSTRUCTIONS
-				// ---- TRAINING session PROMPT LEVEL
-				// ---- TRAINING MASTERY LEVEL PROMPT LEVEL
-				// set training session
-			} else {
-				console.error("Issue with session data");
-			}
-		} else {
-			console.error("Trouble getting session data");
-		}
-	};
-
-	const setFocusStep = () => {
-		//
-	};
-
-	const setPromptLevels = (session: {}) => {
-		//
-	};
+	const setProbeOrTraining = (sessions: []) => {};
 
 	const navToProbeOrTraining = () => {
 		let t = () => type;
@@ -208,7 +159,7 @@ const ChainsHomeScreen: FC<Props> = (props) => {
 							historicalData={{}}
 							name={"Moxy"}
 							asideContent={asideContent}
-							sessionNumber={1}
+							sessionNumber={sessionNmbr}
 						/>
 						<FlatList
 							style={styles.list}

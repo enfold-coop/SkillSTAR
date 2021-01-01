@@ -52,7 +52,9 @@ const SessionDataAside: FC<Props> = (props) => {
 				<View>
 					<Card>
 						<View style={styles.sessionNumbAndDateContainer}>
-							<Text style={styles.sessionNum}>Session #{1}</Text>
+							<Text style={styles.sessionNum}>
+								Session #{sessionNumber}
+							</Text>
 							<Text style={styles.date}>{today}</Text>
 						</View>
 						<View style={styles.taskInfoContainer}>
@@ -81,11 +83,6 @@ const SessionDataAside: FC<Props> = (props) => {
 									{masteryLevel}
 								</Text>
 							</Text> */}
-						</View>
-						<View style={styles.upNextContainer}>
-							<Text style={styles.upNextLabel}>
-								Up next: <Text>{"Focus Step #3"}</Text>
-							</Text>
 						</View>
 					</Card>
 				</View>
