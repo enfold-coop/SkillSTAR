@@ -17,7 +17,6 @@ type Props = {
 const PrepareMaterialsScreen: FC<Props> = (props) => {
 	const navigation = useNavigation();
 	const { sessionType } = props;
-	console.log(props.route.params);
 
 	const [type, setType] = useState();
 	// console.log(sessionType);

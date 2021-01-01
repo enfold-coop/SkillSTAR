@@ -30,8 +30,11 @@ type Props = {
 
 // Chain Home Screen
 const ChainsHomeScreen: FC<Props> = (props) => {
-	const state = useContext(store);
-	const { dispatch } = state;
+	const context = useContext(store);
+
+	const { dispatch } = context;
+	console.log(dispatch);
+
 	const navigation = useNavigation();
 	let api = new ApiService();
 	const { portrait } = useDeviceOrientation();
@@ -42,14 +45,15 @@ const ChainsHomeScreen: FC<Props> = (props) => {
 	const [session, setSession] = useState();
 	const [userData, setUserData] = useState();
 	const [sessionNumb, setSessionNumb] = useState();
-	const [sessionType, setSessionType] = useState("type");
+	const [type, setSessionType] = useState("type");
 
 	useEffect(() => {
-		dispatch({ type: "addSession" });
 		// setStepList()
 		getSteps();
 		apiCall();
 	}, []);
+
+	useEffect(() => {});
 
 	const getSteps = async () => {
 		const s = await api.getChainSteps();
@@ -67,24 +71,22 @@ const ChainsHomeScreen: FC<Props> = (props) => {
 		const participantJson = await AsyncStorage.getItem(
 			"selected_participant"
 		);
-		const data;
-
 		// console.log(participantJson);
 		if (participantJson) {
 			const participant = JSON.parse(participantJson);
-			// console.log(participant.id);
+			console.log(participant.id);
 
 			if (participant && participant.hasOwnProperty("id")) {
 				const _id = await api.getChainQuestionnaireId(participant.id);
-				// console.log("_id");
-				// console.log(_id);
-
-				data = await api.getChainData(_id);
-				// setUserData(data);
-				// console.log(data);
-				// setSession(data?.sessions[data.sessions.length - 1]);
-				// console.log(session.step_attempts[1]);
+				const data = await api.getChainData(_id);
+				setUserData(data);
+				setSession(data?.sessions[data.sessions.length - 1]);
+				dispatch({ type: "addUserData", payload: data });
+				dispatch({ type: "addSession", payload: "fgsdfgsdfgsdfg" });
 				setProbeOrTraining(data?.sessions);
+				setSessionType(
+					data.sessions[data.sessions.length - 1].session_type
+				);
 			}
 		}
 		// let { chainSteps, user } = require("../data/chain_steps.json");
@@ -97,8 +99,6 @@ const ChainsHomeScreen: FC<Props> = (props) => {
 			// - set probe start button text
 			setBtnText(START_PROBE_SESSION_BTN);
 			setAsideContents(PROBE_INSTRUCTIONS);
-			setSessionType("probe");
-			console.log(sessionType);
 			// - set probe aside text:
 			// ---- probe session #
 			// ---- probe session instructions
@@ -106,8 +106,6 @@ const ChainsHomeScreen: FC<Props> = (props) => {
 			if (sessions[sessions.length - 1].session_type === "probe") {
 				setBtnText(START_PROBE_SESSION_BTN);
 				setAsideContents(PROBE_INSTRUCTIONS);
-				setSessionType("probe");
-				console.log(sessionType);
 				// set probe
 				// - set probe start button text
 				// - set probe aside text:
@@ -140,12 +138,14 @@ const ChainsHomeScreen: FC<Props> = (props) => {
 		//
 	};
 
-	const navToProbeOrTraining = (type: String) => {
+	const navToProbeOrTraining = () => {
 		console.log("go to PrepareMaterialsScreen");
 		console.log(type);
 
+		let t = () => type;
+
 		navigation.navigate("PrepareMaterialsScreen", {
-			sessionType: sessionType,
+			sessionType: t(),
 		});
 	};
 
@@ -188,7 +188,7 @@ const ChainsHomeScreen: FC<Props> = (props) => {
 				<TouchableOpacity
 					style={[styles.startSessionBtn, { marginBottom: 0 }]}
 					onPress={() => {
-						navToProbeOrTraining(sessionType);
+						navToProbeOrTraining();
 					}}
 				>
 					<Animatable.Text

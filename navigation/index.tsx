@@ -67,6 +67,24 @@ function RootNavigator() {
 			<Stack.Screen
 				options={({ navigation }) => ({
 					...screenOpts,
+					title: "Chains", // TODO: Replace this title with something more useful
+					headerRight: () => <LogoutButton navigation={navigation} />,
+				})}
+				name="ChainsHomeScreen"
+				component={ChainsHomeScreen}
+			/>
+			<Stack.Screen
+				options={({ navigation }) => ({
+					...screenOpts,
+					title: "Prepare Materials",
+					headerRight: () => <LogoutButton navigation={navigation} />,
+				})}
+				name="PrepareMaterialsScreen"
+				component={PrepareMaterialsScreen}
+			/>
+			<Stack.Screen
+				options={({ navigation }) => ({
+					...screenOpts,
 					title: "Probe Session",
 					headerRight: () => <LogoutButton navigation={navigation} />,
 				})}
@@ -93,24 +111,6 @@ function RootNavigator() {
 				name="SkillsHomeScreen"
 				component={SkillsHomeScreen}
 			/> */}
-			<Stack.Screen
-				options={({ navigation }) => ({
-					...screenOpts,
-					title: "Chains", // TODO: Replace this title with something more useful
-					headerRight: () => <LogoutButton navigation={navigation} />,
-				})}
-				name="ChainsHomeScreen"
-				component={ChainsHomeScreen}
-			/>
-			<Stack.Screen
-				options={({ navigation }) => ({
-					...screenOpts,
-					title: "Prepare Materials",
-					headerRight: () => <LogoutButton navigation={navigation} />,
-				})}
-				name="PrepareMaterialsScreen"
-				component={PrepareMaterialsScreen}
-			/>
 			<Stack.Screen
 				options={({ navigation }) => ({
 					...screenOpts,
