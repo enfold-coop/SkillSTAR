@@ -105,21 +105,22 @@ const ChainsHomeScreen: FC<Props> = (props) => {
 		let lastSess = d.sessions.length
 			? d.sessions[d.sessions.length - 1]
 			: null;
-
+		let sessNmbr = 0;
 		if (lastSess === null) {
 			setType("probe");
-			setSessionNmbr(1);
+			sessNmbr = 1;
 		}
 		if (lastSess) {
 			if (lastSess.session_type === "training" && !lastSess.completed) {
 				setType("training");
-				setSessionNmbr(d.sessions.length + 1);
+				sessNmbr = d.sessions.length + 1;
 			}
 			if (lastSess.session_type === "probe" && !lastSess.completed) {
 				setType("probe");
-				setSessionNmbr(d.sessions.length + 1);
+				sessNmbr = d.sessions.length + 1;
 			}
 		}
+		setSessionNmbr(sessNmbr);
 	};
 
 	const setElemsValues = () => {

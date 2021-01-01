@@ -9,6 +9,7 @@ const initialState = {
 	sessionType: "",
 	session: {},
 	userData: {},
+	currSessionNmbr: 1,
 };
 const store = React.createContext<ChainProviderProps>(initialState);
 
@@ -22,6 +23,8 @@ const ChainProvider: React.FC = ({ children }) => {
 			case "addSession":
 				return { ...state, session: action.payload };
 			case "addUserData":
+				return { ...state, userData: action.payload };
+			case "addCurrSessionNmbr":
 				return { ...state, userData: action.payload };
 			default:
 				throw new Error();
