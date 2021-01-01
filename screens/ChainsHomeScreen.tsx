@@ -21,6 +21,12 @@ import {
 	START_PROBE_SESSION_BTN,
 	START_TRAINING_SESSION_BTN,
 } from "../components/Chain/chainshome_text_assets/chainshome_text";
+import {
+	ADD_SESSION_TYPE,
+	ADD_SESSION,
+	ADD_USER_DATA,
+	ADD_CURR_SESSION_NMBR,
+} from "../context/constants/actions";
 import { useDeviceOrientation } from "@react-native-community/hooks";
 import { LOGIN_ERROR } from "../constants/action_types";
 
@@ -86,8 +92,8 @@ const ChainsHomeScreen: FC<Props> = (props) => {
 				setUserData(data);
 
 				setSession(data?.sessions[data.sessions.length - 1]);
-				dispatch({ type: "addUserData", payload: data });
-				dispatch({ type: "addSessionType", payload: data });
+				dispatch({ type: ADD_USER_DATA, payload: data });
+				dispatch({ type: ADD_SESSION_TYPE, payload: data });
 				setProbeOrTraining(data?.sessions);
 				setType(data.sessions[data.sessions.length - 1].session_type);
 				setSessionTypeAndNmbr(data);
@@ -121,6 +127,7 @@ const ChainsHomeScreen: FC<Props> = (props) => {
 			}
 		}
 		setSessionNmbr(sessNmbr);
+		dispatch({ type: ADD_CURR_SESSION_NMBR, payload: sessNmbr });
 	};
 
 	const setElemsValues = () => {
