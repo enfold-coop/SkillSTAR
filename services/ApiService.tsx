@@ -4,7 +4,6 @@ import { ChainQuestionnaire } from "../types/Chain/ChainQuestionnaire";
 import { ChainStep } from "../types/Chain/ChainStep";
 import { User } from "../types/User";
 import { API_URL } from "@env";
-import axios from "axios";
 
 export class ApiService {
 	apiUrl = API_URL;
@@ -52,6 +51,8 @@ export class ApiService {
 	}
 
 	async getChainQuestionnaireId(participantId: number) {
+		console.log(participantId);
+
 		const url = this.endpoints.chainsForParticipant.replace(
 			"<participant_id>",
 			participantId.toString()

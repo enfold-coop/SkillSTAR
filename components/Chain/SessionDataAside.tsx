@@ -12,6 +12,7 @@ type Props = {
 	historicalData: {};
 	name: string;
 	sessionNumber: number;
+	asideContent: {};
 };
 
 /**
@@ -23,7 +24,9 @@ type Props = {
  */
 
 const SessionDataAside: FC<Props> = (props) => {
-	const { sessionNumber, name } = props;
+	const { sessionNumber, name, asideContent } = props;
+	console.log(asideContent);
+
 	const [isTraining, setIsTraining] = useState(true);
 	const [today, setToday] = useState(date.format(new Date(), "MM/DD/YYYY"));
 	const [promptLevel, setPromptLevel] = useState("Full Physical");

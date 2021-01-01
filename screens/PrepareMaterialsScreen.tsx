@@ -1,4 +1,4 @@
-import React, { FC, useState } from "react";
+import React, { FC, useState, useEffect } from "react";
 import { StyleSheet, View, Image, ImageBackground } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { Button, Card, Title } from "react-native-paper";
@@ -6,14 +6,25 @@ import * as Animatable from "react-native-animatable";
 import { RootNavProps } from "../navigation/root_types";
 import CustomColors from "../styles/Colors";
 import AppHeader from "../components/Header/AppHeader";
+import { session } from "../context/initial_states/initialSession";
 
 type Props = {
 	route: RootNavProps<"PrepareMaterialsScreen">;
 	navigation: RootNavProps<"PrepareMaterialsScreen">;
+	sessionType: "";
 };
 
 const PrepareMaterialsScreen: FC<Props> = (props) => {
 	const navigation = useNavigation();
+	const { sessionType } = props;
+	console.log(props.route.params);
+
+	const [type, setType] = useState();
+	// console.log(sessionType);
+
+	useEffect(() => {
+		// setType(props.route.params);
+	}, []);
 
 	return (
 		<ImageBackground
@@ -76,7 +87,11 @@ const PrepareMaterialsScreen: FC<Props> = (props) => {
 						style={styles.nextBtn}
 						labelStyle={{ fontSize: 20 }}
 						onPress={() => {
-							navigation.navigate("StepScreen");
+							if (sessionType === "training") {
+								navigation.navigate("StepScreen");
+							} else {
+								navigation.navigate("ProbeScreen");
+							}
 						}}
 					>
 						Next

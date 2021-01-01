@@ -20,12 +20,14 @@ type Props = {
 };
 
 const ScorecardListItem: FC<Props> = (props) => {
+	// console.log(props);
+
 	const { id, instruction } = props.itemProps.item;
 	const { sessionStepData } = props;
 	const [isPressed, setIsPressed] = useState(false);
 	const [icon, setIcon] = useState();
 	const [stepData, setStepData] = useState({});
-	const [dateIntro, setDateIntro] = useState();
+	const [dateIntro, setDateIntro] = useState(new Date());
 	const [dateMast, setDateMast] = useState();
 	const [dateBoost, setDateBoosts] = useState();
 	const [dateBoostMast, setDateBoostMast] = useState();
@@ -88,25 +90,25 @@ const ScorecardListItem: FC<Props> = (props) => {
 						<Text style={styles.dropDownLabel}>
 							{`${"\u2022"} Date Introduced: `}
 							<Text style={styles.dropDownItemDate}>
-								{date.format(new Date(), "MM/DD/YYYY")}
+								{date.format(dateIntro, "MM/DD/YYYY")}
 							</Text>
 						</Text>
 						<Text style={styles.dropDownLabel}>
 							{`${"\u2022"} Date Mastered: `}
 							<Text style={styles.dropDownItemDate}>
-								{date.format(new Date(), "MM/DD/YYYY")}
+								{date.format(dateMast, "MM/DD/YYYY")}
 							</Text>
 						</Text>
 						<Text style={styles.dropDownLabel}>
 							{`${"\u2022"} Date Booster training initiated: `}
 							<Text style={styles.dropDownItemDate}>
-								{date.format(new Date(), "MM/DD/YYYY")}
+								{date.format(dateBoost, "MM/DD/YYYY")}
 							</Text>
 						</Text>
 						<Text style={styles.dropDownLabel}>
 							{`${"\u2022"} Date Mastered Booster training: `}
 							<Text style={styles.dropDownItemDate}>
-								{date.format(new Date(), "MM/DD/YYYY")}
+								{date.format(dateBoostMast, "MM/DD/YYYY")}
 							</Text>
 						</Text>
 					</View>
