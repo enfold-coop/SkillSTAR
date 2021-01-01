@@ -6,6 +6,7 @@ import { session } from "./initial_states/initialSession";
 type ChainProviderProps = {};
 
 const initialState = {
+	sessionType: "",
 	session: {},
 	userData: {},
 };
@@ -16,6 +17,8 @@ const { Provider } = store;
 const ChainProvider: React.FC = ({ children }) => {
 	const [state, dispatch] = useReducer((state, action) => {
 		switch (action.type) {
+			case "addSessionType":
+				return { ...state, sessionType: action.payload };
 			case "addSession":
 				return { ...state, session: action.payload };
 			case "addUserData":
@@ -24,8 +27,8 @@ const ChainProvider: React.FC = ({ children }) => {
 				throw new Error();
 		}
 	}, initialState);
-	console.log("state");
-	console.log(state);
+	// console.log("state");
+	// console.log(state);
 
 	return <Provider value={{ state, dispatch }}>{children}</Provider>;
 };

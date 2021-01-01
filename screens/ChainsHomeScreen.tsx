@@ -22,18 +22,22 @@ import {
 	START_TRAINING_SESSION_BTN,
 } from "../components/Chain/chainshome_text_assets/chainshome_text";
 import { useDeviceOrientation } from "@react-native-community/hooks";
+import { LOGIN_ERROR } from "../constants/action_types";
 
 type Props = {
 	route: RootNavProps<"ChainsHomeScreen">;
 	navigation: RootNavProps<"ChainsHomeScreen">;
 };
 
+// DEV USE ONLY (mock value)
+const REQUIRED_PROBE_TOTAL = 3;
+const COMPLETED_PROBE_SESSIONS = 2;
+
 // Chain Home Screen
 const ChainsHomeScreen: FC<Props> = (props) => {
 	const context = useContext(store);
 
 	const { dispatch } = context;
-	console.log(dispatch);
 
 	const navigation = useNavigation();
 	let api = new ApiService();
@@ -45,7 +49,7 @@ const ChainsHomeScreen: FC<Props> = (props) => {
 	const [session, setSession] = useState();
 	const [userData, setUserData] = useState();
 	const [sessionNumb, setSessionNumb] = useState();
-	const [type, setSessionType] = useState("type");
+	const [type, setType] = useState("type");
 
 	useEffect(() => {
 		// setStepList()
@@ -74,23 +78,61 @@ const ChainsHomeScreen: FC<Props> = (props) => {
 		// console.log(participantJson);
 		if (participantJson) {
 			const participant = JSON.parse(participantJson);
-			console.log(participant.id);
+			// console.log(participant.id);
 
 			if (participant && participant.hasOwnProperty("id")) {
 				const _id = await api.getChainQuestionnaireId(participant.id);
 				const data = await api.getChainData(_id);
 				setUserData(data);
+
 				setSession(data?.sessions[data.sessions.length - 1]);
 				dispatch({ type: "addUserData", payload: data });
-				dispatch({ type: "addSession", payload: session });
+				dispatch({ type: "addSessionType", payload: data });
 				setProbeOrTraining(data?.sessions);
-				setSessionType(
-					data.sessions[data.sessions.length - 1].session_type
-				);
+				setType(data.sessions[data.sessions.length - 1].session_type);
+				setSessionType(data);
 			}
 		}
 		// let { chainSteps, user } = require("../data/chain_steps.json");
 		// setStepList(chainSteps);
+	};
+
+	/**
+	 * UTIL function (can be moved to another file)
+	 */
+	const setSessionType = (d) => {
+		let lastSess = d.sessions.length
+			? d.sessions[d.sessions.length - 1]
+			: null;
+
+		if (lastSess === null) setType("probe");
+		if (lastSess) {
+			if (lastSess.session_type === "training" && !lastSess.completed) {
+				setType("training");
+			}
+			if (lastSess.session_type === "probe" && !lastSess.completed) {
+				setType("probe");
+			}
+		}
+		if (lastSess.session_type === "probe") {
+			if (lastSess.completed) {
+				setType("training");
+			} else {
+				setType("probe");
+			}
+		} else {
+			setType("training");
+		}
+	};
+
+	const setElemsValues = () => {
+		if (type === "probe") {
+			setBtnText(START_PROBE_SESSION_BTN);
+			setAsideContents(PROBE_INSTRUCTIONS);
+		}
+		if (type === "training") {
+			setBtnText(START_TRAINING_SESSION_BTN);
+		}
 	};
 
 	const setProbeOrTraining = (sessions: []) => {
@@ -102,8 +144,11 @@ const ChainsHomeScreen: FC<Props> = (props) => {
 			// - set probe aside text:
 			// ---- probe session #
 			// ---- probe session instructions
-		} else if (sessions.length && sessions[sessions.length - 1]) {
-			if (sessions[sessions.length - 1].session_type === "probe") {
+		} else if (sessions.length) {
+			if (
+				sessions[sessions.length - 1].session_type === "probe" &&
+				REQUIRED_PROBE_TOTAL > COMPLETED_PROBE_SESSIONS
+			) {
 				setBtnText(START_PROBE_SESSION_BTN);
 				setAsideContents(PROBE_INSTRUCTIONS);
 				// set probe
@@ -113,6 +158,7 @@ const ChainsHomeScreen: FC<Props> = (props) => {
 				// ---- probe session instructions
 			} else if (
 				sessions[sessions.length - 1].session_type === "training"
+			) {
 				// set training
 				// - set training start button text
 				// - set TRAINING aside text:
@@ -120,7 +166,6 @@ const ChainsHomeScreen: FC<Props> = (props) => {
 				// ---- TRAINING CURRENT session FOCUS STEP & INSTRUCTIONS
 				// ---- TRAINING session PROMPT LEVEL
 				// ---- TRAINING MASTERY LEVEL PROMPT LEVEL
-			) {
 				// set training session
 			} else {
 				console.error("Issue with session data");
