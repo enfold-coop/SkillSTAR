@@ -21,14 +21,20 @@ type Props = {
 
 const ScorecardListItem: FC<Props> = (props) => {
 	const { id, instruction, last_updated } = props.itemProps.item;
+	console.log(last_updated);
+
 	const { sessionStepData } = props;
 	const [isPressed, setIsPressed] = useState(false);
 	const [icon, setIcon] = useState();
 	const [stepData, setStepData] = useState({});
-	const [dateIntro, setDateIntro] = useState(last_updated);
-	const [dateMast, setDateMast] = useState("");
-	const [dateBoost, setDateBoosts] = useState("");
-	const [dateBoostMast, setDateBoostMast] = useState("");
+	const [dateIntro, setDateIntro] = useState("");
+	const [dateMast, setDateMast] = useState();
+	const [dateBoost, setDateBoosts] = useState();
+	const [dateBoostMast, setDateBoostMast] = useState();
+
+	useEffect(() => {
+		setDateIntro(last_updated);
+	});
 
 	const determineMastery = () => {
 		if (id === 0 && stepData) {
@@ -44,11 +50,14 @@ const ScorecardListItem: FC<Props> = (props) => {
 		//
 	};
 
-	const handleDateVals = (d: string, init: string) => {
-		if (new Date(d) instanceof Date) {
-			return date.format(new Date(d), "MM/DD/YYYY");
-		} else {
+	const handleDateVals = (d: string) => {
+		let _d = date.format(new Date(d), "MM/DD/YYYY");
+		console.log(_d);
+
+		if (_d === "aN/aN/0NaN") {
 			return "N/A";
+		} else {
+			return date.format(new Date(d), "MM/DD/YYYY");
 		}
 	};
 
@@ -95,25 +104,25 @@ const ScorecardListItem: FC<Props> = (props) => {
 						<Text style={styles.dropDownLabel}>
 							{`${"\u2022"} Date Introduced: `}
 							<Text style={styles.dropDownItemDate}>
-								{handleDateVals(last_updated, dateIntro)}
+								{handleDateVals(dateIntro)}
 							</Text>
 						</Text>
 						<Text style={styles.dropDownLabel}>
 							{`${"\u2022"} Date Mastered: `}
 							<Text style={styles.dropDownItemDate}>
-								{handleDateVals("bvbvb", dateMast)}
+								{handleDateVals(dateMast)}
 							</Text>
 						</Text>
 						<Text style={styles.dropDownLabel}>
 							{`${"\u2022"} Date Booster training initiated: `}
 							<Text style={styles.dropDownItemDate}>
-								{handleDateVals("dsfsdf", dateBoost)}
+								{handleDateVals(dateBoost)}
 							</Text>
 						</Text>
 						<Text style={styles.dropDownLabel}>
 							{`${"\u2022"} Date Mastered Booster training: `}
 							<Text style={styles.dropDownItemDate}>
-								{handleDateVals("dsfsdf", dateBoostMast)}
+								{handleDateVals(dateBoostMast)}
 							</Text>
 						</Text>
 					</View>
