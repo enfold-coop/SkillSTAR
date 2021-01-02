@@ -15,7 +15,7 @@ const initialState = {
 	sessionType: "",
 	session: {},
 	userData: {},
-	currSessionNmbr: 1,
+	currSessionNmbr: 0,
 };
 
 const store = React.createContext<ChainProviderProps>(initialState);
@@ -36,9 +36,9 @@ const ChainProvider: React.FC = ({ children }) => {
 			default:
 				throw new Error();
 		}
-	}, initialState);
-	console.log("state");
-	console.log(state);
+	}, []);
+	// console.log("state");
+	// console.log(state);
 
 	return <Provider value={{ state, dispatch }}>{children}</Provider>;
 };

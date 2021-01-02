@@ -20,17 +20,17 @@ type Props = {
 };
 
 const ScorecardListItem: FC<Props> = (props) => {
-	// console.log(props);
+	console.log(props);
 
 	const { id, instruction } = props.itemProps.item;
 	const { sessionStepData } = props;
 	const [isPressed, setIsPressed] = useState(false);
 	const [icon, setIcon] = useState();
 	const [stepData, setStepData] = useState({});
-	const [dateIntro, setDateIntro] = useState(new Date());
-	const [dateMast, setDateMast] = useState();
-	const [dateBoost, setDateBoosts] = useState();
-	const [dateBoostMast, setDateBoostMast] = useState();
+	const [dateIntro, setDateIntro] = useState("");
+	const [dateMast, setDateMast] = useState("");
+	const [dateBoost, setDateBoosts] = useState("");
+	const [dateBoostMast, setDateBoostMast] = useState("");
 
 	const determineMastery = () => {
 		if (id === 0 && stepData) {
@@ -46,11 +46,18 @@ const ScorecardListItem: FC<Props> = (props) => {
 		//
 	};
 
+	const handleDateVals = (d: string, init: string) => {
+		if (init instanceof Date) {
+			return date.format(d, "MM/DD/YYYY");
+		} else {
+			return "N/A";
+		}
+	};
+
 	useEffect(() => {
-		// determine mastery
-		// 1.
 		setStepData(sessionStepData());
 		determineMastery();
+		setDateIntro();
 	}, []);
 
 	return (
@@ -90,25 +97,25 @@ const ScorecardListItem: FC<Props> = (props) => {
 						<Text style={styles.dropDownLabel}>
 							{`${"\u2022"} Date Introduced: `}
 							<Text style={styles.dropDownItemDate}>
-								{date.format(dateIntro, "MM/DD/YYYY")}
+								{handleDateVals(new Date(), dateIntro)}
 							</Text>
 						</Text>
 						<Text style={styles.dropDownLabel}>
 							{`${"\u2022"} Date Mastered: `}
 							<Text style={styles.dropDownItemDate}>
-								{date.format(dateMast, "MM/DD/YYYY")}
+								{handleDateVals("bvbvb", dateMast)}
 							</Text>
 						</Text>
 						<Text style={styles.dropDownLabel}>
 							{`${"\u2022"} Date Booster training initiated: `}
 							<Text style={styles.dropDownItemDate}>
-								{date.format(dateBoost, "MM/DD/YYYY")}
+								{handleDateVals(new Date(), dateBoost)}
 							</Text>
 						</Text>
 						<Text style={styles.dropDownLabel}>
 							{`${"\u2022"} Date Mastered Booster training: `}
 							<Text style={styles.dropDownItemDate}>
-								{date.format(dateBoostMast, "MM/DD/YYYY")}
+								{handleDateVals(new Date(), dateBoostMast)}
 							</Text>
 						</Text>
 					</View>

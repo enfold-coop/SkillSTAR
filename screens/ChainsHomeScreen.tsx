@@ -13,6 +13,7 @@ import { ApiService } from "../services/ApiService";
 import * as Animatable from "react-native-animatable";
 import ScorecardListItem from "../components/Chain/ScorecardListItem";
 import SessionDataAside from "../components/Chain/SessionDataAside";
+
 import AppHeader from "../components/Header/AppHeader";
 import { RootNavProps } from "../navigation/root_types";
 import CustomColors from "../styles/Colors";
@@ -81,7 +82,6 @@ const ChainsHomeScreen: FC<Props> = (props) => {
 		const participantJson = await AsyncStorage.getItem(
 			"selected_participant"
 		);
-
 		// console.log(participantJson);
 		if (participantJson) {
 			const participant = JSON.parse(participantJson);
@@ -91,12 +91,12 @@ const ChainsHomeScreen: FC<Props> = (props) => {
 				const data = await api.getChainData(_id);
 				setUserData(data);
 
-				setSession(data?.sessions[data.sessions.length - 1]);
 				dispatch({ type: ADD_USER_DATA, payload: data });
 				// dispatch({ type: ADD_SESSION_TYPE, payload: data });
-				setProbeOrTraining(data?.sessions);
+
 				setType(data.sessions[data.sessions.length - 1].session_type);
 				setSessionTypeAndNmbr(data);
+				setSession(data?.sessions[data.sessions.length - 1]);
 				setElemsValues();
 			}
 		}
@@ -111,26 +111,27 @@ const ChainsHomeScreen: FC<Props> = (props) => {
 		let lastSess = d.sessions.length
 			? d.sessions[d.sessions.length - 1]
 			: null;
-		let sessNmbr = 0,
-			sType = "";
+
 		if (lastSess === null) {
-			sType = "probe";
-			sessNmbr = 1;
+			setSessionNmbr(1);
+			setType("probe");
+			dispatch({ type: ADD_CURR_SESSION_NMBR, payload: 1 });
+			dispatch({ type: ADD_SESSION_TYPE, payload: "probe" });
 		}
 		if (lastSess) {
 			if (lastSess.session_type === "training" && !lastSess.completed) {
-				sType = "training";
-				sessNmbr = d.sessions.length + 1;
+				setType("training");
+				setSessionNmbr(d.sessions.length + 1);
+				dispatch({ type: ADD_CURR_SESSION_NMBR, payload: sessionNmbr });
+				dispatch({ type: ADD_SESSION_TYPE, payload: "training" });
 			}
 			if (lastSess.session_type === "probe" && !lastSess.completed) {
-				sType = "probe";
-				sessNmbr = d.sessions.length + 1;
+				setType("probe");
+				setSessionNmbr(d.sessions.length + 1);
+				dispatch({ type: ADD_CURR_SESSION_NMBR, payload: sessionNmbr });
+				dispatch({ type: ADD_SESSION_TYPE, payload: "probe" });
 			}
 		}
-		setSessionNmbr(sessNmbr);
-		setType(sType);
-		dispatch({ type: ADD_CURR_SESSION_NMBR, payload: sessNmbr });
-		dispatch({ type: ADD_SESSION_TYPE, payload: sType });
 	};
 
 	const setElemsValues = () => {
@@ -233,9 +234,11 @@ const styles = StyleSheet.create({
 		height: 1,
 	},
 	listContainer: {
-		height: "90%",
+		height: "95%",
 		flexDirection: "row",
-		padding: 5,
+		justifyContent: "space-between",
+		alignContent: "space-between",
+		// padding: 5,
 	},
 	list: {
 		// height: "90%",

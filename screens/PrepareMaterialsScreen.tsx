@@ -1,4 +1,4 @@
-import React, { FC, useState, useEffect } from "react";
+import React, { FC, useState, useEffect, useContext } from "react";
 import { StyleSheet, View, Image, ImageBackground } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { Button, Card, Title } from "react-native-paper";
@@ -7,6 +7,7 @@ import { RootNavProps } from "../navigation/root_types";
 import CustomColors from "../styles/Colors";
 import AppHeader from "../components/Header/AppHeader";
 import { session } from "../context/initial_states/initialSession";
+import { store } from "../context/ChainProvider";
 
 type Props = {
 	route: RootNavProps<"PrepareMaterialsScreen">;
@@ -15,6 +16,9 @@ type Props = {
 };
 
 const PrepareMaterialsScreen: FC<Props> = (props) => {
+	const { state } = useContext(store);
+	console.log(state.sessionType);
+
 	const navigation = useNavigation();
 	const { sessionType } = props;
 
@@ -86,10 +90,10 @@ const PrepareMaterialsScreen: FC<Props> = (props) => {
 						style={styles.nextBtn}
 						labelStyle={{ fontSize: 20 }}
 						onPress={() => {
-							if (sessionType === "training") {
+							if (state.sessionType === "training") {
 								navigation.navigate("StepScreen");
 							} else {
-								navigation.navigate("ProbeScreen");
+								navigation.navigate("BaselineAssessmentScreen");
 							}
 						}}
 					>
