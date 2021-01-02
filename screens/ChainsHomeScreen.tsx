@@ -124,23 +124,23 @@ const ChainsHomeScreen: FC<Props> = (props) => {
 				setSessionNmbr(d.sessions.length + 1);
 				dispatch({ type: ADD_CURR_SESSION_NMBR, payload: sessionNmbr });
 				dispatch({ type: ADD_SESSION_TYPE, payload: "training" });
+				setBtnText(START_TRAINING_SESSION_BTN);
 			}
 			if (lastSess.session_type === "probe" && !lastSess.completed) {
 				setType("probe");
 				setSessionNmbr(d.sessions.length + 1);
 				dispatch({ type: ADD_CURR_SESSION_NMBR, payload: sessionNmbr });
 				dispatch({ type: ADD_SESSION_TYPE, payload: "probe" });
+				setBtnText(START_PROBE_SESSION_BTN);
+				setAsideContents(PROBE_INSTRUCTIONS);
 			}
 		}
 	};
 
 	const setElemsValues = () => {
 		if (type === "probe") {
-			setBtnText(START_PROBE_SESSION_BTN);
-			setAsideContents(PROBE_INSTRUCTIONS);
 		}
 		if (type === "training") {
-			setBtnText(START_TRAINING_SESSION_BTN);
 		}
 	};
 

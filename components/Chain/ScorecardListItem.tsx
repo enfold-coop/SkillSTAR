@@ -20,14 +20,12 @@ type Props = {
 };
 
 const ScorecardListItem: FC<Props> = (props) => {
-	console.log(props);
-
-	const { id, instruction } = props.itemProps.item;
+	const { id, instruction, last_updated } = props.itemProps.item;
 	const { sessionStepData } = props;
 	const [isPressed, setIsPressed] = useState(false);
 	const [icon, setIcon] = useState();
 	const [stepData, setStepData] = useState({});
-	const [dateIntro, setDateIntro] = useState("");
+	const [dateIntro, setDateIntro] = useState(last_updated);
 	const [dateMast, setDateMast] = useState("");
 	const [dateBoost, setDateBoosts] = useState("");
 	const [dateBoostMast, setDateBoostMast] = useState("");
@@ -47,8 +45,8 @@ const ScorecardListItem: FC<Props> = (props) => {
 	};
 
 	const handleDateVals = (d: string, init: string) => {
-		if (init instanceof Date) {
-			return date.format(d, "MM/DD/YYYY");
+		if (new Date(d) instanceof Date) {
+			return date.format(new Date(d), "MM/DD/YYYY");
 		} else {
 			return "N/A";
 		}
@@ -97,7 +95,7 @@ const ScorecardListItem: FC<Props> = (props) => {
 						<Text style={styles.dropDownLabel}>
 							{`${"\u2022"} Date Introduced: `}
 							<Text style={styles.dropDownItemDate}>
-								{handleDateVals(new Date(), dateIntro)}
+								{handleDateVals(last_updated, dateIntro)}
 							</Text>
 						</Text>
 						<Text style={styles.dropDownLabel}>
@@ -109,13 +107,13 @@ const ScorecardListItem: FC<Props> = (props) => {
 						<Text style={styles.dropDownLabel}>
 							{`${"\u2022"} Date Booster training initiated: `}
 							<Text style={styles.dropDownItemDate}>
-								{handleDateVals(new Date(), dateBoost)}
+								{handleDateVals("dsfsdf", dateBoost)}
 							</Text>
 						</Text>
 						<Text style={styles.dropDownLabel}>
 							{`${"\u2022"} Date Mastered Booster training: `}
 							<Text style={styles.dropDownItemDate}>
-								{handleDateVals(new Date(), dateBoostMast)}
+								{handleDateVals("dsfsdf", dateBoostMast)}
 							</Text>
 						</Text>
 					</View>
