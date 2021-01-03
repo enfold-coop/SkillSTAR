@@ -157,7 +157,7 @@ const ChainsHomeScreen: FC<Props> = (props) => {
 		<ImageBackground
 			source={require("../assets/images/sunrise-muted.jpg")}
 			resizeMode={"cover"}
-			style={styles.container}
+			style={styles.bkgrdImage}
 		>
 			<View
 				style={portrait ? styles.container : styles.landscapeContainer}
@@ -207,10 +207,13 @@ const ChainsHomeScreen: FC<Props> = (props) => {
 };
 
 const styles = StyleSheet.create({
+	bkgrdImage: {
+		flex: 1,
+	},
 	container: {
 		flex: 1,
 		margin: 0,
-		justifyContent: "flex-start",
+		justifyContent: "space-between",
 		alignContent: "flex-start",
 		padding: 10,
 		paddingBottom: 80,
@@ -222,6 +225,7 @@ const styles = StyleSheet.create({
 		alignContent: "flex-start",
 		padding: 10,
 		paddingBottom: 80,
+		// backgroundColor: "rgba(0,0,0,0.2)",
 	},
 	title: {
 		fontSize: 30,
@@ -234,19 +238,20 @@ const styles = StyleSheet.create({
 		height: 1,
 	},
 	listContainer: {
-		height: "95%",
+		height: "90%",
 		flexDirection: "row",
 		justifyContent: "space-between",
-		alignContent: "space-between",
-		// padding: 5,
+		// alignContent: "space-between",
+		backgroundColor: "rgba(255, 255, 255,0.4)",
+		padding: 5,
+		margin: 5,
+		marginTop: 12,
 	},
 	list: {
-		// height: "90%",
 		margin: 5,
 		marginBottom: 4,
 		padding: 5,
 		paddingBottom: 30,
-		borderRadius: 5,
 	},
 	startSessionBtn: {
 		width: "90%",

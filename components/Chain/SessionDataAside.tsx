@@ -92,14 +92,18 @@ const SessionDataAside: FC<Props> = (props) => {
 						setGraphContainerDimens(e.nativeEvent.layout);
 					}}
 				>
-					<ChainsHomeGraph dimensions={graphContainerDimens} />
-					<TouchableOpacity
-						onPress={() => {
-							setModalVis(true);
-						}}
-					>
-						<Text style={styles.graphText}>View your progress</Text>
-					</TouchableOpacity>
+					<Card>
+						<ChainsHomeGraph dimensions={graphContainerDimens} />
+						<TouchableOpacity
+							onPress={() => {
+								setModalVis(true);
+							}}
+						>
+							<Text style={styles.graphText}>
+								View your progress
+							</Text>
+						</TouchableOpacity>
+					</Card>
 				</View>
 			</View>
 		</View>
@@ -114,12 +118,10 @@ const styles = StyleSheet.create({
 		borderRadius: 10,
 		fontSize: 22,
 	},
-
 	subContainer: {
 		marginTop: 0,
 		flexDirection: "row",
 	},
-
 	sessionNumbAndDateContainer: {
 		flexDirection: "row",
 		justifyContent: "space-between",
@@ -193,7 +195,8 @@ const styles = StyleSheet.create({
 		justifyContent: "center",
 		alignContent: "center",
 		marginTop: 20,
-		paddingBottom: 10,
+		// paddingBottom: 10,
+		borderRadius: 10,
 		backgroundColor: "#fff",
 	},
 	graphText: {

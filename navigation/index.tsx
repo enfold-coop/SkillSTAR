@@ -63,7 +63,11 @@ function RootNavigator() {
 			initialRouteName="LandingScreen"
 			// screenOptions={{ headerShown: true }}
 		>
-			<Stack.Screen name="LandingScreen" component={LandingScreen} />
+			<Stack.Screen
+				name="LandingScreen"
+				component={LandingScreen}
+				options={{ headerShown: false }}
+			/>
 			<Stack.Screen
 				options={({ navigation }) => ({
 					...screenOpts,
