@@ -102,7 +102,7 @@ export const SelectParticipant = (
 	return (
 		<View
 			style={{
-				paddingTop: 50,
+				// paddingTop: 50,
 				flexDirection: "row",
 			}}
 		>
