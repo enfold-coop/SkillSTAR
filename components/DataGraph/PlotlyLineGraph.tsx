@@ -28,6 +28,9 @@ const PlotlyLineGraph: FC<Props> = (props) => {
 	const [probeSessions, setProbeSessions] = useState([]);
 	const [trainingSessions, setTrainingSessions] = useState([]);
 
+	//
+	const trainingDataXY = () => {};
+
 	useEffect(() => {
 		let { probeArr, trainingArr } = FilterSessionsByType(userData.sessions);
 		setTrainingSessions(trainingArr);
