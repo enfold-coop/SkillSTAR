@@ -122,7 +122,7 @@ export default function LandingScreen({ navigation }: Props<"LandingScreen">) {
 					onPress={() => {
 						setErrorMessage("");
 						api.login(email, password).then((user) => {
-							// console.log('user', user);
+							// console.log("user", user);
 							if (user) {
 								context.state.user = user;
 								navigation.navigate("ChainsHomeScreen");
@@ -134,7 +134,7 @@ export default function LandingScreen({ navigation }: Props<"LandingScreen">) {
 						});
 					}}
 				>
-					Log In
+					<Text style={styles.btnText}>Log In</Text>
 				</Button>
 			</View>
 		</ImageBackground>
@@ -146,7 +146,7 @@ const styles = StyleSheet.create({
 		flex: 1,
 		flexDirection: "column",
 		alignContent: "center",
-		justifyContent: "flex-start",
+		justifyContent: "center",
 		padding: 0,
 		marginTop: 100,
 	},
@@ -166,13 +166,21 @@ const styles = StyleSheet.create({
 	},
 	button: {
 		margin: 22,
-		width: 122,
+		height: 50,
+		width: 200,
+		padding: 5,
 		alignSelf: "center",
+		alignContent: "center",
+	},
+	btnText: {
+		textAlign: "center",
+		color: CustomColors.uva.white,
+		fontSize: 18,
 	},
 	logo: {
 		alignSelf: "center",
-		width: 400,
-		height: 400,
+		width: 244,
+		height: 244,
 		marginBottom: 40,
 	},
 	error: {

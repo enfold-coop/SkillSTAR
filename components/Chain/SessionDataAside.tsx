@@ -1,4 +1,4 @@
-import React, { FC, useState, useEffect } from "react";
+import React, { FC, useState, useEffect, useContext } from "react";
 import { StyleSheet, Text, View, TouchableOpacity, Image } from "react-native";
 import { Button, Card } from "react-native-paper";
 import { ProbeAside, TrainingAside } from "./index";
@@ -6,12 +6,13 @@ import { ChainsHomeGraph } from "../DataGraph/index";
 import GraphModal from "../DataGraph/GraphModal";
 import CustomColors from "../../styles/Colors";
 import date from "date-and-time";
-import { PlotlyLineGraph } from "../DataGraph/index";
+import { store } from "../../context/ChainProvider";
 
 type Props = {
 	historicalData: {};
 	name: string;
 	sessionNumber: number;
+	asideContent: {};
 };
 
 /**
@@ -23,8 +24,19 @@ type Props = {
  */
 
 const SessionDataAside: FC<Props> = (props) => {
-	const { sessionNumber, name } = props;
-	const [isTraining, setIsTraining] = useState(true);
+	const { sessionNumber, name, asideContent } = props;
+	const context = useContext(store);
+	const { state } = context;
+	// console.log(state);
+
+	// console.log(context);
+	useEffect(() => {
+		if (state.sessionType === "training") {
+			setIsTraining(true);
+		}
+	}, []);
+
+	const [isTraining, setIsTraining] = useState(false);
 	const [today, setToday] = useState(date.format(new Date(), "MM/DD/YYYY"));
 	const [promptLevel, setPromptLevel] = useState("Full Physical");
 	const [masteryLevel, setMasteryLevel] = useState("Focus");
@@ -35,6 +47,14 @@ const SessionDataAside: FC<Props> = (props) => {
 		setModalVis(!modalVis);
 	};
 
+	const setAsideContent = () => {
+		if (isTraining) {
+			return <TrainingAside />;
+		} else {
+			return <ProbeAside />;
+		}
+	};
+
 	return (
 		<View style={styles.container}>
 			<GraphModal visible={modalVis} handleVis={handleModal} />
@@ -42,40 +62,13 @@ const SessionDataAside: FC<Props> = (props) => {
 				<View>
 					<Card>
 						<View style={styles.sessionNumbAndDateContainer}>
-							<Text style={styles.sessionNum}>Session #{1}</Text>
+							<Text style={styles.sessionNum}>
+								Session #{sessionNumber}
+							</Text>
 							<Text style={styles.date}>{today}</Text>
 						</View>
 						<View style={styles.taskInfoContainer}>
-							<ProbeAside />
-							{/* <TrainingAside /> */}
-							{/* <Text style={styles.isProbeTrainingSession}>
-								{isTraining
-									? "Training Session"
-									: "Probe Session"}
-							</Text>
-							<Text style={styles.focusStep}>
-								Focus Step:{" "}
-								<Text style={styles.focusStepInstruction}>
-									{"Put toothpaste on brush"}
-								</Text>
-							</Text>
-							<Text style={styles.promptLevelLabel}>
-								Prompt Level:{" "}
-								<Text style={styles.promptLevel}>
-									{promptLevel}
-								</Text>
-							</Text>
-							<Text style={styles.masteryLevelLabel}>
-								Mastery:{" "}
-								<Text style={styles.masteryLevel}>
-									{masteryLevel}
-								</Text>
-							</Text> */}
-						</View>
-						<View style={styles.upNextContainer}>
-							<Text style={styles.upNextLabel}>
-								Up next: <Text>{"Focus Step #3"}</Text>
-							</Text>
+							{setAsideContent()}
 						</View>
 					</Card>
 				</View>
@@ -85,14 +78,18 @@ const SessionDataAside: FC<Props> = (props) => {
 						setGraphContainerDimens(e.nativeEvent.layout);
 					}}
 				>
-					<ChainsHomeGraph dimensions={graphContainerDimens} />
-					<TouchableOpacity
-						onPress={() => {
-							setModalVis(true);
-						}}
-					>
-						<Text style={styles.graphText}>View your progress</Text>
-					</TouchableOpacity>
+					<Card>
+						<ChainsHomeGraph dimensions={graphContainerDimens} />
+						<TouchableOpacity
+							onPress={() => {
+								setModalVis(true);
+							}}
+						>
+							<Text style={styles.graphText}>
+								View your progress
+							</Text>
+						</TouchableOpacity>
+					</Card>
 				</View>
 			</View>
 		</View>
@@ -107,12 +104,10 @@ const styles = StyleSheet.create({
 		borderRadius: 10,
 		fontSize: 22,
 	},
-
 	subContainer: {
 		marginTop: 0,
 		flexDirection: "row",
 	},
-
 	sessionNumbAndDateContainer: {
 		flexDirection: "row",
 		justifyContent: "space-between",
@@ -186,7 +181,7 @@ const styles = StyleSheet.create({
 		justifyContent: "center",
 		alignContent: "center",
 		marginTop: 20,
-		paddingBottom: 10,
+		borderRadius: 10,
 		backgroundColor: "#fff",
 	},
 	graphText: {

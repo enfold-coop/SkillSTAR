@@ -1,5 +1,4 @@
-import { useNavigation } from "@react-navigation/native";
-import React, { FC, useEffect, useState } from "react";
+import React, { FC, useEffect, useState, useContext } from "react";
 import {
 	FlatList,
 	ImageBackground,
@@ -7,73 +6,180 @@ import {
 	TouchableOpacity,
 	View,
 } from "react-native";
+import { useNavigation } from "@react-navigation/native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { store } from "../context/ChainProvider";
+import { ApiService } from "../services/ApiService";
 import * as Animatable from "react-native-animatable";
 import ScorecardListItem from "../components/Chain/ScorecardListItem";
 import SessionDataAside from "../components/Chain/SessionDataAside";
+
 import AppHeader from "../components/Header/AppHeader";
 import { RootNavProps } from "../navigation/root_types";
 import CustomColors from "../styles/Colors";
+import {
+	PROBE_INSTRUCTIONS,
+	START_PROBE_SESSION_BTN,
+	START_TRAINING_SESSION_BTN,
+} from "../components/Chain/chainshome_text_assets/chainshome_text";
+import {
+	ADD_SESSION_TYPE,
+	ADD_SESSION,
+	ADD_USER_DATA,
+	ADD_CURR_SESSION_NMBR,
+} from "../context/constants/actions";
 import { useDeviceOrientation } from "@react-native-community/hooks";
+import { LOGIN_ERROR } from "../constants/action_types";
 
 type Props = {
 	route: RootNavProps<"ChainsHomeScreen">;
 	navigation: RootNavProps<"ChainsHomeScreen">;
 };
 
+// DEV USE ONLY (mock value)
+const REQUIRED_PROBE_TOTAL = 3;
+const COMPLETED_PROBE_SESSIONS = 2;
+
 // Chain Home Screen
 const ChainsHomeScreen: FC<Props> = (props) => {
+	const context = useContext(store);
+
+	const { dispatch } = context;
+
+	const navigation = useNavigation();
+	let api = new ApiService();
 	const { portrait } = useDeviceOrientation();
 	const [orient, setOrient] = useState(false);
+	const [btnText, setBtnText] = useState("Start Session");
+	const [asideContent, setAsideContents] = useState("");
+	const [chainSteps, setStepList] = useState();
+	const [session, setSession] = useState();
+	const [userData, setUserData] = useState();
+	const [sessionNmbr, setSessionNmbr] = useState();
+	const [type, setType] = useState("type");
+
+	useEffect(() => {
+		// setStepList()
+		getSteps();
+		apiCall();
+	}, []);
+
+	useEffect(() => {});
+
+	const getSteps = async () => {
+		const s = await api.getChainSteps();
+		// console.log(s);
+		if (s != undefined) {
+			setStepList(s);
+		}
+	};
 
 	useEffect(() => {
 		setOrient(portrait);
 	}, [portrait]);
-	/**
-	 * TODO:
-	 * - determine if Probe or Training,
-	 * - set Probe or Training state,
-	 * - navigate to Probe form OR chain step
-	 * - supply Probe OR Training data to this screen
-	 */
-	const navigation = useNavigation();
 
-	let [chainSteps, setStepList] = useState();
-	const apiCall = () => {
-		let { chainSteps, user } = require("../data/chain_steps.json");
-		setStepList(chainSteps);
+	const apiCall = async () => {
+		const participantJson = await AsyncStorage.getItem(
+			"selected_participant"
+		);
+		// console.log(participantJson);
+		if (participantJson) {
+			const participant = JSON.parse(participantJson);
+
+			if (participant && participant.hasOwnProperty("id")) {
+				const _id = await api.getChainQuestionnaireId(participant.id);
+				const data = await api.getChainData(_id);
+				// console.log(data);
+				setUserData(data);
+				dispatch({ type: ADD_USER_DATA, payload: data });
+				// dispatch({ type: ADD_SESSION_TYPE, payload: data });
+				setType(data.sessions[data.sessions.length - 1].session_type);
+				setSessionTypeAndNmbr(data);
+				setSession(data?.sessions[data.sessions.length - 1]);
+				// console.log(session.step_attempts);
+				setElemsValues();
+			}
+		}
+		// let { chainSteps, user } = require("../data/chain_steps.json");
+		// setStepList(chainSteps);
+	};
+
+	/**
+	 * UTIL function (can be moved to another file)
+	 */
+	const setSessionTypeAndNmbr = (d: any) => {
+		let lastSess = d.sessions.length
+			? d.sessions[d.sessions.length - 1]
+			: null;
+
+		// !! overriding type for dev purposes
+		lastSess.session_type = "training";
+
+		if (lastSess === null) {
+			setSessionNmbr(1);
+			setType("probe");
+			dispatch({ type: ADD_CURR_SESSION_NMBR, payload: 1 });
+			dispatch({ type: ADD_SESSION_TYPE, payload: "probe" });
+		}
+		if (lastSess) {
+			if (lastSess.session_type === "training" && !lastSess.completed) {
+				setType("training");
+				setSessionNmbr(d.sessions.length + 1);
+				dispatch({ type: ADD_CURR_SESSION_NMBR, payload: sessionNmbr });
+				dispatch({ type: ADD_SESSION_TYPE, payload: "training" });
+				setBtnText(START_TRAINING_SESSION_BTN);
+			}
+			if (lastSess.session_type === "probe" && !lastSess.completed) {
+				setType("probe");
+				setSessionNmbr(d.sessions.length + 1);
+				dispatch({ type: ADD_CURR_SESSION_NMBR, payload: sessionNmbr });
+				dispatch({ type: ADD_SESSION_TYPE, payload: "probe" });
+				setBtnText(START_PROBE_SESSION_BTN);
+				setAsideContents(PROBE_INSTRUCTIONS);
+			}
+		}
+	};
+
+	const setElemsValues = () => {
+		if (type === "probe") {
+		}
+		if (type === "training") {
+		}
 	};
 
 	const navToProbeOrTraining = () => {
-		console.log("go to PrepareMaterialsScreen");
-		navigation.navigate("PrepareMaterialsScreen");
+		let t = () => type;
+		navigation.navigate("PrepareMaterialsScreen", {
+			sessionType: t(),
+		});
 	};
 
-	useEffect(() => {
-		apiCall();
-	});
+	const determineSessionStepData = (index: number) => {};
 
 	return (
 		<ImageBackground
 			source={require("../assets/images/sunrise-muted.jpg")}
 			resizeMode={"cover"}
-			style={styles.container}
+			style={styles.bkgrdImage}
 		>
 			<View
 				style={portrait ? styles.container : styles.landscapeContainer}
 			>
 				<AppHeader name="Chains Home" />
-				{chainSteps && (
+				{session && (
 					<View style={styles.listContainer}>
 						<SessionDataAside
 							historicalData={{}}
 							name={"Moxy"}
-							sessionNumber={1}
+							asideContent={asideContent}
+							sessionNumber={sessionNmbr}
+							sessionSteps={chainSteps}
 						/>
 						<FlatList
 							style={styles.list}
 							data={chainSteps}
-							keyExtractor={(item) => item.step.toString()}
-							renderItem={(item) => (
+							keyExtractor={(item) => item.instruction.toString()}
+							renderItem={(item, index) => (
 								<ScorecardListItem itemProps={item} />
 							)}
 						/>
@@ -91,7 +197,7 @@ const ChainsHomeScreen: FC<Props> = (props) => {
 						duration={2000}
 						style={styles.btnText}
 					>
-						Start the Chain
+						{btnText}
 					</Animatable.Text>
 				</TouchableOpacity>
 			</View>
@@ -100,10 +206,13 @@ const ChainsHomeScreen: FC<Props> = (props) => {
 };
 
 const styles = StyleSheet.create({
+	bkgrdImage: {
+		flex: 1,
+	},
 	container: {
 		flex: 1,
 		margin: 0,
-		justifyContent: "flex-start",
+		justifyContent: "space-between",
 		alignContent: "flex-start",
 		padding: 10,
 		paddingBottom: 80,
@@ -129,15 +238,17 @@ const styles = StyleSheet.create({
 	listContainer: {
 		height: "90%",
 		flexDirection: "row",
+		justifyContent: "space-between",
+		backgroundColor: "rgba(255, 255, 255,0.4)",
 		padding: 5,
+		margin: 5,
+		marginTop: 12,
 	},
 	list: {
-		// height: "90%",
 		margin: 5,
 		marginBottom: 4,
 		padding: 5,
 		paddingBottom: 30,
-		borderRadius: 5,
 	},
 	startSessionBtn: {
 		width: "90%",

@@ -1,144 +1,130 @@
 {
-    "user": {
-        "sessionAttempts": []
-    },
+
     "chainSteps": [{
             "step": 1,
             "instruction": "Put toothpaste on your toothbrush",
-            "mastery": 0,
-            "video": "../assets/videos/1_Put_toothpaste_on_your_toothbrush.mp4"
+            "video": "https://drive.google.com/file/d/1s8ySbB9b2qzUysSwg8svGi67HCdDSCPh/view?usp=sharing",
+            "audio": "v.2 (tighter)",
+            "": "",
+            "Intensity": 1,
+            "Prompt Type": "No Prompt (Independent)"
         },
         {
             "step": 2,
             "instruction": "Put toothpaste away",
-            "mastery": 0,
-            "video": "https://drive.google.com/drive/u/0/folders/1pEEH8ecn3sKnjWL7-6jWpaTTuv_0VPaV"
+            "video": "https://drive.google.com/file/d/1ixso2kRa9tOSPUnA4wVnckwqTGhtqsIb/view?usp=sharing",
+            "audio": "v.2 (tighter)",
+            "": "",
+            "Intensity": 2,
+            "Prompt Type": "Shadow Prompt (approximately one inch)"
         },
         {
             "step": 3,
-            "instruction": "Rinse toothbrush",
-            "mastery": 0,
-            "video": "https://drive.google.com/drive/u/0/folders/1pEEH8ecn3sKnjWL7-6jWpaTTuv_0VPaV"
+            "instruction": "Get toothpaste and toothbrush wet",
+            "video": "https://drive.google.com/drive/u/0/folders/1pEEH8ecn3sKnjWL7-6jWpaTTuv_0VPaV",
+            "audio": "v.2. (better)",
+            "": "",
+            "Intensity": 3,
+            "Prompt Type": "Partial Physical Prompt (thumb and index finger)"
         },
         {
             "step": 4,
-            "instruction": "Brush top surface of bottom teeth on right side.",
-            "mastery": 0,
-            "video": "https://drive.google.com/drive/u/0/folders/1pEEH8ecn3sKnjWL7-6jWpaTTuv_0VPaVV"
+            "instruction": "Brush biting surface of your bottom teeth, moving from one side to the other",
+            "video": "https://drive.google.com/file/d/1fYj_SbSdesMWsrpjLL0_3lV6CxA8u3Vp/view?usp=sharing",
+            "audio": "v.2. (steadier)",
+            "": "",
+            "Intensity": 4,
+            "Prompt Type": "Full Physical Prompt (hand-over-hand)"
         },
         {
             "step": 5,
-            "instruction": "Brush top surface of bottom teeth on left side.",
-            "mastery": 0,
-            "video": "https://drive.google.com/drive/u/0/folders/1pEEH8ecn3sKnjWL7-6jWpaTTuv_0VPaV"
+            "instruction": "Brush the biting surface of your top teeth, moving from one side to the other",
+            "video": "https://drive.google.com/file/d/1MaPBGRg5U0SUw3Rce8jnaSn-QGFWXHhC/view?usp=sharing",
+            "audio": "",
+            "": "",
+            "Intensity": "",
+            "Prompt Type": ""
         },
         {
             "step": 6,
-            "instruction": "Brush top surface of top teeth on right side",
-            "mastery": 0,
-            "video": "https://drive.google.com/drive/u/0/folders/1pEEH8ecn3sKnjWL7-6jWpaTTuv_0VPaV"
+            "instruction": "Brush the outside surface (facing cheeks) of bottom teeth, moving from one side to the other",
+            "video": "https://drive.google.com/file/d/1tSKPoRe3RPtdF3-qMk_mZCLCfxSbSJsp/view?usp=sharing",
+            "audio": "v.2. (steadier)",
+            "": "",
+            "Intensity": "",
+            "Prompt Type": ""
         },
         {
             "step": 7,
-            "instruction": "Brush top surface of top teeth on left side",
-            "mastery": 0,
-            "video": "https://drive.google.com/drive/u/0/folders/1pEEH8ecn3sKnjWL7-6jWpaTTuv_0VPaV"
+            "instruction": "Brush the outside surface (facing cheeks) of top teeth, moving from one side to the other",
+            "video": "https://drive.google.com/file/d/1nOVwzy01seLl67CaCuXWM5OwWpjFXTL6/view?usp=sharing",
+            "audio": "v.2. ( a lot better)",
+            "": "",
+            "Intensity": "",
+            "Prompt Type": ""
         },
         {
             "step": 8,
-            "instruction": "Brush outside surface (facing cheek) of bottom teeth on right side",
-            "mastery": 0,
-            "video": "https://drive.google.com/drive/u/0/folders/1pEEH8ecn3sKnjWL7-6jWpaTTuv_0VPaV"
+            "instruction": "Brush the inside surface (facing tongue) of bottom teeth on both sides",
+            "video": "https://drive.google.com/file/d/1ovfpO8Kd1YWIQwbmmmbwxSmF4RA3jVI2/view?usp=sharing",
+            "audio": "",
+            "": "",
+            "Intensity": "",
+            "Prompt Type": ""
         },
         {
             "step": 9,
-            "instruction": "Brush outside surface (facing lips) of bottom teeth at the front of your mouth",
-            "mastery": 0,
-            "video": "https://drive.google.com/drive/u/0/folders/1pEEH8ecn3sKnjWL7-6jWpaTTuv_0VPaV"
+            "instruction": "Brush the inside surface (facing tongue) of top teeth on both sides",
+            "video": "https://drive.google.com/file/d/1zB55RdQK4OYQxvxhVhSQANIeRlaN26z3/view?usp=sharing",
+            "audio": "",
+            "": "",
+            "Intensity": "",
+            "Prompt Type": ""
         },
         {
             "step": 10,
-            "instruction": "Brush outside surface (facing cheek) of bottom teeth on left side",
-            "mastery": 0,
-            "video": "https://drive.google.com/drive/u/0/folders/1pEEH8ecn3sKnjWL7-6jWpaTTuv_0VPaV"
+            "instruction": "Spit in the sink",
+            "video": "https://drive.google.com/file/d/1MFZmjHB0fP1_mxosbRMoIvZYEuHzR4lK/view?usp=sharing",
+            "audio": "",
+            "": "",
+            "Intensity": "",
+            "Prompt Type": ""
         },
         {
             "step": 11,
-            "instruction": "Brush outside surface (facing cheek) of top teeth on right side",
-            "mastery": 0,
-            "video": "https://drive.google.com/drive/u/0/folders/1pEEH8ecn3sKnjWL7-6jWpaTTuv_0VPaV"
+            "instruction": "Rinse toothbrush and put it away",
+            "video": "https://drive.google.com/file/d/12fRfkCbiFJoVm2iM1YpXCVvZa98vdEGx/view?usp=sharing",
+            "audio": "",
+            "": "",
+            "Intensity": "",
+            "Prompt Type": ""
         },
         {
             "step": 12,
-            "instruction": "Brush outside surface (facing lips) of top teeth at the front of your mouth",
-            "mastery": 0,
-            "video": "https://drive.google.com/drive/u/0/folders/1pEEH8ecn3sKnjWL7-6jWpaTTuv_0VPaV"
+            "instruction": "Get your cup and fill with wate",
+            "video": "https://drive.google.com/file/d/1zF0jN8IREwHY2MlMLMtPLFyyT2-_Dsmw/view?usp=sharing",
+            "audio": "",
+            "": "",
+            "Intensity": "",
+            "Prompt Type": ""
         },
         {
             "step": 13,
-            "instruction": "Brush outside surface (facing cheek) of top teeth on left side",
-            "mastery": 0,
-            "video": "https://drive.google.com/drive/u/0/folders/1pEEH8ecn3sKnjWL7-6jWpaTTuv_0VPaV"
+            "instruction": "Rinse mouth and spit in sink",
+            "video": "https://drive.google.com/file/d/1za3Ois0TjZsPjA1OJJF6mz2ureQcUJMD/view?usp=sharing",
+            "audio": "",
+            "": "",
+            "Intensity": "",
+            "Prompt Type": ""
         },
         {
             "step": 14,
-            "instruction": "Brush the inside surface (facing tongue) of bottom teeth on right side.",
-            "mastery": 0,
-            "video": "https://drive.google.com/drive/u/0/folders/1pEEH8ecn3sKnjWL7-6jWpaTTuv_0VPaV"
-        },
-        {
-            "step": 15,
-            "instruction": "Brush the inside surface (facing tongue) of bottom teeth on left side",
-            "mastery": 0,
-            "video": "https://drive.google.com/drive/u/0/folders/1pEEH8ecn3sKnjWL7-6jWpaTTuv_0VPaV"
-        },
-        {
-            "step": 16,
-            "instruction": "Brush the inside surface (facing tongue) of top teeth on left side.",
-            "mastery": 0,
-            "video": "https://drive.google.com/drive/u/0/folders/1pEEH8ecn3sKnjWL7-6jWpaTTuv_0VPaV"
-        },
-        {
-            "step": 17,
-            "instruction": "Brush the inside surface (facing tongue) of top teeth on right side.",
-            "mastery": 0,
-            "video": "https://drive.google.com/drive/u/0/folders/1pEEH8ecn3sKnjWL7-6jWpaTTuv_0VPaV"
-        },
-        {
-            "step": 18,
-            "instruction": "Spit in the sink",
-            "mastery": 0,
-            "video": "https://drive.google.com/drive/u/0/folders/1pEEH8ecn3sKnjWL7-6jWpaTTuv_0VPaV"
-        },
-        {
-            "step": 19,
-            "instruction": "Rinse toothbrush and put it away",
-            "mastery": 0,
-            "video": "https://drive.google.com/drive/u/0/folders/1pEEH8ecn3sKnjWL7-6jWpaTTuv_0VPaV"
-        },
-        {
-            "step": 20,
-            "instruction": "Get your cup and fill with water",
-            "mastery": 0,
-            "video": "https://drive.google.com/drive/u/0/folders/1pEEH8ecn3sKnjWL7-6jWpaTTuv_0VPaV"
-        },
-        {
-            "step": 21,
-            "instruction": "Rinse mouth and spit in sink",
-            "mastery": 0,
-            "video": "https://drive.google.com/drive/u/0/folders/1pEEH8ecn3sKnjWL7-6jWpaTTuv_0VPaV"
-        },
-        {
-            "step": 22,
             "instruction": "Wipe your face with a towel",
-            "mastery": 0,
-            "video": "https://drive.google.com/drive/u/0/folders/1pEEH8ecn3sKnjWL7-6jWpaTTuv_0VPaV"
-        },
-        {
-            "step": 23,
-            "instruction": "Clean up",
-            "mastery": 0,
-            "video": "https://drive.google.com/drive/u/0/folders/1pEEH8ecn3sKnjWL7-6jWpaTTuv_0VPaV"
+            "video": "https://drive.google.com/file/d/1IlmGpw_fqJgO1mHwKn_9hIUM3qdK299X/view?usp=sharing",
+            "audio": "",
+            "": "",
+            "Intensity": "",
+            "Prompt Type": ""
         }
     ]
 }

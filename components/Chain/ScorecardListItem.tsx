@@ -9,33 +9,62 @@ import * as Animatable from "react-native-animatable";
 import date from "date-and-time";
 import CustomColors from "../../styles/Colors";
 
-interface ScorecardStepListItem {
-	attempts: StepAttempt[];
-	step: number;
-	instruction: string;
-	mastery: MasteryLevel;
-	video: string;
-}
-
-interface ListItem {
-	item: ScorecardStepListItem;
-}
+const masteredIcon = require("../../assets/icons/ribbon-icon_1.png");
+const focusIcon = require("../../assets/icons/in-progress-icon_1.png");
+const notStartedIcon = require("../../assets/icons/waving-icon.png");
 
 type Props = {
-	index?: number;
-	itemProps: ListItem;
+	itemProps: {};
 };
 
-const ScorecardListItem: FC<Props> = ({ ...props }) => {
-	const { step, instruction, mastery } = props.itemProps.item;
-	const [isPressed, setIsPressed] = useState(false);
+const ScorecardListItem: FC<Props> = (props) => {
+	// console.log(props);
 
-	const masteredIcon = require("../../assets/icons/ribbon-icon_1.png");
-	const focusIcon = require("../../assets/icons/in-progress-icon_1.png");
-	const notStartedIcon = require("../../assets/icons/waving-icon.png");
+	const { id, instruction, last_updated } = props.itemProps.item;
+
+	const { sessionStepData } = props;
+
+	const [isPressed, setIsPressed] = useState(false);
+	const [icon, setIcon] = useState();
+	const [stepData, setStepData] = useState({});
+	const [dateIntro, setDateIntro] = useState("");
+	const [dateMast, setDateMast] = useState();
+	const [dateBoost, setDateBoosts] = useState();
+	const [dateBoostMast, setDateBoostMast] = useState();
+	const [stepMastery, setStepMastery] = useState();
+
+	useEffect(() => {
+		setDateIntro(last_updated);
+	});
+
+	const determineMastery = () => {
+		if (id === 0 && stepData) {
+			setIcon(focusIcon);
+		} else if (id > 0) {
+			setIcon(notStartedIcon);
+		} else {
+			console.log("mastered icon??");
+		}
+	};
+
+	const handleDateVals = (d: string) => {
+		let _d = date.format(new Date(d), "MM/DD/YYYY");
+
+		if (_d === "aN/aN/0NaN") {
+			return "N/A";
+		} else {
+			return date.format(new Date(d), "MM/DD/YYYY");
+		}
+	};
+
+	useEffect(() => {
+		setStepData(sessionStepData);
+		determineMastery();
+		setDateIntro();
+	}, []);
 
 	return (
-		<Animatable.View animation="fadeIn" duration={300 * step}>
+		<Animatable.View animation="fadeIn" duration={300 * id}>
 			<Card style={styles.container}>
 				<TouchableOpacity
 					style={[styles.touchable]}
@@ -43,7 +72,7 @@ const ScorecardListItem: FC<Props> = ({ ...props }) => {
 						setIsPressed(!isPressed);
 					}}
 				>
-					<Text style={styles.id}>{step}. </Text>
+					<Text style={styles.id}>{id + 1}. </Text>
 					<Text style={styles.skill}>{instruction}</Text>
 					{/* <Text style={styles.score}>{MasteryIcons(1)}</Text> */}
 					<Image
@@ -55,7 +84,7 @@ const ScorecardListItem: FC<Props> = ({ ...props }) => {
 								padding: 2,
 							},
 						]}
-						source={focusIcon}
+						source={icon}
 					/>
 					<AntDesign
 						name="caretright"
@@ -71,25 +100,25 @@ const ScorecardListItem: FC<Props> = ({ ...props }) => {
 						<Text style={styles.dropDownLabel}>
 							{`${"\u2022"} Date Introduced: `}
 							<Text style={styles.dropDownItemDate}>
-								{date.format(new Date(), "MM/DD/YYYY")}
+								{handleDateVals(dateIntro)}
 							</Text>
 						</Text>
 						<Text style={styles.dropDownLabel}>
 							{`${"\u2022"} Date Mastered: `}
 							<Text style={styles.dropDownItemDate}>
-								{date.format(new Date(), "MM/DD/YYYY")}
+								{handleDateVals(dateMast)}
 							</Text>
 						</Text>
 						<Text style={styles.dropDownLabel}>
 							{`${"\u2022"} Date Booster training initiated: `}
 							<Text style={styles.dropDownItemDate}>
-								{date.format(new Date(), "MM/DD/YYYY")}
+								{handleDateVals(dateBoost)}
 							</Text>
 						</Text>
 						<Text style={styles.dropDownLabel}>
 							{`${"\u2022"} Date Mastered Booster training: `}
 							<Text style={styles.dropDownItemDate}>
-								{date.format(new Date(), "MM/DD/YYYY")}
+								{handleDateVals(dateBoostMast)}
 							</Text>
 						</Text>
 					</View>

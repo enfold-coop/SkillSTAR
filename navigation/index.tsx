@@ -63,7 +63,29 @@ function RootNavigator() {
 			initialRouteName="LandingScreen"
 			// screenOptions={{ headerShown: true }}
 		>
-			<Stack.Screen name="LandingScreen" component={LandingScreen} />
+			<Stack.Screen
+				name="LandingScreen"
+				component={LandingScreen}
+				options={{ headerShown: false }}
+			/>
+			<Stack.Screen
+				options={({ navigation }) => ({
+					...screenOpts,
+					title: "Chains", // TODO: Replace this title with something more useful
+					headerRight: () => <LogoutButton navigation={navigation} />,
+				})}
+				name="ChainsHomeScreen"
+				component={ChainsHomeScreen}
+			/>
+			<Stack.Screen
+				options={({ navigation }) => ({
+					...screenOpts,
+					title: "Prepare Materials",
+					headerRight: () => <LogoutButton navigation={navigation} />,
+				})}
+				name="PrepareMaterialsScreen"
+				component={PrepareMaterialsScreen}
+			/>
 			<Stack.Screen
 				options={({ navigation }) => ({
 					...screenOpts,
@@ -93,24 +115,6 @@ function RootNavigator() {
 				name="SkillsHomeScreen"
 				component={SkillsHomeScreen}
 			/> */}
-			<Stack.Screen
-				options={({ navigation }) => ({
-					...screenOpts,
-					title: "Chains", // TODO: Replace this title with something more useful
-					headerRight: () => <LogoutButton navigation={navigation} />,
-				})}
-				name="ChainsHomeScreen"
-				component={ChainsHomeScreen}
-			/>
-			<Stack.Screen
-				options={({ navigation }) => ({
-					...screenOpts,
-					title: "Prepare Materials",
-					headerRight: () => <LogoutButton navigation={navigation} />,
-				})}
-				name="PrepareMaterialsScreen"
-				component={PrepareMaterialsScreen}
-			/>
 			<Stack.Screen
 				options={({ navigation }) => ({
 					...screenOpts,

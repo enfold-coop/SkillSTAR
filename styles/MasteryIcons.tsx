@@ -1,4 +1,3 @@
-// import {MaterialCommunityIcons} from "@expo/vector-icons";
 import React from "react";
 import { StyleSheet, View } from "react-native";
 import CustomColor from "../styles/Colors";

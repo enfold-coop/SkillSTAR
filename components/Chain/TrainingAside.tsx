@@ -1,5 +1,9 @@
-import React from "react";
+import React, { FC, useState, useEffect, useContext } from "react";
 import { StyleSheet, Text, View } from "react-native";
+
+type Props = {
+	sessionSteps: {};
+};
 
 const TrainingAside = () => {
 	return (

@@ -2,13 +2,14 @@
     "expo": {
         "name": "SkillSTAR",
         "slug": "SkillSTAR",
+        "privacy": "unlisted",
         "version": "1.0.0",
         "orientation": "portrait",
         "icon": "./assets/images/logo.png",
         "scheme": "myapp",
         "userInterfaceStyle": "automatic",
         "splash": {
-            "image": "./assets/images/splash.png",
+            "image": "./assets/images/logo-bkgrd.png",
             "resizeMode": "contain",
             "backgroundColor": "#ffffff"
         },
@@ -19,7 +20,8 @@
             "**/*"
         ],
         "ios": {
-            "supportsTablet": true
+            "supportsTablet": true,
+            "bundleIdentifier": "SkillSTAR"
         },
         "web": {
             "favicon": "./assets/images/favicon.png"
