@@ -68,7 +68,7 @@ const ChainsHomeScreen: FC<Props> = (props) => {
 
 	const getSteps = async () => {
 		const s = await api.getChainSteps();
-		console.log(s);
+		// console.log(s);
 		if (s != undefined) {
 			setStepList(s);
 		}
@@ -89,11 +89,15 @@ const ChainsHomeScreen: FC<Props> = (props) => {
 			if (participant && participant.hasOwnProperty("id")) {
 				const _id = await api.getChainQuestionnaireId(participant.id);
 				const data = await api.getChainData(_id);
-				// console.log(data);
+				// console.log(data.sessions[0].session_type);
 				setUserData(data);
 				dispatch({ type: ADD_USER_DATA, payload: data });
-				// dispatch({ type: ADD_SESSION_TYPE, payload: data });
 				setType(data.sessions[data.sessions.length - 1].session_type);
+				dispatch({
+					type: ADD_SESSION_TYPE,
+					payload:
+						data.sessions[data.sessions.length - 1].session_type,
+				});
 				setSessionTypeAndNmbr(data);
 				setSession(data?.sessions[data.sessions.length - 1]);
 				// console.log(session.step_attempts);
