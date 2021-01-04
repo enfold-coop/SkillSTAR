@@ -37,7 +37,7 @@ export class ApiService {
 			return null;
 		}
 	}
-
+	// UTILITY
 	async getHeaderInit() {
 		const token = await AsyncStorage.getItem("user_token");
 		return {
@@ -101,7 +101,8 @@ export class ApiService {
 		}
 	}
 
-	async setDataHeader(data: any) {
+	// UTILITY
+	async POSTDataHeader(data: any) {
 		const token = await AsyncStorage.getItem("user_token");
 		return {
 			method: "POST",
@@ -128,7 +129,8 @@ export class ApiService {
 		}
 	}
 
-	async putDataHeader(data: any) {
+	// UTILITY
+	async PUTDataHeader(data: any) {
 		const token = await AsyncStorage.getItem("user_token");
 		return {
 			method: "PUT",
@@ -144,7 +146,7 @@ export class ApiService {
 	async editChainData(data: ChainQuestionnaire, questionnaireId: number) {
 		const url = this.endpoints.chain + "/" + questionnaireId;
 		try {
-			const header = await this.putDataHeader(data);
+			const header = await this.PUTDataHeader(data);
 			const response = await fetch(url, header);
 			const dbData = await response.json();
 			return dbData as ChainQuestionnaire;

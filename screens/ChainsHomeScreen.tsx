@@ -68,7 +68,7 @@ const ChainsHomeScreen: FC<Props> = (props) => {
 
 	const getSteps = async () => {
 		const s = await api.getChainSteps();
-		// console.log(s);
+		console.log(s);
 		if (s != undefined) {
 			setStepList(s);
 		}
@@ -113,7 +113,7 @@ const ChainsHomeScreen: FC<Props> = (props) => {
 			: null;
 
 		// !! overriding type for dev purposes
-		lastSess.session_type = "training";
+		// lastSess.session_type = "training";
 
 		if (lastSess === null) {
 			setSessionNmbr(1);
@@ -166,7 +166,7 @@ const ChainsHomeScreen: FC<Props> = (props) => {
 				style={portrait ? styles.container : styles.landscapeContainer}
 			>
 				<AppHeader name="Chains Home" />
-				{session && (
+				{chainSteps && (
 					<View style={styles.listContainer}>
 						<SessionDataAside
 							historicalData={{}}
