@@ -14,16 +14,16 @@ const focusIcon = require("../../assets/icons/in-progress-icon_1.png");
 const notStartedIcon = require("../../assets/icons/waving-icon.png");
 
 type Props = {
-	index?: number;
 	itemProps: {};
-	sessionStepData?: {};
 };
 
 const ScorecardListItem: FC<Props> = (props) => {
+	// console.log(props);
+
 	const { id, instruction, last_updated } = props.itemProps.item;
-	console.log(last_updated);
 
 	const { sessionStepData } = props;
+
 	const [isPressed, setIsPressed] = useState(false);
 	const [icon, setIcon] = useState();
 	const [stepData, setStepData] = useState({});
@@ -31,6 +31,7 @@ const ScorecardListItem: FC<Props> = (props) => {
 	const [dateMast, setDateMast] = useState();
 	const [dateBoost, setDateBoosts] = useState();
 	const [dateBoostMast, setDateBoostMast] = useState();
+	const [stepMastery, setStepMastery] = useState();
 
 	useEffect(() => {
 		setDateIntro(last_updated);
@@ -46,13 +47,8 @@ const ScorecardListItem: FC<Props> = (props) => {
 		}
 	};
 
-	const setDropDownDates = () => {
-		//
-	};
-
 	const handleDateVals = (d: string) => {
 		let _d = date.format(new Date(d), "MM/DD/YYYY");
-		console.log(_d);
 
 		if (_d === "aN/aN/0NaN") {
 			return "N/A";
@@ -62,7 +58,7 @@ const ScorecardListItem: FC<Props> = (props) => {
 	};
 
 	useEffect(() => {
-		setStepData(sessionStepData());
+		setStepData(sessionStepData);
 		determineMastery();
 		setDateIntro();
 	}, []);

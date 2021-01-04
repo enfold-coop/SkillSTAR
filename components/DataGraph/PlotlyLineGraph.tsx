@@ -1,18 +1,38 @@
-import React, { FC, useState, useEffect } from "react";
+import React, { FC, useState, useEffect, useContext } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import Plotly from "react-native-plotly";
 import CustomColors from "../../styles/Colors";
+import { store } from "../../context/ChainProvider";
+import { FilterSessionsByType } from "../../_util/FilterSessionType";
 
 type Props = {
 	dimensions: {};
 	modal: boolean;
 };
 
+/**
+ * - get data from Context,
+ * - sort session data by type,
+ * - (PROBE) X: Session Number, Y: %mastery
+ * - (training) X: Session Number, Y: %mastery,
+ * - (challenging behavior) X: SessionNumber, Y: %chal.behav
+ */
+
 const PlotlyLineGraph: FC<Props> = (props) => {
+	const { state } = useContext(store);
+	const { userData } = state;
 	const { dimensions, modal } = props;
 	const [thisHeight, setHeight] = useState();
 	const [thisWidth, setWidth] = useState();
 	const [isModal, setIsModal] = useState(false);
+	const [probeSessions, setProbeSessions] = useState([]);
+	const [trainingSessions, setTrainingSessions] = useState([]);
+
+	useEffect(() => {
+		let { probeArr, trainingArr } = FilterSessionsByType(userData.sessions);
+		setTrainingSessions(trainingArr);
+		setProbeSessions(probeArr);
+	}, []);
 
 	const data = [
 		{

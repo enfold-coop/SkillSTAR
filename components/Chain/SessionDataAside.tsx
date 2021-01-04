@@ -1,4 +1,4 @@
-import React, { FC, useState, useEffect } from "react";
+import React, { FC, useState, useEffect, useContext } from "react";
 import { StyleSheet, Text, View, TouchableOpacity, Image } from "react-native";
 import { Button, Card } from "react-native-paper";
 import { ProbeAside, TrainingAside } from "./index";
@@ -6,7 +6,7 @@ import { ChainsHomeGraph } from "../DataGraph/index";
 import GraphModal from "../DataGraph/GraphModal";
 import CustomColors from "../../styles/Colors";
 import date from "date-and-time";
-import { PlotlyLineGraph } from "../DataGraph/index";
+import { store } from "../../context/ChainProvider";
 
 type Props = {
 	historicalData: {};
@@ -25,6 +25,16 @@ type Props = {
 
 const SessionDataAside: FC<Props> = (props) => {
 	const { sessionNumber, name, asideContent } = props;
+	const context = useContext(store);
+	const { state } = context;
+	// console.log(state);
+
+	// console.log(context);
+	useEffect(() => {
+		if (state.sessionType === "training") {
+			setIsTraining(true);
+		}
+	}, []);
 
 	const [isTraining, setIsTraining] = useState(false);
 	const [today, setToday] = useState(date.format(new Date(), "MM/DD/YYYY"));
@@ -59,30 +69,6 @@ const SessionDataAside: FC<Props> = (props) => {
 						</View>
 						<View style={styles.taskInfoContainer}>
 							{setAsideContent()}
-							{/* <TrainingAside /> */}
-							{/* <Text style={styles.isProbeTrainingSession}>
-								{isTraining
-									? "Training Session"
-									: "Probe Session"}
-							</Text>
-							<Text style={styles.focusStep}>
-								Focus Step:{" "}
-								<Text style={styles.focusStepInstruction}>
-									{"Put toothpaste on brush"}
-								</Text>
-							</Text>
-							<Text style={styles.promptLevelLabel}>
-								Prompt Level:{" "}
-								<Text style={styles.promptLevel}>
-									{promptLevel}
-								</Text>
-							</Text>
-							<Text style={styles.masteryLevelLabel}>
-								Mastery:{" "}
-								<Text style={styles.masteryLevel}>
-									{masteryLevel}
-								</Text>
-							</Text> */}
 						</View>
 					</Card>
 				</View>
@@ -195,7 +181,6 @@ const styles = StyleSheet.create({
 		justifyContent: "center",
 		alignContent: "center",
 		marginTop: 20,
-		// paddingBottom: 10,
 		borderRadius: 10,
 		backgroundColor: "#fff",
 	},

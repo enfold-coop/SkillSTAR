@@ -55,7 +55,7 @@ const ChainsHomeScreen: FC<Props> = (props) => {
 	const [chainSteps, setStepList] = useState();
 	const [session, setSession] = useState();
 	const [userData, setUserData] = useState();
-	const [sessionNmbr, setSessionNmbr] = useState(0);
+	const [sessionNmbr, setSessionNmbr] = useState();
 	const [type, setType] = useState("type");
 
 	useEffect(() => {
@@ -89,14 +89,14 @@ const ChainsHomeScreen: FC<Props> = (props) => {
 			if (participant && participant.hasOwnProperty("id")) {
 				const _id = await api.getChainQuestionnaireId(participant.id);
 				const data = await api.getChainData(_id);
+				// console.log(data);
 				setUserData(data);
-
 				dispatch({ type: ADD_USER_DATA, payload: data });
 				// dispatch({ type: ADD_SESSION_TYPE, payload: data });
-
 				setType(data.sessions[data.sessions.length - 1].session_type);
 				setSessionTypeAndNmbr(data);
 				setSession(data?.sessions[data.sessions.length - 1]);
+				// console.log(session.step_attempts);
 				setElemsValues();
 			}
 		}
@@ -111,6 +111,9 @@ const ChainsHomeScreen: FC<Props> = (props) => {
 		let lastSess = d.sessions.length
 			? d.sessions[d.sessions.length - 1]
 			: null;
+
+		// !! overriding type for dev purposes
+		lastSess.session_type = "training";
 
 		if (lastSess === null) {
 			setSessionNmbr(1);
@@ -163,25 +166,21 @@ const ChainsHomeScreen: FC<Props> = (props) => {
 				style={portrait ? styles.container : styles.landscapeContainer}
 			>
 				<AppHeader name="Chains Home" />
-				{chainSteps && (
+				{session && (
 					<View style={styles.listContainer}>
 						<SessionDataAside
 							historicalData={{}}
 							name={"Moxy"}
 							asideContent={asideContent}
 							sessionNumber={sessionNmbr}
+							sessionSteps={chainSteps}
 						/>
 						<FlatList
 							style={styles.list}
 							data={chainSteps}
 							keyExtractor={(item) => item.instruction.toString()}
 							renderItem={(item, index) => (
-								<ScorecardListItem
-									itemProps={item}
-									sessionStepData={() => {
-										return {};
-									}}
-								/>
+								<ScorecardListItem itemProps={item} />
 							)}
 						/>
 					</View>
@@ -225,7 +224,6 @@ const styles = StyleSheet.create({
 		alignContent: "flex-start",
 		padding: 10,
 		paddingBottom: 80,
-		// backgroundColor: "rgba(0,0,0,0.2)",
 	},
 	title: {
 		fontSize: 30,
@@ -241,7 +239,6 @@ const styles = StyleSheet.create({
 		height: "90%",
 		flexDirection: "row",
 		justifyContent: "space-between",
-		// alignContent: "space-between",
 		backgroundColor: "rgba(255, 255, 255,0.4)",
 		padding: 5,
 		margin: 5,
