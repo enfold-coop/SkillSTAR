@@ -28,8 +28,8 @@ const AppHeader: FC<Props> = (props) => {
 				>
 					{props.name}
 				</Text>
+				<SelectParticipant />
 			</View>
-			<SelectParticipant />
 		</View>
 	);
 };

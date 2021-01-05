@@ -27,15 +27,6 @@ const SessionDataAside: FC<Props> = (props) => {
 	const { sessionNumber, name, asideContent } = props;
 	const context = useContext(store);
 	const { state } = context;
-	// console.log(state);
-
-	// console.log(context);
-	useEffect(() => {
-		if (state.sessionType === "training") {
-			setIsTraining(true);
-		}
-	}, []);
-
 	const [isTraining, setIsTraining] = useState(false);
 	const [today, setToday] = useState(date.format(new Date(), "MM/DD/YYYY"));
 	const [promptLevel, setPromptLevel] = useState("Full Physical");
@@ -43,13 +34,20 @@ const SessionDataAside: FC<Props> = (props) => {
 	const [graphContainerDimens, setGraphContainerDimens] = useState({});
 	const [modalVis, setModalVis] = useState(false);
 
+	// console.log(context);
+	useEffect(() => {
+		if (state.sessionType === "training") {
+			setIsTraining(true);
+		}
+	}, [state]);
+
 	const handleModal = () => {
 		setModalVis(!modalVis);
 	};
 
 	const setAsideContent = () => {
 		if (isTraining) {
-			return <TrainingAside />;
+			return <TrainingAside sessionNmbr={sessionNumber} />;
 		} else {
 			return <ProbeAside />;
 		}

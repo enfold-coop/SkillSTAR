@@ -20,6 +20,7 @@ const MasteryIcons = (level: string) => {
 	};
 	return icons[`${level}`];
 };
+
 const PromptIcons = (level: string) => {
 	const icons = {
 		ip: require("../../assets/icons/ip_prompt_icon.png"),

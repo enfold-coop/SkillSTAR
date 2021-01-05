@@ -89,11 +89,15 @@ const ChainsHomeScreen: FC<Props> = (props) => {
 			if (participant && participant.hasOwnProperty("id")) {
 				const _id = await api.getChainQuestionnaireId(participant.id);
 				const data = await api.getChainData(_id);
-				// console.log(data);
+				console.log(data.sessions[0]);
 				setUserData(data);
 				dispatch({ type: ADD_USER_DATA, payload: data });
-				// dispatch({ type: ADD_SESSION_TYPE, payload: data });
 				setType(data.sessions[data.sessions.length - 1].session_type);
+				dispatch({
+					type: ADD_SESSION_TYPE,
+					payload:
+						data.sessions[data.sessions.length - 1].session_type,
+				});
 				setSessionTypeAndNmbr(data);
 				setSession(data?.sessions[data.sessions.length - 1]);
 				// console.log(session.step_attempts);
@@ -166,11 +170,9 @@ const ChainsHomeScreen: FC<Props> = (props) => {
 				style={portrait ? styles.container : styles.landscapeContainer}
 			>
 				<AppHeader name="Chains Home" />
-				{session && (
+				{chainSteps && (
 					<View style={styles.listContainer}>
 						<SessionDataAside
-							historicalData={{}}
-							name={"Moxy"}
 							asideContent={asideContent}
 							sessionNumber={sessionNmbr}
 							sessionSteps={chainSteps}
