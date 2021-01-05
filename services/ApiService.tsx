@@ -37,6 +37,7 @@ export class ApiService {
 			return null;
 		}
 	}
+
 	// UTILITY
 	async getHeaderInit() {
 		const token = await AsyncStorage.getItem("user_token");

@@ -33,7 +33,6 @@ const SessionDataAside: FC<Props> = (props) => {
 	const [masteryLevel, setMasteryLevel] = useState("Focus");
 	const [graphContainerDimens, setGraphContainerDimens] = useState({});
 	const [modalVis, setModalVis] = useState(false);
-	console.log(state.sessionType);
 
 	// console.log(context);
 	useEffect(() => {
@@ -48,7 +47,7 @@ const SessionDataAside: FC<Props> = (props) => {
 
 	const setAsideContent = () => {
 		if (isTraining) {
-			return <TrainingAside />;
+			return <TrainingAside sessionNmbr={sessionNumber} />;
 		} else {
 			return <ProbeAside />;
 		}
