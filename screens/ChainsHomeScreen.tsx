@@ -10,7 +10,6 @@ import {
 } from "../components/Chain/chainshome_text_assets/chainshome_text";
 import ScorecardListItem from "../components/Chain/ScorecardListItem";
 import SessionDataAside from "../components/Chain/SessionDataAside";
-
 import AppHeader from "../components/Header/AppHeader";
 import {store} from "../context/ChainProvider";
 import {ADD_CURR_SESSION_NMBR, ADD_SESSION_TYPE, ADD_USER_DATA,} from "../context/constants/actions";
@@ -19,6 +18,7 @@ import {ApiService} from "../services/ApiService";
 import CustomColors from "../styles/Colors";
 import {ChainQuestionnaire} from '../types/CHAIN/ChainQuestionnaire';
 import {ChainSession} from '../types/CHAIN/ChainSession';
+import {ChainStep} from '../types/CHAIN/ChainStep';
 
 type Props = {
   route: RootNavProps<"ChainsHomeScreen">;
@@ -32,19 +32,17 @@ const COMPLETED_PROBE_SESSIONS = 2;
 // Chain Home Screen
 const ChainsHomeScreen: FC<Props> = (props) => {
   const context = useContext(store);
-
   const {dispatch} = context;
-
   const navigation = useNavigation();
   let api = new ApiService();
   const {portrait} = useDeviceOrientation();
   const [orient, setOrient] = useState(false);
   const [btnText, setBtnText] = useState("Start Session");
   const [asideContent, setAsideContents] = useState("");
-  const [chainSteps, setStepList] = useState();
+  const [chainSteps, setStepList] = useState<ChainStep[]>();
   const [session, setSession] = useState<ChainSession>();
   const [userData, setUserData] = useState<ChainQuestionnaire>();
-  const [sessionNmbr, setSessionNmbr] = useState();
+  const [sessionNmbr, setSessionNmbr] = useState<number>(0);
   const [type, setType] = useState<string>("type");
 
   useEffect(() => {
@@ -162,7 +160,7 @@ const ChainsHomeScreen: FC<Props> = (props) => {
               style={styles.list}
               data={chainSteps}
               keyExtractor={(item) => item.instruction.toString()}
-              renderItem={(item, index) => (
+              renderItem={item => (
                 <ScorecardListItem itemProps={item}/>
               )}
             />

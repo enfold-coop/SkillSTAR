@@ -1,12 +1,19 @@
 import React, {useReducer} from "react";
+import {ChainQuestionnaire} from '../types/CHAIN/ChainQuestionnaire';
+import {ChainSession, ChainSessionType} from '../types/CHAIN/ChainSession';
 import {ADD_CURR_SESSION_NMBR, ADD_SESSION, ADD_SESSION_TYPE, ADD_USER_DATA,} from "./constants/actions";
 
-type ChainProviderProps = {};
+type ChainProviderProps = {
+  dispatch?: any;
+  sessionType: string;
+  session?: ChainSession;
+  userData?: ChainQuestionnaire;
+  currSessionNmbr: number;
+  state?: any;
+};
 
-const initialState = {
-  sessionType: "",
-  session: {},
-  userData: {},
+const initialState: ChainProviderProps = {
+  sessionType: ChainSessionType.probe,
   currSessionNmbr: 0,
 };
 

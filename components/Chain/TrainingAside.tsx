@@ -2,10 +2,10 @@ import React, { FC, useState, useEffect, useContext } from "react";
 import { StyleSheet, Text, View } from "react-native";
 
 type Props = {
-	sessionSteps: {};
+	sessionNmbr: number;
 };
 
-const TrainingAside = () => {
+const TrainingAside: FC<Props> = (props) => {
 	return (
 		<View style={styles.container}>
 			<Text style={styles.headerText}>Training Session</Text>
