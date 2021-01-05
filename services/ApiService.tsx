@@ -20,6 +20,19 @@ export class ApiService {
   constructor() {
   }
 
+  async getChainDataForSelectedParticipant(): Promise<ChainQuestionnaire | undefined> {
+    const participantJson = await AsyncStorage.getItem("selected_participant");
+
+		if (participantJson) {
+      const participant = JSON.parse(participantJson);
+
+      if (participant && participant.hasOwnProperty("id")) {
+        const participantId = await this.getChainQuestionnaireId(participant.id);
+        return await this.getChainData(participantId);
+      }
+    }
+  }
+
   async getChainSteps() {
     const url = this.endpoints.chainSteps;
     try {
@@ -71,7 +84,7 @@ export class ApiService {
     }
   }
 
-  async getChainData(questionnaireId: number) {
+  async getChainData(questionnaireId: number): Promise<ChainQuestionnaire | undefined> {
     const url = this.endpoints.chainSession.replace(
       "<questionnaire_id>",
       questionnaireId.toString()
@@ -85,7 +98,6 @@ export class ApiService {
       return dbData as ChainQuestionnaire;
     } catch (e) {
       console.error(e);
-      return null;
     }
   }
 
