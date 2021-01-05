@@ -17,7 +17,7 @@ import {RootNavProps} from "../navigation/root_types";
 import {ApiService} from "../services/ApiService";
 import CustomColors from "../styles/Colors";
 import {ChainQuestionnaire} from '../types/CHAIN/ChainQuestionnaire';
-import {ChainSession} from '../types/CHAIN/ChainSession';
+import {ChainSession, ChainSessionType} from '../types/CHAIN/ChainSession';
 import {ChainStep} from '../types/CHAIN/ChainStep';
 
 type Props = {
@@ -87,33 +87,52 @@ const ChainsHomeScreen: FC<Props> = (props) => {
   };
 
   /**
+   * Mastery Algorithm
    * UTIL function (can be moved to another file)
+   *
+   * Params: chainData = the entire ChainQuestionnaire
+   * Returns one of the following:
+   * - An empty probe session, if the user has no attempted sessions yet
+   * - The next session the participant should be attempting, if there is one.
+   * - An empty probe session, if there are none left to attempt (???)
    */
-  const setSessionTypeAndNmbr = (d: any) => {
-    let lastSess = d.sessions.length
-      ? d.sessions[d.sessions.length - 1]
-      : null;
+  const setSessionTypeAndNmbr = (chainData: ChainQuestionnaire) => {
+
+    // Some of the sessions will be future/not attempted sessions.
+    // We want the next session the participant should be attempting.
+    const numSessions = chainData.sessions ? chainData.sessions.length : 0;
+
+    // If there are no sessions, return a probe session.
+
+    // Otherwise, return the first un-attempted session OR the last attempted session, if there are no un-attempted sessions?
+
+    const lastSess = (numSessions > 0) ? chainData.sessions[numSessions - 1] : null;
 
     // !! overriding type for dev purposes
-    lastSess.session_type = "training";
+    // lastSess.session_type = ChainSessionType.training;
 
     if (lastSess === null) {
       setSessionNmbr(1);
       setType("probe");
+
+      // Session count (how many sessions attempted)
+      // i.e., sessions with attempts. Sessions with no attempts would not be included in this count?
       dispatch({type: ADD_CURR_SESSION_NMBR, payload: 1});
+
+      // chainData.sessions[i].session_type
       dispatch({type: ADD_SESSION_TYPE, payload: "probe"});
     }
     if (lastSess) {
-      if (lastSess.session_type === "training" && !lastSess.completed) {
+      if (lastSess.session_type === ChainSessionType.training && !lastSess.completed) {
         setType("training");
-        setSessionNmbr(d.sessions.length + 1);
+        setSessionNmbr(chainData.sessions.length + 1);
         dispatch({type: ADD_CURR_SESSION_NMBR, payload: sessionNmbr});
         dispatch({type: ADD_SESSION_TYPE, payload: "training"});
         setBtnText(START_TRAINING_SESSION_BTN);
       }
-      if (lastSess.session_type === "probe" && !lastSess.completed) {
+      if (lastSess.session_type === ChainSessionType.probe && !lastSess.completed) {
         setType("probe");
-        setSessionNmbr(d.sessions.length + 1);
+        setSessionNmbr(chainData.sessions.length + 1);
         dispatch({type: ADD_CURR_SESSION_NMBR, payload: sessionNmbr});
         dispatch({type: ADD_SESSION_TYPE, payload: "probe"});
         setBtnText(START_PROBE_SESSION_BTN);

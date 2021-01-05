@@ -1,31 +1,17 @@
-import { AntDesign } from "@expo/vector-icons";
-import { useNavigation } from "@react-navigation/native";
-import { Video } from "expo-av";
-import React, { FC, useEffect, useState } from "react";
-import {
-	ImageBackground,
-	StyleSheet,
-	Text,
-	View,
-	Dimensions,
-} from "react-native";
-import { TouchableOpacity } from "react-native-gesture-handler";
-import { Button } from "react-native-paper";
+import {useNavigation} from "@react-navigation/native";
+import {Video} from "expo-av";
+import React, {FC, useEffect, useState} from "react";
+import {ImageBackground, StyleSheet, Text, View,} from "react-native";
 import * as Animatable from "react-native-animatable";
+import {Button} from "react-native-paper";
 import AppHeader from "../components/Header/AppHeader";
-import { chainSteps } from "../data/chainSteps";
-import { videos } from "../data/videos";
-import { RootNavProps } from "../navigation/root_types";
+import {MasteryIconContainer, ProgressBar, StarsNIconsContainer,} from "../components/Steps/index";
+import {chainSteps} from "../data/chainSteps";
+import {videos} from "../data/videos";
+import {RootNavProps} from "../navigation/root_types";
 import CustomColors from "../styles/Colors";
-import { Session } from "../types/CHAIN/Session";
-import { StepAttempt } from "../types/CHAIN/StepAttempt";
-import {
-	StepAttemptStars,
-	StarsNIconsContainer,
-	MasteryIconContainer,
-	ProgressBar,
-} from "../components/Steps/index";
-import { SvgUri } from "react-native-svg";
+import {Session} from "../types/CHAIN/Session";
+import {ChainStepStatus} from "../types/CHAIN/StepAttempt";
 
 interface Props {
 	route: RootNavProps<"StepScreen">;
@@ -56,7 +42,7 @@ const StepScreen: FC<Props> = (props) => {
 
 		chainSteps.forEach((e, i) => {
 			let { stepId, instruction } = chainSteps[i];
-			session.addStepData(new StepAttempt(stepId, instruction));
+			session.addStepData({chain_step_id: stepId, status: ChainStepStatus.not_complete, completed: false});
 		});
 	};
 

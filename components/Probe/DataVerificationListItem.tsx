@@ -17,7 +17,8 @@ export const DataVerificationListItem: FC<Props> = (props) => {
 	/**
 	 * use context api, here:
 	 */
-	const { stepId, instruction } = props.stepAttempt;
+	const stepId = props.stepAttempt.chain_step_id;
+	const instruction = props.stepAttempt.chain_step ? props.stepAttempt.chain_step.instruction : 'LOADING';
 
 	return (
 		<View style={styles.container}>

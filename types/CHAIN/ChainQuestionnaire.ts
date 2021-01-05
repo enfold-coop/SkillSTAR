@@ -7,4 +7,6 @@ export interface ChainQuestionnaire {
 	user_id: number;
 	time_on_task_ms: number;
 	sessions: ChainSession[];
+
+	// TODO: Add the group?
 }

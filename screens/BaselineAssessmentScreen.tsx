@@ -1,21 +1,14 @@
-import React, { useState, useEffect, ReactNode } from "react";
-import {
-	StyleSheet,
-	Text,
-	View,
-	ImageBackground,
-	Dimensions,
-} from "react-native";
-import { Button } from "react-native-paper";
-import { useNavigation } from "@react-navigation/native";
-import { RootNavProps } from "../navigation/root_types";
-import { Session } from "../types/CHAIN/Session";
-import CustomColors from "../styles/Colors";
+import {useNavigation} from "@react-navigation/native";
+import React, {ReactNode, useEffect, useState} from "react";
+import {Dimensions, StyleSheet, Text, View,} from "react-native";
+import {Button} from "react-native-paper";
 import AppHeader from "../components/Header/AppHeader";
 import DataVerificationList from "../components/Probe/DataVerificationList";
-import { DataVerificationListItem } from "../components/Probe/index";
-import { StepAttempt } from "../types/CHAIN/StepAttempt";
-import { chainSteps } from "../data/chainSteps";
+import {chainSteps} from "../data/chainSteps";
+import {RootNavProps} from "../navigation/root_types";
+import CustomColors from "../styles/Colors";
+import {Session} from "../types/CHAIN/Session";
+import {ChainStepStatus} from "../types/CHAIN/StepAttempt";
 
 type Props = {
 	route: RootNavProps<"BaselineAssessmentScreen">;
@@ -46,7 +39,7 @@ function BaselineAssessmentScreen({ route }: Props): ReactNode {
 	const createAttempts = () => {
 		chainSteps.forEach((e, i) => {
 			let { stepId, instruction } = chainSteps[i];
-			session.addStepData(new StepAttempt(stepId, instruction));
+			session.addStepData({chain_step_id: stepId, status: ChainStepStatus.not_complete, completed: false});
 		});
 		setSessionReady(true);
 	};
