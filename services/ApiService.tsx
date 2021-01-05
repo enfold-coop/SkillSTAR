@@ -22,15 +22,10 @@ export class ApiService {
   }
 
   async getChainDataForSelectedParticipant(): Promise<ChainQuestionnaire | undefined> {
-    const participantJson = await AsyncStorage.getItem("selected_participant");
+    const questionnaireId = await this.getChainQuestionnaireId();
 
-    if (participantJson) {
-      const participant = JSON.parse(participantJson) as Participant;
-
-      if (participant && participant.hasOwnProperty("id")) {
-        const participantId = await this.getChainQuestionnaireId(participant.id);
-        return await this.getChainData(participantId);
-      }
+    if (questionnaireId !== undefined) {
+      return this.getChainData(questionnaireId);
     }
   }
 
@@ -53,36 +48,54 @@ export class ApiService {
     }
   }
 
-  async getChainQuestionnaireId(participantId: number) {
-    console.log(participantId);
+  async getChainQuestionnaireId(): Promise<number | undefined> {
 
-    const url = this.endpoints.chainsForParticipant.replace(
-      "<participant_id>",
-      participantId.toString()
-    );
-    console.log(url);
+    // Check for a cached questionnaire ID
+    const chainQuestionnaireId = await AsyncStorage.getItem("selected_participant_questionnaire_id");
 
-    try {
-      const header = await this._getHeaders('GET');
-      const response = await fetch(url, header);
+    // If it's been cached, just return it.
+    if (chainQuestionnaireId) {
+      return parseInt(chainQuestionnaireId, 10);
+    }
 
-      const dbData = await response.json();
-      if (
-        dbData &&
-        dbData.hasOwnProperty("steps") &&
-        dbData.steps &&
-        dbData.steps.length > 0
-      ) {
-        const questionnaireId = dbData.steps[0].questionnaire_id;
-        AsyncStorage.setItem(
-          "chainQuestionnaireId",
-          questionnaireId.toString()
-        );
-        return questionnaireId;
+    // No cached questionnaire ID. Get the questionnaire ID from the backend, if connected.
+    const netInfoState = await NetInfo.fetch();
+
+    // Not connected to the internet. Just return undefined.
+    if (!netInfoState.isConnected) {
+      return;
+    }
+
+    // We're connected to the internet. Get the selected participant and ask the backend for their questionnaire ID.
+    const participant = await this.getSelectedParticipant();
+
+    if (participant && participant.hasOwnProperty("id")) {
+      const url = this.endpoints.chainsForParticipant.replace(
+        "<participant_id>",
+        participant.id.toString()
+      );
+
+      try {
+        const header = await this._getHeaders('GET');
+        const response = await fetch(url, header);
+
+        const dbData = await response.json();
+        if (
+          dbData &&
+          dbData.hasOwnProperty("steps") &&
+          dbData.steps &&
+          dbData.steps.length > 0
+        ) {
+          const questionnaireId = dbData.steps[0].questionnaire_id;
+          AsyncStorage.setItem(
+            "chainQuestionnaireId",
+            questionnaireId.toString()
+          );
+          return questionnaireId;
+        }
+      } catch (e) {
+        console.error(e);
       }
-    } catch (e) {
-      console.error(e);
-      return null;
     }
   }
 
@@ -100,6 +113,19 @@ export class ApiService {
       return dbData as ChainQuestionnaire;
     } catch (e) {
       console.error(e);
+    }
+  }
+
+  // Add a new chain if none exists. Otherwise updated an existing chain.
+  async upsertChainData(data: ChainQuestionnaire) {
+    const questionnaireId = await this.getChainQuestionnaireId();
+
+    if (questionnaireId !== undefined) {
+      // If there's an existing questionnaire, it's an update.
+      return this.editChainData(data, questionnaireId);
+    } else {
+      // No existing questionnaire yet. Insert a new chain.
+      return this.addChainData(data);
     }
   }
 
@@ -195,6 +221,38 @@ export class ApiService {
       console.error("Login error:");
       console.error(e);
     }
+  }
+
+  async selectParticipant(participantId: number): Promise<Participant | undefined> {
+    // TODO: Make sure we don't accidentally delete draft/unsynced questionnaire data
+
+    await AsyncStorage.removeItem("selected_participant_questionnaire_id");
+    await AsyncStorage.removeItem("selected_participant");
+
+    const user = await this.getUser();
+
+    if (user) {
+      if (user.participants && user.participants.length > 0) {
+        const dependents = user.participants.filter((p) => p.relationship === "dependent");
+
+        // If there are no dependents yet, return undefined.
+        if (!dependents || dependents.length === 0) {
+          return;
+        }
+
+        const participant = dependents.find(d => d.id === participantId) as Participant;
+        await AsyncStorage.setItem("selected_participant", JSON.stringify(participant));
+
+        const questionnaireId = await this.getChainQuestionnaireId();
+
+        if (questionnaireId !== undefined) {
+          await AsyncStorage.setItem("selected_participant_questionnaire_id", JSON.stringify(questionnaireId));
+        }
+
+        return participant;
+      }
+    }
+
   }
 
   async getSelectedParticipant(): Promise<Participant | undefined> {
