@@ -59,10 +59,10 @@ export class ApiService {
     }
 
     // No cached questionnaire ID. Get the questionnaire ID from the backend, if connected.
-    const netInfoState = await NetInfo.fetch();
+    const isConnected = await this._isConnected();
 
     // Not connected to the internet. Just return undefined.
-    if (!netInfoState.isConnected) {
+    if (!isConnected) {
       return;
     }
 
@@ -104,13 +104,34 @@ export class ApiService {
       "<questionnaire_id>",
       questionnaireId.toString()
     );
+
+    const isConnected = await this._isConnected();
+
+    // If we're not connected to the internet, return any cached questionnaire data.
+    if (!isConnected) {
+      const cachedDataJson = await AsyncStorage.getItem('chain_data_' + questionnaireId);
+
+      if (cachedDataJson) {
+        return JSON.parse(cachedDataJson) as ChainQuestionnaire;
+      } else {
+
+        // Nothing cached. Return undefined.
+        return;
+      }
+    }
+
+    // We're connected to the internet. Get the latest from the backend.
     try {
       const header = await this._getHeaders('GET');
       const response = await fetch(url, header);
 
-      const dbData = await response.json();
-      // AsyncStorage.setItem("chainQuestionnaireId", dbData.id);
-      return dbData as ChainQuestionnaire;
+      const dbData = await response.json() as ChainQuestionnaire;
+
+      if (dbData && dbData.hasOwnProperty('id')) {
+        // Cache the latest data
+        await AsyncStorage.setItem('chain_data_' + questionnaireId, JSON.stringify(dbData));
+        return dbData;
+      }
     } catch (e) {
       console.error(e);
     }
@@ -185,8 +206,8 @@ export class ApiService {
 
       if (user && cachedUserTokenJson) {
         // Check for connection to the server.
-        const netInfoState = await NetInfo.fetch();
-        if (netInfoState.isConnected) {
+        const isConnected = await this._isConnected();
+        if (isConnected) {
           // If connected, get the latest user object from the refreshSession endpoint.
           const updatedUser = await this.refreshSession();
 
@@ -341,4 +362,10 @@ export class ApiService {
     }
   }
 
+  async _isConnected(): Promise<boolean> {
+    const netInfoState = await NetInfo.fetch();
+    return netInfoState.isConnected;
+  }
 }
+
+
