@@ -1,9 +1,10 @@
 import {API_URL} from "@env";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import NetInfo from "@react-native-community/netinfo";
 import React from "react";
 import {ChainQuestionnaire} from '../types/CHAIN/ChainQuestionnaire';
 import {ChainStep} from '../types/CHAIN/ChainStep';
-import {User} from "../types/User";
+import {Participant, User} from "../types/User";
 
 export class ApiService {
   apiUrl = API_URL;
@@ -23,8 +24,8 @@ export class ApiService {
   async getChainDataForSelectedParticipant(): Promise<ChainQuestionnaire | undefined> {
     const participantJson = await AsyncStorage.getItem("selected_participant");
 
-		if (participantJson) {
-      const participant = JSON.parse(participantJson);
+    if (participantJson) {
+      const participant = JSON.parse(participantJson) as Participant;
 
       if (participant && participant.hasOwnProperty("id")) {
         const participantId = await this.getChainQuestionnaireId(participant.id);
@@ -51,6 +52,7 @@ export class ApiService {
       return null;
     }
   }
+
   async getChainQuestionnaireId(participantId: number) {
     console.log(participantId);
 
@@ -148,6 +150,88 @@ export class ApiService {
     }
   }
 
+  async getUser(): Promise<User | undefined> {
+    const cachedUserJson = await AsyncStorage.getItem("user");
+    const cachedUserTokenJson = await AsyncStorage.getItem("user_token");
+
+    if (cachedUserJson) {
+      const user = JSON.parse(cachedUserJson) as User;
+
+      if (user && cachedUserTokenJson) {
+        // Check for connection to the server.
+        const netInfoState = await NetInfo.fetch();
+        if (netInfoState.isConnected) {
+          // If connected, get the latest user object from the refreshSession endpoint.
+          const updatedUser = await this.refreshSession();
+
+          // Check that the updated user is valid.
+          if (updatedUser) {
+            await AsyncStorage.setItem("user", JSON.stringify(updatedUser));
+            return updatedUser;
+          } else {
+
+            // Some error occurred in getting the updated user. Just return the cached one.
+            return user;
+          }
+        } else {
+          // If not connected to the internet, just return the cached user.
+          return user;
+        }
+      }
+    }
+  }
+
+  async refreshSession(): Promise<User | undefined> {
+    try {
+      const headers = await this._getHeaders('GET');
+      const response = await fetch(this.endpoints.refreshSession, headers);
+      const user: User = await response.json();
+
+      if (user) {
+        await AsyncStorage.setItem("user", JSON.stringify(user));
+        return user;
+      }
+    } catch (e) {
+      console.error("Login error:");
+      console.error(e);
+    }
+  }
+
+  async getSelectedParticipant(): Promise<Participant | undefined> {
+    const user = await this.getUser();
+
+    if (user) {
+      if (user.participants && user.participants.length > 0) {
+        const dependents = user.participants.filter((p) => p.relationship === "dependent");
+
+        // If there are no dependents yet, return undefined.
+        if (!dependents || dependents.length === 0) {
+          return;
+        }
+
+        // Check for a cached selected participant.
+        const cachedParticipantJson = await AsyncStorage.getItem("selected_participant");
+
+        // If a selected participant is found, update the cache and return the participant.
+        if (cachedParticipantJson) {
+          const cachedParticipant = JSON.parse(cachedParticipantJson) as Participant;
+
+          if (cachedParticipant && cachedParticipant.hasOwnProperty("id")) {
+            const updatedParticipant = dependents.find((p) => p.id === cachedParticipant.id);
+
+            // Update the cached participant with what's in the user object.
+            await AsyncStorage.setItem("selected_participant", JSON.stringify(updatedParticipant));
+
+            return updatedParticipant;
+          }
+        } else {
+          // No cached participant. Just return the first dependent.
+          return dependents[0];
+        }
+      }
+    }
+  }
+
   async login(
     email: string,
     password: string,
@@ -155,27 +239,13 @@ export class ApiService {
   ): Promise<User | null> {
     try {
       const url = this.endpoints.login;
-      console.log("url", url);
-
-      const response = await fetch(this.endpoints.login, {
-        method: "POST",
-        mode: "cors",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({email, password, email_token}),
-      });
-
+      const headers = await this._getHeaders('POST', {email, password, email_token});
+      const response = await fetch(this.endpoints.login, headers);
       const user: User = await response.json();
 
       if (user.token) {
-        console.log("user.token", user.token);
         await AsyncStorage.setItem("user_token", user.token);
         await AsyncStorage.setItem("user", JSON.stringify(user));
-        let u = await AsyncStorage.getItem("user_token");
-        console.log(u);
-
         return user;
       } else {
         return null;
@@ -192,7 +262,7 @@ export class ApiService {
     return AsyncStorage.removeItem("user");
   }
 
-  async _getHeaders(method: 'GET'|'POST'|'PUT', data?: any) {
+  async _getHeaders(method: 'GET' | 'POST' | 'PUT', data?: any) {
     const token = await AsyncStorage.getItem("user_token");
     const headers = {
       Accept: "application/json",
