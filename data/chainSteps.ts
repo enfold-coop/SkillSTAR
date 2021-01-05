@@ -1,148 +1,72 @@
 export const chainSteps = [
-	{
-		stepId: 1,
-		instruction: "Put toothpaste on your toothbrush",
-		video: "./assets/videos/1_Put_toothpaste_on_your_toothbrush.mp4",
-	},
-	{
-		stepId: 2,
-		instruction: "Put toothpaste away",
-		video: "./assets/videos/2_Put_toothpaste_away.mp4",
-	},
-	{
-		stepId: 3,
-		instruction: "Rinse toothbrush",
-		video:
-			"https://drive.google.com/drive/u/0/folders/1pEEH8ecn3sKnjWL7-6jWpaTTuv_0VPaV",
-	},
-	{
-		stepId: 4,
-		instruction: "Brush top surface of bottom teeth on right side.",
-		video:
-			"https://drive.google.com/drive/u/0/folders/1pEEH8ecn3sKnjWL7-6jWpaTTuv_0VPaVV",
-	},
-	{
-		stepId: 5,
-		instruction: "Brush top surface of bottom teeth on left side.",
-		video:
-			"https://drive.google.com/drive/u/0/folders/1pEEH8ecn3sKnjWL7-6jWpaTTuv_0VPaV",
-	},
-	{
-		stepId: 6,
-		instruction: "Brush top surface of top teeth on right side",
-		video:
-			"https://drive.google.com/drive/u/0/folders/1pEEH8ecn3sKnjWL7-6jWpaTTuv_0VPaV",
-	},
-	{
-		stepId: 7,
-		instruction: "Brush top surface of top teeth on left side",
-		video:
-			"https://drive.google.com/drive/u/0/folders/1pEEH8ecn3sKnjWL7-6jWpaTTuv_0VPaV",
-	},
-	{
-		stepId: 8,
-		instruction:
-			"Brush outside surface (facing cheek) of bottom teeth on right side",
-		video:
-			"https://drive.google.com/drive/u/0/folders/1pEEH8ecn3sKnjWL7-6jWpaTTuv_0VPaV",
-	},
-	{
-		stepId: 9,
-		instruction:
-			"Brush outside surface (facing lips) of bottom teeth at the front of your mouth",
-		video:
-			"https://drive.google.com/drive/u/0/folders/1pEEH8ecn3sKnjWL7-6jWpaTTuv_0VPaV",
-	},
-	{
-		stepId: 10,
-		instruction:
-			"Brush outside surface (facing cheek) of bottom teeth on left side",
-		video:
-			"https://drive.google.com/drive/u/0/folders/1pEEH8ecn3sKnjWL7-6jWpaTTuv_0VPaV",
-	},
-	{
-		stepId: 11,
-		instruction:
-			"Brush outside surface (facing cheek) of top teeth on right side",
-		video:
-			"https://drive.google.com/drive/u/0/folders/1pEEH8ecn3sKnjWL7-6jWpaTTuv_0VPaV",
-	},
-	{
-		stepId: 12,
-		instruction:
-			"Brush outside surface (facing lips) of top teeth at the front of your mouth",
-		video:
-			"https://drive.google.com/drive/u/0/folders/1pEEH8ecn3sKnjWL7-6jWpaTTuv_0VPaV",
-	},
-	{
-		stepId: 13,
-		instruction:
-			"Brush outside surface (facing cheek) of top teeth on left side",
-		video:
-			"https://drive.google.com/drive/u/0/folders/1pEEH8ecn3sKnjWL7-6jWpaTTuv_0VPaV",
-	},
-	{
-		stepId: 14,
-		instruction:
-			"Brush the inside surface (facing tongue) of bottom teeth on right side.",
-		video:
-			"https://drive.google.com/drive/u/0/folders/1pEEH8ecn3sKnjWL7-6jWpaTTuv_0VPaV",
-	},
-	{
-		stepId: 15,
-		instruction:
-			"Brush the inside surface (facing tongue) of bottom teeth on left side",
-		video:
-			"https://drive.google.com/drive/u/0/folders/1pEEH8ecn3sKnjWL7-6jWpaTTuv_0VPaV",
-	},
-	{
-		stepId: 16,
-		instruction:
-			"Brush the inside surface (facing tongue) of top teeth on left side.",
-		video:
-			"https://drive.google.com/drive/u/0/folders/1pEEH8ecn3sKnjWL7-6jWpaTTuv_0VPaV",
-	},
-	{
-		stepId: 17,
-		instruction:
-			"Brush the inside surface (facing tongue) of top teeth on right side.",
-		video:
-			"https://drive.google.com/drive/u/0/folders/1pEEH8ecn3sKnjWL7-6jWpaTTuv_0VPaV",
-	},
-	{
-		stepId: 18,
-		instruction: "Spit in the sink",
-		video:
-			"https://drive.google.com/drive/u/0/folders/1pEEH8ecn3sKnjWL7-6jWpaTTuv_0VPaV",
-	},
-	{
-		stepId: 19,
-		instruction: "Rinse toothbrush and put it away",
-		video:
-			"https://drive.google.com/drive/u/0/folders/1pEEH8ecn3sKnjWL7-6jWpaTTuv_0VPaV",
-	},
-	{
-		stepId: 20,
-		instruction: "Get your cup and fill with water",
-		video:
-			"https://drive.google.com/drive/u/0/folders/1pEEH8ecn3sKnjWL7-6jWpaTTuv_0VPaV",
-	},
-	{
-		stepId: 21,
-		instruction: "Rinse mouth and spit in sink",
-		video:
-			"https://drive.google.com/drive/u/0/folders/1pEEH8ecn3sKnjWL7-6jWpaTTuv_0VPaV",
-	},
-	{
-		stepId: 22,
-		instruction: "Wipe your face with a towel",
-		video:
-			"https://drive.google.com/drive/u/0/folders/1pEEH8ecn3sKnjWL7-6jWpaTTuv_0VPaV",
-	},
-	{
-		stepId: 23,
-		instruction: "Clean up",
-		video:
-			"https://drive.google.com/drive/u/0/folders/1pEEH8ecn3sKnjWL7-6jWpaTTuv_0VPaV",
-	},
+  {
+    stepId: 0,
+    instruction: "Put toothpaste on your toothbrush",
+    video: "./assets/videos/toothbrushing_01.mp4",
+  },
+  {
+    stepId: 1,
+    instruction: "Put toothpaste away",
+    video: "./assets/videos/toothbrushing_02.mp4",
+  },
+  {
+    stepId: 2,
+    instruction: "Get toothpaste and toothbrush wet",
+    video: "./assets/videos/toothbrushing_03.mp4",
+  },
+  {
+    stepId: 3,
+    instruction: "Brush biting surface of your bottom teeth, moving from one side to the other",
+    video: "./assets/videos/toothbrushing_04.mp4",
+  },
+  {
+    stepId: 4,
+    instruction: "Brush the biting surface of your top teeth, moving from one side to the other",
+    video: "./assets/videos/toothbrushing_05.mp4",
+  },
+  {
+    stepId: 5,
+    instruction: "Brush the outside surface (facing cheeks) of bottom teeth, moving from one side to the other",
+    video: "./assets/videos/toothbrushing_06.mp4",
+  },
+  {
+    stepId: 6,
+    instruction: "Brush the outside surface (facing cheeks) of top teeth, moving from one side to the other",
+    video: "./assets/videos/toothbrushing_07.mp4",
+  },
+  {
+    stepId: 7,
+    instruction: "Brush the inside surface (facing tongue) of bottom teeth on both sides",
+    video: "./assets/videos/toothbrushing_08.mp4",
+  },
+  {
+    stepId: 8,
+    instruction: "Brush the inside surface (facing tongue) of top teeth on both sides",
+    video: "./assets/videos/toothbrushing_09.mp4",
+  },
+  {
+    stepId: 9,
+    instruction: "Spit in the sink",
+    video: "./assets/videos/toothbrushing_10.mp4",
+  },
+  {
+    stepId: 10,
+    instruction: "Rinse toothbrush and put it away",
+    video: "./assets/videos/toothbrushing_11.mp4",
+  },
+  {
+    stepId: 11,
+    instruction: "Get your cup and fill with water",
+    video: "./assets/videos/toothbrushing_12.mp4",
+  },
+  {
+    stepId: 12,
+    instruction: "Rinse mouth and spit in sink",
+    video: "./assets/videos/toothbrushing_13.mp4",
+  },
+  {
+    stepId: 13,
+    instruction: "Wipe your face with a towel",
+    video: "./assets/videos/toothbrushing_14.mp4",
+  },
 ];
