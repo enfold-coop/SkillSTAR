@@ -412,5 +412,3 @@ export class ApiService {
     return netInfoState.isConnected;
   }
 }
-
-
