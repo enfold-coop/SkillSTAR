@@ -363,7 +363,6 @@ export class ApiService {
     email_token = ""
   ): Promise<User | null> {
     try {
-      const url = this.endpoints.login;
       const headers = await this._getHeaders('POST', {email, password, email_token});
       const response = await fetch(this.endpoints.login, headers);
       const user: User = await response.json();
