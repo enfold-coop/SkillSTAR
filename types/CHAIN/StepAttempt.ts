@@ -1,3 +1,4 @@
+import {ChainSessionType} from './ChainSession';
 import {ChainStep} from './ChainStep';
 
 export interface ChallengingBehavior {
@@ -39,4 +40,5 @@ export interface StepAttempt {
 	had_challenging_behavior?: boolean;
 	challenging_behavior_severity?: ChallengingBehaviorSeverity;
 	challenging_behaviors?: ChallengingBehavior[];
+	session_type?: ChainSessionType;
 }

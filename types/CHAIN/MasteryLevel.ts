@@ -1,12 +1,17 @@
-export enum MasteryLevel {
-  NotStarted,
-  NotMastered,
-  Mastered,
-}
+import {ChainStepStatus} from './StepAttempt';
 
 export interface MasteryStatus {
-  level: MasteryLevel;
+  stepStatus: ChainStepStatus;
   label: string;
   icon: string;
   color: string;
+}
+
+export interface MasteryInfo {
+  chainStepId: number;
+  stepStatus: ChainStepStatus;
+  dateIntroduced?: Date;
+  dateMastered?: Date;
+  dateBoosterInitiated?: Date;
+  dateBoosterMastered?: Date;
 }

@@ -1,26 +1,27 @@
 import React from "react";
 import { StyleSheet, View } from "react-native";
 import CustomColor from "../styles/Colors";
-import { MasteryLevel, MasteryStatus } from "../types/CHAIN/MasteryLevel";
+import { MasteryStatus } from "../types/CHAIN/MasteryLevel";
+import {ChainStepStatus} from '../types/CHAIN/StepAttempt';
 import { SkillStarIcons } from "./Icons";
 
-export function MasteryIcons(mastery: MasteryLevel = MasteryLevel.NotStarted) {
+export function MasteryIcons(mastery: ChainStepStatus = ChainStepStatus.not_complete) {
 	const index = mastery.valueOf();
-	const icons: { [key: number]: MasteryStatus } = {
-		0: {
-			level: MasteryLevel.NotStarted,
+	const icons: { [key: string]: MasteryStatus } = {
+		not_complete: {
+			stepStatus: ChainStepStatus.not_complete,
 			label: "Not Started",
 			icon: "not_started",
 			color: CustomColor.uva.gray,
 		},
-		1: {
-			level: MasteryLevel.NotMastered,
-			label: "Not Mastered",
+		focus: {
+			stepStatus: ChainStepStatus.focus,
+			label: "Focus Step",
 			icon: "not_mastered",
 			color: CustomColor.uva.mountain,
 		},
-		2: {
-			level: MasteryLevel.Mastered,
+		mastered: {
+			stepStatus: ChainStepStatus.mastered,
 			label: "Mastered",
 			icon: "mastered",
 			color: CustomColor.uva.mountain,
