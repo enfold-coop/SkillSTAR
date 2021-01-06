@@ -29,22 +29,31 @@ export class ApiService {
     }
   }
 
-  async getChainSteps() {
-    const url = this.endpoints.chainSteps;
-    try {
-      const response = await fetch(url, {
-        method: "GET",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-      });
-      const dbData = await response.json();
-      AsyncStorage.setItem("chainSteps", JSON.stringify(dbData));
-      return dbData as ChainStep[];
-    } catch (e) {
-      console.error(e);
-      return null;
+  async getChainSteps(): Promise<ChainStep[] | undefined>{
+    // Check if we are online
+    const isConnected = this._isConnected();
+
+    if (!isConnected) {
+      // Return the locally cached steps, if they are there.
+      const cachedStepsJson = await AsyncStorage.getItem("chainSteps");
+
+      if (cachedStepsJson) {
+        return JSON.parse(cachedStepsJson) as ChainStep[];
+      }
+    } else {
+      // Get the steps from the server.
+      const url = this.endpoints.chainSteps;
+      try {
+        const headers = await this._getHeaders('GET');
+        const response = await fetch(url, headers);
+        const dbData = await response.json();
+
+        // Cache them locally.
+        await AsyncStorage.setItem("chainSteps", JSON.stringify(dbData));
+        return dbData as ChainStep[];
+      } catch (e) {
+        console.error(e);
+      }
     }
   }
 
@@ -87,10 +96,7 @@ export class ApiService {
           dbData.steps.length > 0
         ) {
           const questionnaireId = dbData.steps[0].questionnaire_id;
-          AsyncStorage.setItem(
-            "chainQuestionnaireId",
-            questionnaireId.toString()
-          );
+          await AsyncStorage.setItem("selected_participant_questionnaire_id", questionnaireId.toString());
           return questionnaireId;
         }
       } catch (e) {
@@ -150,13 +156,52 @@ export class ApiService {
     }
   }
 
+  // No questionnaire exists for the participant yet. If we're not online, we'll need to store the
+  // questionnaire data somewhere until we can upload it to the server and get a questionnaire ID for it.
   async addChainData(data: ChainQuestionnaire) {
+    const dataHasParticipantId = (
+      data.hasOwnProperty('participant_id') &&
+      (data.participant_id !== null) &&
+      (data.participant_id !== undefined)
+    );
+
+    const participant = await this.getSelectedParticipant();
+
+    if (!(participant || dataHasParticipantId)) {
+      console.error('Cannot save the chain data. No participant found to submit the data for.');
+      return;
+    }
+
+    const participantId = dataHasParticipantId ? data.participant_id : participant && participant.id;
+
+    // Check to see if we're online
+    const isConnected = await this._isConnected();
+
+    if (!isConnected) {
+      // We're not online. Just cache the data.
+      await AsyncStorage.setItem('chain_data_draft_' + participantId, JSON.stringify(data));
+    }
+
     const url = this.endpoints.chain;
     try {
-      const response = await fetch(url);
+      const user = await this.getUser();
+      const participant = await this.getSelectedParticipant();
 
+      if (user && participant) {
+        data.user_id = user.id;
+        data.participant_id = participant.id;
+      }
+      const headers = await this._getHeaders('POST', data);
+      const response = await fetch(url, headers);
       const dbData = await response.json();
-      AsyncStorage.setItem("chainQuestionnaireId", dbData.id);
+      await AsyncStorage.setItem("selected_participant_questionnaire_id", dbData.id);
+
+      // We can delete the cached draft now.
+      await AsyncStorage.removeItem('chain_data_draft_' + participantId);
+
+      // Cache the chain data.
+      await AsyncStorage.setItem("chain_data_" + dbData.id, JSON.stringify(dbData));
+
       return dbData as ChainQuestionnaire;
     } catch (e) {
       console.error(e);
@@ -246,13 +291,12 @@ export class ApiService {
 
   async selectParticipant(participantId: number): Promise<Participant | undefined> {
     // TODO: Make sure we don't accidentally delete draft/unsynced questionnaire data
-
-    await AsyncStorage.removeItem("selected_participant_questionnaire_id");
-    await AsyncStorage.removeItem("selected_participant");
-
     const user = await this.getUser();
 
     if (user) {
+      await AsyncStorage.removeItem("selected_participant_questionnaire_id");
+      await AsyncStorage.removeItem("selected_participant");
+
       if (user.participants && user.participants.length > 0) {
         const dependents = user.participants.filter((p) => p.relationship === "dependent");
 
@@ -262,18 +306,20 @@ export class ApiService {
         }
 
         const participant = dependents.find(d => d.id === participantId) as Participant;
-        await AsyncStorage.setItem("selected_participant", JSON.stringify(participant));
 
-        const questionnaireId = await this.getChainQuestionnaireId();
+        if (participant) {
+          await AsyncStorage.setItem("selected_participant", JSON.stringify(participant));
 
-        if (questionnaireId !== undefined) {
-          await AsyncStorage.setItem("selected_participant_questionnaire_id", JSON.stringify(questionnaireId));
+          const questionnaireId = await this.getChainQuestionnaireId();
+
+          if (questionnaireId !== undefined) {
+            await AsyncStorage.setItem("selected_participant_questionnaire_id", JSON.stringify(questionnaireId));
+          }
+
+          return participant;
         }
-
-        return participant;
       }
     }
-
   }
 
   async getSelectedParticipant(): Promise<Participant | undefined> {
