@@ -7,3 +7,4 @@ export { default as LandingScreen } from "./LandingScreen";
 export { default as ProbeScreen } from "./ProbeScreen";
 export { default as DataVerificationScreen } from "./DataVerificationScreen";
 export { default as RewardsScreens } from "./RewardsScreens";
+export { default as NoQuestionnaireScreen } from "./NoQuestionnaireScreen";

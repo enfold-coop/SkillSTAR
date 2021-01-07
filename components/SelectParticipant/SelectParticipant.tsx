@@ -26,19 +26,28 @@ export const SelectParticipant = (
   const openMenu = () => setIsVisible(true);
 
   const selectParticipant = async (selectedParticipant: Participant) => {
-    context.state.participant = selectedParticipant;
-    await setParticipant(selectedParticipant);
-    await api.selectParticipant(selectedParticipant.id);
-    await navigation.navigate("BaselineAssessmentScreen");
+    const participant = await api.selectParticipant(selectedParticipant.id);
+
+    if (participant) {
+      context.state.participant = selectedParticipant;
+      await setParticipant(selectedParticipant);
+      await navigation.navigate("ChainsHomeScreen");
+    } else {
+      await navigation.navigate("NoQuestionnaireScreen");
+    }
+
     await closeMenu();
   };
 
   const participantName = (p: Participant): string | undefined => {
     if (p.identification) {
-      const first =
-        p.identification.nickname || p.identification.first_name;
+      const first = p.identification.nickname || p.identification.first_name;
       const last = p.identification.last_name;
       return `${first} ${last}`;
+    } else if (p.name) {
+      return p.name;
+    } else {
+      return `${p.id}`;
     }
   };
 
@@ -86,14 +95,8 @@ export const SelectParticipant = (
   }
 
   return (
-    <View
-      style={{
-        // paddingTop: 50,
-        flexDirection: "row",
-      }}
-    >
+    <View style={styles.menuContainer}>
       <Menu
-        style={styles.menuContainer}
         contentStyle={styles.menuContent}
         visible={isVisible}
         onDismiss={closeMenu}
@@ -101,7 +104,7 @@ export const SelectParticipant = (
           <Button
             onPress={openMenu}
             color={CustomColors.uva.orange}
-            // mode={"contained"}
+            style={styles.menuButton}
           >
             {participant
               ? "Participant: " + participantName(participant)
@@ -127,18 +130,32 @@ const styles = StyleSheet.create({
     paddingTop: 8,
   },
   menuContainer: {
-    flexDirection: "row",
-    justifyContent: "flex-end",
-    alignItems: "center",
-    marginTop: 270,
+    flex: 1,
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "flex-end",
+    margin: -16,
+    height: 60,
+    padding: 0,
+  },
+  menuButton: {
+    flex: 1,
+    flexDirection: "column",
+    justifyContent: "center",
+    alignContent: "center",
   },
   menuContent: {
+    flex: 1,
     flexDirection: "column",
-    justifyContent: "flex-start",
-    alignContent: "space-around",
+    justifyContent: "flex-end",
+    alignContent: "flex-end",
     padding: 10,
   },
   menuItem: {
+    flexDirection: "column",
+    justifyContent: "center",
+    alignContent: "center",
+    flex: 1,
     height: 50,
     padding: 10,
   },

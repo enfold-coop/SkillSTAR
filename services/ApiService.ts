@@ -44,7 +44,6 @@ export class ApiService {
       const url = this.endpoints.chainSteps;
       try {
         const headers = await this._getHeaders('GET');
-        console.log('you are here.')
         const response = await fetch(url, headers);
         const dbData = await response.json();
 
@@ -95,9 +94,12 @@ export class ApiService {
           dbData.steps &&
           dbData.steps.length > 0
         ) {
-          const questionnaireId = dbData.steps[0].questionnaire_id;
-          await AsyncStorage.setItem("selected_participant_questionnaire_id", questionnaireId.toString());
-          return questionnaireId;
+          const questionnaireId = dbData.questionnaire_id;
+
+          if (questionnaireId !== undefined && questionnaireId !== null) {
+            await AsyncStorage.setItem("selected_participant_questionnaire_id", JSON.stringify(questionnaireId));
+            return questionnaireId;
+          }
         }
       } catch (e) {
         console.error(e);

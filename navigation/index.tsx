@@ -15,7 +15,7 @@ import {
 	PrepareMaterialsScreen,
 	ProbeScreen,
 	StepScreen,
-	RewardsScreens,
+	RewardsScreens, NoQuestionnaireScreen,
 } from "../screens";
 import { ApiService } from "../services/ApiService";
 import CustomColors from "../styles/Colors";
@@ -128,6 +128,11 @@ function RootNavigator() {
 				options={{ ...screenOpts, title: "Congrats!" }}
 				name="RewardsScreens"
 				component={RewardsScreens}
+			/>
+			<Stack.Screen
+				options={{ ...screenOpts, title: "No SkillSTAR Data Found" }}
+				name="NoQuestionnaireScreen"
+				component={NoQuestionnaireScreen}
 			/>
 		</Stack.Navigator>
 	);
