@@ -249,37 +249,7 @@ class MasteryService {
 		// lastSess.session_type = ChainSessionType.training;
 
 		if (lastSess === null) {
-			//   return {
-			//     sessionCount: 1,
-			//     sessionType: ChainSessionType.probe,
-			//     buttonText: ''
-			//   }
-			//   setSessionNmbr(1);
-			//   setType("probe");
 			//
-			//   // Session count (how many sessions attempted)
-			//   // i.e., sessions with attempts. Sessions with no attempts would not be included in this count?
-			//   dispatch({type: ADD_CURR_SESSION_NMBR, payload: 1});
-			//
-			//   // chainData.sessions[i].session_type
-			//   dispatch({type: ADD_SESSION_TYPE, payload: "probe"});
-			// }
-			// if (lastSess) {
-			//   if (lastSess.session_type === "training" && !lastSess.completed) {
-			//     setType("training");
-			//     setSessionNmbr(chainData.sessions.length + 1);
-			//     dispatch({type: ADD_CURR_SESSION_NMBR, payload: sessionNmbr});
-			//     dispatch({type: ADD_SESSION_TYPE, payload: "training"});
-			//     setBtnText(START_TRAINING_SESSION_BTN);
-			//   }
-			//   if (lastSess.session_type === "probe" && !lastSess.completed) {
-			//     setType("probe");
-			//     setSessionNmbr(chainData.sessions.length + 1);
-			//     dispatch({type: ADD_CURR_SESSION_NMBR, payload: sessionNmbr});
-			//     dispatch({type: ADD_SESSION_TYPE, payload: "probe"});
-			//     setBtnText(START_PROBE_SESSION_BTN);
-			//     setAsideContents(PROBE_INSTRUCTIONS);
-			//   }
 		}
 	}
 }

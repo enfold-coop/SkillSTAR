@@ -11,6 +11,8 @@ class MasteryAlgo {
 	PROBE_MAX_CONSECUTIVE_INCOMPLETE = 2;
 	TRAINING_MAX_CONSECUTIVE_INCOMPLETE = 3;
 	incompleteCount = 0;
+	static currentSessionType = ChainSessionType;
+	static currentSessionNumber = 0;
 	promptHierarchy = [
 		ChainStepPromptLevel.full_physical,
 		ChainStepPromptLevel.full_physical,
@@ -37,9 +39,10 @@ class MasteryAlgo {
 	// 7.
 	// 8.
 
-	/** WHAT DEFINES A STEP_ATTEMPT'S NON-MASTERY? */
-	// 1. Additional prompting needed
-	// 2. severity of CB
+	/** WHAT DEFINES A FOCUS STEP_ATTEMPT'S MASTERY? */
+	// 3x attempt WITHOUT:
+	// 1. additional prompting needed
+	// 2. interfering CB
 
 	/** GET STEP COMPLETION */
 	// -- IF: (prior_session.step_attempt[index].needed_addl_prompting === true)
@@ -50,16 +53,30 @@ class MasteryAlgo {
 	// ---- THEN: return true
 
 	/** GET SESSION TYPE */
-	// -- session[index-1]
+	// -- get last session (sessions[index-1]
 	// -- IF ((prior session_type === "probe" && prior session === incomplete) || prior session count < REQUIRED_PROBE_COUNT ):
 	// -------- RETURN: "Probe"
 	// ------ ELSE:
 	// -------- RETURN: "Training"
 	// -- IF (prior session_type === "training"):
 	// ----- RETURN: "Training"
+	static _determineAndSetSessionType(chainData: ChainQuestionnaire) {
+		console.log(chainData);
+		if (chainData && chainData.sessions.length < 1) {
+			this.currentSessionType = "Probe";
+			this._setCurrentSessionNumber(0);
+		} else {
+			this.currentSessionType =
+				chainData.sessions[chainData.sessions.length - 1].session_type;
+			this._setCurrentSessionNumber(chainData.sessions.length);
+		}
+	}
 
 	/** GET CURRENT SESSION NUMBER */
 	// total sessions.length + 1
+	static _setCurrentSessionNumber(sessionsLength: number) {
+		this.currentSessionNumber = sessionsLength + 1;
+	}
 
 	/** GET STEP_ATTEMPT PROMPT LEVEL */
 	// -- IF: (prior session != complete)
