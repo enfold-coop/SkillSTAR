@@ -9,7 +9,5 @@ export interface StarDriveFlowStep {
 
 export interface StarDriveFlow {
   name: string;
-  "steps": StarDriveFlowStep[];
-}
-
+  steps: StarDriveFlowStep[];
 }

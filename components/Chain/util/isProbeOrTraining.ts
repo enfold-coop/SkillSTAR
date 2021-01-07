@@ -1,14 +1,14 @@
 //
 function isProbe() {
-	/**
-	 * - user has completed Probe session?
-	 * ---- NO:
-	 * -------- determineProbeSessionStep()
-	 * --------
-	 * ---- YES:
-	 * -------- determineTrainingSessionStep()
-	 *
-	 */
+  /**
+   * - user has completed Probe session?
+   * ---- NO:
+   * -------- determineProbeSessionStep()
+   * --------
+   * ---- YES:
+   * -------- determineTrainingSessionStep()
+   *
+   */
 }
 
 //

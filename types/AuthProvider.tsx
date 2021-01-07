@@ -1,4 +1,4 @@
-import {Participant, User} from './User';
+import { Participant, User } from './User';
 
 export interface AuthProviderState {
   user: null | User;

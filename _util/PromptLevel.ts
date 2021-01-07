@@ -1,4 +1,5 @@
 type Props = {
-	step: {};
+  step: {};
 };
+
 function GetPromptLevel() {}

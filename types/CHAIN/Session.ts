@@ -1,15 +1,15 @@
-import { StepAttempt } from "./StepAttempt";
+import { StepAttempt } from './StepAttempt';
 
 export class Session {
-	date?: {};
-	data: StepAttempt[];
+  date?: {};
+  data: StepAttempt[];
 
-	constructor() {
-		this.date = new Date();
-		this.data = [];
-	}
+  constructor() {
+    this.date = new Date();
+    this.data = [];
+  }
 
-	addStepData(step: StepAttempt) {
-		this.data.push(step);
-	}
+  addStepData(step: StepAttempt) {
+    this.data.push(step);
+  }
 }

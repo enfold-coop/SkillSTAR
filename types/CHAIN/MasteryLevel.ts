@@ -1,4 +1,4 @@
-import {ChainStepStatus} from './StepAttempt';
+import { ChainStepStatus } from './StepAttempt';
 
 export interface MasteryStatus {
   stepStatus: ChainStepStatus;
