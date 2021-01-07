@@ -31,45 +31,37 @@ const COMPLETED_PROBE_SESSIONS = 2;
 
 // Chain Home Screen
 const ChainsHomeScreen: FC<Props> = (props) => {
-  const context = useContext(store);
-  const {dispatch} = context;
-  const navigation = useNavigation();
-  let api = new ApiService();
-  const {portrait} = useDeviceOrientation();
-  const [orient, setOrient] = useState(false);
-  const [btnText, setBtnText] = useState("Start Session");
   const [asideContent, setAsideContents] = useState("");
+  const [btnText, setBtnText] = useState("Start Session");
   const [chainSteps, setStepList] = useState<ChainStep[]>();
+  const [orient, setOrient] = useState(false);
   const [session, setSession] = useState<ChainSession>();
-  const [userData, setUserData] = useState<ChainQuestionnaire>();
   const [sessionNmbr, setSessionNmbr] = useState<number>(0);
   const [type, setType] = useState<string>("type");
+  const [userData, setUserData] = useState<ChainQuestionnaire>();
+  const api = new ApiService();
+  const context = useContext(store);
+  const navigation = useNavigation();
+  const {dispatch} = context;
+  const {portrait} = useDeviceOrientation();
 
   useEffect(() => {
-    // setStepList()
     getSteps();
     apiCall();
-  }, []);
-
-  useEffect(() => {
-  });
+    setOrient(portrait);
+  }, [portrait]);
 
   const getSteps = async () => {
-    const s = await api.getChainSteps();
-    // console.log(s);
+    const s = await api.getChainSteps() as ChainStep[];
     if (s != undefined) {
       setStepList(s);
     }
   };
 
-  useEffect(() => {
-    setOrient(portrait);
-  }, [portrait]);
-
   const apiCall = async () => {
-    const chainData = await api.getChainDataForSelectedParticipant();
+    const chainData = await api.getChainDataForSelectedParticipant() as ChainQuestionnaire;
 
-    if (chainData) {
+    if (chainData && chainData.sessions && (chainData.sessions.length > 0)) {
       setUserData(chainData);
       dispatch({type: ADD_USER_DATA, payload: chainData});
       setType(chainData.sessions[chainData.sessions.length - 1].session_type as string);
@@ -80,6 +72,21 @@ const ChainsHomeScreen: FC<Props> = (props) => {
       setSessionTypeAndNmbr(chainData);
       setSession(chainData?.sessions[chainData.sessions.length - 1]);
       setElemsValues();
+    } else {
+      // Create chain data for current participant.
+      const participant = await api.getSelectedParticipant();
+      if (participant) {
+        const newData: ChainQuestionnaire = {
+          participant_id: participant.id, sessions: [{
+            session_type: ChainSessionType.probe,
+            step_attempts: [],
+          }]
+        };
+        const newDbData = await api.addChainData(newData);
+        if (newDbData) {
+          setUserData(newDbData);
+        }
+      }
     }
 
     // let { chainSteps, user } = require("../data/chain_steps.json");
@@ -97,7 +104,6 @@ const ChainsHomeScreen: FC<Props> = (props) => {
    * - An empty probe session, if there are none left to attempt (???)
    */
   const setSessionTypeAndNmbr = (chainData: ChainQuestionnaire) => {
-
     // Some of the sessions will be future/not attempted sessions.
     // We want the next session the participant should be attempting.
     const numSessions = chainData.sessions ? chainData.sessions.length : 0;
@@ -158,8 +164,11 @@ const ChainsHomeScreen: FC<Props> = (props) => {
   const determineSessionStepData = (index: number) => {
   };
 
+  const key = userData ? userData.participant_id : Math.floor(Math.random() * 10000);
+
   return (
     <ImageBackground
+      key={"chains_home_sreen_" + key}
       source={require("../assets/images/sunrise-muted.jpg")}
       resizeMode={"cover"}
       style={styles.bkgrdImage}

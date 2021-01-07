@@ -32,8 +32,6 @@ export const SelectParticipant = (
       context.state.participant = selectedParticipant;
       await setParticipant(selectedParticipant);
       await navigation.navigate("ChainsHomeScreen");
-    } else {
-      await navigation.navigate("NoQuestionnaireScreen");
     }
 
     await closeMenu();

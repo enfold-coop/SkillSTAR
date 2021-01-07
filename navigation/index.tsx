@@ -43,7 +43,7 @@ interface LogoutButtonProps {
 const LogoutButton = (props: LogoutButtonProps): ReactElement => {
 	return (
 		<Button
-			color={CustomColors.uva.mountain}
+			color={CustomColors.uva.white}
 			onPress={() => {
 				api.logout().then(() => {
 					props.navigation.navigate("LandingScreen");
@@ -130,7 +130,11 @@ function RootNavigator() {
 				component={RewardsScreens}
 			/>
 			<Stack.Screen
-				options={{ ...screenOpts, title: "No SkillSTAR Data Found" }}
+				options={({ navigation }) => ({
+					...screenOpts,
+					title: "No SkillSTAR Data for this participant", // TODO: Replace this title with something more useful
+					headerRight: () => <LogoutButton navigation={navigation} />,
+				})}
 				name="NoQuestionnaireScreen"
 				component={NoQuestionnaireScreen}
 			/>
