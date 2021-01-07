@@ -12,7 +12,7 @@ type Props = {
 
 const ProgressBar: FC<Props> = (props) => {
 	const { totalSteps, currStep, masteryLevel, steps } = props;
-	console.log(steps);
+	// console.log(steps);
 
 	const [mastery, setMastery] = useState("focus");
 	const [barColor, setBarColor] = useState(CustomColors.uva.magenta);

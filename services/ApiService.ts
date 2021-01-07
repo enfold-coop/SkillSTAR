@@ -1,9 +1,9 @@
 import {API_URL} from "@env";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import NetInfo from "@react-native-community/netinfo";
-import React from "react";
 import {ChainQuestionnaire} from '../types/CHAIN/ChainQuestionnaire';
 import {ChainStep} from '../types/CHAIN/ChainStep';
+import {StarDriveFlow} from '../types/CHAIN/StarDriveFlow';
 import {Participant, User} from "../types/User";
 
 export class ApiService {
@@ -29,7 +29,7 @@ export class ApiService {
     }
   }
 
-  async getChainSteps(): Promise<ChainStep[] | undefined>{
+  async getChainSteps(): Promise<ChainStep[] | undefined> {
     // Check if we are online
     const isConnected = this._isConnected();
 
@@ -87,17 +87,21 @@ export class ApiService {
       try {
         const header = await this._getHeaders('GET');
         const response = await fetch(url, header);
+        const dbData = await response.json() as StarDriveFlow;
 
-        const dbData = await response.json();
         if (
           dbData &&
+          typeof dbData === 'object' &&
           dbData.hasOwnProperty("steps") &&
           dbData.steps &&
           dbData.steps.length > 0
         ) {
           const questionnaireId = dbData.steps[0].questionnaire_id;
-          await AsyncStorage.setItem("selected_participant_questionnaire_id", questionnaireId.toString());
-          return questionnaireId;
+
+          if (questionnaireId !== undefined && questionnaireId !== null) {
+            await AsyncStorage.setItem("selected_participant_questionnaire_id", JSON.stringify(questionnaireId));
+            return questionnaireId;
+          }
         }
       } catch (e) {
         console.error(e);
@@ -194,7 +198,7 @@ export class ApiService {
       const headers = await this._getHeaders('POST', data);
       const response = await fetch(url, headers);
       const dbData = await response.json();
-      await AsyncStorage.setItem("selected_participant_questionnaire_id", dbData.id);
+      await AsyncStorage.setItem("selected_participant_questionnaire_id", JSON.stringify(dbData.id));
 
       // We can delete the cached draft now.
       await AsyncStorage.removeItem('chain_data_draft_' + participantId);
@@ -412,5 +416,3 @@ export class ApiService {
     return netInfoState.isConnected;
   }
 }
-
-
