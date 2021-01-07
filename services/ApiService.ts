@@ -1,7 +1,6 @@
 import {API_URL} from "@env";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import NetInfo from "@react-native-community/netinfo";
-import React from "react";
 import {ChainQuestionnaire} from '../types/CHAIN/ChainQuestionnaire';
 import {ChainStep} from '../types/CHAIN/ChainStep';
 import {Participant, User} from "../types/User";
@@ -29,7 +28,7 @@ export class ApiService {
     }
   }
 
-  async getChainSteps(): Promise<ChainStep[] | undefined>{
+  async getChainSteps(): Promise<ChainStep[] | undefined> {
     // Check if we are online
     const isConnected = this._isConnected();
 
@@ -45,6 +44,7 @@ export class ApiService {
       const url = this.endpoints.chainSteps;
       try {
         const headers = await this._getHeaders('GET');
+        console.log('you are here.')
         const response = await fetch(url, headers);
         const dbData = await response.json();
 

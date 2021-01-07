@@ -12,4 +12,7 @@ module.exports = {
         "!**/babel.config.ts",
         "!**/jest.setup.ts"
     ],
+    setupFiles: [
+        "./setupJest.js"
+    ]
 };
