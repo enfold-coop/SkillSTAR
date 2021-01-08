@@ -7,9 +7,10 @@ import DataVerificationList from '../components/Probe/DataVerificationList';
 import { RootNavProps } from '../navigation/root_types';
 import { ApiService } from '../services/ApiService';
 import CustomColors from '../styles/Colors';
-import { ChainData, SkillstarChain } from '../types/CHAIN/SkillstarChain';
 import { ChainSession } from '../types/CHAIN/ChainSession';
-import { ChainStepStatus, StepAttempt } from '../types/CHAIN/StepAttempt';
+import { ChainData } from '../types/CHAIN/SkillstarChain';
+import { ChainStepStatus, StepAttempt, StepAttemptField } from '../types/CHAIN/StepAttempt';
+import { DataVerificationControlCallback } from '../types/DataVerificationControlCallback';
 
 type Props = {
   route: RootNavProps<'BaselineAssessmentScreen'>;
@@ -86,13 +87,22 @@ function BaselineAssessmentScreen({ route }: Props): ReactNode {
   }, []);
   /** END: Lifecycle calls */
 
-  const updateChainData = async (stepId: number, fieldName: string, fieldValue: boolean) => {
+  const updateChainData: DataVerificationControlCallback = async (
+    chainStepId: number,
+    fieldName: string,
+    fieldValue: StepAttemptField,
+  ) => {
+    if (chainData && chainSession && chainSession.id !== undefined) {
+      //  Get the step
+      const newStep: StepAttempt = chainData.getStep(chainSession.id, chainStepId);
 
-    //  Find the step that matches the stepId
-    //  Set the value of the fieldName for that step
-    if (questionnaireId !== undefined && chainData && chainSession) {
-      chainData.sessions.push(chainSession);
-      await api.upsertChainData(chainData);
+      //  Modify the value
+      newStep[fieldName] = fieldValue;
+
+      //  Set the value of the fieldName for a specific step
+      if (questionnaireId !== undefined && chainData) {
+        chainData.updateStep(chainSession.id, chainStepId, newStep);
+      }
     }
   };
 

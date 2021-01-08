@@ -1,5 +1,5 @@
 import { ChainSession } from './ChainSession';
-import { StepAttempt } from './StepAttempt';
+import { ChainStepStatus, StepAttempt } from './StepAttempt';
 
 export interface SkillstarChain {
   id?: number;
@@ -65,15 +65,26 @@ export class ChainData {
    * @param sessionId
    * @param chainStepId
    */
-  getStep(sessionId: number, chainStepId: number) {
+  getStep(sessionId: number, chainStepId: number): StepAttempt {
+    let shouldBreak = false;
+    let stepAttempt: StepAttempt = { status: ChainStepStatus.not_complete, completed: false };
+
     for (const session of this.sessions) {
+      if (shouldBreak) {
+        break;
+      }
+
       if (session.id === sessionId) {
         for (const step of session.step_attempts) {
           if (chainStepId === step.chain_step_id) {
-            return step;
+            stepAttempt = step;
+            shouldBreak = true; // Don't keep iterating through the rest of the sessions
+            break;
           }
         }
       }
     }
+
+    return stepAttempt;
   }
 }

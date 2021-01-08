@@ -1,4 +1,4 @@
-import {convertEnumToMap} from '../../_util/ConvertEnumToMap';
+import { convertEnumToMap } from '../../_util/ConvertEnumToMap';
 import { ChainSessionType } from './ChainSession';
 import { ChainStep } from './ChainStep';
 
@@ -49,3 +49,14 @@ export interface StepAttempt {
   challenging_behaviors?: ChallengingBehavior[];
   session_type?: ChainSessionType;
 }
+
+export type StepAttemptField =
+  | ChainSessionType
+  | ChainStep
+  | ChainStepPromptLevel
+  | ChainStepStatus
+  | ChallengingBehaviorSeverity
+  | ChallengingBehavior[]
+  | Date
+  | boolean
+  | number;
