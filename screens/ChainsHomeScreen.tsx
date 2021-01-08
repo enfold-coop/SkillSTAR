@@ -21,9 +21,9 @@ import { RootNavProps } from '../navigation/root_types';
 import { ApiService } from '../services/ApiService';
 import { MasteryService } from '../services/MasteryService';
 import CustomColors from '../styles/Colors';
-import { SkillstarChain } from '../types/CHAIN/SkillstarChain';
 import { ChainSession, ChainSessionType } from '../types/CHAIN/ChainSession';
 import { ChainStep } from '../types/CHAIN/ChainStep';
+import { SkillstarChain } from '../types/CHAIN/SkillstarChain';
 
 const {
   getMasteryInfoForStep,
@@ -59,9 +59,83 @@ const ChainsHomeScreen: FC<Props> = props => {
   const { portrait } = useDeviceOrientation();
 
   useEffect(() => {
-    getSteps();
-    apiCall();
-    setOrient(portrait);
+    let isCancelled = false;
+    let isLoading = false;
+
+    const _load = async () => {
+      isLoading = true; // Block while loading
+
+      const chainData = (await api.getChainDataForSelectedParticipant()) as SkillstarChain;
+
+      if (!isCancelled && chainData && chainData.sessions && chainData.sessions.length > 0) {
+        setUserData(chainData);
+        dispatch({ type: ADD_USER_DATA, payload: chainData });
+        setType(chainData.sessions[chainData.sessions.length - 1].session_type as string);
+        dispatch({
+          type: ADD_SESSION_TYPE,
+          payload: chainData.sessions[chainData.sessions.length - 1].session_type,
+        });
+        setSessionTypeAndNmbr(chainData);
+
+        setSession(chainData.sessions[chainData.sessions.length - 1]);
+        setElemsValues();
+      } else {
+        // Create chain data for current participant.
+        const participant = await api.getSelectedParticipant();
+        if (participant) {
+          const newData: SkillstarChain = {
+            participant_id: participant.id,
+            sessions: [
+              {
+                session_type: ChainSessionType.probe,
+                step_attempts: [],
+              },
+            ],
+          };
+          const newDbData = await api.addChainData(newData);
+          if (!isCancelled && newDbData) {
+            setUserData(newDbData);
+          }
+        }
+      }
+
+      if (!isCancelled && chainData) {
+        // setUserData(chainData);
+        // dispatch({ type: ADD_USER_DATA, payload: chainData });
+        // // setType(
+        // // 	chainData.sessions[chainData.sessions.length - 1]
+        // // 		.session_type as string
+        // // );
+        // dispatch({
+        // 	type: ADD_SESSION_TYPE,
+        // 	payload:
+        // 		chainData.sessions[chainData.sessions.length - 1]
+        // 			.session_type,
+        // });
+        setSessionTypeAndNmbr(chainData);
+
+        // setSession(chainData?.sessions[chainData.sessions.length - 1]);
+        // setElemsValues();
+      }
+
+      // let { chainSteps, user } = require("../data/chain_steps.json");
+      // setStepList(chainSteps);
+    };
+
+    getSteps().then(() => {
+      if (!isLoading) {
+        _load().then(() => {
+          isLoading = false;
+          if (!isCancelled) {
+            setOrient(portrait);
+          }
+        });
+      }
+    });
+
+    return () => {
+      isCancelled = true;
+    };
   }, [portrait]);
 
   const getSteps = async () => {
@@ -69,64 +143,6 @@ const ChainsHomeScreen: FC<Props> = props => {
     if (s != undefined) {
       setStepList(s);
     }
-  };
-
-  const apiCall = async () => {
-    const chainData = (await api.getChainDataForSelectedParticipant()) as SkillstarChain;
-
-    if (chainData && chainData.sessions && chainData.sessions.length > 0) {
-      setUserData(chainData);
-      dispatch({ type: ADD_USER_DATA, payload: chainData });
-      setType(chainData.sessions[chainData.sessions.length - 1].session_type as string);
-      dispatch({
-        type: ADD_SESSION_TYPE,
-        payload: chainData.sessions[chainData.sessions.length - 1].session_type,
-      });
-      setSessionTypeAndNmbr(chainData);
-
-      setSession(chainData.sessions[chainData.sessions.length - 1]);
-      setElemsValues();
-    } else {
-      // Create chain data for current participant.
-      const participant = await api.getSelectedParticipant();
-      if (participant) {
-        const newData: SkillstarChain = {
-          participant_id: participant.id,
-          sessions: [
-            {
-              session_type: ChainSessionType.probe,
-              step_attempts: [],
-            },
-          ],
-        };
-        const newDbData = await api.addChainData(newData);
-        if (newDbData) {
-          setUserData(newDbData);
-        }
-      }
-    }
-
-    if (chainData) {
-      // setUserData(chainData);
-      // dispatch({ type: ADD_USER_DATA, payload: chainData });
-      // // setType(
-      // // 	chainData.sessions[chainData.sessions.length - 1]
-      // // 		.session_type as string
-      // // );
-      // dispatch({
-      // 	type: ADD_SESSION_TYPE,
-      // 	payload:
-      // 		chainData.sessions[chainData.sessions.length - 1]
-      // 			.session_type,
-      // });
-      setSessionTypeAndNmbr(chainData);
-
-      // setSession(chainData?.sessions[chainData.sessions.length - 1]);
-      // setElemsValues();
-    }
-
-    // let { chainSteps, user } = require("../data/chain_steps.json");
-    // setStepList(chainSteps);
   };
 
   /**
@@ -202,7 +218,7 @@ const ChainsHomeScreen: FC<Props> = props => {
   };
 
   const determineSessionStepData = (index: number) => {};
-  const key = userData ? userData.participant_id : Math.floor(Math.random() * 10000);
+  const key = userData ? userData.participant_id : -1;
 
   return (
     <ImageBackground
