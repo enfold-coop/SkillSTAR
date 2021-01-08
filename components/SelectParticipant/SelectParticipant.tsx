@@ -1,8 +1,8 @@
 import { MaterialIcons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import React, { ReactElement, useEffect, useState } from 'react';
-import { StyleSheet, View } from 'react-native';
-import { Button, Menu, Text } from 'react-native-paper';
+import { StyleSheet, View, Text } from 'react-native';
+import { Button, Menu } from 'react-native-paper';
 import { ApiService } from '../../services/ApiService';
 import CustomColors from '../../styles/Colors';
 import { Participant, User } from '../../types/User';
@@ -44,8 +44,11 @@ export const SelectParticipant = (): ReactElement => {
   useEffect(() => {
     // Prevents React state updates on unmounted components
     let isCancelled = false;
+    let isLoading = false;
 
     const _load = async () => {
+      isLoading = true;
+
       if (!user) {
         const dbUser = await api.getUser();
         if (!isCancelled) {
@@ -59,54 +62,63 @@ export const SelectParticipant = (): ReactElement => {
         }
       }
 
-      const selectedParticipant = await api.getSelectedParticipant();
-      if (selectedParticipant) {
-        if (!isCancelled) {
+      if (!isCancelled) {
+        const selectedParticipant = await api.getSelectedParticipant();
+        const shouldSetSelectedParticipant =
+          !isCancelled &&
+          (!participant || (selectedParticipant && participant.id !== selectedParticipant.id));
+
+        if (shouldSetSelectedParticipant) {
           setParticipant(selectedParticipant);
         }
       }
     };
 
-    _load().then(() => {
-      if (participants && participants.length > 0) {
-        const items = participants.map((p: Participant) => {
-          return (
-            <Menu.Item
-              onPress={() => selectParticipant(p)}
-              title={participantName(p)}
-              key={'participant_' + p.id}
-              style={styles.menuItem}
-            />
-          );
-        });
-        if (!isCancelled) {
-          setMenuItems(items);
+    if (!isLoading) {
+      _load().then(() => {
+        isLoading = false;
+        if (participants && participants.length > 0) {
+          const items = participants.map((p: Participant) => {
+            return (
+              <Menu.Item
+                onPress={() => selectParticipant(p)}
+                title={participantName(p)}
+                key={'participant_' + p.id}
+                style={styles.menuItem}
+              />
+            );
+          });
+          if (!isCancelled) {
+            setMenuItems(items);
+          }
         }
-      }
-    });
+      });
+    }
 
     return () => {
       isCancelled = true;
     };
-  });
+  }, [participant, participants]);
 
-  if (!menuItems || menuItems.length === 0) {
+  const btnLabel = participant
+    ? `Participant: ${participantName(participant)}`
+    : 'Select Participant';
+
+  const key = `select_participant_menu_${menuItems && menuItems.length > 0 ? menuItems.length : 0}`;
+
+  const renderLoading = () => {
+    return <Text style={{ marginRight: 100 }}>Loading...</Text>;
+  };
+
+  const renderMenu = () => {
     return (
-      <View style={styles.menuContainer}>
-        <Text style={{ marginRight: 100 }}>Loading...</Text>
-      </View>
-    );
-  }
-
-  return (
-    <View style={styles.menuContainer}>
       <Menu
         contentStyle={styles.menuContent}
         visible={isVisible}
         onDismiss={closeMenu}
         anchor={
           <Button onPress={openMenu} color={CustomColors.uva.orange} style={styles.menuButton}>
-            {participant ? 'Participant: ' + participantName(participant) : 'Select Participant'}
+            {btnLabel}
             <View style={styles.iconContainer}>
               <MaterialIcons name='arrow-drop-down' size={24} color={CustomColors.uva.orange} />
             </View>
@@ -115,6 +127,12 @@ export const SelectParticipant = (): ReactElement => {
       >
         {menuItems}
       </Menu>
+    );
+  };
+
+  return (
+    <View style={styles.menuContainer} key={key}>
+      {menuItems && menuItems.length > 0 ? renderMenu() : renderLoading()}
     </View>
   );
 };
