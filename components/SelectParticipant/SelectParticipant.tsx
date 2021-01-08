@@ -5,13 +5,14 @@ import { StyleSheet, View } from 'react-native';
 import { Button, Menu, Text } from 'react-native-paper';
 import { ApiService } from '../../services/ApiService';
 import CustomColors from '../../styles/Colors';
-import { Participant } from '../../types/User';
+import { Participant, User } from '../../types/User';
 
 export const SelectParticipant = (): ReactElement => {
   const api = new ApiService();
   const navigation = useNavigation();
   const [isVisible, setIsVisible] = useState<boolean>(false);
   const [menuItems, setMenuItems] = useState<ReactElement[]>();
+  const [user, setUser] = useState<User>();
   const [participant, setParticipant] = useState<Participant>();
   const [participants, setParticipants] = useState<Participant[]>();
   const closeMenu = () => setIsVisible(false);
@@ -45,10 +46,15 @@ export const SelectParticipant = (): ReactElement => {
     let isCancelled = false;
 
     const _load = async () => {
-      const user = await api.getUser();
+      if (!user) {
+        const dbUser = await api.getUser();
+        if (!isCancelled) {
+          setUser(dbUser);
+        }
+      }
 
       if (user && user.participants && user.participants.length > 1) {
-        if (!isCancelled) {
+        if (!participants && !isCancelled) {
           setParticipants(user.participants.filter(p => p.relationship === 'dependent'));
         }
       }
