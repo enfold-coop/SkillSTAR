@@ -24,7 +24,7 @@ const ListItemSwitch: FC<Props> = props => {
    *
    */
 
-  const { id, instruction, type, defaultValue, onChange } = props;
+  const { id, name, instruction, type, defaultValue, onChange } = props;
   const [isSwitchOn, setIsSwitchOn] = useState(defaultValue);
   const [label, setLabel] = useState('No');
 
@@ -57,7 +57,7 @@ const ListItemSwitch: FC<Props> = props => {
   // callback for setting isSwitchOn value
   const onToggleSwitch = () => {
     setIsSwitchOn(!isSwitchOn);
-    onChange(id, isSwitchOn);
+    onChange(id, isSwitchOn, name);
   };
   //
 

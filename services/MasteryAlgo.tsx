@@ -1,4 +1,4 @@
-import { ChainQuestionnaire } from "../types/CHAIN/ChainQuestionnaire";
+import { SkillstarChain } from "../types/CHAIN/SkillstarChain";
 import { ChainSession, ChainSessionType } from "../types/CHAIN/ChainSession";
 import { MasteryInfo } from "../types/CHAIN/MasteryLevel";
 import {
@@ -60,7 +60,7 @@ class MasteryAlgo {
 	// -------- RETURN: "Training"
 	// -- IF (prior session_type === "training"):
 	// ----- RETURN: "Training"
-	static _determineAndSetSessionType(chainData: ChainQuestionnaire) {
+	static _determineAndSetSessionType(chainData: SkillstarChain) {
 		console.log(chainData);
 		if (chainData && chainData.sessions.length < 1) {
 			this.currentSessionType = "Probe";
@@ -79,9 +79,13 @@ class MasteryAlgo {
 	}
 
 	/** GET STEP_ATTEMPT PROMPT LEVEL */
-	// -- IF: (prior session != complete)
-	// ---- THEN: return prior_session.step_attempt[index].prompt_level
-	// -- ELSE:
+	static _getStepAttemptPromptLevel() {
+		// -- IF: (prior session != complete)
+		// if (true) {
+		// }
+		// ---- THEN: return prior_session.step_attempt[index].prompt_level
+		// -- ELSE:
+	}
 
 	/** FOCUS STEP ALGO */
 	// **
