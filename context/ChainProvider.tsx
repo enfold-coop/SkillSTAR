@@ -1,5 +1,5 @@
 import React, {useReducer} from "react";
-import {ChainQuestionnaire} from '../types/CHAIN/ChainQuestionnaire';
+import {SkillstarChain} from '../types/CHAIN/SkillstarChain';
 import {ChainSession, ChainSessionType} from '../types/CHAIN/ChainSession';
 import {ADD_CURR_SESSION_NMBR, ADD_SESSION, ADD_SESSION_TYPE, ADD_USER_DATA,} from "./constants/actions";
 
@@ -7,7 +7,7 @@ type ChainProviderProps = {
   dispatch?: any;
   sessionType: string;
   session?: ChainSession;
-  userData?: ChainQuestionnaire;
+  userData?: SkillstarChain;
   currSessionNmbr: number;
   state?: any;
 };

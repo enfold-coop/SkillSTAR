@@ -1,4 +1,4 @@
-import { ChainQuestionnaire } from "../types/CHAIN/ChainQuestionnaire";
+import { SkillstarChain } from "../types/CHAIN/SkillstarChain";
 import { ChainSession, ChainSessionType } from "../types/CHAIN/ChainSession";
 import { MasteryInfo } from "../types/CHAIN/MasteryLevel";
 import {
@@ -11,7 +11,7 @@ import {
  * Mastery Algorithm
  * UTIL function (can be moved to another file)
  *
- * Params: chainData = the entire ChainQuestionnaire
+ * Params: chainData = the entire SkillstarChain
  * Returns one of the following:
  * - An empty probe session, if the user has no attempted sessions yet
  * - The next session the participant should be attempting, if there is one.
@@ -45,7 +45,7 @@ export class MasteryService {
 	//  - date booster training initiated
 	//  - date booster training mastered
 	static getMasteryInfoForStep(
-		chainData: ChainQuestionnaire,
+		chainData: SkillstarChain,
 		chainStepId: number
 	): MasteryInfo {
 		const masteryInfo: MasteryInfo = {
@@ -125,7 +125,7 @@ export class MasteryService {
 
 	// Returns all the step attempts for the given chain that match a certain step name, sorted by date
 	static getAllStepAttemptsForChainStepName(
-		chainData: ChainQuestionnaire,
+		chainData: SkillstarChain,
 		chainStepId: number
 	): StepAttempt[] {
 		const stepAttempts: StepAttempt[] = [];
@@ -192,23 +192,23 @@ export class MasteryService {
 	 * Returns true if: All the step attempts for the given chain matching a certain step ID had challenging behavior
 	 * more than the given number of attempts, AND the challenging behavior prevented step completion for those steps.
 	 *
-	 * @param chainQuestionnaire - All Chain Data for the selected participant
+	 * @param skillstarChain - All Chain Data for the selected participant
 	 * @param chainStepId - The specific chain step to focus on
 	 * @param numAttempts - The minimum number of attempts
 	 */
 	static shouldFocusOnStep(
-		chainQuestionnaire: ChainQuestionnaire,
+		skillstarChain: SkillstarChain,
 		chainStepId: number,
 		numAttempts: number
 	): boolean {
-		if (chainQuestionnaire.sessions.length < numAttempts) {
+		if (skillstarChain.sessions.length < numAttempts) {
 			return false;
 		}
 
 		let numChallenging = 0;
 		let challengingStepAttempts: StepAttempt[] = [];
 
-		this._sortSessionsByDate(chainQuestionnaire.sessions).forEach(
+		this._sortSessionsByDate(skillstarChain.sessions).forEach(
 			(session) => {
 				session.step_attempts.forEach((stepAttempt) => {
 					if (
@@ -233,7 +233,7 @@ export class MasteryService {
 		);
 	}
 
-	static getNextSession(chainData: ChainQuestionnaire) {
+	static getNextSession(chainData: SkillstarChain) {
 		// Some of the sessions will be future/not attempted sessions.
 		// We want the next session the participant should be attempting.
 		const numSessions = chainData.sessions ? chainData.sessions.length : 0;

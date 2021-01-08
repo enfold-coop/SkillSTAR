@@ -1,4 +1,4 @@
-import { ChainQuestionnaire } from "../types/CHAIN/ChainQuestionnaire";
+import { SkillstarChain } from "../types/CHAIN/SkillstarChain";
 import { ChainSession, ChainSessionType } from "../types/CHAIN/ChainSession";
 import { MasteryInfo } from "../types/CHAIN/MasteryLevel";
 import {
@@ -60,8 +60,8 @@ class MasteryAlgo {
 	// -------- RETURN: "Training"
 	// -- IF (prior session_type === "training"):
 	// ----- RETURN: "Training"
-	static _determineAndSetSessionType(chainData: ChainQuestionnaire) {
-		// console.log(chainData);
+	static _determineAndSetSessionType(chainData: SkillstarChain) {
+		console.log(chainData);
 		if (chainData && chainData.sessions.length < 1) {
 			this.currentSessionType = "Probe";
 			this._setCurrentSessionNumber(0);

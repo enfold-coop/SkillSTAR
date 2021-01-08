@@ -7,7 +7,7 @@ import DataVerificationList from '../components/Probe/DataVerificationList';
 import { RootNavProps } from '../navigation/root_types';
 import { ApiService } from '../services/ApiService';
 import CustomColors from '../styles/Colors';
-import { ChainQuestionnaire } from '../types/CHAIN/ChainQuestionnaire';
+import { SkillstarChain } from '../types/CHAIN/SkillstarChain';
 import { ChainSession } from '../types/CHAIN/ChainSession';
 import { ChainStepStatus, StepAttempt } from '../types/CHAIN/StepAttempt';
 
@@ -32,7 +32,7 @@ function BaselineAssessmentScreen({ route }: Props): ReactNode {
   const [readyToSubmit, setReadyToSubmit] = useState(false);
   const [questionnaireId, setQuestionnaireId] = useState<number>();
   const [sessionReady, setSessionReady] = useState(false);
-  const [chainData, setChainData] = useState<ChainQuestionnaire>();
+  const [chainData, setChainData] = useState<SkillstarChain>();
   const [chainSession, setChainSession] = useState<ChainSession>();
   const [text, setText] = useState('');
 
