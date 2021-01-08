@@ -35,6 +35,8 @@ export class ApiService {
     if (!isConnected) {
       // Return the locally cached steps, if they are there.
       const cachedStepsJson = await AsyncStorage.getItem('chainSteps');
+      console.log(cachedStepsJson);
+      
 
       if (cachedStepsJson) {
         return JSON.parse(cachedStepsJson) as ChainStep[];
@@ -59,6 +61,7 @@ export class ApiService {
   async getChainQuestionnaireId(): Promise<number | undefined> {
     // Check for a cached questionnaire ID
     const skillstarChainId = await AsyncStorage.getItem('selected_participant_questionnaire_id');
+    console.log(skillstarChainId);
 
     // If it's been cached, just return it.
     if (skillstarChainId) {

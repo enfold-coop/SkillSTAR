@@ -97,7 +97,7 @@ class MasteryAlgo {
         if(prevFocusStep){
             // 3. IF: (prior focus_step was completed WITHOUT (add'l prompting && CB)):
             if(prevFocusStep.completed && !prevFocusStep.had_challenging_behavior && !prevFocusStep.was_prompted){
-                
+                this.currFocusStepPromptLevel = ChainStepPromptLevel[nextPromptLevel];
             }   
         }
         // ---- THEN: current prompt_level = next prompt_level in hierarchy
