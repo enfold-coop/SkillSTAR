@@ -1,4 +1,4 @@
-import { AntDesign } from '@expo/vector-icons';
+import { MaterialIcons } from '@expo/vector-icons';
 import date from 'date-and-time';
 import React, { FC, useEffect, useState } from 'react';
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
@@ -6,9 +6,11 @@ import * as Animatable from 'react-native-animatable';
 import { Card } from 'react-native-paper';
 import CustomColors from '../../styles/Colors';
 
-const masteredIcon = require('../../assets/icons/ribbon-icon_1.png');
-const focusIcon = require('../../assets/icons/in-progress-icon_1.png');
-const notStartedIcon = require('../../assets/icons/waving-icon.png');
+const Icons = {
+  masteredIcon: require('../../assets/icons/ribbon-icon_1.png'),
+  focusIcon: require('../../assets/icons/in-progress-icon_1.png'),
+  notStartedIcon: require('../../assets/icons/waving-icon.png'),
+};
 
 interface ItemPropsItem {
   id: number;
@@ -43,9 +45,9 @@ const ScorecardListItem: FC<Props> = props => {
 
   const determineMastery = () => {
     if (id === 0 && stepData) {
-      setIcon(focusIcon);
+      setIcon(Icons.focusIcon);
     } else if (id > 0) {
-      setIcon(notStartedIcon);
+      setIcon(Icons.notStartedIcon);
     } else {
       console.log('mastered icon??');
     }
@@ -90,11 +92,11 @@ const ScorecardListItem: FC<Props> = props => {
             ]}
             source={icon}
           />
-          <AntDesign
-            name='caretright'
+          <MaterialIcons
+            name={isPressed ? 'expand-less' : 'expand-more'}
             size={24}
             color='black'
-            style={[isPressed ? styles.nextIcon90 : styles.nextIcon]}
+            style={styles.nextIcon}
           />
         </TouchableOpacity>
         {isPressed && (
@@ -179,13 +181,6 @@ const styles = StyleSheet.create({
     paddingRight: 20,
     transform: [{ rotate: '0deg' }],
   },
-  nextIcon90: {
-    marginLeft: 'auto',
-    padding: 10,
-    paddingRight: 20,
-    transform: [{ rotate: '90deg' }],
-  },
-
   title: {
     padding: 5,
     fontSize: 20,
