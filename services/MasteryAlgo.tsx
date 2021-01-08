@@ -12,7 +12,9 @@ class MasteryAlgo {
 	TRAINING_MAX_CONSECUTIVE_INCOMPLETE = 3;
 	incompleteCount = 0;
 	static currentSessionType = ChainSessionType;
-	static currentSessionNumber = 0;
+    static currentSessionNumber = 0;
+    static prevFocusStepPromptLevel = null;
+    static currFocusStepPromptLevel = null;
 	promptHierarchy = [
 		ChainStepPromptLevel.full_physical,
 		ChainStepPromptLevel.full_physical,
@@ -60,15 +62,13 @@ class MasteryAlgo {
 	// -------- RETURN: "Training"
 	// -- IF (prior session_type === "training"):
 	// ----- RETURN: "Training"
-	static _determineAndSetSessionType(chainData: SkillstarChain) {
+	static _determinePrevSessionType(chainData: SkillstarChain) {
 		console.log(chainData);
 		if (chainData && chainData.sessions.length < 1) {
 			this.currentSessionType = "Probe";
-			this._setCurrentSessionNumber(0);
 		} else {
 			this.currentSessionType =
 				chainData.sessions[chainData.sessions.length - 1].session_type;
-			this._setCurrentSessionNumber(chainData.sessions.length);
 		}
 	}
 
@@ -76,16 +76,37 @@ class MasteryAlgo {
 	// total sessions.length + 1
 	static _setCurrentSessionNumber(sessionsLength: number) {
 		this.currentSessionNumber = sessionsLength + 1;
-	}
+    }
+    
+    static _getPreviousSessionData(chainData: SkillstarChain){
+        return chainData.sessions[chainData.sessions.length - 1];
+    }
+
+    static _getPrevSessionFocusStepData(session: ChainSession): StepAttempt | undefined {
+        return session.step_attempts.find((e) => e.status === ChainStepStatus.focus);
+    }
 
 	/** GET STEP_ATTEMPT PROMPT LEVEL */
-	static _getStepAttemptPromptLevel() {
-		// -- IF: (prior session != complete)
-		// if (true) {
-		// }
-		// ---- THEN: return prior_session.step_attempt[index].prompt_level
-		// -- ELSE:
-	}
+    static determineStepAttemptPromptLevel(chainData: SkillstarChain){
+        // 1. get prior_session
+        // 2. get prior_Session.focus_step.prompt_level
+        let prevSessionData = this._getPreviousSessionData(chainData);
+        let prevFocusStep = this._getPrevSessionFocusStepData(prevSessionData);
+        let prevPromptLevel = prevFocusStep?.prompt_level;
+        let nextPromptLevel = prevPromptLevel != undefined ? Object.keys(ChainStepPromptLevel).indexOf(prevPromptLevel) + 1  : undefined;
+        if(prevFocusStep){
+            // 3. IF: (prior focus_step was completed WITHOUT (add'l prompting && CB)):
+            if(prevFocusStep.completed && !prevFocusStep.had_challenging_behavior && !prevFocusStep.was_prompted){
+                
+            }   
+        }
+        // ---- THEN: current prompt_level = next prompt_level in hierarchy
+        // 4. ELSE:
+        // ---- THEN: current prompt_level = prior session._focus_step.prompt_level
+    }
+
+
+    
 
 	/** FOCUS STEP ALGO */
 	// **
