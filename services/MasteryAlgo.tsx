@@ -61,7 +61,7 @@ class MasteryAlgo {
 	// -- IF (prior session_type === "training"):
 	// ----- RETURN: "Training"
 	static _determineAndSetSessionType(chainData: ChainQuestionnaire) {
-		console.log(chainData);
+		// console.log(chainData);
 		if (chainData && chainData.sessions.length < 1) {
 			this.currentSessionType = "Probe";
 			this._setCurrentSessionNumber(0);
@@ -79,9 +79,13 @@ class MasteryAlgo {
 	}
 
 	/** GET STEP_ATTEMPT PROMPT LEVEL */
-	// -- IF: (prior session != complete)
-	// ---- THEN: return prior_session.step_attempt[index].prompt_level
-	// -- ELSE:
+	static _getStepAttemptPromptLevel() {
+		// -- IF: (prior session != complete)
+		// if (true) {
+		// }
+		// ---- THEN: return prior_session.step_attempt[index].prompt_level
+		// -- ELSE:
+	}
 
 	/** FOCUS STEP ALGO */
 	// **
