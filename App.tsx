@@ -9,23 +9,18 @@ import useColorScheme from './hooks/useColorScheme';
 import Navigation from './navigation';
 import { customFonts } from './styles/Fonts';
 
-console.log('*** App.tsx ***');
-
 /**
  * Entry for the application.
  */
 export default function App() {
-  console.log('App');
   const colorScheme = useColorScheme();
   const [isLoadingComplete, setIsLoadingComplete] = useState<boolean>(false);
 
   useEffect(() => {
     // Prevents React state updates on unmounted components
     let isCancelled = false;
-    console.log('*** App.tsx ***');
 
     const _loadFonts = async () => {
-      console.log('Loading fonts...');
       await SplashScreen.preventAutoHideAsync();
       await Font.loadAsync(customFonts);
       await SplashScreen.hideAsync();
@@ -33,7 +28,6 @@ export default function App() {
 
     try {
       _loadFonts().then(() => {
-        console.log('Fonts have been loaded.');
         if (!isCancelled) {
           setIsLoadingComplete(true);
         }
