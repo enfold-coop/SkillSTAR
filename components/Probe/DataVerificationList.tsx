@@ -1,36 +1,36 @@
-import React, { FC, useState, useEffect } from "react";
-import shortid from "shortid";
-import { StyleSheet, Text, View, FlatList } from "react-native";
-import { StepAttempt } from "../../types/CHAIN/StepAttempt";
-import { DataVerificationListItem } from "./DataVerificationListItem";
+import React, { FC } from 'react';
+import { FlatList, StyleSheet, View } from 'react-native';
+import shortid from 'shortid';
+import { StepAttempt } from '../../types/CHAIN/StepAttempt';
+import { ListItemSwitchCallback } from '../../types/ListItemSwitchCallback';
+import { DataVerificationListItem } from './DataVerificationListItem';
 
 type Props = {
-	session: StepAttempt[];
+  stepAttempts: StepAttempt[];
+  onChange: ListItemSwitchCallback;
 };
 
-const DataVerificationList: FC<Props> = (props) => {
-	let { session } = props;
+const DataVerificationList: FC<Props> = props => {
+  const { stepAttempts, onChange } = props;
 
-	return (
-		<View style={styles.container}>
-			<FlatList
-				data={session}
-				renderItem={({ item }) => (
-					<DataVerificationListItem stepAttempt={item} />
-				)}
-				keyExtractor={() => shortid()}
-			/>
-		</View>
-	);
+  return (
+    <View style={styles.container}>
+      <FlatList
+        data={stepAttempts}
+        renderItem={({ item }) => <DataVerificationListItem stepAttempt={item} onChange={onChange}/>}
+        keyExtractor={() => shortid()}
+      />
+    </View>
+  );
 };
 
 export default DataVerificationList;
 
 const styles = StyleSheet.create({
-	container: {
-		flex: 1,
-		flexDirection: "column",
-		justifyContent: "flex-start",
-		// paddingBottom: 20,
-	},
+  container: {
+    flex: 1,
+    flexDirection: 'column',
+    justifyContent: 'flex-start',
+    // paddingBottom: 20,
+  },
 });
