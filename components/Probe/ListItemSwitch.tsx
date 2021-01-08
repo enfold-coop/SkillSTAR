@@ -3,7 +3,7 @@ import React, { FC, useEffect, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { Switch } from 'react-native-paper';
 import CustomColors from '../../styles/Colors';
-import { ListItemSwitchCallback } from '../../types/ListItemSwitchCallback';
+import { DataVerificationControlCallback } from '../../types/DataVerificationControlCallback';
 
 type Props = {
   name: string;
@@ -11,7 +11,7 @@ type Props = {
   type: number;
   id: number;
   defaultValue: boolean;
-  onChange: ListItemSwitchCallback;
+  onChange: DataVerificationControlCallback;
 };
 
 const ListItemSwitch: FC<Props> = props => {
