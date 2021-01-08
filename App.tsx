@@ -1,35 +1,54 @@
 import * as Font from 'expo-font';
+import * as SplashScreen from 'expo-splash-screen';
 import React, { useEffect, useState } from 'react';
 import { Provider } from 'react-native-paper';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { AuthContext } from './context/AuthProvider';
 import { ChainProvider } from './context/ChainProvider';
-import useCachedResources from './hooks/useCachedResources';
 import useColorScheme from './hooks/useColorScheme';
 import Navigation from './navigation';
+import { customFonts } from './styles/Fonts';
 
-let customFonts = {
-  SkillStarIcons: require('./assets/fonts/icons/skillstar_icons.ttf'),
-};
+console.log('*** App.tsx ***');
 
 /**
  * Entry for the application.
  */
 export default function App() {
-  const isLoadingComplete = useCachedResources();
+  console.log('App');
   const colorScheme = useColorScheme();
-  const [fontsLoaded, setFontsLoaded] = useState<boolean>(false);
-
-  const _loadFonts = async () => {
-    await Font.loadAsync(customFonts);
-    setFontsLoaded(true);
-  };
+  const [isLoadingComplete, setIsLoadingComplete] = useState<boolean>(false);
 
   useEffect(() => {
-    _loadFonts();
+    // Prevents React state updates on unmounted components
+    let isCancelled = false;
+    console.log('*** App.tsx ***');
+
+    const _loadFonts = async () => {
+      console.log('Loading fonts...');
+      await SplashScreen.preventAutoHideAsync();
+      await Font.loadAsync(customFonts);
+      await SplashScreen.hideAsync();
+    };
+
+    try {
+      _loadFonts().then(() => {
+        console.log('Fonts have been loaded.');
+        if (!isCancelled) {
+          setIsLoadingComplete(true);
+        }
+      });
+    } catch (e) {
+      // We might want to provide this error information to an error reporting service
+      console.warn(e);
+    }
+
+    return () => {
+      isCancelled = true;
+    };
   });
 
-  if (!fontsLoaded || !isLoadingComplete) {
+  if (!isLoadingComplete) {
     return null;
   } else {
     return (

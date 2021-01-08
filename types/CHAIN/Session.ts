@@ -1,7 +1,7 @@
 import { StepAttempt } from './StepAttempt';
 
 export class Session {
-  date?: {};
+  date?: Date;
   data: StepAttempt[];
 
   constructor() {

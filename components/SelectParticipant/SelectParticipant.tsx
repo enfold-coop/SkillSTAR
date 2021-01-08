@@ -1,25 +1,17 @@
-import {MaterialIcons} from "@expo/vector-icons";
-import {useNavigation} from "@react-navigation/native";
-import React, {ReactElement, useContext, useEffect, useState} from "react";
-import {StyleSheet, View} from "react-native";
-import {Button, Menu, Text,} from "react-native-paper";
-import {AuthContext} from "../../context/AuthProvider";
-import {ApiService} from '../../services/ApiService';
-import CustomColors from "../../styles/Colors";
-import {Participant} from "../../types/User";
+import { MaterialIcons } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native';
+import React, { ReactElement, useEffect, useState } from 'react';
+import { StyleSheet, View } from 'react-native';
+import { Button, Menu, Text } from 'react-native-paper';
+import { ApiService } from '../../services/ApiService';
+import CustomColors from '../../styles/Colors';
+import { Participant } from '../../types/User';
 
-export interface SelectParticipantProps {
-}
-
-export const SelectParticipant = (
-  props: SelectParticipantProps
-): ReactElement => {
+export const SelectParticipant = (): ReactElement => {
   const api = new ApiService();
-  const context = useContext(AuthContext);
   const navigation = useNavigation();
   const [isVisible, setIsVisible] = useState<boolean>(false);
   const [menuItems, setMenuItems] = useState<ReactElement[]>();
-
   const [participant, setParticipant] = useState<Participant>();
   const [participants, setParticipants] = useState<Participant[]>();
   const closeMenu = () => setIsVisible(false);
@@ -29,9 +21,8 @@ export const SelectParticipant = (
     const participant = await api.selectParticipant(selectedParticipant.id);
 
     if (participant) {
-      context.state.participant = selectedParticipant;
       await setParticipant(selectedParticipant);
-      await navigation.navigate("ChainsHomeScreen");
+      await navigation.navigate('ChainsHomeScreen');
     }
 
     await closeMenu();
@@ -50,44 +41,53 @@ export const SelectParticipant = (
   };
 
   useEffect(() => {
-    if (context && context.state) {
-      if (!participant) {
-        api.getSelectedParticipant().then((p) => {
-          if (p) {
-            setParticipant(p);
-          } else if (!participant && context.state.participant) {
-            setParticipant(context.state.participant);
-          }
-        });
+    // Prevents React state updates on unmounted components
+    let isCancelled = false;
+
+    const _load = async () => {
+      const user = await api.getUser();
+
+      if (user && user.participants && user.participants.length > 1) {
+        if (!isCancelled) {
+          setParticipants(user.participants.filter(p => p.relationship === 'dependent'));
+        }
       }
-      if (
-        !menuItems &&
-        context.state.user &&
-        context.state.user.participants
-      ) {
-        const dependents = context.state.user.participants.filter(
-          (p) => p.relationship === "dependent"
-        );
-        const items = dependents.map((p: Participant) => {
+
+      const selectedParticipant = await api.getSelectedParticipant();
+      if (selectedParticipant) {
+        if (!isCancelled) {
+          setParticipant(selectedParticipant);
+        }
+      }
+    };
+
+    _load().then(() => {
+      if (participants && participants.length > 0) {
+        const items = participants.map((p: Participant) => {
           return (
             <Menu.Item
               onPress={() => selectParticipant(p)}
               title={participantName(p)}
-              key={"participant_" + p.id}
+              key={'participant_' + p.id}
               style={styles.menuItem}
             />
           );
         });
-        setMenuItems(items);
-        setParticipants(dependents);
+        if (!isCancelled) {
+          setMenuItems(items);
+        }
       }
-    }
+    });
+
+    return () => {
+      isCancelled = true;
+    };
   });
 
   if (!menuItems || menuItems.length === 0) {
     return (
       <View style={styles.menuContainer}>
-        <Text style={{marginRight: 100}}>Loading...</Text>
+        <Text style={{ marginRight: 100 }}>Loading...</Text>
       </View>
     );
   }
@@ -99,20 +99,10 @@ export const SelectParticipant = (
         visible={isVisible}
         onDismiss={closeMenu}
         anchor={
-          <Button
-            onPress={openMenu}
-            color={CustomColors.uva.orange}
-            style={styles.menuButton}
-          >
-            {participant
-              ? "Participant: " + participantName(participant)
-              : "Select Participant"}
+          <Button onPress={openMenu} color={CustomColors.uva.orange} style={styles.menuButton}>
+            {participant ? 'Participant: ' + participantName(participant) : 'Select Participant'}
             <View style={styles.iconContainer}>
-              <MaterialIcons
-                name="arrow-drop-down"
-                size={24}
-                color={CustomColors.uva.orange}
-              />
+              <MaterialIcons name='arrow-drop-down' size={24} color={CustomColors.uva.orange} />
             </View>
           </Button>
         }
@@ -129,30 +119,30 @@ const styles = StyleSheet.create({
   },
   menuContainer: {
     flex: 1,
-    flexDirection: "column",
-    justifyContent: "center",
-    alignItems: "flex-end",
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'flex-end',
     margin: -16,
     height: 60,
     padding: 0,
   },
   menuButton: {
     flex: 1,
-    flexDirection: "column",
-    justifyContent: "center",
-    alignContent: "center",
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignContent: 'center',
   },
   menuContent: {
     flex: 1,
-    flexDirection: "column",
-    justifyContent: "flex-end",
-    alignContent: "flex-end",
+    flexDirection: 'column',
+    justifyContent: 'flex-end',
+    alignContent: 'flex-end',
     padding: 10,
   },
   menuItem: {
-    flexDirection: "column",
-    justifyContent: "center",
-    alignContent: "center",
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignContent: 'center',
     flex: 1,
     height: 50,
     padding: 10,

@@ -1,4 +1,4 @@
-import { Ionicons } from '@expo/vector-icons';
+import { AntDesign, Ionicons, MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
 import * as Font from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
 import * as React from 'react';
@@ -14,7 +14,11 @@ export default function useCachedResources() {
 
         // Load fonts
         await Font.loadAsync({
+          ...AntDesign.font,
           ...Ionicons.font,
+          ...MaterialCommunityIcons.font,
+          ...MaterialIcons.font,
+          SkillStarIcons: require('../assets/fonts/icons/skillstar_icons.ttf'),
           'space-mono': require('../assets/fonts/SpaceMono-Regular.ttf'),
         });
       } catch (e) {

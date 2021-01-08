@@ -1,23 +1,23 @@
-import {AntDesign} from "@expo/vector-icons";
-import date from "date-and-time";
-import React, {FC, useEffect, useState} from "react";
-import {Image, StyleSheet, Text, TouchableOpacity, View} from "react-native";
-import * as Animatable from "react-native-animatable";
-import {Card} from "react-native-paper";
-import CustomColors from "../../styles/Colors";
+import { AntDesign } from '@expo/vector-icons';
+import date from 'date-and-time';
+import React, { FC, useEffect, useState } from 'react';
+import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import * as Animatable from 'react-native-animatable';
+import { Card } from 'react-native-paper';
+import CustomColors from '../../styles/Colors';
 
-const masteredIcon = require("../../assets/icons/ribbon-icon_1.png");
-const focusIcon = require("../../assets/icons/in-progress-icon_1.png");
-const notStartedIcon = require("../../assets/icons/waving-icon.png");
+const masteredIcon = require('../../assets/icons/ribbon-icon_1.png');
+const focusIcon = require('../../assets/icons/in-progress-icon_1.png');
+const notStartedIcon = require('../../assets/icons/waving-icon.png');
 
 interface ItemPropsItem {
-	id: number;
-	instruction: string;
-	last_updated: Date;
+  id: number;
+  instruction: string;
+  last_updated: Date;
 }
 
 interface ItemProps {
-	item: ItemPropsItem;
+  item: ItemPropsItem;
 }
 
 type Props = {
@@ -25,9 +25,9 @@ type Props = {
   sessionStepData: any;
 };
 
-const ScorecardListItem: FC<Props> = (props) => {
-  const {id, instruction, last_updated} = props.itemProps.item;
-  const {sessionStepData} = props;
+const ScorecardListItem: FC<Props> = props => {
+  const { id, instruction, last_updated } = props.itemProps.item;
+  const { sessionStepData } = props;
   const [isPressed, setIsPressed] = useState(false);
   const [icon, setIcon] = useState();
   const [stepData, setStepData] = useState({});
@@ -47,18 +47,17 @@ const ScorecardListItem: FC<Props> = (props) => {
     } else if (id > 0) {
       setIcon(notStartedIcon);
     } else {
-      console.log("mastered icon??");
+      console.log('mastered icon??');
     }
   };
 
-  const
-		handleDateVals = (d: string) => {
-    let _d = date.format(new Date(d), "MM/DD/YYYY");
+  const handleDateVals = (d: string) => {
+    let _d = date.format(new Date(d), 'MM/DD/YYYY');
 
-    if (_d === "aN/aN/0NaN") {
-      return "N/A";
+    if (_d === 'aN/aN/0NaN') {
+      return 'N/A';
     } else {
-      return date.format(new Date(d), "MM/DD/YYYY");
+      return date.format(new Date(d), 'MM/DD/YYYY');
     }
   };
 
@@ -69,7 +68,7 @@ const ScorecardListItem: FC<Props> = (props) => {
   }, []);
 
   return (
-    <Animatable.View animation="fadeIn" duration={300 * id}>
+    <Animatable.View animation='fadeIn' duration={300 * id}>
       <Card style={styles.container}>
         <TouchableOpacity
           style={[styles.touchable]}
@@ -85,46 +84,36 @@ const ScorecardListItem: FC<Props> = (props) => {
               {
                 width: 28,
                 height: 28,
-                alignSelf: "center",
+                alignSelf: 'center',
                 padding: 2,
               },
             ]}
             source={icon}
           />
           <AntDesign
-            name="caretright"
+            name='caretright'
             size={24}
-            color="black"
-            style={[
-              isPressed ? styles.nextIcon90 : styles.nextIcon,
-            ]}
+            color='black'
+            style={[isPressed ? styles.nextIcon90 : styles.nextIcon]}
           />
         </TouchableOpacity>
         {isPressed && (
           <View style={styles.dropDownContainer}>
             <Text style={styles.dropDownLabel}>
-              {`${"\u2022"} Date Introduced: `}
-              <Text style={styles.dropDownItemDate}>
-                {handleDateVals(dateIntro)}
-              </Text>
+              {`${'\u2022'} Date Introduced: `}
+              <Text style={styles.dropDownItemDate}>{handleDateVals(dateIntro)}</Text>
             </Text>
             <Text style={styles.dropDownLabel}>
-              {`${"\u2022"} Date Mastered: `}
-              <Text style={styles.dropDownItemDate}>
-                {handleDateVals(dateMast)}
-              </Text>
+              {`${'\u2022'} Date Mastered: `}
+              <Text style={styles.dropDownItemDate}>{handleDateVals(dateMast)}</Text>
             </Text>
             <Text style={styles.dropDownLabel}>
-              {`${"\u2022"} Date Booster training initiated: `}
-              <Text style={styles.dropDownItemDate}>
-                {handleDateVals(dateBoost)}
-              </Text>
+              {`${'\u2022'} Date Booster training initiated: `}
+              <Text style={styles.dropDownItemDate}>{handleDateVals(dateBoost)}</Text>
             </Text>
             <Text style={styles.dropDownLabel}>
-              {`${"\u2022"} Date Mastered Booster training: `}
-              <Text style={styles.dropDownItemDate}>
-                {handleDateVals(dateBoostMast)}
-              </Text>
+              {`${'\u2022'} Date Mastered Booster training: `}
+              <Text style={styles.dropDownItemDate}>{handleDateVals(dateBoostMast)}</Text>
             </Text>
           </View>
         )}
@@ -136,20 +125,20 @@ const ScorecardListItem: FC<Props> = (props) => {
 const styles = StyleSheet.create({
   container: {
     marginBottom: 3,
-    flexDirection: "row",
+    flexDirection: 'row',
   },
   touchable: {
-    flexDirection: "row",
-    justifyContent: "flex-start",
-    alignItems: "center",
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
     paddingTop: 10,
     paddingBottom: 10,
     paddingLeft: 20,
   },
   dropDownContainer: {
-    flexDirection: "column",
-    justifyContent: "space-around",
-    alignContent: "flex-start",
+    flexDirection: 'column',
+    justifyContent: 'space-around',
+    alignContent: 'flex-start',
     marginLeft: 10,
     marginRight: 10,
     marginBottom: 10,
@@ -163,8 +152,8 @@ const styles = StyleSheet.create({
   dropDownLabel: {
     padding: 5,
     paddingLeft: 40,
-    fontWeight: "500",
-    alignSelf: "flex-start",
+    fontWeight: '500',
+    alignSelf: 'flex-start',
   },
   dropDownItemDate: {
     color: CustomColors.uva.grayDark,
@@ -172,35 +161,35 @@ const styles = StyleSheet.create({
   id: {
     padding: 5,
     fontSize: 16,
-    fontWeight: "bold",
+    fontWeight: 'bold',
   },
   skill: {
     width: 300,
-    flexWrap: "wrap",
+    flexWrap: 'wrap',
     padding: 5,
     fontSize: 16,
-    fontWeight: "bold",
+    fontWeight: 'bold',
   },
   score: {
     paddingLeft: 20,
   },
   nextIcon: {
-    marginLeft: "auto",
+    marginLeft: 'auto',
     padding: 10,
     paddingRight: 20,
-    transform: [{rotate: "0deg"}],
+    transform: [{ rotate: '0deg' }],
   },
   nextIcon90: {
-    marginLeft: "auto",
+    marginLeft: 'auto',
     padding: 10,
     paddingRight: 20,
-    transform: [{rotate: "90deg"}],
+    transform: [{ rotate: '90deg' }],
   },
 
   title: {
     padding: 5,
     fontSize: 20,
-    fontWeight: "bold",
+    fontWeight: 'bold',
   },
 });
 
