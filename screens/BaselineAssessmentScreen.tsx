@@ -7,7 +7,7 @@ import DataVerificationList from '../components/Probe/DataVerificationList';
 import { RootNavProps } from '../navigation/root_types';
 import { ApiService } from '../services/ApiService';
 import CustomColors from '../styles/Colors';
-import { SkillstarChain } from '../types/CHAIN/SkillstarChain';
+import { ChainData, SkillstarChain } from '../types/CHAIN/SkillstarChain';
 import { ChainSession } from '../types/CHAIN/ChainSession';
 import { ChainStepStatus, StepAttempt } from '../types/CHAIN/StepAttempt';
 
@@ -32,7 +32,7 @@ function BaselineAssessmentScreen({ route }: Props): ReactNode {
   const [readyToSubmit, setReadyToSubmit] = useState(false);
   const [questionnaireId, setQuestionnaireId] = useState<number>();
   const [sessionReady, setSessionReady] = useState(false);
-  const [chainData, setChainData] = useState<SkillstarChain>();
+  const [chainData, setChainData] = useState<ChainData>();
   const [chainSession, setChainSession] = useState<ChainSession>();
   const [text, setText] = useState('');
 
@@ -48,7 +48,7 @@ function BaselineAssessmentScreen({ route }: Props): ReactNode {
         setQuestionnaireId(qId);
         const dbChainData = await api.getChainData(qId);
         if (dbChainData) {
-          setChainData(dbChainData);
+          setChainData(new ChainData(dbChainData));
         }
       }
 
@@ -86,7 +86,7 @@ function BaselineAssessmentScreen({ route }: Props): ReactNode {
   }, []);
   /** END: Lifecycle calls */
 
-  const updateChainData = async (stepId: number, value: boolean, fieldName: string) => {
+  const updateChainData = async (stepId: number, fieldName: string, fieldValue: boolean) => {
 
     //  Find the step that matches the stepId
     //  Set the value of the fieldName for that step

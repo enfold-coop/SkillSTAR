@@ -1,3 +1,4 @@
+import {convertEnumToMap} from '../../_util/ConvertEnumToMap';
 import { StepAttempt } from './StepAttempt';
 
 export enum ChainSessionType {
@@ -15,3 +16,5 @@ export interface ChainSession {
   session_type?: ChainSessionType;
   step_attempts: StepAttempt[];
 }
+
+export const ChainSessionTypeMap = convertEnumToMap(ChainSessionType);
