@@ -1,4 +1,4 @@
-import {convertEnumToMap} from '../../_util/ConvertEnumToMap';
+import { convertEnumToMap } from '../../_util/ConvertEnumToMap';
 import { StepAttempt } from './StepAttempt';
 
 export enum ChainSessionType {
