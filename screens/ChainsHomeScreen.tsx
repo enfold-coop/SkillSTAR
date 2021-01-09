@@ -60,14 +60,21 @@ const ChainsHomeScreen: FC<Props> = props => {
   const { portrait } = useDeviceOrientation();
 
   const callAlgo = (chainData: SkillstarChain) => {
+    console.log('*** callAlgo ***');
     MasteryAlgo.determineStepAttemptPromptLevel(chainData);
   };
 
   useEffect(() => {
-    if (userData != undefined) {
+    let isCancelled = false;
+
+    if (userData != undefined && !isCancelled) {
       callAlgo(userData);
     }
-  });
+
+    return () => {
+      isCancelled = true;
+    };
+  }, [userData]);
 
   useEffect(() => {
     let isCancelled = false;
