@@ -1,3 +1,4 @@
+import {convertEnumToMap} from '../../_util/ConvertEnumToMap';
 import { ChainSessionType } from './ChainSession';
 import { ChainStep } from './ChainStep';
 
@@ -14,6 +15,8 @@ export enum ChainStepStatus {
   'mastered' = 'Mastered',
 }
 
+export const ChainStepStatusMap = convertEnumToMap(ChainStepStatus);
+
 export enum ChainStepPromptLevel {
   'none' = 'No Prompt (Independent)',
   'shadow' = 'Shadow Prompt (approximately one inch)',
@@ -21,11 +24,15 @@ export enum ChainStepPromptLevel {
   'full_physical' = 'Full Physical Prompt (hand-over-hand)',
 }
 
+export const ChainStepPromptLevelMap = convertEnumToMap(ChainStepPromptLevel);
+
 export enum ChallengingBehaviorSeverity {
   'mild' = 'Mild (did not interfere with task)',
   'moderate' = 'Moderate (interfered with task, but we were able to work through it)',
   'severe' = 'Severe (we were not able to complete the task due to the severity of the behavior)',
 }
+
+export const ChallengingBehaviorSeverityMap = convertEnumToMap(ChallengingBehaviorSeverity);
 
 export interface StepAttempt {
   id?: number;

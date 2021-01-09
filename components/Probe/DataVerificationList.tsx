@@ -2,12 +2,12 @@ import React, { FC } from 'react';
 import { FlatList, StyleSheet, View } from 'react-native';
 import shortid from 'shortid';
 import { StepAttempt } from '../../types/CHAIN/StepAttempt';
-import { ListItemSwitchCallback } from '../../types/ListItemSwitchCallback';
+import { DataVerificationControlCallback } from '../../types/DataVerificationControlCallback';
 import { DataVerificationListItem } from './DataVerificationListItem';
 
 type Props = {
   stepAttempts: StepAttempt[];
-  onChange: ListItemSwitchCallback;
+  onChange: DataVerificationControlCallback;
 };
 
 const DataVerificationList: FC<Props> = props => {

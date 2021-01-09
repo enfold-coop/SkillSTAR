@@ -2,12 +2,12 @@ import React, { FC } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import CustomColors from '../../styles/Colors';
 import { StepAttempt } from '../../types/CHAIN/StepAttempt';
-import { ListItemSwitchCallback } from '../../types/ListItemSwitchCallback';
+import { DataVerificationControlCallback } from '../../types/DataVerificationControlCallback';
 import ListItemSwitch from './ListItemSwitch';
 
 type Props = {
   stepAttempt: StepAttempt;
-  onChange: ListItemSwitchCallback;
+  onChange: DataVerificationControlCallback;
 };
 
 export const DataVerificationListItem: FC<Props> = props => {
