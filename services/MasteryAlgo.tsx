@@ -4,7 +4,10 @@ import { MasteryInfo } from "../types/CHAIN/MasteryLevel";
 import {
 	ChainStepPromptLevel,
 	ChainStepStatus,
-	StepAttempt,
+    StepAttempt,
+    ChainStepPromptLevelMap,
+    ChainStepStatusMap,
+    ChallengingBehaviorSeverityMap
 } from "../types/CHAIN/StepAttempt";
 
 export class MasteryAlgo {
@@ -16,13 +19,15 @@ export class MasteryAlgo {
     static prevFocusStepPromptLevel = null;
     static currFocusStepPromptLevel = null;
 
-	static promptHierarchy = [
-        'full_physical',
-        'partial_physical',
-        'shadow',
-		'none',
-	];
-	constructor() {}
+	static promptHierarchy:{}[];
+    constructor() {}
+    
+    static init(chainData: SkillstarChain){
+        // DEFINE: currentSessionNumber = 0;
+        // DEFINE: currentSessionType = ChainSessionType;
+        // DEFINE: prevFocusStepPromptLevel = null;
+        // DEFINE: currFocusStepPromptLevel = null;
+    }
 
 	/** WHAT ARE THE DEFINING CRITERIA FOR A FOCUS-STEP? */
 	// 1. (GIVEN: No prior sessions.)
@@ -83,6 +88,14 @@ export class MasteryAlgo {
         });
     }
 
+    static _convertMapToArray(eMap: {}){
+        return  Object.values(eMap);    
+    }
+
+    static _getNextPromptLevel(promptLvl:string){
+        return this.promptHierarchy[this.promptHierarchy.findIndex((e)=>(e["key"]===promptLvl)) - 1];
+    }
+
 	/** GET STEP_ATTEMPT PROMPT LEVEL */
     static determineStepAttemptPromptLevel(chainData: SkillstarChain){
         
@@ -92,9 +105,14 @@ export class MasteryAlgo {
         let prevFocusStep = this._getPrevSessionFocusStepData(prevSessionData);
         let prevPromptLevel = prevFocusStep?.prompt_level;
         
+        
+        this.promptHierarchy = this._convertMapToArray(ChainStepPromptLevelMap);
+        // console.log(this.promptHierarchy);
+        let next = this._getNextPromptLevel(prevPromptLevel);
+        console.log(next);
+        
+        
         let nextPromptLevel = prevPromptLevel != undefined ? Object.keys(ChainStepPromptLevel).indexOf(prevPromptLevel) : undefined;
-        console.log(nextPromptLevel);
-        console.log(this.promptHierarchy[0]);
         
         
         

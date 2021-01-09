@@ -58,20 +58,28 @@ const ChainsHomeScreen: FC<Props> = props => {
   const navigation = useNavigation();
   const { dispatch } = context;
   const { portrait } = useDeviceOrientation();
-  
-  
+
+  const callAlgo = (chainData: SkillstarChain) => {
+    MasteryAlgo.determineStepAttemptPromptLevel(chainData);
+  };
+
   useEffect(() => {
-      let isCancelled = false;
-      let isLoading = false;
-      
-      const _load = async () => {
-          isLoading = true; // Block while loading
-          
-          const chainData = (await api.getChainDataForSelectedParticipant()) as SkillstarChain;
-          MasteryAlgo.determineStepAttemptPromptLevel(chainData);
+    if (userData != undefined) {
+      callAlgo(userData);
+    }
+  });
+
+  useEffect(() => {
+    let isCancelled = false;
+    let isLoading = false;
+
+    const _load = async () => {
+      isLoading = true; // Block while loading
+
+      const chainData = (await api.getChainDataForSelectedParticipant()) as SkillstarChain;
+      setUserData(chainData);
 
       if (!isCancelled && chainData && chainData.sessions && chainData.sessions.length > 0) {
-        setUserData(chainData);
         dispatch({ type: ADD_USER_DATA, payload: chainData });
         setType(chainData.sessions[chainData.sessions.length - 1].session_type as string);
         dispatch({
