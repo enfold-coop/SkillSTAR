@@ -35,7 +35,7 @@ export class ApiService {
     if (!isConnected) {
       // Return the locally cached steps, if they are there.
       const cachedStepsJson = await AsyncStorage.getItem('chainSteps');
-
+      
       if (cachedStepsJson) {
         return JSON.parse(cachedStepsJson) as ChainStep[];
       }

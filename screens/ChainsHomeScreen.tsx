@@ -20,6 +20,7 @@ import {
 import { RootNavProps } from '../navigation/root_types';
 import { ApiService } from '../services/ApiService';
 import { MasteryService } from '../services/MasteryService';
+import { MasteryAlgo } from '../services/MasteryAlgo';
 import CustomColors from '../styles/Colors';
 import { ChainSession, ChainSessionType } from '../types/CHAIN/ChainSession';
 import { ChainStep } from '../types/CHAIN/ChainStep';
@@ -58,6 +59,16 @@ const ChainsHomeScreen: FC<Props> = props => {
   const { dispatch } = context;
   const { portrait } = useDeviceOrientation();
 
+  const callAlgo = (chainData: SkillstarChain) => {
+    MasteryAlgo.determineStepAttemptPromptLevel(chainData);
+  };
+
+  useEffect(() => {
+    if (userData != undefined) {
+      callAlgo(userData);
+    }
+  });
+
   useEffect(() => {
     let isCancelled = false;
     let isLoading = false;
@@ -66,9 +77,9 @@ const ChainsHomeScreen: FC<Props> = props => {
       isLoading = true; // Block while loading
 
       const chainData = (await api.getChainDataForSelectedParticipant()) as SkillstarChain;
+      setUserData(chainData);
 
       if (!isCancelled && chainData && chainData.sessions && chainData.sessions.length > 0) {
-        setUserData(chainData);
         dispatch({ type: ADD_USER_DATA, payload: chainData });
         setType(chainData.sessions[chainData.sessions.length - 1].session_type as string);
         dispatch({

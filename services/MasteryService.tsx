@@ -58,8 +58,6 @@ export class MasteryService {
 			chainStepId
 		);
 
-		console.log(chainData);
-
 		if (steps.length > 0) {
 			// First date in the list will be the date introduced.
 			masteryInfo.dateIntroduced = steps[0].date;
