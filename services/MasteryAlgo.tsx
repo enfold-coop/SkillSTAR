@@ -22,6 +22,12 @@ export class MasteryAlgo {
 	static promptHierarchy:{}[];
     constructor() {}
     
+    /**
+     * 
+     * @param chainData 
+     * -- 
+     * --this method initializes and defines all of the above class variables
+     */
     static init(chainData: SkillstarChain){
         // DEFINE: currentSessionNumber = 0;
         // DEFINE: currentSessionType = ChainSessionType;
