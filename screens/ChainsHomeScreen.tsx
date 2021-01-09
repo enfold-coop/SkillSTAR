@@ -20,6 +20,7 @@ import {
 import { RootNavProps } from '../navigation/root_types';
 import { ApiService } from '../services/ApiService';
 import { MasteryService } from '../services/MasteryService';
+import { MasteryAlgo } from '../services/MasteryAlgo';
 import CustomColors from '../styles/Colors';
 import { ChainSession, ChainSessionType } from '../types/CHAIN/ChainSession';
 import { ChainStep } from '../types/CHAIN/ChainStep';
@@ -57,15 +58,17 @@ const ChainsHomeScreen: FC<Props> = props => {
   const navigation = useNavigation();
   const { dispatch } = context;
   const { portrait } = useDeviceOrientation();
-
+  
+  
   useEffect(() => {
-    let isCancelled = false;
-    let isLoading = false;
-
-    const _load = async () => {
-      isLoading = true; // Block while loading
-
-      const chainData = (await api.getChainDataForSelectedParticipant()) as SkillstarChain;
+      let isCancelled = false;
+      let isLoading = false;
+      
+      const _load = async () => {
+          isLoading = true; // Block while loading
+          
+          const chainData = (await api.getChainDataForSelectedParticipant()) as SkillstarChain;
+          MasteryAlgo.determineStepAttemptPromptLevel(chainData);
 
       if (!isCancelled && chainData && chainData.sessions && chainData.sessions.length > 0) {
         setUserData(chainData);
