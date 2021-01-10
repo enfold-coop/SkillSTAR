@@ -8,8 +8,6 @@ import { RootNavProps as Props } from '../navigation/root_types';
 import { ApiService } from '../services/ApiService';
 import CustomColors from '../styles/Colors';
 
-let numLoops = 0;
-
 export default function LandingScreen({ navigation }: Props<'LandingScreen'>) {
   const [email, setEmail] = useState(DEFAULT_USER_EMAIL);
   const [password, setPassword] = useState(DEFAULT_USER_PASSWORD);
@@ -31,7 +29,6 @@ export default function LandingScreen({ navigation }: Props<'LandingScreen'>) {
   };
 
   useEffect(() => {
-    numLoops++;
     let isCancelled = false;
     let isLoading = false;
 
@@ -43,7 +40,6 @@ export default function LandingScreen({ navigation }: Props<'LandingScreen'>) {
         contextDispatch({ type: 'user', payload: user });
 
         // Get cached participant, or participant from STAR DRIVE if none cached.
-        console.log('LandingScreen > useEffect > getSelectedParticipant');
         const selectedParticipant = await api.getSelectedParticipant();
 
         if (selectedParticipant) {
@@ -64,9 +60,7 @@ export default function LandingScreen({ navigation }: Props<'LandingScreen'>) {
       isLoading = false;
     };
 
-    console.log('numLoops', numLoops);
-
-    if (!isCancelled && numLoops < 2) {
+    if (!isCancelled) {
       setIsValid(!!(email && password));
       if (!isLoading) {
         _loadUser();
@@ -76,7 +70,7 @@ export default function LandingScreen({ navigation }: Props<'LandingScreen'>) {
     return () => {
       isCancelled = true;
     };
-  });
+  }, [isValid]);
 
   return (
     <ImageBackground
@@ -127,7 +121,6 @@ export default function LandingScreen({ navigation }: Props<'LandingScreen'>) {
               // console.log("user", user);
               if (user) {
                 contextDispatch({ type: 'user', payload: user });
-                console.log('logged in user =', user.email);
                 navigation.navigate('ChainsHomeScreen');
               } else {
                 setErrorMessage(

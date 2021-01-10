@@ -72,7 +72,6 @@ export class ApiService {
     }
 
     // We're connected to the internet. Get the selected participant and ask the backend for their questionnaire ID.
-    console.log('getChainQuestionnaireId > this.getSelectedParticipant');
     const participant = await this.getSelectedParticipant();
 
     if (participant && participant.hasOwnProperty('id')) {
@@ -164,7 +163,6 @@ export class ApiService {
       data.participant_id !== null &&
       data.participant_id !== undefined;
 
-    console.log('ApiService > addChainData > getSelectedParticipant');
     const participant = await this.getSelectedParticipant();
 
     if (!(participant || dataHasParticipantId)) {
@@ -187,7 +185,6 @@ export class ApiService {
     const url = this.endpoints.chain;
     try {
       const user = await this.getUser();
-      console.log('ApiService > addChainData > getSelectedParticipant');
       const participant = await this.getSelectedParticipant();
 
       if (user && participant) {
@@ -320,7 +317,6 @@ export class ApiService {
   }
 
   async getSelectedParticipant(): Promise<Participant | undefined> {
-    console.log('*** getSelectedParticipant ***');
     const user = await this.getUser();
 
     if (user) {

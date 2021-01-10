@@ -18,7 +18,7 @@ const ChainsHomeGraph: FC<Props> = props => {
   const data = [
     {
       x: [1, 2, 3, 4, 5],
-      y: [1, 4, 3, 4, 8],
+      y: [1, 2, 3, 4, 5],
       mode: 'markers',
       name: 'Probe Session',
       marker: {
@@ -31,13 +31,13 @@ const ChainsHomeGraph: FC<Props> = props => {
       },
     },
     {
-      x: [4, 2, 4, 4, 5],
-      y: [2, 3, 4, 5, 6],
+      x: [1, 2, 3, 4, 5],
+      y: [1, 2, 3, 4, 5],
       mode: 'lines',
       name: 'Training Session',
     },
     {
-      x: [4, 2, 4, 4, 5],
+      x: [1, 2, 3, 4, 5],
       y: [1, 2, 3, 4, 5],
       mode: 'lines',
       name: 'Challenging Behavior',

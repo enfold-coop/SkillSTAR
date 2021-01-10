@@ -4,6 +4,7 @@ import { Dimensions, StyleSheet, Text, View } from 'react-native';
 import { Button } from 'react-native-paper';
 import AppHeader from '../components/Header/AppHeader';
 import DataVerificationList from '../components/Probe/DataVerificationList';
+import { useChainContext, useChainDispatch } from '../context/ChainProvider';
 import { RootNavProps } from '../navigation/root_types';
 import { ApiService } from '../services/ApiService';
 import CustomColors from '../styles/Colors';
@@ -28,31 +29,22 @@ const BaselineAssessmentScreen: FC<Props> = props => {
    * Set session type: Probe or Training
    */
   const api = new ApiService();
+  const [contextState, chainDispatch] = useChainContext();
   const navigation = useNavigation();
   const [stepIndex, setStepIndex] = useState(0);
   const [readyToSubmit, setReadyToSubmit] = useState(false);
   const [questionnaireId, setQuestionnaireId] = useState<number>();
   const [sessionReady, setSessionReady] = useState(false);
-  const [chainData, setChainData] = useState<ChainData>();
   const [chainSession, setChainSession] = useState<ChainSession>();
   const [text, setText] = useState('');
+  const [shouldRedirect, setShouldRedirect] = useState<boolean>(false);
+  const { chainSteps, chainData } = contextState;
 
   /** START: Lifecycle calls */
   useEffect(() => {
     let isCancelled = false;
 
     const _load = async () => {
-      const chainSteps = await api.getChainSteps();
-      const qId = await api.getChainQuestionnaireId();
-
-      if (qId !== undefined && !isCancelled) {
-        setQuestionnaireId(qId);
-        const dbChainData = await api.getChainData(qId);
-        if (dbChainData) {
-          setChainData(new ChainData(dbChainData));
-        }
-      }
-
       if (chainSteps) {
         const stepAttempts: StepAttempt[] = chainSteps.map(chainStep => {
           return {
@@ -107,22 +99,18 @@ const BaselineAssessmentScreen: FC<Props> = props => {
   };
 
   const setSessionData = async () => {
-    // Context API set session data
     if (questionnaireId !== undefined && chainData && chainSession) {
       chainData.sessions.push(chainSession);
-      await api.upsertChainData(chainData);
-
-      // navigate to chainshomescreen
-      navigation.navigate('ChainsHomeScreen');
+      const dbChainData = await api.upsertChainData(chainData);
+      if (dbChainData) {
+        chainDispatch({ type: 'chainData', payload: new ChainData(dbChainData) });
+        setShouldRedirect(true);
+        navigation.navigate('ChainsHomeScreen');
+      }
     }
   };
 
   return (
-    // <ImageBackground
-    // 	source={require("../assets/images/sunrise-muted.png")}
-    // 	resizeMode={"cover"}
-    // 	style={styles.image}
-    // >
     <View style={styles.image}>
       {sessionReady && (
         <View style={styles.container}>
@@ -163,7 +151,6 @@ const BaselineAssessmentScreen: FC<Props> = props => {
         </View>
       )}
     </View>
-    // </ImageBackground>
   );
 };
 

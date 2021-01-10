@@ -39,12 +39,10 @@ const ChainsHomeScreen: FC<Props> = props => {
   const { portrait } = useDeviceOrientation();
 
   const callAlgo = (chainData: SkillstarChain) => {
-    console.log('*** callAlgo ***');
     MasteryAlgo.determineStepAttemptPromptLevel(chainData);
   };
 
   useEffect(() => {
-    console.log('*** useEffect 1 ***');
     let isCancelled = false;
 
     if (contextState.chainData != undefined && !isCancelled) {
@@ -82,7 +80,6 @@ const ChainsHomeScreen: FC<Props> = props => {
   }, [contextState.chainData]);
 
   useEffect(() => {
-    console.log('*** useEffect 2 ***');
     let isCancelled = false;
     let isLoading = false;
 
@@ -90,7 +87,6 @@ const ChainsHomeScreen: FC<Props> = props => {
       isLoading = true; // Block while loading
 
       if (contextState.participant) {
-        console.log('contextState.participant =', contextState.participant.name);
         const newData: SkillstarChain = {
           participant_id: contextState.participant.id,
           sessions: [
@@ -133,7 +129,6 @@ const ChainsHomeScreen: FC<Props> = props => {
    * - An empty probe session, if there are none left to attempt (???)
    */
   const setSessionTypeAndNmbr = (chainData: SkillstarChain) => {
-    console.log('*** setSessionTypeAndNmbr ***');
     console.log(chainData.sessions.length);
 
     // Some of the sessions will be future/not attempted sessions.
@@ -205,7 +200,7 @@ const ChainsHomeScreen: FC<Props> = props => {
             <SessionDataAside asideContent={asideContent} />
             <FlatList
               style={styles.list}
-              data={chainSteps}
+              data={chainSteps || []}
               keyExtractor={chainStep => 'scorecard_chain_step_' + chainStep.id.toString()}
               renderItem={({ item, index, separators }) => (
                 <ScorecardListItem

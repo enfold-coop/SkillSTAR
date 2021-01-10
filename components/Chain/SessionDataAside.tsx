@@ -4,8 +4,6 @@ import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { Card } from 'react-native-paper';
 import { useChainState } from '../../context/ChainProvider';
 import CustomColors from '../../styles/Colors';
-import { ChainSession } from '../../types/CHAIN/ChainSession';
-import { ChainStep } from '../../types/CHAIN/ChainStep';
 import GraphModal from '../DataGraph/GraphModal';
 import { ChainsHomeGraph } from '../DataGraph/index';
 import { ProbeAside, TrainingAside } from './index';
@@ -34,10 +32,15 @@ const SessionDataAside: FC<Props> = props => {
   const [modalVis, setModalVis] = useState(false);
 
   useEffect(() => {
-    console.log('SessionDataAside useEffect');
-    if (contextState.sessionType === 'training') {
+    let isCancelled = false;
+
+    if (!isCancelled && contextState.sessionType === 'training') {
       setIsTraining(true);
     }
+
+    return () => {
+      isCancelled = true;
+    };
   }, [contextState]);
 
   const handleModal = () => {

@@ -24,13 +24,11 @@ export const SelectParticipant = (): ReactElement => {
     const participant = await api.selectParticipant(selectedParticipant.id);
 
     if (participant) {
-      console.log('Participant selected', participant.id);
       setSelectedParticipant(participant);
       contextDispatch({ type: 'participant', payload: participant });
 
       const dbChainData = await api.getChainDataForSelectedParticipant();
       if (dbChainData) {
-        console.log('Got new chain data for selected participant.');
         contextDispatch({ type: 'chainData', payload: new ChainData(dbChainData) });
       }
 
@@ -87,7 +85,6 @@ export const SelectParticipant = (): ReactElement => {
       }
 
       if (!isCancelled) {
-        console.log('SelectParticipant.tsx useEffect > api.getSelectedParticipant');
         const selectedParticipant = await api.getSelectedParticipant();
         const shouldSetSelectedParticipant =
           !isCancelled &&
@@ -96,9 +93,7 @@ export const SelectParticipant = (): ReactElement => {
             (contextState.participant && contextState.participant.id !== selectedParticipant.id));
 
         if (shouldSetSelectedParticipant && selectedParticipant) {
-          console.log('selectedParticipant', selectedParticipant.name);
           contextDispatch({ type: 'participant', payload: selectedParticipant });
-          console.log('contextState.participant', contextState.participant);
         }
       }
     };

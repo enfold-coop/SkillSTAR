@@ -42,7 +42,6 @@ const initialState: ChainProviderState = {
 const ChainStateContext = createContext<ChainProviderState | undefined>(undefined);
 const ChainDispatchContext = createContext<Dispatch | undefined>(undefined);
 const reducer = (state: any, action: Action) => {
-  console.log('action.type', action.type);
   const actionType = action.type;
 
   switch (actionType) {
