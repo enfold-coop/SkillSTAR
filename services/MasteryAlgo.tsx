@@ -13,7 +13,8 @@ import {
 export class MasteryAlgo {
 	PROBE_MAX_CONSECUTIVE_INCOMPLETE = 2;
 	TRAINING_MAX_CONSECUTIVE_INCOMPLETE = 3;
-	incompleteCount = 0;
+    incompleteCount = 0;
+    static sessions = [];
     static currentSessionType = ChainSessionType;
     static prevSessionData = null;
     static prevFocusStep = null;
@@ -23,18 +24,19 @@ export class MasteryAlgo {
     static currFocusStepPromptLevel = null;
     static prevFocusStepId = 0;
     static currFocusStepId = 0;
-
+    static sessionsArray = [];
     static promptHierarchy:{}[];
     
     constructor() {}
 
     /// TO-DO ///
+    // [X] = set sessionsArray
     // [X] = determine prompt-level
     // [X] = determine if focus is mastered
     // [X] = determine focus-step index
-    // [ ] = determine probe or trainging session
-    // [ ] = determine current session number
-    // [ ] = determine current session number
+    // [X] = determine current session number
+    // [X] = determine probe or trainging session
+    // [ ] = determine booster session
     // [ ] = determine ...
 
     
@@ -51,17 +53,25 @@ export class MasteryAlgo {
         this.promptHierarchy = this._convertMapToArray(ChainStepPromptLevelMap);
         this.prevSessionData = this._getPreviousSessionData(chainData);
         this.prevFocusStep = this._getPrevSessionFocusStepData(this.prevSessionData);
+        this.setSessionArray(chainData);
+        this.determineCurrentSessionNumber(chainData);
         this.determineStepAttemptPromptLevel(chainData);
-        this.determineCurrentFocusStep();
+        this.determineCurrentFocusStepId();
+        this.isSessionProbeOrTraining();
     }
 
+
+
     static isSessionProbeOrTraining(){
-        // create array of all training sessions
-        // get length of array
-        // IF(length of array % 3 === 0)
-        // ---- THEN currSessionType = "Probe"
-        // ELSE:
-        // ---- THEN currSessionType = "Training"
+        if(this.sessionsArray.length % 3 === 0){
+            this.currentSessionType = ChainSessionType.probe;
+        } else {
+            this.currentSessionType = ChainSessionType.training;
+        }
+    }
+
+    static setSessionArray(chainData:SkillstarChain){
+        this.sessionsArray = chainData.sessions;
     }
 
 	static _determinePrevSessionType(chainData: SkillstarChain) {
@@ -82,6 +92,10 @@ export class MasteryAlgo {
     // all of participant's session history data
     static _getPreviousSessionData(chainData: SkillstarChain){
         return chainData.sessions[chainData.sessions.length - 1];
+    }
+
+    static determineCurrentSessionNumber(chainData: SkillstarChain){
+        this.currentSessionNumber = chainData.sessions.length + 1;
     }
 
     /**
