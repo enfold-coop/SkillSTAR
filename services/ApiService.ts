@@ -18,8 +18,6 @@ export class ApiService {
     chainSteps: `${this.apiUrl}/chain_step`,
   };
 
-  constructor() {}
-
   async getChainDataForSelectedParticipant(): Promise<SkillstarChain | undefined> {
     const questionnaireId = await this.getChainQuestionnaireId();
 
@@ -35,7 +33,7 @@ export class ApiService {
     if (!isConnected) {
       // Return the locally cached steps, if they are there.
       const cachedStepsJson = await AsyncStorage.getItem('chainSteps');
-      
+
       if (cachedStepsJson) {
         return JSON.parse(cachedStepsJson) as ChainStep[];
       }
@@ -74,6 +72,7 @@ export class ApiService {
     }
 
     // We're connected to the internet. Get the selected participant and ask the backend for their questionnaire ID.
+    console.log('getChainQuestionnaireId > this.getSelectedParticipant');
     const participant = await this.getSelectedParticipant();
 
     if (participant && participant.hasOwnProperty('id')) {
@@ -157,7 +156,7 @@ export class ApiService {
     }
   }
 
-  // No questionnaire exists for the participant yet. If we're not online, we'll need to store the
+  // No questionnaire exists for the participant yet. If we're not online, we'll need to ChainProviderContext the
   // questionnaire data somewhere until we can upload it to the server and get a questionnaire ID for it.
   async addChainData(data: SkillstarChain) {
     const dataHasParticipantId =
@@ -165,6 +164,7 @@ export class ApiService {
       data.participant_id !== null &&
       data.participant_id !== undefined;
 
+    console.log('ApiService > addChainData > getSelectedParticipant');
     const participant = await this.getSelectedParticipant();
 
     if (!(participant || dataHasParticipantId)) {
@@ -187,6 +187,7 @@ export class ApiService {
     const url = this.endpoints.chain;
     try {
       const user = await this.getUser();
+      console.log('ApiService > addChainData > getSelectedParticipant');
       const participant = await this.getSelectedParticipant();
 
       if (user && participant) {
@@ -319,6 +320,7 @@ export class ApiService {
   }
 
   async getSelectedParticipant(): Promise<Participant | undefined> {
+    console.log('*** getSelectedParticipant ***');
     const user = await this.getUser();
 
     if (user) {

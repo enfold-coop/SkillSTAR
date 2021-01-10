@@ -1,8 +1,8 @@
 import date from 'date-and-time';
-import React, { FC, useContext, useEffect, useState } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { Card } from 'react-native-paper';
-import { store } from '../../context/ChainProvider';
+import { useChainState } from '../../context/ChainProvider';
 import CustomColors from '../../styles/Colors';
 import { ChainSession } from '../../types/CHAIN/ChainSession';
 import { ChainStep } from '../../types/CHAIN/ChainStep';
@@ -11,10 +11,7 @@ import { ChainsHomeGraph } from '../DataGraph/index';
 import { ProbeAside, TrainingAside } from './index';
 
 type Props = {
-  sessionNumber: number;
   asideContent: string;
-  sessionSteps: ChainStep[];
-  chainSession?: ChainSession;
 };
 
 /**
@@ -26,9 +23,9 @@ type Props = {
  */
 
 const SessionDataAside: FC<Props> = props => {
-  const { sessionNumber, asideContent, chainSession } = props;
-  const context = useContext(store);
-  const { state } = context;
+  const { asideContent } = props;
+  const contextState = useChainState();
+  const { sessionNumber } = contextState;
   const [isTraining, setIsTraining] = useState(false);
   const [today, setToday] = useState(date.format(new Date(), 'MM/DD/YYYY'));
   const [promptLevel, setPromptLevel] = useState('Full Physical');
@@ -36,12 +33,12 @@ const SessionDataAside: FC<Props> = props => {
   const [graphContainerDimens, setGraphContainerDimens] = useState({});
   const [modalVis, setModalVis] = useState(false);
 
-  // console.log(context);
   useEffect(() => {
-    if (state.sessionType === 'training') {
+    console.log('SessionDataAside useEffect');
+    if (contextState.sessionType === 'training') {
       setIsTraining(true);
     }
-  }, [state]);
+  }, [contextState]);
 
   const handleModal = () => {
     setModalVis(!modalVis);
@@ -49,7 +46,7 @@ const SessionDataAside: FC<Props> = props => {
 
   const setAsideContent = () => {
     if (isTraining) {
-      return <TrainingAside sessionNmbr={sessionNumber} />;
+      return <TrainingAside />;
     } else {
       return <ProbeAside />;
     }
@@ -62,7 +59,7 @@ const SessionDataAside: FC<Props> = props => {
         <View>
           <Card>
             <View style={styles.sessionNumbAndDateContainer}>
-              <Text style={styles.sessionNum}>Session #{sessionNumber}</Text>
+              <Text style={styles.sessionNum}>Session #{(sessionNumber || 0) + 1}</Text>
               <Text style={styles.date}>{today}</Text>
             </View>
             <View style={styles.taskInfoContainer}>{setAsideContent()}</View>

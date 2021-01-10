@@ -1,6 +1,6 @@
 import { useDeviceOrientation } from '@react-native-community/hooks';
 import { useNavigation } from '@react-navigation/native';
-import React, { FC, useContext, useEffect, useState } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import { FlatList, ImageBackground, StyleSheet, TouchableOpacity, View } from 'react-native';
 import * as Animatable from 'react-native-animatable';
 import {
@@ -11,19 +11,13 @@ import {
 import ScorecardListItem from '../components/Chain/ScorecardListItem';
 import SessionDataAside from '../components/Chain/SessionDataAside';
 import AppHeader from '../components/Header/AppHeader';
-import { store } from '../context/ChainProvider';
-import {
-  ADD_CURR_SESSION_NMBR,
-  ADD_SESSION_TYPE,
-  ADD_USER_DATA,
-} from '../context/constants/actions';
+import { useChainContext } from '../context/ChainProvider';
 import { RootNavProps } from '../navigation/root_types';
 import { ApiService } from '../services/ApiService';
 import { MasteryAlgo } from '../services/MasteryAlgo';
 import { MasteryService } from '../services/MasteryService';
 import CustomColors from '../styles/Colors';
 import { ChainSession, ChainSessionType } from '../types/CHAIN/ChainSession';
-import { ChainStep } from '../types/CHAIN/ChainStep';
 import { ChainData, SkillstarChain } from '../types/CHAIN/SkillstarChain';
 import { ChainStepStatus, StepAttempt } from '../types/CHAIN/StepAttempt';
 
@@ -36,16 +30,12 @@ type Props = {
 const ChainsHomeScreen: FC<Props> = props => {
   const [asideContent, setAsideContents] = useState('');
   const [btnText, setBtnText] = useState('Start Session');
-  const [chainSteps, setStepList] = useState<ChainStep[]>();
   const [orient, setOrient] = useState(false);
-  const [chainSession, setChainSession] = useState<ChainSession>();
   const [sessionNmbr, setSessionNmbr] = useState<number>(0);
   const [type, setType] = useState<string>('type');
-  const [chainData, setChainData] = useState<ChainData>();
   const api = new ApiService();
-  const context = useContext(store);
+  const [contextState, contextDispatch] = useChainContext();
   const navigation = useNavigation();
-  const { dispatch } = context;
   const { portrait } = useDeviceOrientation();
 
   const callAlgo = (chainData: SkillstarChain) => {
@@ -54,22 +44,25 @@ const ChainsHomeScreen: FC<Props> = props => {
   };
 
   useEffect(() => {
+    console.log('*** useEffect 1 ***');
     let isCancelled = false;
 
-    if (chainData != undefined && !isCancelled) {
+    if (contextState.chainData != undefined && !isCancelled) {
       // callAlgo(chainData);
       // TODO: Ask the Mastery Service for...
       //  - the current session
       //  - MasteryInfo for each step
 
       // For now, just use the last ChainSession available in the ChainData.
-      if (chainData.sessions && chainData.sessions.length > 0) {
-        const lastChainSession = chainData.sessions[chainData.sessions.length];
-        setChainSession(lastChainSession);
-        setSessionNmbr(chainData.sessions.length);
-      } else if (chainSteps && chainSteps.length > 0) {
+      if (contextState.chainData.sessions && contextState.chainData.sessions.length > 0) {
+        contextDispatch({
+          type: 'session',
+          payload: contextState.chainData.sessions[contextState.chainData.sessions.length],
+        });
+        setSessionNmbr(contextState.chainData.sessions.length);
+      } else if (contextState.chainSteps && contextState.chainSteps.length > 0) {
         const newChainSession: ChainSession = {
-          step_attempts: chainSteps.map(s => {
+          step_attempts: contextState.chainSteps.map(s => {
             return {
               chain_step_id: s.id,
               chain_step: s,
@@ -78,7 +71,7 @@ const ChainsHomeScreen: FC<Props> = props => {
             } as StepAttempt;
           }),
         };
-        setChainSession(newChainSession);
+        contextDispatch({ type: 'session', payload: newChainSession });
         setSessionNmbr(1);
       }
     }
@@ -86,99 +79,48 @@ const ChainsHomeScreen: FC<Props> = props => {
     return () => {
       isCancelled = true;
     };
-  }, [chainData]);
+  }, [contextState.chainData]);
 
   useEffect(() => {
+    console.log('*** useEffect 2 ***');
     let isCancelled = false;
     let isLoading = false;
 
     const _load = async () => {
       isLoading = true; // Block while loading
 
-      const dbChainData = (await api.getChainDataForSelectedParticipant()) as SkillstarChain;
-
-      if (dbChainData) {
-        const chainDataInstance = new ChainData(dbChainData);
-        setChainData(chainDataInstance);
-      }
-
-      if (!isCancelled && dbChainData && dbChainData.sessions && dbChainData.sessions.length > 0) {
-        dispatch({ type: ADD_USER_DATA, payload: dbChainData });
-        setType(dbChainData.sessions[dbChainData.sessions.length - 1].session_type as string);
-        dispatch({
-          type: ADD_SESSION_TYPE,
-          payload: dbChainData.sessions[dbChainData.sessions.length - 1].session_type,
-        });
-        setSessionTypeAndNmbr(dbChainData);
-
-        setChainSession(dbChainData.sessions[dbChainData.sessions.length - 1]);
-        setElemsValues();
-      } else {
-        // Create chain data for current participant.
-        const participant = await api.getSelectedParticipant();
-        if (participant) {
-          const newData: SkillstarChain = {
-            participant_id: participant.id,
-            sessions: [
-              {
-                session_type: ChainSessionType.probe,
-                step_attempts: [],
-              },
-            ],
-          };
-          const newDbData = await api.addChainData(newData);
-          if (!isCancelled && newDbData) {
-            const newChainData = new ChainData(newDbData);
-            setChainData(newChainData);
-          }
+      if (contextState.participant) {
+        console.log('contextState.participant =', contextState.participant.name);
+        const newData: SkillstarChain = {
+          participant_id: contextState.participant.id,
+          sessions: [
+            {
+              session_type: ChainSessionType.probe,
+              step_attempts: [],
+            },
+          ],
+        };
+        const newDbData = await api.addChainData(newData);
+        if (!isCancelled && newDbData) {
+          const newChainData = new ChainData(newDbData);
+          contextDispatch({ type: 'chainData', payload: newChainData });
         }
       }
-
-      if (!isCancelled && dbChainData) {
-        // setUserData(chainData);
-        // dispatch({ type: ADD_USER_DATA, payload: chainData });
-        // // setType(
-        // // 	chainData.sessions[chainData.sessions.length - 1]
-        // // 		.session_type as string
-        // // );
-        // dispatch({
-        // 	type: ADD_SESSION_TYPE,
-        // 	payload:
-        // 		chainData.sessions[chainData.sessions.length - 1]
-        // 			.session_type,
-        // });
-        setSessionTypeAndNmbr(dbChainData);
-
-        // setSession(chainData?.sessions[chainData.sessions.length - 1]);
-        // setElemsValues();
-      }
-
-      // let { chainSteps, user } = require("../data/chain_steps.json");
-      // setStepList(chainSteps);
     };
 
-    getSteps().then(() => {
-      if (!isLoading) {
-        _load().then(() => {
-          isLoading = false;
-          if (!isCancelled) {
-            setOrient(portrait);
-          }
-        });
-      }
-    });
+    if (!isLoading) {
+      _load().then(() => {
+        isLoading = false;
+        if (!isCancelled) {
+          setOrient(portrait);
+        }
+      });
+    }
 
     return () => {
       isCancelled = true;
     };
   }, [portrait]);
-
-  const getSteps = async () => {
-    const s = (await api.getChainSteps()) as ChainStep[];
-    if (s != undefined) {
-      setStepList(s);
-    }
-  };
 
   /**
    * Mastery Algorithm
@@ -191,6 +133,9 @@ const ChainsHomeScreen: FC<Props> = props => {
    * - An empty probe session, if there are none left to attempt (???)
    */
   const setSessionTypeAndNmbr = (chainData: SkillstarChain) => {
+    console.log('*** setSessionTypeAndNmbr ***');
+    console.log(chainData.sessions.length);
+
     // Some of the sessions will be future/not attempted sessions.
     // We want the next session the participant should be attempting.
     const numSessions = chainData.sessions ? chainData.sessions.length : 0;
@@ -211,10 +156,10 @@ const ChainsHomeScreen: FC<Props> = props => {
 
       // Session count (how many sessions attempted)
       // i.e., sessions with attempts. Sessions with no attempts would not be included in this count?
-      dispatch({ type: ADD_CURR_SESSION_NMBR, payload: 1 });
+      contextDispatch({ type: 'sessionNumber', payload: 1 });
 
       // chainData.sessions[i].session_type
-      dispatch({ type: ADD_SESSION_TYPE, payload: 'probe' });
+      contextDispatch({ type: 'sessionType', payload: 'probe' });
     }
     if (lastSess) {
       if (lastSess.session_type === ChainSessionType.training) {
@@ -222,35 +167,29 @@ const ChainsHomeScreen: FC<Props> = props => {
         // console.log(chainData.sessions.length + 1);
 
         setSessionNmbr(chainData.sessions.length + 1);
-        dispatch({ type: ADD_CURR_SESSION_NMBR, payload: sessionNmbr });
-        dispatch({ type: ADD_SESSION_TYPE, payload: 'training' });
+        contextDispatch({ type: 'sessionNumber', payload: sessionNmbr });
+        contextDispatch({ type: 'sessionType', payload: 'training' });
         setBtnText(START_TRAINING_SESSION_BTN);
       }
       if (lastSess.session_type === ChainSessionType.probe) {
         // console.log(chainData.sessions.length + 1);
         setType('probe');
         setSessionNmbr(chainData.sessions.length + 1);
-        dispatch({ type: ADD_CURR_SESSION_NMBR, payload: sessionNmbr });
-        dispatch({ type: ADD_SESSION_TYPE, payload: 'probe' });
+        contextDispatch({ type: 'sessionNumber', payload: sessionNmbr });
+        contextDispatch({ type: 'sessionType', payload: 'probe' });
         setBtnText(START_PROBE_SESSION_BTN);
         setAsideContents(PROBE_INSTRUCTIONS);
       }
     }
   };
 
-  const setElemsValues = () => {
-    if (type === 'probe') {
-    }
-    if (type === 'training') {
-    }
-  };
-
   const navToProbeOrTraining = () => {
-    navigation.navigate('PrepareMaterialsScreen', { chainSession });
+    navigation.navigate('PrepareMaterialsScreen', { chainSession: contextState.session });
   };
 
-  const key = chainData ? chainData.participant_id : -1;
-  const chainSessionId = chainSession && chainSession.id !== undefined ? chainSession.id : -1;
+  const key = contextState.chainData ? contextState.chainData.participant_id : -1;
+  const { chainData, chainSteps, session } = contextState;
+  const chainSessionId = session && session.id !== undefined ? session.id : -1;
 
   return (
     <ImageBackground
@@ -261,14 +200,9 @@ const ChainsHomeScreen: FC<Props> = props => {
     >
       <View style={portrait ? styles.container : styles.landscapeContainer}>
         <AppHeader name='Chains Home' />
-        {chainSteps && chainData && chainSession && chainSession.id !== undefined && (
+        {chainSteps && chainData !== undefined && (
           <View style={styles.listContainer}>
-            <SessionDataAside
-              asideContent={asideContent}
-              sessionNumber={sessionNmbr}
-              sessionSteps={chainSteps}
-              chainSession={chainSession}
-            />
+            <SessionDataAside asideContent={asideContent} />
             <FlatList
               style={styles.list}
               data={chainSteps}

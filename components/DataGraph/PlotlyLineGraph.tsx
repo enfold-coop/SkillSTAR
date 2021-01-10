@@ -1,8 +1,8 @@
-import React, { FC, useContext, useEffect, useState } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import Plotly from 'react-native-plotly';
 import { FilterSessionsByType } from '../../_util/FilterSessionType';
-import { store } from '../../context/ChainProvider';
+import { useChainState } from '../../context/ChainProvider';
 import CustomColors from '../../styles/Colors';
 import { ChainSession } from '../../types/CHAIN/ChainSession';
 
@@ -25,8 +25,7 @@ type Props = {
  */
 
 const PlotlyLineGraph: FC<Props> = props => {
-  const { state } = useContext(store);
-  const { userData } = state;
+  const contextState = useChainState();
   const { dimensions, modal } = props;
   const [thisHeight, setHeight] = useState<number>();
   const [thisWidth, setWidth] = useState<number>();
@@ -38,15 +37,23 @@ const PlotlyLineGraph: FC<Props> = props => {
   const trainingDataXY = () => {};
 
   useEffect(() => {
-    const { probeArr, trainingArr } = FilterSessionsByType(userData.sessions);
-    setTrainingSessions(trainingArr);
-    setProbeSessions(probeArr);
+    let isCancelled = false;
+
+    if (!isCancelled && contextState.chainData) {
+      const { probeArr, trainingArr } = FilterSessionsByType(contextState.chainData.sessions);
+      setTrainingSessions(trainingArr);
+      setProbeSessions(probeArr);
+    }
+
+    return () => {
+      isCancelled = true;
+    };
   }, []);
 
   const data = [
     {
-      x: [1, 2, 33, 4, 5],
-      y: [1, 2, 3, 44, 8],
+      x: [1, 2, 3, 4, 5],
+      y: [1, 2, 3, 4, 5],
       mode: 'markers',
       name: 'Probe Session',
       marker: {
@@ -59,13 +66,13 @@ const PlotlyLineGraph: FC<Props> = props => {
       },
     },
     {
-      x: [4, 2, 44, 4, 5],
-      y: [2, 3, 4, 5, 6],
+      x: [1, 2, 3, 4, 5],
+      y: [1, 2, 3, 4, 5],
       mode: 'lines',
       name: 'Training Session',
     },
     {
-      x: [4, 2, 4, 4, 5],
+      x: [1, 2, 3, 4, 5],
       y: [1, 2, 3, 4, 5],
       mode: 'lines',
       name: 'Challenging Behavior',
