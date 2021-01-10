@@ -102,34 +102,26 @@ export class MasteryAlgo {
         return this.promptHierarchy[this.promptHierarchy.findIndex((e)=>(e["key"]===promptLvl)) - 1];
     }
 
+    static _setCurrPromptLevel(prompt:string){
+        if(prompt != undefined){
+            this.currFocusStepPromptLevel = prompt;
+        }
+    }
+
+    // static _setCurrFocusStepPromptLevel(prompt:){
+    //     this.currFocusStepPromptLevel = 
+    // }
+
 	/** GET STEP_ATTEMPT PROMPT LEVEL */
     static determineStepAttemptPromptLevel(chainData: SkillstarChain){
         
-        // 1. get prior_session
-        // 2. get prior_Session.focus_step.prompt_level
+        this.promptHierarchy = this._convertMapToArray(ChainStepPromptLevelMap);
         let prevSessionData = this._getPreviousSessionData(chainData);
         let prevFocusStep = this._getPrevSessionFocusStepData(prevSessionData);
         let prevPromptLevel = prevFocusStep?.prompt_level;
+        this._setCurrPromptLevel(this._getNextPromptLevel(prevPromptLevel).key);
         
-        
-        this.promptHierarchy = this._convertMapToArray(ChainStepPromptLevelMap);
         // console.log(this.promptHierarchy);
-        let next = this._getNextPromptLevel(prevPromptLevel);
-        console.log(next);
-        
-        
-        let nextPromptLevel = prevPromptLevel != undefined ? Object.keys(ChainStepPromptLevel).indexOf(prevPromptLevel) : undefined;
-        
-        
-        
-        
-        
-        if(prevFocusStep){
-            // 3. IF: (prior focus_step was completed WITHOUT (add'l prompting && CB)):
-            if(prevFocusStep.completed && !prevFocusStep.had_challenging_behavior && !prevFocusStep.was_prompted){
-                this.currFocusStepPromptLevel = ChainStepPromptLevel[nextPromptLevel];
-            }   
-        }
         // ---- THEN: current prompt_level = next prompt_level in hierarchy
         // 4. ELSE:
         // ---- THEN: current prompt_level = prior session._focus_step.prompt_level
