@@ -6,7 +6,7 @@ import PromptAccordion from './PromptAccordion';
 import PromptDataVerifSwitch from './PromptDataVerifSwitch';
 import CustomColors from '../../styles/Colors';
 import { StepAttempt } from '../../types/CHAIN/StepAttempt';
-// import { MasteryIcons } from "../../styles/MasteryIcons";
+// import { MasteryIcon } from "../../styles/MasteryIcon";
 
 const MasteryIcons = (level: string) => {
   const icons = {

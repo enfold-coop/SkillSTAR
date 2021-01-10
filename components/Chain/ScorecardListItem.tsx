@@ -1,11 +1,11 @@
 import { MaterialIcons } from '@expo/vector-icons';
 import date from 'date-and-time';
 import React, { useEffect, useState } from 'react';
-import { Image, ImageSourcePropType, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { ImageSourcePropType, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import * as Animatable from 'react-native-animatable';
 import { Card } from 'react-native-paper';
 import CustomColors from '../../styles/Colors';
-import { MasteryIcons } from '../../styles/MasteryIcons';
+import { MasteryIcon } from '../../styles/MasteryIcon';
 import { ChainStep } from '../../types/CHAIN/ChainStep';
 import { MasteryInfo } from '../../types/CHAIN/MasteryLevel';
 import { StepAttempt } from '../../types/CHAIN/StepAttempt';
@@ -75,16 +75,7 @@ const ScorecardListItem = (props: ScorecardListItemProps) => {
         >
           <Text style={styles.id}>{chainStep.id + 1}. </Text>
           <Text style={styles.skill}>{chainStep.instruction}</Text>
-          <MasterIcon
-            style={[
-              {
-                width: 28,
-                height: 28,
-                alignSelf: 'center',
-              },
-            ]}
-            source={icon}
-          />
+          <MasteryIcon chainStepStatus={stepAttempt.status} />
           <MaterialIcons
             name={isPressed ? 'expand-less' : 'expand-more'}
             size={24}

@@ -1,5 +1,5 @@
 import { useNavigation } from '@react-navigation/native';
-import React, { FC, ReactNode, useEffect, useState } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import { Dimensions, StyleSheet, Text, View } from 'react-native';
 import { Button } from 'react-native-paper';
 import AppHeader from '../components/Header/AppHeader';
@@ -165,7 +165,7 @@ const BaselineAssessmentScreen: FC<Props> = props => {
     </View>
     // </ImageBackground>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {

@@ -1,11 +1,11 @@
-type Enum = { [key: string]: string };
+export type Enum = { [key: string]: string };
 
-interface EnumItemMap {
+export interface EnumItemMap {
   key: string;
   value: string;
 }
 
-type EnumMap = { [key: string]: EnumItemMap };
+export type EnumMap = { [key: string]: EnumItemMap };
 
 /**
  * Returns a more useful object for the given enum.

@@ -1,29 +1,35 @@
 import React, { FC } from 'react';
-import { StyleSheet, View, Text, Image } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import { Card } from 'react-native-paper';
-import { RootNavProps } from '../../navigation/root_types';
-import CustomColors from '../../styles/Colors';
-import { MasteryIcons } from '../../styles/MasteryIcons';
+import { MasteryIcon } from '../../styles/MasteryIcon';
+import { StepAttempt } from '../../types/CHAIN/StepAttempt';
 
 type Props = {
-  data: [];
+  stepAttempts: StepAttempt[];
   name: string;
 };
 
-function createSkillTitleString(data: []): string {
-  let t = data.map(e => e.title);
-  let str = t.join(', ');
-  return str;
+function createSkillTitleString(stepAttempts: StepAttempt[]): string {
+  return stepAttempts
+    .map(s => (s.chain_step !== undefined ? s.chain_step.instruction : '...'))
+    .join(', ');
 }
 
 const SkillGrade: FC<Props> = props => {
+  const { stepAttempts } = props;
+
+  const masteryIcons = stepAttempts.map(stepAttempt => {
+    return <MasteryIcon chainStepStatus={stepAttempt.status} />;
+  });
+
   return (
     <Card style={styles.container}>
-      <MasteryIcons chainStepStatus={props.data.stepStatus} />
+      {masteryIcons}
+
       <View style={styles.subcontainer}>
         <Text style={styles.skillGrade}>{props.name}: </Text>
         <View style={styles.skillList}>
-          <Text style={styles.stepNames}>{createSkillTitleString(props.data)}</Text>
+          <Text style={styles.stepNames}>{createSkillTitleString(stepAttempts)}</Text>
         </View>
       </View>
     </Card>

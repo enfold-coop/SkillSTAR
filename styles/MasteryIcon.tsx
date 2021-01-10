@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import CustomColor from '../styles/Colors';
 import { MasteryStatus } from '../types/CHAIN/MasteryLevel';
 import { ChainStepStatus, ChainStepStatusMap } from '../types/CHAIN/StepAttempt';
@@ -9,9 +9,11 @@ export interface MasteryIconProps {
   chainStepStatus: ChainStepStatus;
 }
 
-export function MasteryIcons(props: MasteryIconProps) {
+export function MasteryIcon(props: MasteryIconProps) {
   const { chainStepStatus } = props;
-  const statusMap = ChainStepStatusMap[chainStepStatus];
+  const statusMap = Object.entries(ChainStepStatusMap).find(
+    ([key, m]) => m.value === chainStepStatus,
+  );
   const icons: { [key: string]: MasteryStatus } = {
     not_complete: {
       stepStatus: ChainStepStatus.not_complete,
@@ -33,15 +35,19 @@ export function MasteryIcons(props: MasteryIconProps) {
     },
   };
 
-  return (
+  const key = statusMap && statusMap.length === 2 ? statusMap[1].key : undefined;
+
+  return key ? (
     <View style={styles.icon}>
       <SkillStarIcons
-        name={icons[statusMap.key].icon}
+        name={icons[key].icon}
         size={30}
         style={styles.icon}
-        color={icons[statusMap.key].color}
+        color={icons[key].color}
       />
     </View>
+  ) : (
+    <Text>Icon Error</Text>
   );
 }
 
