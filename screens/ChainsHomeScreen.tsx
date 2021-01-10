@@ -60,7 +60,7 @@ const ChainsHomeScreen: FC<Props> = props => {
   const { portrait } = useDeviceOrientation();
 
   const callAlgo = (chainData: SkillstarChain) => {
-    MasteryAlgo.determineStepAttemptPromptLevel(chainData);
+    MasteryAlgo.init(chainData);
   };
 
   useEffect(() => {
