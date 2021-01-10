@@ -14,18 +14,17 @@ export class MasteryAlgo {
 	PROBE_MAX_CONSECUTIVE_INCOMPLETE = 2;
 	TRAINING_MAX_CONSECUTIVE_INCOMPLETE = 3;
     incompleteCount = 0;
-    static sessions = [];
-    static currentSessionType = ChainSessionType;
-    static prevSessionData = null;
-    static prevFocusStep = null;
-    static currFocusStep = null;
-    static currentSessionNumber = 0;
-    static prevFocusStepPromptLevel = null;
-    static currFocusStepPromptLevel = null;
-    static prevFocusStepId = 0;
-    static currFocusStepId = 0;
-    static sessionsArray = [];
-    static promptHierarchy:{}[];
+    static currentSessionType: ChainSessionType;
+    static prevSessionData: SkillstarChain;
+    static prevFocusStep: StepAttempt;
+    static currFocusStep: StepAttempt;
+    static currentSessionNumber: number;
+    static prevFocusStepPromptLevel: ChainStepPromptLevel;
+    static currFocusStepPromptLevel: ChainStepPromptLevel;
+    static currFocusStepId: number;
+    static prevFocusStepId: number;
+    static sessionsArray: ChainSession[];
+    static promptHierarchy: ChainStepPromptLevel[];
     
     constructor() {}
 
@@ -46,10 +45,6 @@ export class MasteryAlgo {
      * @param chainData all of participant's session history data
      */
     static init(chainData: SkillstarChain){
-        // DEFINE: currentSessionNumber = 0;
-        // DEFINE: currentSessionType = ChainSessionType;
-        // DEFINE: prevFocusStepPromptLevel = null;
-        // DEFINE: currFocusStepPromptLevel = null;
         this.promptHierarchy = this._convertMapToArray(ChainStepPromptLevelMap);
         this.prevSessionData = this._getPreviousSessionData(chainData);
         this.prevFocusStep = this._getPrevSessionFocusStepData(this.prevSessionData);
@@ -76,7 +71,7 @@ export class MasteryAlgo {
 
 	static _determinePrevSessionType(chainData: SkillstarChain) {
 		if (chainData && chainData.sessions.length < 1) {
-			this.currentSessionType = "Probe";
+			this.currentSessionType = ChainSessionType.probe;
 		} else {
 			this.currentSessionType =
 				chainData.sessions[chainData.sessions.length - 1].session_type;
