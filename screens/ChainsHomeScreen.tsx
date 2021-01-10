@@ -19,29 +19,17 @@ import {
 } from '../context/constants/actions';
 import { RootNavProps } from '../navigation/root_types';
 import { ApiService } from '../services/ApiService';
-import { MasteryService } from '../services/MasteryService';
 import { MasteryAlgo } from '../services/MasteryAlgo';
+import { MasteryService } from '../services/MasteryService';
 import CustomColors from '../styles/Colors';
 import { ChainSession, ChainSessionType } from '../types/CHAIN/ChainSession';
 import { ChainStep } from '../types/CHAIN/ChainStep';
-import { SkillstarChain } from '../types/CHAIN/SkillstarChain';
-
-const {
-  getMasteryInfoForStep,
-  getAllStepAttemptsForChainStepName,
-  getNextSession,
-  findIndexBoosterIntroduced,
-  shouldFocusOnStep,
-} = MasteryService;
+import { ChainData, SkillstarChain } from '../types/CHAIN/SkillstarChain';
 
 type Props = {
   route: RootNavProps<'ChainsHomeScreen'>;
   navigation: RootNavProps<'ChainsHomeScreen'>;
 };
-
-// DEV USE ONLY (mock value)
-const REQUIRED_PROBE_TOTAL = 3;
-const COMPLETED_PROBE_SESSIONS = 2;
 
 // Chain Home Screen
 const ChainsHomeScreen: FC<Props> = props => {
@@ -49,10 +37,10 @@ const ChainsHomeScreen: FC<Props> = props => {
   const [btnText, setBtnText] = useState('Start Session');
   const [chainSteps, setStepList] = useState<ChainStep[]>();
   const [orient, setOrient] = useState(false);
-  const [session, setSession] = useState<ChainSession>();
+  const [chainSession, seChainSession] = useState<ChainSession>();
   const [sessionNmbr, setSessionNmbr] = useState<number>(0);
   const [type, setType] = useState<string>('type');
-  const [userData, setUserData] = useState<SkillstarChain>();
+  const [chainData, setChainData] = useState<ChainData>();
   const api = new ApiService();
   const context = useContext(store);
   const navigation = useNavigation();
@@ -67,14 +55,14 @@ const ChainsHomeScreen: FC<Props> = props => {
   useEffect(() => {
     let isCancelled = false;
 
-    if (userData != undefined && !isCancelled) {
-      callAlgo(userData);
+    if (chainData != undefined && !isCancelled) {
+      callAlgo(chainData);
     }
 
     return () => {
       isCancelled = true;
     };
-  }, [userData]);
+  }, [chainData]);
 
   useEffect(() => {
     let isCancelled = false;
@@ -83,19 +71,23 @@ const ChainsHomeScreen: FC<Props> = props => {
     const _load = async () => {
       isLoading = true; // Block while loading
 
-      const chainData = (await api.getChainDataForSelectedParticipant()) as SkillstarChain;
-      setUserData(chainData);
+      const dbChainData = (await api.getChainDataForSelectedParticipant()) as SkillstarChain;
 
-      if (!isCancelled && chainData && chainData.sessions && chainData.sessions.length > 0) {
-        dispatch({ type: ADD_USER_DATA, payload: chainData });
-        setType(chainData.sessions[chainData.sessions.length - 1].session_type as string);
+      if (dbChainData) {
+        const chainDataInstance = new ChainData(dbChainData);
+        setChainData(chainDataInstance);
+      }
+
+      if (!isCancelled && dbChainData && dbChainData.sessions && dbChainData.sessions.length > 0) {
+        dispatch({ type: ADD_USER_DATA, payload: dbChainData });
+        setType(dbChainData.sessions[dbChainData.sessions.length - 1].session_type as string);
         dispatch({
           type: ADD_SESSION_TYPE,
-          payload: chainData.sessions[chainData.sessions.length - 1].session_type,
+          payload: dbChainData.sessions[dbChainData.sessions.length - 1].session_type,
         });
-        setSessionTypeAndNmbr(chainData);
+        setSessionTypeAndNmbr(dbChainData);
 
-        setSession(chainData.sessions[chainData.sessions.length - 1]);
+        seChainSession(dbChainData.sessions[dbChainData.sessions.length - 1]);
         setElemsValues();
       } else {
         // Create chain data for current participant.
@@ -112,12 +104,13 @@ const ChainsHomeScreen: FC<Props> = props => {
           };
           const newDbData = await api.addChainData(newData);
           if (!isCancelled && newDbData) {
-            setUserData(newDbData);
+            const newChainData = new ChainData(newDbData);
+            setChainData(newChainData);
           }
         }
       }
 
-      if (!isCancelled && chainData) {
+      if (!isCancelled && dbChainData) {
         // setUserData(chainData);
         // dispatch({ type: ADD_USER_DATA, payload: chainData });
         // // setType(
@@ -130,7 +123,7 @@ const ChainsHomeScreen: FC<Props> = props => {
         // 		chainData.sessions[chainData.sessions.length - 1]
         // 			.session_type,
         // });
-        setSessionTypeAndNmbr(chainData);
+        setSessionTypeAndNmbr(dbChainData);
 
         // setSession(chainData?.sessions[chainData.sessions.length - 1]);
         // setElemsValues();
@@ -235,8 +228,8 @@ const ChainsHomeScreen: FC<Props> = props => {
     });
   };
 
-  const determineSessionStepData = (index: number) => {};
-  const key = userData ? userData.participant_id : -1;
+  const key = chainData ? chainData.participant_id : -1;
+  const chainSessionId = chainSession && chainSession.id !== undefined ? chainSession.id : -1;
 
   return (
     <ImageBackground
@@ -247,18 +240,25 @@ const ChainsHomeScreen: FC<Props> = props => {
     >
       <View style={portrait ? styles.container : styles.landscapeContainer}>
         <AppHeader name='Chains Home' />
-        {chainSteps && (
+        {chainSteps && chainData && chainSession && chainSession.id !== undefined && (
           <View style={styles.listContainer}>
             <SessionDataAside
               asideContent={asideContent}
               sessionNumber={sessionNmbr}
               sessionSteps={chainSteps}
+              chainSession={chainSession}
             />
             <FlatList
               style={styles.list}
               data={chainSteps}
-              keyExtractor={item => item.instruction.toString()}
-              renderItem={item => <ScorecardListItem itemProps={item} />}
+              keyExtractor={chainStep => 'scorecard_chain_step_' + chainStep.id.toString()}
+              renderItem={({ item, index, separators }) => (
+                <ScorecardListItem
+                  chainStep={item}
+                  stepAttempt={chainData.getStep(chainSessionId, item.id)}
+                  masteryInfo={MasteryService.getMasteryInfoForStep(chainData, item.id)}
+                />
+              )}
             />
           </View>
         )}

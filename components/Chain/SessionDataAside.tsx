@@ -1,18 +1,20 @@
-import date from "date-and-time";
-import React, {FC, useContext, useEffect, useState} from "react";
-import {StyleSheet, Text, TouchableOpacity, View} from "react-native";
-import {Card} from "react-native-paper";
-import {store} from "../../context/ChainProvider";
-import CustomColors from "../../styles/Colors";
-import {ChainStep} from '../../types/CHAIN/ChainStep';
-import GraphModal from "../DataGraph/GraphModal";
-import {ChainsHomeGraph} from "../DataGraph/index";
-import {ProbeAside, TrainingAside} from "./index";
+import date from 'date-and-time';
+import React, { FC, useContext, useEffect, useState } from 'react';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Card } from 'react-native-paper';
+import { store } from '../../context/ChainProvider';
+import CustomColors from '../../styles/Colors';
+import { ChainSession } from '../../types/CHAIN/ChainSession';
+import { ChainStep } from '../../types/CHAIN/ChainStep';
+import GraphModal from '../DataGraph/GraphModal';
+import { ChainsHomeGraph } from '../DataGraph/index';
+import { ProbeAside, TrainingAside } from './index';
 
 type Props = {
   sessionNumber: number;
-  asideContent: {};
+  asideContent: string;
   sessionSteps: ChainStep[];
+  chainSession?: ChainSession;
 };
 
 /**
@@ -23,20 +25,20 @@ type Props = {
  * **
  */
 
-const SessionDataAside: FC<Props> = (props) => {
-  const {sessionNumber, asideContent} = props;
+const SessionDataAside: FC<Props> = props => {
+  const { sessionNumber, asideContent, chainSession } = props;
   const context = useContext(store);
-  const {state} = context;
+  const { state } = context;
   const [isTraining, setIsTraining] = useState(false);
-  const [today, setToday] = useState(date.format(new Date(), "MM/DD/YYYY"));
-  const [promptLevel, setPromptLevel] = useState("Full Physical");
-  const [masteryLevel, setMasteryLevel] = useState("Focus");
+  const [today, setToday] = useState(date.format(new Date(), 'MM/DD/YYYY'));
+  const [promptLevel, setPromptLevel] = useState('Full Physical');
+  const [masteryLevel, setMasteryLevel] = useState('Focus');
   const [graphContainerDimens, setGraphContainerDimens] = useState({});
   const [modalVis, setModalVis] = useState(false);
 
   // console.log(context);
   useEffect(() => {
-    if (state.sessionType === "training") {
+    if (state.sessionType === 'training') {
       setIsTraining(true);
     }
   }, [state]);
@@ -47,45 +49,39 @@ const SessionDataAside: FC<Props> = (props) => {
 
   const setAsideContent = () => {
     if (isTraining) {
-      return <TrainingAside sessionNmbr={sessionNumber}/>;
+      return <TrainingAside sessionNmbr={sessionNumber} />;
     } else {
-      return <ProbeAside/>;
+      return <ProbeAside />;
     }
   };
 
   return (
     <View style={styles.container}>
-      <GraphModal visible={modalVis} handleVis={handleModal}/>
+      <GraphModal visible={modalVis} handleVis={handleModal} />
       <View>
         <View>
           <Card>
             <View style={styles.sessionNumbAndDateContainer}>
-              <Text style={styles.sessionNum}>
-                Session #{sessionNumber}
-              </Text>
+              <Text style={styles.sessionNum}>Session #{sessionNumber}</Text>
               <Text style={styles.date}>{today}</Text>
             </View>
-            <View style={styles.taskInfoContainer}>
-              {setAsideContent()}
-            </View>
+            <View style={styles.taskInfoContainer}>{setAsideContent()}</View>
           </Card>
         </View>
         <View
           style={styles.graphIconContainer}
-          onLayout={(e) => {
+          onLayout={e => {
             setGraphContainerDimens(e.nativeEvent.layout);
           }}
         >
           <Card>
-            <ChainsHomeGraph dimensions={graphContainerDimens}/>
+            <ChainsHomeGraph dimensions={graphContainerDimens} />
             <TouchableOpacity
               onPress={() => {
                 setModalVis(true);
               }}
             >
-              <Text style={styles.graphText}>
-                View your progress
-              </Text>
+              <Text style={styles.graphText}>View your progress</Text>
             </TouchableOpacity>
           </Card>
         </View>
@@ -104,67 +100,67 @@ const styles = StyleSheet.create({
   },
   subContainer: {
     marginTop: 0,
-    flexDirection: "row",
+    flexDirection: 'row',
   },
   sessionNumbAndDateContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignContent: "center",
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignContent: 'center',
     padding: 10,
   },
   date: {
     fontSize: 18,
-    fontWeight: "600",
+    fontWeight: '600',
   },
   sessionNum: {
-    fontWeight: "600",
+    fontWeight: '600',
     fontSize: 18,
   },
   taskInfoContainer: {
     padding: 10,
   },
   isProbeTrainingSession: {
-    fontWeight: "600",
+    fontWeight: '600',
     fontSize: 18,
     padding: 5,
-    textDecorationLine: "underline",
-    textDecorationStyle: "solid",
+    textDecorationLine: 'underline',
+    textDecorationStyle: 'solid',
     textDecorationColor: CustomColors.uva.grayMedium,
   },
-  upNextContainer: {padding: 10},
+  upNextContainer: { padding: 10 },
   upNextLabel: {
-    fontWeight: "600",
+    fontWeight: '600',
     fontSize: 18,
   },
   focusStep: {
-    fontWeight: "600",
+    fontWeight: '600',
     fontSize: 18,
     padding: 2,
     paddingLeft: 10,
   },
   focusStepInstruction: {
-    fontWeight: "400",
+    fontWeight: '400',
   },
   promptLevelLabel: {
-    fontWeight: "600",
+    fontWeight: '600',
     fontSize: 18,
     padding: 2,
     paddingLeft: 10,
   },
   promptLevel: {
-    fontWeight: "400",
+    fontWeight: '400',
     fontSize: 18,
     padding: 2,
     paddingLeft: 10,
   },
   masteryLevelLabel: {
-    fontWeight: "600",
+    fontWeight: '600',
     fontSize: 18,
     padding: 2,
     paddingLeft: 10,
   },
   masteryLevel: {
-    fontWeight: "400",
+    fontWeight: '400',
     fontSize: 18,
     padding: 2,
     paddingLeft: 10,
@@ -175,17 +171,17 @@ const styles = StyleSheet.create({
   },
   graphIconContainer: {
     width: 280,
-    flexDirection: "column",
-    justifyContent: "center",
-    alignContent: "center",
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignContent: 'center',
     marginTop: 20,
     borderRadius: 10,
-    backgroundColor: "#fff",
+    backgroundColor: '#fff',
   },
   graphText: {
     fontSize: 18,
     color: CustomColors.uva.grayDark,
-    alignSelf: "center",
+    alignSelf: 'center',
     padding: 5,
   },
 });

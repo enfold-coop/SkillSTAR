@@ -1,5 +1,5 @@
 import { useNavigation } from '@react-navigation/native';
-import React, { ReactNode, useEffect, useState } from 'react';
+import React, { FC, ReactNode, useEffect, useState } from 'react';
 import { Dimensions, StyleSheet, Text, View } from 'react-native';
 import { Button } from 'react-native-paper';
 import AppHeader from '../components/Header/AppHeader';
@@ -23,7 +23,7 @@ const windowHeight = Dimensions.get('window').height;
 /**
  *
  */
-function BaselineAssessmentScreen({ route }: Props): ReactNode {
+const BaselineAssessmentScreen: FC<Props> = props => {
   /**
    * Set session type: Probe or Training
    */
