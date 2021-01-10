@@ -55,8 +55,6 @@ export class MasteryAlgo {
         this.isSessionProbeOrTraining();
     }
 
-
-
     static isSessionProbeOrTraining(){
         if(this.sessionsArray.length % 3 === 0){
             this.currentSessionType = ChainSessionType.probe;
@@ -93,6 +91,11 @@ export class MasteryAlgo {
         this.currentSessionNumber = chainData.sessions.length + 1;
     }
 
+    // contains logic to determine if a session is a booster session
+    static determineIfBoosterSession(){
+        // 
+    }
+
     /**
      * 
      * @param session : prev session data
@@ -118,7 +121,7 @@ export class MasteryAlgo {
      * -- from promptHier array, returns an object from prompthier of next prompt level
      */
     static _getNextPromptLevel(promptLvl:string){
-        return this.promptHierarchy[this.promptHierarchy.findIndex((e)=>(e["key"]===promptLvl)) - 1];
+        return this.promptHierarchy[this.promptHierarchy.findIndex((e)=>(e["key"] === promptLvl)) - 1];
     }
 
     static _setCurrPromptLevel(prompt:ChainStepPromptLevel){
@@ -170,7 +173,7 @@ export class MasteryAlgo {
      */
     static _isPrevFocusMastered(){
         const {completed, prompt_level, had_challenging_behavior} = this.prevFocusStep;
-        if(completed && prompt_level === "none" && !had_challenging_behavior){
+        if(completed && prompt_level === this.promptHierarchy[0].key && !had_challenging_behavior){
             return true;
         } else {
             return false;
