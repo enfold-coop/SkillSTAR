@@ -25,6 +25,7 @@ import CustomColors from '../styles/Colors';
 import { ChainSession, ChainSessionType } from '../types/CHAIN/ChainSession';
 import { ChainStep } from '../types/CHAIN/ChainStep';
 import { ChainData, SkillstarChain } from '../types/CHAIN/SkillstarChain';
+import { ChainStepStatus, StepAttempt } from '../types/CHAIN/StepAttempt';
 
 type Props = {
   route: RootNavProps<'ChainsHomeScreen'>;
@@ -37,7 +38,7 @@ const ChainsHomeScreen: FC<Props> = props => {
   const [btnText, setBtnText] = useState('Start Session');
   const [chainSteps, setStepList] = useState<ChainStep[]>();
   const [orient, setOrient] = useState(false);
-  const [chainSession, seChainSession] = useState<ChainSession>();
+  const [chainSession, setChainSession] = useState<ChainSession>();
   const [sessionNmbr, setSessionNmbr] = useState<number>(0);
   const [type, setType] = useState<string>('type');
   const [chainData, setChainData] = useState<ChainData>();
@@ -56,7 +57,30 @@ const ChainsHomeScreen: FC<Props> = props => {
     let isCancelled = false;
 
     if (chainData != undefined && !isCancelled) {
-      callAlgo(chainData);
+      // callAlgo(chainData);
+      // TODO: Ask the Mastery Service for...
+      //  - the current session
+      //  - MasteryInfo for each step
+
+      // For now, just use the last ChainSession available in the ChainData.
+      if (chainData.sessions && chainData.sessions.length > 0) {
+        const lastChainSession = chainData.sessions[chainData.sessions.length];
+        setChainSession(lastChainSession);
+        setSessionNmbr(chainData.sessions.length);
+      } else if (chainSteps && chainSteps.length > 0) {
+        const newChainSession: ChainSession = {
+          step_attempts: chainSteps.map(s => {
+            return {
+              chain_step_id: s.id,
+              chain_step: s,
+              completed: false,
+              status: ChainStepStatus.not_complete,
+            } as StepAttempt;
+          }),
+        };
+        setChainSession(newChainSession);
+        setSessionNmbr(1);
+      }
     }
 
     return () => {
@@ -87,7 +111,7 @@ const ChainsHomeScreen: FC<Props> = props => {
         });
         setSessionTypeAndNmbr(dbChainData);
 
-        seChainSession(dbChainData.sessions[dbChainData.sessions.length - 1]);
+        setChainSession(dbChainData.sessions[dbChainData.sessions.length - 1]);
         setElemsValues();
       } else {
         // Create chain data for current participant.
@@ -222,10 +246,7 @@ const ChainsHomeScreen: FC<Props> = props => {
   };
 
   const navToProbeOrTraining = () => {
-    const t = () => type;
-    navigation.navigate('PrepareMaterialsScreen', {
-      sessionType: t(),
-    });
+    navigation.navigate('PrepareMaterialsScreen', { chainSession });
   };
 
   const key = chainData ? chainData.participant_id : -1;

@@ -37,8 +37,6 @@ const ScorecardListItem = (props: ScorecardListItemProps) => {
       setIcon(Icons.focusIcon);
     } else if (chainStep.id > 0) {
       setIcon(Icons.notStartedIcon);
-    } else {
-      console.log('mastered icon??');
     }
   };
 
