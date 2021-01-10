@@ -11,9 +11,9 @@ import {
 } from "../types/CHAIN/StepAttempt";
 
 export class MasteryAlgo {
-	PROBE_MAX_CONSECUTIVE_INCOMPLETE = 2;
-	TRAINING_MAX_CONSECUTIVE_INCOMPLETE = 3;
-    incompleteCount = 0;
+	PROBE_MAX_CONSECUTIVE_INCOMPLETE:number = 2;
+	TRAINING_MAX_CONSECUTIVE_INCOMPLETE:number = 3;
+    incompleteCount:number = 0;
     static currentSessionType: ChainSessionType;
     static prevSessionData: SkillstarChain;
     static prevFocusStep: StepAttempt;
@@ -108,7 +108,7 @@ export class MasteryAlgo {
     }
 
     // util: converting map to array
-    static _convertMapToArray(eMap: {}){
+    static _convertMapToArray(eMap: {}) {
         return  Object.values(eMap);    
     }
 
@@ -121,7 +121,7 @@ export class MasteryAlgo {
         return this.promptHierarchy[this.promptHierarchy.findIndex((e)=>(e["key"]===promptLvl)) - 1];
     }
 
-    static _setCurrPromptLevel(prompt:string){
+    static _setCurrPromptLevel(prompt:ChainStepPromptLevel){
         if(prompt != undefined){
             this.currFocusStepPromptLevel = prompt;
         }
@@ -143,7 +143,7 @@ export class MasteryAlgo {
         // let prevFocusStep = this._getPrevSessionFocusStepData(prevSessionData);
 
         let prevPromptLevel = this.prevFocusStep?.prompt_level;
-
+        
         if(this.prevFocusStep && this.prevFocusStep.completed){
             this._setCurrPromptLevel(this._getNextPromptLevel(prevPromptLevel).key);
         } else if(this.prevFocusStep && !this.prevFocusStep.completed) {
