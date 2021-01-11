@@ -1,40 +1,11 @@
 import React, { createContext, useReducer } from 'react';
-import { ChainSession, ChainSessionType } from '../types/CHAIN/ChainSession';
-import { ChainStep } from '../types/CHAIN/ChainStep';
-import { MasteryInfo } from '../types/CHAIN/MasteryLevel';
-import { ChainData, SkillstarChain } from '../types/CHAIN/SkillstarChain';
-import { Participant, User } from '../types/User';
-
-type Action =
-  | { type: 'state'; payload: any }
-  | { type: 'chainSteps'; payload: ChainStep[] }
-  | { type: 'sessionType'; payload: string }
-  | { type: 'session'; payload: ChainSession }
-  | { type: 'userData'; payload: SkillstarChain }
-  | { type: 'sessionNumber'; payload: number }
-  | { type: 'user'; payload: User }
-  | { type: 'participant'; payload: Participant }
-  | { type: 'chainData'; payload: ChainData }
-  | { type: 'masteryInfo'; payload: MasteryInfo }
-  | { type: 'isLoading'; payload: boolean };
-
-type Dispatch = (action: Action) => void;
-
-type ChainProviderProps = { children: React.ReactNode };
-type ChainProviderState = {
-  state?: any;
-  dispatch?: any;
-  chainSteps?: ChainStep[];
-  sessionType?: string;
-  session?: ChainSession;
-  userData?: SkillstarChain;
-  sessionNumber?: number;
-  user?: User;
-  participant?: Participant;
-  chainData?: ChainData;
-  masteryInfo?: MasteryInfo;
-  isLoading: boolean;
-};
+import { ChainSessionType } from '../types/CHAIN/ChainSession';
+import {
+  ChainProviderProps,
+  ChainProviderState,
+  ContextDispatch,
+  ContextDispatchAction,
+} from '../types/Context';
 
 const initialState: ChainProviderState = {
   isLoading: true,
@@ -43,8 +14,8 @@ const initialState: ChainProviderState = {
 };
 
 const ChainStateContext = createContext<ChainProviderState | undefined>(undefined);
-const ChainDispatchContext = createContext<Dispatch | undefined>(undefined);
-const reducer = (state: any, action: Action) => {
+const ChainDispatchContext = createContext<ContextDispatch | undefined>(undefined);
+const reducer = (state: any, action: ContextDispatchAction) => {
   const actionType = action.type;
 
   switch (actionType) {
@@ -103,7 +74,7 @@ function useChainDispatch() {
   return context;
 }
 
-function useChainContext(): [ChainProviderState, Dispatch] {
+function useChainContext(): [ChainProviderState, ContextDispatch] {
   return [useChainState(), useChainDispatch()];
 }
 

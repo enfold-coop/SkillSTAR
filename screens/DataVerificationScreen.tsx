@@ -62,7 +62,7 @@ const DataVerificationScreen: FC<Props> = props => {
 
   return (
     <View style={styles.container}>
-      <AppHeader name='Brushing Teeth' />
+      {/*<AppHeader name='Brushing Teeth' />*/}
       <View style={styles.instructionContainer}>
         <Text style={[scrolling ? styles.smallHeader : styles.screenHeader]}>Probe Session</Text>
         <Animatable.Text

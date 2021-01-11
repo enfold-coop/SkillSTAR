@@ -1,16 +1,20 @@
 import { useDeviceOrientation } from '@react-native-community/hooks';
+import { useNavigation } from '@react-navigation/native';
 import React, { FC, useEffect, useState } from 'react';
 import { Image, StyleSheet, Text, View } from 'react-native';
 import CustomColors from '../../styles/Colors';
 import { SelectParticipant } from '../SelectParticipant/SelectParticipant';
 
-type Props = {
+type AppHeaderProps = {
   name: string;
+  onParticipantChange?: () => void;
 };
 
-const AppHeader: FC<Props> = props => {
+const AppHeader = (props: AppHeaderProps) => {
   const { portrait } = useDeviceOrientation();
   const [orient, setOrient] = useState(false);
+  const { onParticipantChange } = props;
+  const navigation = useNavigation();
 
   useEffect(() => {
     setOrient(portrait);
@@ -24,7 +28,15 @@ const AppHeader: FC<Props> = props => {
           style={orient ? styles.logo : styles.landscapeLogo}
         />
         <Text style={orient ? styles.headline : styles.headlineLandscape}>{props.name}</Text>
-        <SelectParticipant />
+        <SelectParticipant
+          onChange={() => {
+            if (onParticipantChange) {
+              onParticipantChange();
+            } else {
+              navigation.navigate('ChainsHomeScreen');
+            }
+          }}
+        />
       </View>
     </View>
   );

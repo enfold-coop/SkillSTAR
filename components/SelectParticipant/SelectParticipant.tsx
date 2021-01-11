@@ -3,68 +3,76 @@ import { useNavigation } from '@react-navigation/native';
 import React, { ReactElement, useEffect, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { Button, Menu } from 'react-native-paper';
-import { useChainContext } from '../../context/ChainProvider';
+import { chainSteps } from '../../data/chainSteps';
 import { ApiService } from '../../services/ApiService';
 import CustomColors from '../../styles/Colors';
+import { ChainStep } from '../../types/CHAIN/ChainStep';
 import { ChainData } from '../../types/CHAIN/SkillstarChain';
-import { Participant } from '../../types/User';
+import { Participant, User } from '../../types/User';
 
-export const SelectParticipant = (): ReactElement => {
-  const [contextState, contextDispatch] = useChainContext();
-  const api = new ApiService();
+export interface SelectParticipantProps {
+  onChange: () => void;
+}
+
+export const SelectParticipant = (props: SelectParticipantProps): ReactElement => {
   const navigation = useNavigation();
   const [isVisible, setIsVisible] = useState<boolean>(false);
   const [menuItems, setMenuItems] = useState<ReactElement[]>();
+  const [chainSteps, setChainSteps] = useState<ChainStep[]>();
+  const [chainData, setChainData] = useState<ChainData>();
+  const [user, setUser] = useState<User>();
   const [selectedParticipant, setSelectedParticipant] = useState<Participant>();
   const [participants, setParticipants] = useState<Participant[]>();
-  const [shouldNavigate, setShouldNavigate] = useState<boolean>(false);
+  const [shouldGoHome, setShouldGoHome] = useState<boolean>(false);
+  const { onChange } = props;
   const closeMenu = () => setIsVisible(false);
   const openMenu = () => setIsVisible(true);
 
-  const selectParticipant = async (selectedParticipant: Participant) => {
-    contextDispatch({ type: 'isLoading', payload: true });
-    const participant = await api.selectParticipant(selectedParticipant.id);
+  /** LIFECYCLE METHODS */
 
-    if (participant) {
-      setSelectedParticipant(participant);
-      contextDispatch({ type: 'participant', payload: participant });
+  // Only runs when selectedParticipant is updated.
+  useEffect(() => {
+    let isCancelled = false;
 
-      const dbChainData = await api.getChainDataForSelectedParticipant();
-      if (dbChainData) {
-        const chainData = new ChainData(dbChainData);
-        contextDispatch({ type: 'chainData', payload: chainData });
+    const _load = async () => {
+      if (!isCancelled) {
+        console.log(
+          '*** SelectParticipant.tsx > useEffect > _load > loading selectedParticipant... ***',
+        );
+        const dbSelectedParticipant = await ApiService.getSelectedParticipant();
+        if (!isCancelled && dbSelectedParticipant && !selectedParticipant && !shouldGoHome) {
+          setSelectedParticipant(dbSelectedParticipant);
+        }
 
-        if (chainData.sessions && chainData.sessions.length > 0) {
-          contextDispatch({
+        console.log('*** SelectParticipant.tsx > useEffect > _load > loading chainData... ***');
+        const dbChainData = await ApiService.getChainDataForSelectedParticipant();
+
+        if (dbChainData && dbChainData.sessions && dbChainData.sessions.length > 0) {
+          await ApiService.contextDispatch({
             type: 'session',
-            payload: chainData.sessions[chainData.sessions.length - 1],
+            payload: dbChainData.sessions[dbChainData.sessions.length - 1],
           });
-          contextDispatch({
+          await ApiService.contextDispatch({
             type: 'sessionNumber',
-            payload: chainData.sessions.length,
+            payload: dbChainData.sessions.length,
           });
         }
+
+        if (shouldGoHome) {
+          navigation.navigate('ChainsHomeScreen');
+          onChange();
+        }
       }
+    };
 
-      setShouldNavigate(true);
-      contextDispatch({ type: 'isLoading', payload: false });
-    }
+    _load();
 
-    await closeMenu();
-  };
+    return () => {
+      isCancelled = true;
+    };
+  }, [selectedParticipant]);
 
-  const participantName = (p: Participant): string | undefined => {
-    if (p.identification) {
-      const first = p.identification.nickname || p.identification.first_name;
-      const last = p.identification.last_name;
-      return `${first} ${last}`;
-    } else if (p.name) {
-      return p.name;
-    } else {
-      return `${p.id}`;
-    }
-  };
-
+  // Only runs when user or participants list are updated
   useEffect(() => {
     // Prevents React state updates on unmounted components
     let isCancelled = false;
@@ -73,42 +81,35 @@ export const SelectParticipant = (): ReactElement => {
     const _load = async () => {
       isLoading = true;
 
-      if (!contextState.chainSteps) {
-        const dbChainSteps = await api.getChainSteps();
-        if (dbChainSteps) {
-          contextDispatch({ type: 'chainSteps', payload: dbChainSteps });
+      if (!user) {
+        console.log('*** SelectParticipant.tsx > useEffect > _load > loading user... ***');
+        const contextUser = await ApiService.contextState('user');
+        if (contextUser) {
+          setUser(contextUser as User);
+        } else {
+          const dbUser = await ApiService.getUser();
+          if (dbUser) {
+            setUser(dbUser as User);
+          }
         }
       }
 
-      if (!contextState.user) {
-        const dbUser = await api.getUser();
-        if (!isCancelled && dbUser) {
-          contextDispatch({ type: 'user', payload: dbUser });
+      if (!chainSteps) {
+        console.log('*** SelectParticipant.tsx > useEffect > _load > loading chainSteps... ***');
+        const contextChainSteps = await ApiService.contextState('chainSteps');
+        if (contextChainSteps) {
+          setChainSteps(contextChainSteps as ChainStep[]);
+        } else {
+          const dbChainSteps = await ApiService.getChainSteps();
+          if (dbChainSteps) {
+            setChainSteps(dbChainSteps);
+          }
         }
       }
 
-      if (
-        contextState.user &&
-        contextState.user.participants &&
-        contextState.user.participants.length > 1
-      ) {
+      if (user && user.participants && user.participants.length > 1) {
         if (!participants && !isCancelled) {
-          setParticipants(
-            contextState.user.participants.filter(p => p.relationship === 'dependent'),
-          );
-        }
-      }
-
-      if (!isCancelled) {
-        const selectedParticipant = await api.getSelectedParticipant();
-        const shouldSetSelectedParticipant =
-          !isCancelled &&
-          selectedParticipant &&
-          (!contextState.participant ||
-            (contextState.participant && contextState.participant.id !== selectedParticipant.id));
-
-        if (shouldSetSelectedParticipant && selectedParticipant) {
-          contextDispatch({ type: 'participant', payload: selectedParticipant });
+          setParticipants(user.participants.filter(p => p.relationship === 'dependent'));
         }
       }
     };
@@ -137,24 +138,35 @@ export const SelectParticipant = (): ReactElement => {
     return () => {
       isCancelled = true;
     };
-  }, [contextState.user, selectedParticipant, participants]);
+  }, [user, participants]);
 
-  useEffect(() => {
-    let isCancelled = false;
+  /** END LIFECYCLE METHODS */
 
-    if (!isCancelled) {
-      if (shouldNavigate) {
-        navigation.navigate('ChainsHomeScreen');
-      }
+  const selectParticipant = async (selectedParticipant: Participant) => {
+    const newDbParticipant = await ApiService.selectParticipant(selectedParticipant.id);
+
+    if (newDbParticipant) {
+      setSelectedParticipant(newDbParticipant);
+      setShouldGoHome(true);
     }
 
-    return () => {
-      isCancelled = true;
-    };
-  }, [contextState.isLoading]);
+    await closeMenu();
+  };
 
-  const btnLabel = contextState.participant
-    ? `Participant: ${participantName(contextState.participant)}`
+  const participantName = (p: Participant): string | undefined => {
+    if (p.identification) {
+      const first = p.identification.nickname || p.identification.first_name;
+      const last = p.identification.last_name;
+      return `${first} ${last}`;
+    } else if (p.name) {
+      return p.name;
+    } else {
+      return `${p.id}`;
+    }
+  };
+
+  const btnLabel = selectedParticipant
+    ? `Participant: ${participantName(selectedParticipant)}`
     : 'Select Participant';
 
   const key = `select_participant_menu_${menuItems && menuItems.length > 0 ? menuItems.length : 0}`;

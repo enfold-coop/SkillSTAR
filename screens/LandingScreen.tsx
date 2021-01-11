@@ -3,7 +3,6 @@ import React, { useEffect, useState } from 'react';
 import { Image, ImageBackground, StyleSheet, View } from 'react-native';
 import * as Animatable from 'react-native-animatable';
 import { Button, Text, TextInput } from 'react-native-paper';
-import { useChainDispatch } from '../context/ChainProvider';
 import { RootNavProps as Props } from '../navigation/root_types';
 import { ApiService } from '../services/ApiService';
 import CustomColors from '../styles/Colors';
@@ -13,38 +12,25 @@ export default function LandingScreen({ navigation }: Props<'LandingScreen'>) {
   const [password, setPassword] = useState(DEFAULT_USER_PASSWORD);
   const [isValid, setIsValid] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string>('');
-  const api = new ApiService();
-  const contextDispatch = useChainDispatch();
 
-  const _checkEmail = (inputText: string) => {
-    setErrorMessage('');
-    setIsValid(!!(inputText && password));
-    setEmail(inputText);
-  };
-
-  const _checkPassword = (inputText: string) => {
-    setErrorMessage('');
-    setIsValid(!!(email && inputText));
-    setPassword(inputText);
-  };
-
+  /** LIFECYCLE METHODS */
   useEffect(() => {
     let isCancelled = false;
     let isLoading = false;
 
     const _loadUser = async () => {
       isLoading = true;
-      const user = await api.getUser();
+      const user = await ApiService.getUser();
 
       if (user) {
-        contextDispatch({ type: 'user', payload: user });
+        await ApiService.contextDispatch({ type: 'user', payload: user });
 
         // Get cached participant, or participant from STAR DRIVE if none cached.
-        const selectedParticipant = await api.getSelectedParticipant();
+        const selectedParticipant = await ApiService.getSelectedParticipant();
 
         if (selectedParticipant) {
           // When the participant is returned, go to the ChainsHomeScreen.
-          contextDispatch({ type: 'participant', payload: selectedParticipant });
+          await ApiService.contextDispatch({ type: 'participant', payload: selectedParticipant });
           navigation.navigate('ChainsHomeScreen');
         } else {
           // TODO: There is a cached user, but the user account has no participants.
@@ -71,6 +57,36 @@ export default function LandingScreen({ navigation }: Props<'LandingScreen'>) {
       isCancelled = true;
     };
   }, [isValid]);
+  /** END LIFECYCLE METHODS */
+
+  const _checkEmail = (inputText: string) => {
+    setErrorMessage('');
+    setIsValid(!!(inputText && password));
+    setEmail(inputText);
+  };
+
+  const _checkPassword = (inputText: string) => {
+    setErrorMessage('');
+    setIsValid(!!(email && inputText));
+    setPassword(inputText);
+  };
+
+  const _handleLogin = async () => {
+    setErrorMessage('');
+
+    try {
+      const user = await ApiService.login(email, password);
+      if (user) {
+        await ApiService.contextDispatch({ type: 'user', payload: user });
+        navigation.navigate('ChainsHomeScreen');
+      }
+    } catch (e) {
+      setErrorMessage(
+        'Invalid username or password. Please check your login information and try again.',
+      );
+      console.error(e);
+    }
+  };
 
   return (
     <ImageBackground
@@ -116,18 +132,7 @@ export default function LandingScreen({ navigation }: Props<'LandingScreen'>) {
           mode='contained'
           disabled={!isValid}
           onPress={() => {
-            setErrorMessage('');
-            api.login(email, password).then(user => {
-              // console.log("user", user);
-              if (user) {
-                contextDispatch({ type: 'user', payload: user });
-                navigation.navigate('ChainsHomeScreen');
-              } else {
-                setErrorMessage(
-                  'Invalid username or password. Please check your login information and try again.',
-                );
-              }
-            });
+            _handleLogin();
           }}
         >
           <Text style={styles.btnText}>Log In</Text>

@@ -1,17 +1,30 @@
 import React, { FC } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-import { useChainContext, useChainState } from '../../context/ChainProvider';
+import { ChainSessionType } from '../../types/CHAIN/ChainSession';
+import { ChainStepPromptLevel, StepAttempt } from '../../types/CHAIN/StepAttempt';
 
-type Props = {};
+type Props = {
+  sessionType?: ChainSessionType;
+  stepAttempt?: StepAttempt;
+  promptLevel?: ChainStepPromptLevel;
+};
 
 const TrainingAside: FC<Props> = props => {
-  const contextState = useChainState();
-  const { chainData } = contextState;
-  return (
+  const { sessionType, stepAttempt, promptLevel } = props;
+
+  return sessionType && stepAttempt && promptLevel ? (
     <View style={styles.container}>
-      <Text style={styles.headerText}>Training Session</Text>
-      <Text style={styles.instructionText}>Focus Step: {'3.Rinse Toothbrush'}</Text>
-      <Text style={styles.instructionText}>Prompt Level {'Full Physical'}</Text>
+      <Text style={styles.headerText}>{sessionType} Session</Text>
+      <Text style={styles.instructionText}>
+        Focus Step: {stepAttempt.chain_step ? stepAttempt.chain_step.instruction : '...'}
+      </Text>
+      <Text style={styles.instructionText}>Prompt Level {promptLevel}</Text>
+    </View>
+  ) : (
+    <View>
+      <Text>sessionType: {!!sessionType ? 'Done' : 'Loading...'}</Text>
+      <Text>stepAttempt: {!!stepAttempt ? 'Done' : 'Loading...'}</Text>
+      <Text>promptLevel: {!!promptLevel ? 'Done' : 'Loading...'}</Text>
     </View>
   );
 };

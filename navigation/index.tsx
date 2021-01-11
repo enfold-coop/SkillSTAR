@@ -28,8 +28,6 @@ export default function Navigation({ colorScheme }: { colorScheme: ColorSchemeNa
   );
 }
 
-const api = new ApiService();
-
 interface LogoutButtonProps {
   navigation: StackNavigationProp<any>;
 }
@@ -39,7 +37,7 @@ const LogoutButton = (props: LogoutButtonProps): ReactElement => {
     <Button
       color={CustomColors.uva.white}
       onPress={() => {
-        api.logout().then(() => {
+        ApiService.logout().then(() => {
           props.navigation.navigate('LandingScreen');
         });
       }}

@@ -12,7 +12,7 @@ export interface SkillstarChain {
   // TODO: Add the group?
 }
 
-export class ChainData {
+export class ChainData implements SkillstarChain {
   id?: number;
   last_updated?: Date;
   participant_id: number;

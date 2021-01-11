@@ -1,9 +1,15 @@
 import date from 'date-and-time';
 import React, { FC, useEffect, useState } from 'react';
 import { LayoutRectangle, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { Card } from 'react-native-paper';
-import { useChainState } from '../../context/ChainProvider';
+import { ActivityIndicator, Card } from 'react-native-paper';
+import { ApiService } from '../../services/ApiService';
 import CustomColors from '../../styles/Colors';
+import {
+  ChainSession,
+  ChainSessionType,
+  ChainSessionTypeMap,
+} from '../../types/CHAIN/ChainSession';
+import { ChainStepPromptLevel } from '../../types/CHAIN/StepAttempt';
 import GraphModal from '../DataGraph/GraphModal';
 import { ChainsHomeGraph } from '../DataGraph/index';
 import { ProbeAside, TrainingAside } from './index';
@@ -21,49 +27,69 @@ type Props = {
  */
 
 const SessionDataAside: FC<Props> = props => {
-  const { asideContent } = props;
-  const contextState = useChainState();
-  const { sessionNumber } = contextState;
   const [isTraining, setIsTraining] = useState(false);
-  const [today, setToday] = useState(date.format(new Date(), 'MM/DD/YYYY'));
-  const [promptLevel, setPromptLevel] = useState('Full Physical');
-  const [masteryLevel, setMasteryLevel] = useState('Focus');
   const [graphContainerDimens, setGraphContainerDimens] = useState<LayoutRectangle>();
   const [modalVis, setModalVis] = useState(false);
+  const [session, setSession] = useState<ChainSession>();
+  const [sessionNumber, setSessionNumber] = useState<number>(0);
 
   useEffect(() => {
     let isCancelled = false;
 
-    if (!isCancelled && contextState.sessionType === 'training') {
-      setIsTraining(true);
-    }
+    const _load = async () => {
+      if (!isCancelled) {
+        const contextSessionNumber = await ApiService.contextState('sessionNumber');
+        if (contextSessionNumber !== undefined) {
+          setSessionNumber(contextSessionNumber as number);
+        }
+
+        const contextSession = await ApiService.contextState('session');
+        if (contextSession) {
+          setSession(contextSession as ChainSession);
+
+          if (contextSession.session_type === ChainSessionTypeMap.training.key) {
+            setIsTraining(true);
+          }
+        }
+      }
+    };
+
+    _load();
 
     return () => {
       isCancelled = true;
     };
-  }, [contextState]);
+  });
 
   const handleModal = () => {
     setModalVis(!modalVis);
   };
 
   const setAsideContent = () => {
-    if (isTraining) {
-      return <TrainingAside />;
+    if (isTraining && session) {
+      return (
+        <TrainingAside
+          sessionType={ChainSessionType.training}
+          stepAttempt={session.step_attempts[0]}
+          promptLevel={ChainStepPromptLevel.full_physical}
+        />
+      );
     } else {
       return <ProbeAside />;
     }
   };
 
-  return (
+  return session ? (
     <View style={styles.container}>
       <GraphModal visible={modalVis} handleVis={handleModal} />
       <View>
         <View>
           <Card>
             <View style={styles.sessionNumbAndDateContainer}>
-              <Text style={styles.sessionNum}>Session #{(sessionNumber || 0) + 1}</Text>
-              <Text style={styles.date}>{today}</Text>
+              <Text style={styles.sessionNum}>Session #{sessionNumber}</Text>
+              <Text style={styles.date}>
+                {date.format(session.date || new Date(), 'MM/DD/YYYY')}
+              </Text>
             </View>
             <View style={styles.taskInfoContainer}>{setAsideContent()}</View>
           </Card>
@@ -72,7 +98,6 @@ const SessionDataAside: FC<Props> = props => {
           style={styles.graphIconContainer}
           onLayout={e => {
             const dimensions = e.nativeEvent.layout;
-            console.log('dimensions', dimensions);
             setGraphContainerDimens(dimensions);
           }}
         >
@@ -88,6 +113,10 @@ const SessionDataAside: FC<Props> = props => {
           </Card>
         </View>
       </View>
+    </View>
+  ) : (
+    <View>
+      <ActivityIndicator animating={true} color={CustomColors.uva.mountain} />
     </View>
   );
 };

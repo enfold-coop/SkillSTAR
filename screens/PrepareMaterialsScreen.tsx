@@ -4,10 +4,10 @@ import { Image, ImageBackground, StyleSheet, View } from 'react-native';
 import * as Animatable from 'react-native-animatable';
 import { Button, Card, Title } from 'react-native-paper';
 import AppHeader from '../components/Header/AppHeader';
-import { useChainState } from '../context/ChainProvider';
 import { BackgroundImages } from '../data/images';
 import { MaterialsItems } from '../data/prep_materials';
 import { RootNavProps } from '../navigation/root_types';
+import { ApiService } from '../services/ApiService';
 import CustomColors from '../styles/Colors';
 import { ChainSessionType } from '../types/CHAIN/ChainSession';
 
@@ -18,19 +18,28 @@ type Props = {
 
 const PrepareMaterialsScreen: FC<Props> = props => {
   const navigation = useNavigation();
-  const contextState = useChainState();
   const [chainSessionType, setChainSessionType] = useState<ChainSessionType>();
 
   useEffect(() => {
     let isCancelled = false;
-    if (!isCancelled && contextState.session && contextState.session.session_type) {
-      setChainSessionType(contextState.session.session_type);
-    }
+
+    const _load = async () => {
+      if (!isCancelled) {
+        const contextSession = await ApiService.contextState('session');
+        if (contextSession) {
+          console.log('contextSession', contextSession);
+          console.log('contextSession.session_type', contextSession.session_type);
+          setChainSessionType(contextSession.session_type);
+        }
+      }
+    };
+
+    _load();
 
     return () => {
       isCancelled = true;
     };
-  }, [contextState.session]);
+  });
 
   const materialsList = MaterialsItems.map(m => (
     <Card style={styles.listItem} key={'materials_list_item_' + m.id}>
@@ -57,6 +66,7 @@ const PrepareMaterialsScreen: FC<Props> = props => {
             style={styles.nextBtn}
             labelStyle={{ fontSize: 20 }}
             onPress={() => {
+              console.log('chainSessionType', chainSessionType);
               if ((chainSessionType as string) === 'training') {
                 navigation.navigate('StepScreen');
               } else {

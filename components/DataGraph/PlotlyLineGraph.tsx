@@ -2,9 +2,10 @@ import React, { FC, useEffect, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import Plotly from 'react-native-plotly';
 import { FilterSessionsByType } from '../../_util/FilterSessionType';
-import { useChainState } from '../../context/ChainProvider';
+import { ApiService } from '../../services/ApiService';
 import CustomColors from '../../styles/Colors';
 import { ChainSession } from '../../types/CHAIN/ChainSession';
+import { ChainData } from '../../types/CHAIN/SkillstarChain';
 
 interface PlotlyGraphDimensions {
   width: number;
@@ -25,13 +26,13 @@ type Props = {
  */
 
 const PlotlyLineGraph: FC<Props> = props => {
-  const contextState = useChainState();
   const { dimensions, modal } = props;
   const [thisHeight, setHeight] = useState<number>();
   const [thisWidth, setWidth] = useState<number>();
   const [isModal, setIsModal] = useState<boolean>(false);
   const [probeSessions, setProbeSessions] = useState<ChainSession[]>([]);
   const [trainingSessions, setTrainingSessions] = useState<ChainSession[]>([]);
+  const [chainData, setChainData] = useState<ChainData>();
 
   //
   const trainingDataXY = () => {};
@@ -39,11 +40,23 @@ const PlotlyLineGraph: FC<Props> = props => {
   useEffect(() => {
     let isCancelled = false;
 
-    if (!isCancelled && contextState.chainData) {
-      const { probeArr, trainingArr } = FilterSessionsByType(contextState.chainData.sessions);
-      setTrainingSessions(trainingArr);
-      setProbeSessions(probeArr);
-    }
+    const _load = async () => {
+      if (!isCancelled) {
+        const contextChainData = await ApiService.contextState('chainData');
+        if (contextChainData !== undefined) {
+          setChainData(contextChainData as ChainData);
+        }
+
+        if (chainData) {
+          const { probeArr, trainingArr } = FilterSessionsByType(chainData.sessions);
+          setTrainingSessions(trainingArr);
+          setProbeSessions(probeArr);
+        }
+      }
+
+    };
+
+    _load();
 
     return () => {
       isCancelled = true;
