@@ -10,11 +10,15 @@ import {
     ChallengingBehaviorSeverityMap
 } from "../types/CHAIN/StepAttempt";
 
+// MOCK SESSIONS ARRAY LENGTH
+const MOCKSESSIONSLENGTH = 5;
+
 export class MasteryAlgo {
 	PROBE_MAX_CONSECUTIVE_INCOMPLETE:number = 2;
 	TRAINING_MAX_CONSECUTIVE_INCOMPLETE:number = 3;
     incompleteCount:number = 0;
     static currentSessionType: ChainSessionType;
+    static prevSessionType: ChainSessionType;
     static prevSessionData: SkillstarChain;
     static prevFocusStep: StepAttempt;
     static currFocusStep: StepAttempt;
@@ -35,7 +39,7 @@ export class MasteryAlgo {
     // [X] = determine focus-step index
     // [X] = determine current session number
     // [X] = determine probe or trainging session
-    // [ ] = determine booster session
+    // [ ] = determine booster session (line 94)
     // [ ] = determine ...
 
     
@@ -52,7 +56,9 @@ export class MasteryAlgo {
         this.determineCurrentSessionNumber(chainData);
         this.determineStepAttemptPromptLevel(chainData);
         this.determineCurrentFocusStepId();
+        this._setPrevSessionType();
         this.isSessionProbeOrTraining();
+        // this.determineIfBoosterSession();
     }
 
     static isSessionProbeOrTraining(){
@@ -61,6 +67,10 @@ export class MasteryAlgo {
         } else {
             this.currentSessionType = ChainSessionType.training;
         }
+    }
+
+    static _setPrevSessionType(){
+        this.prevSessionType = this.sessionsArray[this.sessionsArray.length-1].session_type;
     }
 
     static setSessionArray(chainData:SkillstarChain){
@@ -91,9 +101,44 @@ export class MasteryAlgo {
         this.currentSessionNumber = chainData.sessions.length + 1;
     }
 
+    static _determineIfChalBehavOrAddlPrompting(session : ChainSession){
+        
+    }
+
     // contains logic to determine if a session is a booster session
     static determineIfBoosterSession(){
-        // 
+        let prevCount = 0;
+        let prevSession
+        
+        if(this.prevSessionType === "probe"){
+            console.log("this is a probve");
+            
+        } else if (this.prevSessionType === "training"){
+            
+            // if(this.sessionsArray.length >= 3){
+            // if(MOCKSESSIONSLENGTH >= 3){
+                // for (let i = this.sessionsArray.length; i > 0 ; i--) {
+                // for (let i = MOCKSESSIONSLENGTH; i > 0 ; i--) { 
+                    // get prevFocusStep info
+                    // if(this.sessionsArray[i])
+                    
+                // }
+                console.log("t");
+        } else {
+            console.log("this is an mistake");
+            
+        }
+            
+        //     if(this.prevSessionData.)
+        
+        // }
+        // THEN: 
+        // ---- IF(2 preVFocusSteps had: challBehav || needed Prompting)
+        // -------- THEN: currSession is Booster
+        // IF(prevFocus was Training)
+        // THEN: 
+        // ---- IF(3 preVFocusSteps had: challBehav || needed Prompting)
+        // -------- THEN: currSession is Booster
     }
 
     /**
