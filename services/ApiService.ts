@@ -8,6 +8,7 @@ import { ChainData, SkillstarChain } from '../types/CHAIN/SkillstarChain';
 import { StarDriveFlow } from '../types/CHAIN/StarDriveFlow';
 import { ContextDispatchAction, ContextStateValue } from '../types/Context';
 import { Participant, User } from '../types/User';
+import { stringify, parse } from 'telejson';
 
 export class ApiService {
   private static endpoints = {
@@ -446,8 +447,8 @@ export class ApiService {
   }
 
   static async logout(): Promise<void> {
-    await AsyncStorage.removeItem('user_token');
-    await AsyncStorage.removeItem('user');
+    // Delete EVERYTHING in AsyncStorage
+    await AsyncStorage.clear();
   }
 
   static async _getHeaders(method: 'GET' | 'POST' | 'PUT', data?: any) {
@@ -479,7 +480,7 @@ export class ApiService {
 
   static async _cache(key: string, value: any): Promise<void> {
     try {
-      await AsyncStorage.setItem(key, JSON.stringify(value));
+      await AsyncStorage.setItem(key, stringify(value));
     } catch (e) {
       console.log('ApiService._cache Error');
       console.error(e);
@@ -490,7 +491,7 @@ export class ApiService {
     try {
       const cachedJson = await AsyncStorage.getItem(key);
       if (cachedJson) {
-        return JSON.parse(cachedJson);
+        return parse(cachedJson);
       }
     } catch (e) {
       console.log('ApiService._getCached Error');

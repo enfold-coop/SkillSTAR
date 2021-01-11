@@ -79,6 +79,11 @@ const SessionDataAside: FC<Props> = props => {
     }
   };
 
+  const dateString =
+    session && session.date && session.date instanceof Date
+      ? date.format(session.date, 'MM/DD/YYYY')
+      : '...';
+
   return session ? (
     <View style={styles.container}>
       <GraphModal visible={modalVis} handleVis={handleModal} />
@@ -87,9 +92,7 @@ const SessionDataAside: FC<Props> = props => {
           <Card>
             <View style={styles.sessionNumbAndDateContainer}>
               <Text style={styles.sessionNum}>Session #{sessionNumber}</Text>
-              <Text style={styles.date}>
-                {date.format(session.date || new Date(), 'MM/DD/YYYY')}
-              </Text>
+              <Text style={styles.date}>{dateString}</Text>
             </View>
             <View style={styles.taskInfoContainer}>{setAsideContent()}</View>
           </Card>

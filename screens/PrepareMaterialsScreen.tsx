@@ -27,8 +27,6 @@ const PrepareMaterialsScreen: FC<Props> = props => {
       if (!isCancelled) {
         const contextSession = await ApiService.contextState('session');
         if (contextSession) {
-          console.log('contextSession', contextSession);
-          console.log('contextSession.session_type', contextSession.session_type);
           setChainSessionType(contextSession.session_type);
         }
       }

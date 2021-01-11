@@ -22,7 +22,7 @@ const ScorecardListItem = (props: ScorecardListItemProps) => {
   const [stepData, setStepData] = useState<StepAttempt>();
 
   const handleDateVals = (d?: Date): string => {
-    if (d) {
+    if (d && d instanceof Date) {
       return date.format(d, 'MM/DD/YYYY');
     } else {
       return 'N/A';
