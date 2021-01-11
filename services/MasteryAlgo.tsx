@@ -61,92 +61,15 @@ export class MasteryAlgo {
         this.determineIfBoosterSession();
     }
 
-    static isSessionProbeOrTraining(){
-        if(this.sessionsArray.length % 3 === 0){
-            this.currentSessionType = ChainSessionType.probe;
-        } else {
-            this.currentSessionType = ChainSessionType.training;
-        }
-    }
-
-    static _setPrevSessionType(){
-        this.prevSessionType = this.sessionsArray[this.sessionsArray.length-1].session_type;
-    }
-
-    static setSessionArray(chainData:SkillstarChain){
-        this.sessionsArray = chainData.sessions;
-    }
-
-	static _determinePrevSessionType(chainData: SkillstarChain) {
-		if (chainData && chainData.sessions.length < 1) {
-			this.currentSessionType = ChainSessionType.probe;
-		} else {
-			this.currentSessionType =
-				chainData.sessions[chainData.sessions.length - 1].session_type;
-		}
-	}
-
-	/** GET CURRENT SESSION NUMBER */
-	// total sessions.length + 1
-	static _setCurrentSessionNumber(sessionsLength: number) {
-		this.currentSessionNumber = sessionsLength + 1;
+    // util: converting map to array
+    static _convertMapToArray(eMap: {}) {
+        return  Object.values(eMap);    
     }
 
     // all of participant's session history data
     static _getPreviousSessionData(chainData: SkillstarChain){
         return chainData.sessions[chainData.sessions.length - 1];
     }
-
-    static determineCurrentSessionNumber(chainData: SkillstarChain){
-        this.currentSessionNumber = chainData.sessions.length + 1;
-    }
-
-    static _determineIfChalBehavOrAddlPrompting(session : ChainSession){
-        
-    }
-
-    static _meetsBoosterCriteria(sessions: StepAttempt[], sessionType: string){
-        let trainingBoosterMax = sessionType === "training" ? 3 : 2;
-        let meetsCritCount = 0;
-        for (let i = trainingBoosterMax; i > 0; i--) {
-            console.log(steps[i]);
-            if (steps[i].had_challenging_behavior || steps[i].was_prompted) {
-                meetsCritCount += 1;
-            } else {
-                meetsCritCount = 0;
-            }
-        }
-        if(meetsCritCount >= trainingBoosterMax){
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    // contains logic to determine if a session is a booster session
-    static determineIfBoosterSession(){
-        let prevCount = 0;
-        let prevSession;
-        let sessionLength = this.sessionsArray.length;
-        // 1. get prevSessType
-        // 2. get focusStepId
-        // 3. decl var TOTAL_SESSIONS_MET_COUNT = 0
-        // 4. decl sessions.length var
-        // 5. IF: (prevSessType == "training")
-        // ---- THEN: MAXCRITCOUNT = 3;
-        // 6. ELSE:
-        // ---- THEN MAXCRITCOUNT = 2;
-        // 7. FOR_LOOP:
-        // ---- FOR(MAXCRITCOUNT; index--): 
-        // -------- IF(session[index].step_attempt[stepID] had: CHAL_BEHAV -OR- NEEDED_PROMPTING ): 
-        // ------------ THEN: TOTAL_SESSIONS_MET_COUNT += 1
-        // -------- ELSE: 
-        // ------------ THEN: TOTAL_SESSIONS_MET_COUNT = 0;
-        // 8. IF:(TOTAL_SESSIONS_MET_COUNT >= MAXCRITCOUNT):
-        // ---- THEN: currSession = BOOSTER
-        // 9. ELSE:
-        // ---- THEN: currSession = NOT booster
-        }
 
     /**
      * 
@@ -162,29 +85,13 @@ export class MasteryAlgo {
         });
     }
 
-    // util: converting map to array
-    static _convertMapToArray(eMap: {}) {
-        return  Object.values(eMap);    
+    static setSessionArray(chainData:SkillstarChain){
+        this.sessionsArray = chainData.sessions;
     }
 
-    /**
-     * _getNextPromptLevel()
-     * @param promptLvl: "string" is the previous prompt level
-     * -- from promptHier array, returns an object from prompthier of next prompt level
-     */
-    static _getNextPromptLevel(promptLvl:string){
-        return this.promptHierarchy[this.promptHierarchy.findIndex((e)=>(e["key"] === promptLvl)) - 1];
+    static determineCurrentSessionNumber(chainData: SkillstarChain){
+        this.currentSessionNumber = chainData.sessions.length + 1;
     }
-
-    static _setCurrPromptLevel(prompt:ChainStepPromptLevel){
-        if(prompt != undefined){
-            this.currFocusStepPromptLevel = prompt;
-        }
-    }
-
-    // static _setCurrFocusStepPromptLevel(prompt:){
-    //     this.currFocusStepPromptLevel = 
-    // }
 
     /** GET STEP_ATTEMPT PROMPT LEVEL */
     /**
@@ -218,6 +125,95 @@ export class MasteryAlgo {
             }
         }
     }
+
+    static _setPrevSessionType(){
+        this.prevSessionType = this.sessionsArray[this.sessionsArray.length-1].session_type;
+    }
+
+    static isSessionProbeOrTraining(){
+        if(this.sessionsArray.length % 3 === 0){
+            this.currentSessionType = ChainSessionType.probe;
+        } else {
+            this.currentSessionType = ChainSessionType.training;
+        }
+    }
+
+	static _determinePrevSessionType(chainData: SkillstarChain) {
+		if (chainData && chainData.sessions.length < 1) {
+			this.currentSessionType = ChainSessionType.probe;
+		} else {
+			this.currentSessionType =
+				chainData.sessions[chainData.sessions.length - 1].session_type;
+		}
+	}
+
+	/** GET CURRENT SESSION NUMBER */
+	// total sessions.length + 1
+	static _setCurrentSessionNumber(sessionsLength: number) {
+		this.currentSessionNumber = sessionsLength + 1;
+    }
+
+    static _meetsBoosterCriteria(sessions: StepAttempt[], sessionType: string){
+        let trainingBoosterMax = sessionType === "training" ? 3 : 2;
+        let meetsCritCount = 0;
+        for (let i = trainingBoosterMax; i > 0; i--) {
+            console.log(steps[i]);
+            if (steps[i].had_challenging_behavior || steps[i].was_prompted) {
+                meetsCritCount += 1;
+            } else {
+                meetsCritCount = 0;
+            }
+        }
+        if(meetsCritCount >= trainingBoosterMax){
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    // contains logic to determine if a session is a booster session
+    static determineIfBoosterSession(){
+        let prevCount = 0;
+        let TOTAL_SESSIONS_MET_COUNT = 0;
+        let sessionLength = this.sessionsArray.length;
+        // 1. get prevSessType
+        // 2. get focusStepId
+        // 3. decl var TOTAL_SESSIONS_MET_COUNT = 0
+        // 4. decl sessions.length var
+        // 5. IF: (prevSessType == "training")
+        // ---- THEN: MAXCRITCOUNT = 3;
+        // 6. ELSE:
+        // ---- THEN MAXCRITCOUNT = 2;
+        // 7. FOR_LOOP:
+        // ---- FOR(MAXCRITCOUNT; index--): 
+        // -------- IF(session[index].step_attempt[stepID] had: CHAL_BEHAV -OR- NEEDED_PROMPTING ): 
+        // ------------ THEN: TOTAL_SESSIONS_MET_COUNT += 1
+        // -------- ELSE: 
+        // ------------ THEN: TOTAL_SESSIONS_MET_COUNT = 0;
+        // 8. IF:(TOTAL_SESSIONS_MET_COUNT >= MAXCRITCOUNT):
+        // ---- THEN: currSession = BOOSTER
+        // 9. ELSE:
+        // ---- THEN: currSession = NOT booster
+        }
+
+    /**
+     * _getNextPromptLevel()
+     * @param promptLvl: "string" is the previous prompt level
+     * -- from promptHier array, returns an object from prompthier of next prompt level
+     */
+    static _getNextPromptLevel(promptLvl:string){
+        return this.promptHierarchy[this.promptHierarchy.findIndex((e)=>(e["key"] === promptLvl)) - 1];
+    }
+
+    static _setCurrPromptLevel(prompt:ChainStepPromptLevel){
+        if(prompt != undefined){
+            this.currFocusStepPromptLevel = prompt;
+        }
+    }
+
+    // static _setCurrFocusStepPromptLevel(prompt:){
+    //     this.currFocusStepPromptLevel = 
+    // }
 
     /**
      * factors whether prev session's focus step was mastered
