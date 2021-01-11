@@ -1,109 +1,76 @@
-import React, { FC, useEffect, useState } from 'react';
-import { Image, StyleSheet, Text, View } from 'react-native';
+import React, { FC, useState } from 'react';
+import { Image, ImageRequireSource, StyleSheet, Text, View } from 'react-native';
+import { chainSteps } from '../../data/chainSteps';
+import CustomColors from '../../styles/Colors';
+import { MasteryIcon } from '../../styles/MasteryIcon';
+import { StepAttempt } from '../../types/CHAIN/StepAttempt';
+import { DataVerificationControlCallback } from '../../types/DataVerificationControlCallback';
 import BehavAccordion from './BehavAccordion';
 import BehavDataVerifSwitch from './BehavDataVerifSwitch';
 import PromptAccordion from './PromptAccordion';
 import PromptDataVerifSwitch from './PromptDataVerifSwitch';
-import CustomColors from '../../styles/Colors';
-import { StepAttempt } from '../../types/CHAIN/StepAttempt';
-// import { MasteryIcons } from "../../styles/MasteryIcons";
 
-const MasteryIcons = (level: string) => {
-  const icons = {
-    mastered: require('../../assets/icons/ribbon-icon.png'),
-    focus: require('../../assets/icons/in-process-icon.png'),
-    notStarted: require('../../assets/icons/waving-icon.png'),
-  };
-  return icons[`${level}`];
-};
-
-const PromptIcons = (level: string) => {
-  const icons = {
-    ip: require('../../assets/icons/ip_prompt_icon.png'),
-    sp: require('../../assets/icons/sp_prompt_icon.png'),
-    pp: require('../../assets/icons/pp_prompt_icon.png'),
-    fp: require('../../assets/icons/fp_prompt_icon.png'),
+const getPromptIcon = (level: string): ImageRequireSource => {
+  const icons: { [key: string]: ImageRequireSource } = {
+    none: require('../../assets/icons/ip_prompt_icon.png'),
+    shadow: require('../../assets/icons/sp_prompt_icon.png'),
+    partial_physical: require('../../assets/icons/pp_prompt_icon.png'),
+    full_physical: require('../../assets/icons/fp_prompt_icon.png'),
   };
 
-  // return icons[`${level}`];
-  // return
+  return icons[level];
 };
 
 type Props = {
   stepAttempt: StepAttempt;
 };
 
-const DataVerifItem: FC<Props> = ({ stepAttempt }) => {
-  /**
-   * use context api, here:
-   */
-
-  const { stepId, instruction, promptLevel } = stepAttempt;
-
+const DataVerifItem: FC<Props> = props => {
+  const { stepAttempt } = props;
   const [promptSwitch, setPromptSwitch] = useState(false);
   const [behavSwitch, setBehavSwitch] = useState(false);
   const [icon, setIcon] = useState();
-  const [promptIcon, setPromptIcon] = useState();
+  const [promptIcon, setPromptIcon] = useState<ImageRequireSource>();
 
-  const handlePromptSwitch = (v: boolean) => {
+  const handlePromptSwitch: DataVerificationControlCallback = async (
+    chainStepId,
+    fieldName,
+    fieldValue,
+  ) => {
     setPromptSwitch(!promptSwitch);
   };
-  const handleBehavSwitch = (v: boolean) => {
+  const handleBehavSwitch: DataVerificationControlCallback = async (
+    chainStepId,
+    fieldName,
+    fieldValue,
+  ) => {
     setBehavSwitch(!behavSwitch);
   };
 
-  const focusStepIcon = () => {
-    if (stepId == 3) {
-      setIcon(MasteryIcons('focus'));
-    } else if (stepId < 3) {
-      setIcon(MasteryIcons('mastered'));
-    } else {
-      setIcon(MasteryIcons('notStarted'));
-    }
-  };
   const promptLevelIcon = () => {
-    if (promptLevel === 4) {
-      setPromptIcon(PromptIcons('sp'));
-    } else if (promptLevel === 3) {
-      setPromptIcon(PromptIcons('sp'));
-    } else if (promptLevel === 2) {
-      setPromptIcon(PromptIcons('pp'));
-    } else {
-      setPromptIcon(PromptIcons('fp'));
-    }
+    const _promptLevelIcon = getPromptIcon(stepAttempt.prompt_level as string);
+    setPromptIcon(_promptLevelIcon);
   };
 
-  useEffect(() => {
-    focusStepIcon();
-  }, [stepId]);
-  useEffect(() => {
-    promptLevelIcon();
-  }, [promptLevel]);
-
-  return (
+  return chainSteps && stepAttempt && stepAttempt.chain_step ? (
     <View style={styles.container}>
       <View style={styles.defaultFormContainer}>
-        <Image style={styles.masteryIcon} source={icon} resizeMode='contain' />
-
-        <Text style={styles.stepTitle}>"{instruction}"</Text>
+        <MasteryIcon chainStepStatus={stepAttempt.status} />
+        <Text style={styles.stepTitle}>"{stepAttempt.chain_step.instruction}"</Text>
         <Text style={styles.promptLevelIcon}>{'FP'}</Text>
-        {/* <Image
-					style={styles.promptLevelIcon}
-					source={promptIcon}
-					resizeMode="contain"
-				/> */}
+        <Image style={styles.promptLevelIcon} source={promptIcon} resizeMode='contain' />
         <View style={styles.switchContainer}>
           <View style={styles.questionContainer}>
             <PromptDataVerifSwitch
-              instruction={instruction}
-              id={stepId}
+              name={'prompt_level'}
+              chainStepId={stepAttempt.chain_step_id !== undefined ? stepAttempt.chain_step_id : -1}
               handleSwitch={handlePromptSwitch}
             />
           </View>
           <View style={styles.questionContainer}>
             <BehavDataVerifSwitch
-              instruction={instruction}
-              id={stepId}
+              name={'had_challenging_behavior'}
+              chainStepId={stepAttempt.chain_step_id}
               handleSwitch={handleBehavSwitch}
             />
           </View>
@@ -114,6 +81,8 @@ const DataVerifItem: FC<Props> = ({ stepAttempt }) => {
         <BehavAccordion switched={behavSwitch} stepAttempt={stepAttempt} />
       </View>
     </View>
+  ) : (
+    <Text>Error</Text>
   );
 };
 

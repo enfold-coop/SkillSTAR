@@ -14,7 +14,7 @@ type Props = {
   session: Session;
 };
 
-const BaselineAssessmentScreen: FC<Props> = props => {
+const ProbeScreen: FC<Props> = props => {
   const navigation = useNavigation();
   const [stepIndex, setStepIndex] = useState(0);
   const [readyToSubmit, setReadyToSubmit] = useState(false);
@@ -86,7 +86,7 @@ const BaselineAssessmentScreen: FC<Props> = props => {
                 incrIndex();
               } else {
                 setReadyToSubmit(true);
-                navigation.navigate('BaselineAssessmentScreen', {
+                navigation.navigate('ProbeScreen', {
                   session,
                 });
               }
@@ -141,4 +141,4 @@ const styles = StyleSheet.create({
   inputField: {},
 });
 
-export default BaselineAssessmentScreen;
+export default ProbeScreen;

@@ -1,5 +1,5 @@
 import { ChainSession } from './ChainSession';
-import { StepAttempt } from './StepAttempt';
+import { ChainStepStatus, StepAttempt } from './StepAttempt';
 
 export interface SkillstarChain {
   id?: number;
@@ -12,7 +12,7 @@ export interface SkillstarChain {
   // TODO: Add the group?
 }
 
-export class ChainData {
+export class ChainData implements SkillstarChain {
   id?: number;
   last_updated?: Date;
   participant_id: number;
@@ -36,6 +36,10 @@ export class ChainData {
    * @param newStep: Data to update the step with
    */
   updateStep(sessionId: number, chainStepId: number, newStep: StepAttempt) {
+    console.log('SkillstarChain.ts > ChainData > updateStep ***');
+    console.log('sessionId', sessionId);
+    console.log('chainStepId', chainStepId);
+    console.log('newStep', newStep);
     this.sessions.forEach((session, i) => {
       if (session.id === sessionId) {
         session.step_attempts.forEach((stepAttempt, j) => {
@@ -53,6 +57,7 @@ export class ChainData {
    * @param newSession: Data to update the session with
    */
   updateSession(sessionId: number, newSession: ChainSession) {
+    console.log('SkillstarChain.ts > ChainData > updateSession ***');
     this.sessions.forEach((session, i) => {
       if (session.id === sessionId) {
         this.sessions[i] = newSession;
@@ -65,15 +70,26 @@ export class ChainData {
    * @param sessionId
    * @param chainStepId
    */
-  getStep(sessionId: number, chainStepId: number) {
+  getStep(sessionId: number, chainStepId: number): StepAttempt {
+    let shouldBreak = false;
+    let stepAttempt: StepAttempt = { status: ChainStepStatus.not_complete, completed: false };
+
     for (const session of this.sessions) {
+      if (shouldBreak) {
+        break;
+      }
+
       if (session.id === sessionId) {
         for (const step of session.step_attempts) {
           if (chainStepId === step.chain_step_id) {
-            return step;
+            stepAttempt = step;
+            shouldBreak = true; // Don't keep iterating through the rest of the sessions
+            break;
           }
         }
       }
     }
+
+    return stepAttempt;
   }
 }

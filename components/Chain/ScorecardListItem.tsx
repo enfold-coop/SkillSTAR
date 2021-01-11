@@ -1,76 +1,48 @@
 import { MaterialIcons } from '@expo/vector-icons';
 import date from 'date-and-time';
-import React, { FC, useEffect, useState } from 'react';
-import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import * as Animatable from 'react-native-animatable';
 import { Card } from 'react-native-paper';
 import CustomColors from '../../styles/Colors';
+import { MasteryIcon } from '../../styles/MasteryIcon';
+import { ChainStep } from '../../types/CHAIN/ChainStep';
+import { MasteryInfo } from '../../types/CHAIN/MasteryLevel';
+import { StepAttempt } from '../../types/CHAIN/StepAttempt';
 
-const Icons = {
-  masteredIcon: require('../../assets/icons/ribbon-icon_1.png'),
-  focusIcon: require('../../assets/icons/in-progress-icon_1.png'),
-  notStartedIcon: require('../../assets/icons/waving-icon.png'),
-};
-
-interface ItemPropsItem {
-  id: number;
-  instruction: string;
-  last_updated: Date;
+interface ScorecardListItemProps {
+  chainStep: ChainStep;
+  stepAttempt: StepAttempt;
+  masteryInfo: MasteryInfo;
 }
 
-interface ItemProps {
-  item: ItemPropsItem;
-}
-
-type Props = {
-  itemProps: ItemProps;
-  sessionStepData: any;
-};
-
-const ScorecardListItem: FC<Props> = props => {
-  const { id, instruction, last_updated } = props.itemProps.item;
-  const { sessionStepData } = props;
+const ScorecardListItem = (props: ScorecardListItemProps) => {
+  const { chainStep, stepAttempt, masteryInfo } = props;
   const [isPressed, setIsPressed] = useState(false);
-  const [icon, setIcon] = useState();
-  const [stepData, setStepData] = useState({});
-  const [dateIntro, setDateIntro] = useState<Date>();
-  const [dateMast, setDateMast] = useState();
-  const [dateBoost, setDateBoosts] = useState();
-  const [dateBoostMast, setDateBoostMast] = useState();
-  const [stepMastery, setStepMastery] = useState();
+  const [stepData, setStepData] = useState<StepAttempt>();
 
-  useEffect(() => {
-    setDateIntro(last_updated);
-  });
-
-  const determineMastery = () => {
-    if (id === 0 && stepData) {
-      setIcon(Icons.focusIcon);
-    } else if (id > 0) {
-      setIcon(Icons.notStartedIcon);
+  const handleDateVals = (d?: Date): string => {
+    if (d) {
+      return date.format(d, 'MM/DD/YYYY');
     } else {
-      console.log('mastered icon??');
-    }
-  };
-
-  const handleDateVals = (d: string) => {
-    let _d = date.format(new Date(d), 'MM/DD/YYYY');
-
-    if (_d === 'aN/aN/0NaN') {
       return 'N/A';
-    } else {
-      return date.format(new Date(d), 'MM/DD/YYYY');
     }
   };
 
   useEffect(() => {
-    setStepData(sessionStepData);
-    determineMastery();
-    // setDateIntro();
-  }, []);
+    let isCancelled = false;
 
-  return (
-    <Animatable.View animation='fadeIn' duration={300 * id}>
+    if (!isCancelled) {
+      setStepData(stepAttempt);
+    }
+
+    return () => {
+      isCancelled = true;
+    };
+  }, [stepAttempt]);
+
+  return stepAttempt && chainStep ? (
+    <Animatable.View animation='fadeIn' duration={500 * chainStep.id}>
       <Card style={styles.container}>
         <TouchableOpacity
           style={[styles.touchable]}
@@ -78,20 +50,9 @@ const ScorecardListItem: FC<Props> = props => {
             setIsPressed(!isPressed);
           }}
         >
-          <Text style={styles.id}>{id + 1}. </Text>
-          <Text style={styles.skill}>{instruction}</Text>
-          {/* <Text style={styles.score}>{MasteryIcons(1)}</Text> */}
-          <Image
-            style={[
-              {
-                width: 28,
-                height: 28,
-                alignSelf: 'center',
-                padding: 2,
-              },
-            ]}
-            source={icon}
-          />
+          <Text style={styles.id}>{chainStep.id + 1}. </Text>
+          <Text style={styles.skill}>{chainStep.instruction}</Text>
+          <MasteryIcon chainStepStatus={stepAttempt.status} />
           <MaterialIcons
             name={isPressed ? 'expand-less' : 'expand-more'}
             size={24}
@@ -103,22 +64,38 @@ const ScorecardListItem: FC<Props> = props => {
           <View style={styles.dropDownContainer}>
             <Text style={styles.dropDownLabel}>
               {`${'\u2022'} Date Introduced: `}
-              <Text style={styles.dropDownItemDate}>{handleDateVals(dateIntro)}</Text>
+              <Text style={styles.dropDownItemDate}>
+                {handleDateVals(masteryInfo.dateIntroduced)}
+              </Text>
             </Text>
             <Text style={styles.dropDownLabel}>
               {`${'\u2022'} Date Mastered: `}
-              <Text style={styles.dropDownItemDate}>{handleDateVals(dateMast)}</Text>
+              <Text style={styles.dropDownItemDate}>
+                {handleDateVals(masteryInfo.dateMastered)}
+              </Text>
             </Text>
             <Text style={styles.dropDownLabel}>
               {`${'\u2022'} Date Booster training initiated: `}
-              <Text style={styles.dropDownItemDate}>{handleDateVals(dateBoost)}</Text>
+              <Text style={styles.dropDownItemDate}>
+                {handleDateVals(masteryInfo.dateBoosterInitiated)}
+              </Text>
             </Text>
             <Text style={styles.dropDownLabel}>
               {`${'\u2022'} Date Mastered Booster training: `}
-              <Text style={styles.dropDownItemDate}>{handleDateVals(dateBoostMast)}</Text>
+              <Text style={styles.dropDownItemDate}>
+                {handleDateVals(masteryInfo.dateBoosterMastered)}
+              </Text>
             </Text>
           </View>
         )}
+      </Card>
+    </Animatable.View>
+  ) : (
+    <Animatable.View animation='fadeIn' duration={1000}>
+      <Card style={styles.container}>
+        <View style={styles.dropDownContainer}>
+          <Text style={styles.dropDownLabel}>...</Text>
+        </View>
       </Card>
     </Animatable.View>
   );
@@ -130,6 +107,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   },
   touchable: {
+    flex: 1,
     flexDirection: 'row',
     justifyContent: 'flex-start',
     alignItems: 'center',
@@ -152,8 +130,8 @@ const styles = StyleSheet.create({
     borderColor: CustomColors.uva.graySoft,
   },
   dropDownLabel: {
-    padding: 5,
-    paddingLeft: 40,
+    padding: 4,
+    paddingLeft: 20,
     fontWeight: '500',
     alignSelf: 'flex-start',
   },
@@ -179,7 +157,6 @@ const styles = StyleSheet.create({
     marginLeft: 'auto',
     padding: 10,
     paddingRight: 20,
-    transform: [{ rotate: '0deg' }],
   },
   title: {
     padding: 5,

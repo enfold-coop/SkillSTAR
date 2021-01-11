@@ -1,10 +1,11 @@
-import React, { FC, useContext, useEffect, useState } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import Plotly from 'react-native-plotly';
 import { FilterSessionsByType } from '../../_util/FilterSessionType';
-import { store } from '../../context/ChainProvider';
+import { ApiService } from '../../services/ApiService';
 import CustomColors from '../../styles/Colors';
 import { ChainSession } from '../../types/CHAIN/ChainSession';
+import { ChainData } from '../../types/CHAIN/SkillstarChain';
 
 interface PlotlyGraphDimensions {
   width: number;
@@ -25,28 +26,47 @@ type Props = {
  */
 
 const PlotlyLineGraph: FC<Props> = props => {
-  const { state } = useContext(store);
-  const { userData } = state;
   const { dimensions, modal } = props;
   const [thisHeight, setHeight] = useState<number>();
   const [thisWidth, setWidth] = useState<number>();
   const [isModal, setIsModal] = useState<boolean>(false);
   const [probeSessions, setProbeSessions] = useState<ChainSession[]>([]);
   const [trainingSessions, setTrainingSessions] = useState<ChainSession[]>([]);
+  const [chainData, setChainData] = useState<ChainData>();
 
   //
   const trainingDataXY = () => {};
 
   useEffect(() => {
-    const { probeArr, trainingArr } = FilterSessionsByType(userData.sessions);
-    setTrainingSessions(trainingArr);
-    setProbeSessions(probeArr);
+    let isCancelled = false;
+
+    const _load = async () => {
+      if (!isCancelled) {
+        const contextChainData = await ApiService.contextState('chainData');
+        if (contextChainData !== undefined) {
+          setChainData(contextChainData as ChainData);
+        }
+
+        if (chainData) {
+          const { probeArr, trainingArr } = FilterSessionsByType(chainData.sessions);
+          setTrainingSessions(trainingArr);
+          setProbeSessions(probeArr);
+        }
+      }
+
+    };
+
+    _load();
+
+    return () => {
+      isCancelled = true;
+    };
   }, []);
 
   const data = [
     {
-      x: [1, 2, 33, 4, 5],
-      y: [1, 2, 3, 44, 8],
+      x: [1, 2, 3, 4, 5],
+      y: [1, 2, 3, 4, 5],
       mode: 'markers',
       name: 'Probe Session',
       marker: {
@@ -59,13 +79,13 @@ const PlotlyLineGraph: FC<Props> = props => {
       },
     },
     {
-      x: [4, 2, 44, 4, 5],
-      y: [2, 3, 4, 5, 6],
+      x: [1, 2, 3, 4, 5],
+      y: [1, 2, 3, 4, 5],
       mode: 'lines',
       name: 'Training Session',
     },
     {
-      x: [4, 2, 4, 4, 5],
+      x: [1, 2, 3, 4, 5],
       y: [1, 2, 3, 4, 5],
       mode: 'lines',
       name: 'Challenging Behavior',

@@ -1,46 +1,84 @@
-import React, {useReducer} from "react";
-import {SkillstarChain} from '../types/CHAIN/SkillstarChain';
-import {ChainSession, ChainSessionType} from '../types/CHAIN/ChainSession';
-import {ADD_CURR_SESSION_NMBR, ADD_SESSION, ADD_SESSION_TYPE, ADD_USER_DATA,} from "./constants/actions";
+import React, { createContext, useReducer } from 'react';
+import { ChainSessionType } from '../types/CHAIN/ChainSession';
+import {
+  ChainProviderProps,
+  ChainProviderState,
+  ContextDispatch,
+  ContextDispatchAction,
+} from '../types/Context';
 
-type ChainProviderProps = {
-  dispatch?: any;
-  sessionType: string;
-  session?: ChainSession;
-  userData?: SkillstarChain;
-  currSessionNmbr: number;
-  state?: any;
-};
-
-const initialState: ChainProviderProps = {
+const initialState: ChainProviderState = {
+  isLoading: true,
   sessionType: ChainSessionType.probe,
-  currSessionNmbr: 0,
+  sessionNumber: 0,
 };
 
-const store = React.createContext<ChainProviderProps>(initialState);
+const ChainStateContext = createContext<ChainProviderState | undefined>(undefined);
+const ChainDispatchContext = createContext<ContextDispatch | undefined>(undefined);
+const reducer = (state: any, action: ContextDispatchAction) => {
+  const actionType = action.type;
 
-const {Provider} = store;
-
-const ChainProvider: React.FC = ({children}) => {
-  const [state, dispatch] = useReducer((state, action) => {
-    switch (action.type) {
-      case ADD_SESSION_TYPE:
-        return {...state, sessionType: action.payload};
-      case ADD_SESSION:
-        return {...state, session: action.payload};
-      case ADD_USER_DATA:
-        return {...state, userData: action.payload};
-      case ADD_CURR_SESSION_NMBR:
-        return {...state, currSessionNmbr: action.payload};
-      default:
-        throw new Error();
-    }
-  }, []);
-
-  return <Provider value={{state, dispatch}}>{children}</Provider>;
+  switch (actionType) {
+    case 'state':
+      return { ...state, state: action.payload };
+    case 'chainSteps':
+      return { ...state, chainSteps: action.payload };
+    case 'sessionType':
+      return { ...state, sessionType: action.payload };
+    case 'session':
+      return { ...state, session: action.payload };
+    case 'sessionNumber':
+      return { ...state, sessionNumber: action.payload };
+    case 'user':
+      return { ...state, user: action.payload };
+    case 'participant':
+      return { ...state, participant: action.payload };
+    case 'chainData':
+      return { ...state, chainData: action.payload };
+    case 'masteryInfo':
+      return { ...state, masteryInfo: action.payload };
+    case 'isLoading':
+      return { ...state, isLoading: action.payload };
+    default:
+      throw new Error(`Unhandled action type: ${actionType}`);
+  }
 };
 
-export {store, ChainProvider};
+const ChainProvider = ({ children }: ChainProviderProps) => {
+  const [state, dispatch] = useReducer(reducer, initialState);
+
+  return (
+    <ChainStateContext.Provider value={state}>
+      <ChainDispatchContext.Provider value={dispatch}>{children}</ChainDispatchContext.Provider>
+    </ChainStateContext.Provider>
+  );
+};
+
+function useChainState() {
+  const context = React.useContext(ChainStateContext);
+
+  if (context === undefined) {
+    throw new Error('useChainState must be used within a ChainProvider.');
+  }
+
+  return context;
+}
+
+function useChainDispatch() {
+  const context = React.useContext(ChainDispatchContext);
+
+  if (context === undefined) {
+    throw new Error('useChainDispatch must be used within a ChainProvider.');
+  }
+
+  return context;
+}
+
+function useChainContext(): [ChainProviderState, ContextDispatch] {
+  return [useChainState(), useChainDispatch()];
+}
+
+export { ChainProvider, useChainState, useChainDispatch, useChainContext };
 /**
  * - initialize Session Context Provider
  * - setting/getting state in Context API

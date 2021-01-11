@@ -3,7 +3,6 @@ import * as SplashScreen from 'expo-splash-screen';
 import React, { useEffect, useState } from 'react';
 import { Provider } from 'react-native-paper';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-import { AuthContext } from './context/AuthProvider';
 import { ChainProvider } from './context/ChainProvider';
 import useColorScheme from './hooks/useColorScheme';
 import Navigation from './navigation';
@@ -47,13 +46,9 @@ export default function App() {
   } else {
     return (
       <SafeAreaProvider>
-        <AuthContext.Provider value={{ state: { user: null, participant: null } }}>
-          <Provider>
-            <ChainProvider>
-              <Navigation colorScheme={colorScheme} />
-            </ChainProvider>
-          </Provider>
-        </AuthContext.Provider>
+        <Provider>
+          <Navigation colorScheme={colorScheme} />
+        </Provider>
       </SafeAreaProvider>
     );
   }

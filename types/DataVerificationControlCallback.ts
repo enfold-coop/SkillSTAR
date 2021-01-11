@@ -1,5 +1,5 @@
 export type DataVerificationControlCallback = (
-  stepId: number,
+  chainStepId: number,
   fieldName: string,
   fieldValue: boolean,
 ) => Promise<void>;
