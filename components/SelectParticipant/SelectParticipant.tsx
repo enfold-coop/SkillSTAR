@@ -45,29 +45,39 @@ export const SelectParticipant = (props: SelectParticipantProps): ReactElement =
         }
 
         console.log('*** SelectParticipant.tsx > useEffect > _load > loading chainData... ***');
-        const dbChainData = await ApiService.getChainDataForSelectedParticipant();
+        if (!isCancelled) {
+          const dbChainData = await ApiService.getChainDataForSelectedParticipant();
 
-        if (dbChainData && dbChainData.sessions && dbChainData.sessions.length > 0) {
-          await ApiService.contextDispatch({
-            type: 'session',
-            payload: dbChainData.sessions[dbChainData.sessions.length - 1],
-          });
-          await ApiService.contextDispatch({
-            type: 'sessionNumber',
-            payload: dbChainData.sessions.length,
-          });
+          if (dbChainData && dbChainData.sessions && dbChainData.sessions.length > 0) {
+            if (!isCancelled) {
+              await ApiService.contextDispatch({
+                type: 'session',
+                payload: dbChainData.sessions[dbChainData.sessions.length - 1],
+              });
+            }
+
+            if (!isCancelled) {
+              await ApiService.contextDispatch({
+                type: 'sessionNumber',
+                payload: dbChainData.sessions.length,
+              });
+            }
+          }
         }
 
-        if (shouldGoHome) {
-          navigation.navigate('ChainsHomeScreen');
+        if (!isCancelled && shouldGoHome) {
           onChange();
+          navigation.navigate('ChainsHomeScreen');
         }
       }
     };
 
-    _load();
+    if (!isCancelled) {
+      _load();
+    }
 
     return () => {
+      console.log('SelectParticipant > useEffect 1 > unsubscribe');
       isCancelled = true;
     };
   }, [selectedParticipant]);
@@ -84,11 +94,11 @@ export const SelectParticipant = (props: SelectParticipantProps): ReactElement =
       if (!user) {
         console.log('*** SelectParticipant.tsx > useEffect > _load > loading user... ***');
         const contextUser = await ApiService.contextState('user');
-        if (contextUser) {
+        if (!isCancelled && contextUser) {
           setUser(contextUser as User);
         } else {
           const dbUser = await ApiService.getUser();
-          if (dbUser) {
+          if (!isCancelled && dbUser) {
             setUser(dbUser as User);
           }
         }
@@ -97,11 +107,11 @@ export const SelectParticipant = (props: SelectParticipantProps): ReactElement =
       if (!chainSteps) {
         console.log('*** SelectParticipant.tsx > useEffect > _load > loading chainSteps... ***');
         const contextChainSteps = await ApiService.contextState('chainSteps');
-        if (contextChainSteps) {
+        if (!isCancelled && contextChainSteps) {
           setChainSteps(contextChainSteps as ChainStep[]);
         } else {
           const dbChainSteps = await ApiService.getChainSteps();
-          if (dbChainSteps) {
+          if (!isCancelled && dbChainSteps) {
             setChainSteps(dbChainSteps);
           }
         }
@@ -114,10 +124,10 @@ export const SelectParticipant = (props: SelectParticipantProps): ReactElement =
       }
     };
 
-    if (!isLoading) {
+    if (!isCancelled && !isLoading) {
       _load().then(() => {
         isLoading = false;
-        if (participants && participants.length > 0) {
+        if (!isCancelled && participants && participants.length > 0) {
           const items = participants.map((p: Participant) => {
             return (
               <Menu.Item
@@ -136,6 +146,7 @@ export const SelectParticipant = (props: SelectParticipantProps): ReactElement =
     }
 
     return () => {
+      console.log('SelectParticipant > useEffect 2 > unsubscribe');
       isCancelled = true;
     };
   }, [user, participants]);
@@ -146,11 +157,12 @@ export const SelectParticipant = (props: SelectParticipantProps): ReactElement =
     const newDbParticipant = await ApiService.selectParticipant(selectedParticipant.id);
 
     if (newDbParticipant) {
+      closeMenu();
       setSelectedParticipant(newDbParticipant);
       setShouldGoHome(true);
+    } else {
+      closeMenu();
     }
-
-    await closeMenu();
   };
 
   const participantName = (p: Participant): string | undefined => {

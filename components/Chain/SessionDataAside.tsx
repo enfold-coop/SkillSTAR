@@ -39,15 +39,15 @@ const SessionDataAside: FC<Props> = props => {
     const _load = async () => {
       if (!isCancelled) {
         const contextSessionNumber = await ApiService.contextState('sessionNumber');
-        if (contextSessionNumber !== undefined) {
+        if (!isCancelled && contextSessionNumber !== undefined) {
           setSessionNumber(contextSessionNumber as number);
         }
 
         const contextSession = await ApiService.contextState('session');
-        if (contextSession) {
+        if (!isCancelled && contextSession) {
           setSession(contextSession as ChainSession);
 
-          if (contextSession.session_type === ChainSessionTypeMap.training.key) {
+          if (!isCancelled && contextSession.session_type === ChainSessionTypeMap.training.key) {
             setIsTraining(true);
           }
         }

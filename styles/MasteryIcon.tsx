@@ -11,9 +11,7 @@ export interface MasteryIconProps {
 
 export function MasteryIcon(props: MasteryIconProps) {
   const { chainStepStatus } = props;
-  const statusMap = Object.entries(ChainStepStatusMap).find(
-    ([key, m]) => m.value === chainStepStatus,
-  );
+  const statusMap = ChainStepStatusMap[chainStepStatus as string];
   const icons: { [key: string]: MasteryStatus } = {
     not_complete: {
       stepStatus: ChainStepStatus.not_complete,
@@ -35,16 +33,12 @@ export function MasteryIcon(props: MasteryIconProps) {
     },
   };
 
-  const key = statusMap && statusMap.length === 2 ? statusMap[1].key : undefined;
+  const key = statusMap ? statusMap.key : undefined;
+  const iconMap = key ? icons[key] : undefined;
 
-  return key ? (
+  return iconMap ? (
     <View style={styles.icon}>
-      <SkillStarIcons
-        name={icons[key].icon}
-        size={30}
-        style={styles.icon}
-        color={icons[key].color}
-      />
+      <SkillStarIcons name={iconMap.icon} size={30} style={styles.icon} color={iconMap.color} />
     </View>
   ) : (
     <Text>Icon Error</Text>
