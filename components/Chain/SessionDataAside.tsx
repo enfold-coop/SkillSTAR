@@ -1,6 +1,6 @@
 import date from 'date-and-time';
 import React, { FC, useEffect, useState } from 'react';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { LayoutRectangle, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { Card } from 'react-native-paper';
 import { useChainState } from '../../context/ChainProvider';
 import CustomColors from '../../styles/Colors';
@@ -28,7 +28,7 @@ const SessionDataAside: FC<Props> = props => {
   const [today, setToday] = useState(date.format(new Date(), 'MM/DD/YYYY'));
   const [promptLevel, setPromptLevel] = useState('Full Physical');
   const [masteryLevel, setMasteryLevel] = useState('Focus');
-  const [graphContainerDimens, setGraphContainerDimens] = useState({});
+  const [graphContainerDimens, setGraphContainerDimens] = useState<LayoutRectangle>();
   const [modalVis, setModalVis] = useState(false);
 
   useEffect(() => {
@@ -71,7 +71,9 @@ const SessionDataAside: FC<Props> = props => {
         <View
           style={styles.graphIconContainer}
           onLayout={e => {
-            setGraphContainerDimens(e.nativeEvent.layout);
+            const dimensions = e.nativeEvent.layout;
+            console.log('dimensions', dimensions);
+            setGraphContainerDimens(dimensions);
           }}
         >
           <Card>

@@ -29,7 +29,7 @@ const BaselineAssessmentScreen: FC<Props> = props => {
    * Set session type: Probe or Training
    */
   const api = new ApiService();
-  const [contextState, chainDispatch] = useChainContext();
+  const [contextState, contextDispatch] = useChainContext();
   const navigation = useNavigation();
   const [stepIndex, setStepIndex] = useState(0);
   const [readyToSubmit, setReadyToSubmit] = useState(false);
@@ -37,8 +37,9 @@ const BaselineAssessmentScreen: FC<Props> = props => {
   const [sessionReady, setSessionReady] = useState(false);
   const [chainSession, setChainSession] = useState<ChainSession>();
   const [text, setText] = useState('');
-  const [shouldRedirect, setShouldRedirect] = useState<boolean>(false);
   const { chainSteps, chainData } = contextState;
+  const [contextIsLoading, setContextIsLoading] = useState<boolean>(contextState.isLoading);
+  const [shouldNavigate, setShouldNavigate] = useState<boolean>(false);
 
   /** START: Lifecycle calls */
   useEffect(() => {
@@ -70,13 +71,35 @@ const BaselineAssessmentScreen: FC<Props> = props => {
     };
 
     if (!chainSession) {
-      _load();
+      _load().then(() => {
+        contextDispatch({ type: 'isLoading', payload: false });
+      });
     }
 
     return () => {
       isCancelled = true;
     };
   }, []);
+
+  useEffect(() => {
+    let isCancelled = false;
+
+    if (!isCancelled) {
+      console.log('contextState.isLoading = ', contextState.isLoading);
+      const shouldLoad =
+        !contextState.isLoading || !contextState.chainSteps || !contextState.chainData;
+
+      setContextIsLoading(!shouldLoad);
+
+      if (shouldNavigate) {
+        navigation.navigate('ChainsHomeScreen');
+      }
+    }
+
+    return () => {
+      isCancelled = true;
+    };
+  }, [contextState.isLoading]);
   /** END: Lifecycle calls */
 
   const updateChainData: DataVerificationControlCallback = async (
@@ -92,27 +115,33 @@ const BaselineAssessmentScreen: FC<Props> = props => {
       newStep[fieldName] = fieldValue;
 
       //  Set the value of the fieldName for a specific step
-      if (questionnaireId !== undefined && chainData) {
+      if (chainData && chainData.id !== undefined) {
         chainData.updateStep(chainSession.id, chainStepId, newStep);
       }
     }
   };
 
   const setSessionData = async () => {
-    if (questionnaireId !== undefined && chainData && chainSession) {
+    console.log('*** setSessionData ***');
+    contextDispatch({ type: 'isLoading', payload: true });
+
+    if (chainData && chainData.id !== undefined && chainSession) {
       chainData.sessions.push(chainSession);
       const dbChainData = await api.upsertChainData(chainData);
       if (dbChainData) {
-        chainDispatch({ type: 'chainData', payload: new ChainData(dbChainData) });
-        setShouldRedirect(true);
-        navigation.navigate('ChainsHomeScreen');
+        const newChainData = new ChainData(dbChainData);
+        contextDispatch({ type: 'chainData', payload: newChainData });
+
+        // Stupid hack to prevent navigation until all the context dispatch calls finish updating.
+        setShouldNavigate(true);
+        contextDispatch({ type: 'isLoading', payload: false });
       }
     }
   };
 
   return (
     <View style={styles.image}>
-      {sessionReady && (
+      {sessionReady && !contextState.isLoading ? (
         <View style={styles.container}>
           <AppHeader name='Brushing Teeth' />
           <View style={styles.instructionContainer}>
@@ -149,6 +178,8 @@ const BaselineAssessmentScreen: FC<Props> = props => {
             </Button>
           </View>
         </View>
+      ) : (
+        <Text>Loading...</Text>
       )}
     </View>
   );

@@ -146,6 +146,8 @@ export class ApiService {
   async upsertChainData(data: SkillstarChain) {
     const questionnaireId = await this.getChainQuestionnaireId();
 
+    console.log('questionnaireId', questionnaireId);
+
     if (questionnaireId !== undefined) {
       // If there's an existing questionnaire, it's an update.
       return this.editChainData(data, questionnaireId);
@@ -210,7 +212,12 @@ export class ApiService {
   }
 
   async editChainData(data: SkillstarChain, questionnaireId: number) {
-    const url = this.endpoints.chain + '/' + questionnaireId;
+    console.log('*** editChainData ***');
+    const url = this.endpoints.chainSession.replace(
+      '<questionnaire_id>',
+      questionnaireId.toString(),
+    );
+    console.log('url', url);
     try {
       const header = await this._getHeaders('PUT', data);
       const response = await fetch(url, header);

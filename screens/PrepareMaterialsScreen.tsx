@@ -4,56 +4,52 @@ import { Image, ImageBackground, StyleSheet, View } from 'react-native';
 import * as Animatable from 'react-native-animatable';
 import { Button, Card, Title } from 'react-native-paper';
 import AppHeader from '../components/Header/AppHeader';
+import { useChainState } from '../context/ChainProvider';
+import { BackgroundImages } from '../data/images';
+import { MaterialsItems } from '../data/prep_materials';
 import { RootNavProps } from '../navigation/root_types';
 import CustomColors from '../styles/Colors';
-import { ChainSession, ChainSessionType } from '../types/CHAIN/ChainSession';
+import { ChainSessionType } from '../types/CHAIN/ChainSession';
 
 type Props = {
   route: RootNavProps<'PrepareMaterialsScreen'>;
   navigation: RootNavProps<'PrepareMaterialsScreen'>;
-  chainSession: ChainSession;
 };
 
 const PrepareMaterialsScreen: FC<Props> = props => {
   const navigation = useNavigation();
-  const { chainSession } = props;
+  const contextState = useChainState();
   const [chainSessionType, setChainSessionType] = useState<ChainSessionType>();
 
   useEffect(() => {
     let isCancelled = false;
-    if (!isCancelled && chainSession && chainSession.session_type) {
-      setChainSessionType(chainSession.session_type);
+    if (!isCancelled && contextState.session && contextState.session.session_type) {
+      setChainSessionType(contextState.session.session_type);
     }
 
     return () => {
       isCancelled = true;
     };
-  }, [chainSession]);
+  }, [contextState.session]);
 
-  const materials = [
-    { image: require('../assets/images/prep_materials_icon/toothbrush.png'), title: 'Tooth Brush' },
-    { image: require('../assets/images/prep_materials_icon/toothpaste.png'), title: 'Tooth Paste' },
-    { image: require('../assets/images/prep_materials_icon/towel.png'), title: 'Towel' },
-    { image: require('../assets/images/prep_materials_icon/water.png'), title: 'Cup of Water' },
-    { image: require('../assets/images/prep_materials_icon/medicine.png'), title: 'Cabinet' },
-  ];
+  const materialsList = MaterialsItems.map(m => (
+    <Card style={styles.listItem} key={'materials_list_item_' + m.id}>
+      <Animatable.View animation='fadeIn' style={styles.listItem}>
+        <Image style={styles.itemIcon} source={m.image} />
+        <Title style={styles.itemTitle}>{m.title}</Title>
+      </Animatable.View>
+    </Card>
+  ));
 
   return (
     <ImageBackground
-      source={require('../assets/images/sunrise-muted.jpg')}
+      source={BackgroundImages.sunrise_muted}
       resizeMode={'cover'}
       style={styles.image}
     >
       <View style={styles.container}>
         <AppHeader name='Prepare Materials' />
-        {materials.map(m => (
-          <Card style={styles.listItem} key={m.title}>
-            <Animatable.View animation='fadeIn' style={styles.listItem}>
-              <Image style={styles.itemIcon} source={m.image} />
-              <Title style={styles.itemTitle}>{m.title}</Title>
-            </Animatable.View>
-          </Card>
-        ))}
+        {materialsList}
         <Animatable.View animation='bounceIn'>
           <Button
             mode='contained'
@@ -61,7 +57,7 @@ const PrepareMaterialsScreen: FC<Props> = props => {
             style={styles.nextBtn}
             labelStyle={{ fontSize: 20 }}
             onPress={() => {
-              if (chainSessionType === ChainSessionType.training) {
+              if ((chainSessionType as string) === 'training') {
                 navigation.navigate('StepScreen');
               } else {
                 navigation.navigate('BaselineAssessmentScreen');

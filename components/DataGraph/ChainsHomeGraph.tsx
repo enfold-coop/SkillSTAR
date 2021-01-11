@@ -1,18 +1,20 @@
 import React, { FC, useEffect, useState } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { LayoutRectangle, StyleSheet, View } from 'react-native';
 import Plotly from 'react-native-plotly';
 import CustomColors from '../../styles/Colors';
 
 type Props = {
-  dimensions: {};
+  dimensions?: LayoutRectangle;
 };
 
 const ChainsHomeGraph: FC<Props> = props => {
   const { dimensions } = props;
-  const [dimens, setDimens] = useState({});
+  const [dimens, setDimens] = useState<LayoutRectangle>();
 
   useEffect(() => {
-    setDimens(dimensions);
+    if (dimensions && !dimens) {
+      setDimens(dimensions);
+    }
   }, []);
 
   const data = [
@@ -45,8 +47,8 @@ const ChainsHomeGraph: FC<Props> = props => {
   ];
 
   const layout = {
-    width: 270,
-    height: 190,
+    width: dimens ? dimens.width : 270,
+    height: dimens ? dimens.width : 190,
     plot_bgcolor: CustomColors.uva.sky,
     margin: {
       r: 0,

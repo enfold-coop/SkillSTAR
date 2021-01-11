@@ -1,8 +1,9 @@
 import { useDeviceOrientation } from '@react-native-community/hooks';
 import { useNavigation } from '@react-navigation/native';
 import React, { FC, useEffect, useState } from 'react';
-import { FlatList, ImageBackground, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { ImageBackground, TouchableOpacity, View, StyleSheet, ScrollView } from 'react-native';
 import * as Animatable from 'react-native-animatable';
+import { ActivityIndicator, List, Text } from 'react-native-paper';
 import {
   PROBE_INSTRUCTIONS,
   START_PROBE_SESSION_BTN,
@@ -12,12 +13,13 @@ import ScorecardListItem from '../components/Chain/ScorecardListItem';
 import SessionDataAside from '../components/Chain/SessionDataAside';
 import AppHeader from '../components/Header/AppHeader';
 import { useChainContext } from '../context/ChainProvider';
+import { BackgroundImages } from '../data/images';
 import { RootNavProps } from '../navigation/root_types';
 import { ApiService } from '../services/ApiService';
 import { MasteryAlgo } from '../services/MasteryAlgo';
-import { MasteryService } from '../services/MasteryService';
 import CustomColors from '../styles/Colors';
 import { ChainSession, ChainSessionType } from '../types/CHAIN/ChainSession';
+import { MasteryInfo } from '../types/CHAIN/MasteryLevel';
 import { ChainData, SkillstarChain } from '../types/CHAIN/SkillstarChain';
 import { ChainStepStatus, StepAttempt } from '../types/CHAIN/StepAttempt';
 
@@ -28,13 +30,14 @@ type Props = {
 
 // Chain Home Screen
 const ChainsHomeScreen: FC<Props> = props => {
+  const [contextState, contextDispatch] = useChainContext();
   const [asideContent, setAsideContents] = useState('');
   const [btnText, setBtnText] = useState('Start Session');
+  const [contextIsLoading, setContextIsLoading] = useState(contextState.isLoading);
   const [orient, setOrient] = useState(false);
   const [sessionNmbr, setSessionNmbr] = useState<number>(0);
   const [type, setType] = useState<string>('type');
   const api = new ApiService();
-  const [contextState, contextDispatch] = useChainContext();
   const navigation = useNavigation();
   const { portrait } = useDeviceOrientation();
 
@@ -52,10 +55,12 @@ const ChainsHomeScreen: FC<Props> = props => {
       //  - MasteryInfo for each step
 
       // For now, just use the last ChainSession available in the ChainData.
+      console.log('contextState.chainData.sessions.length', contextState.chainData.sessions.length);
+
       if (contextState.chainData.sessions && contextState.chainData.sessions.length > 0) {
         contextDispatch({
           type: 'session',
-          payload: contextState.chainData.sessions[contextState.chainData.sessions.length],
+          payload: contextState.chainData.sessions[contextState.chainData.sessions.length - 1],
         });
         setSessionNmbr(contextState.chainData.sessions.length);
       } else if (contextState.chainSteps && contextState.chainSteps.length > 0) {
@@ -69,6 +74,7 @@ const ChainsHomeScreen: FC<Props> = props => {
             } as StepAttempt;
           }),
         };
+        console.log('newChainSession');
         contextDispatch({ type: 'session', payload: newChainSession });
         setSessionNmbr(1);
       }
@@ -86,20 +92,35 @@ const ChainsHomeScreen: FC<Props> = props => {
     const _load = async () => {
       isLoading = true; // Block while loading
 
-      if (contextState.participant) {
-        const newData: SkillstarChain = {
-          participant_id: contextState.participant.id,
-          sessions: [
-            {
-              session_type: ChainSessionType.probe,
-              step_attempts: [],
-            },
-          ],
-        };
-        const newDbData = await api.addChainData(newData);
-        if (!isCancelled && newDbData) {
-          const newChainData = new ChainData(newDbData);
-          contextDispatch({ type: 'chainData', payload: newChainData });
+      if (
+        contextState.participant &&
+        (!contextState.chainData ||
+          (contextState.chainData && contextState.chainData.id === undefined))
+      ) {
+        // Check that the current participant has chain data. If not, add it.
+        const dbData = await api.getChainDataForSelectedParticipant();
+
+        if (!dbData || (dbData && dbData.id === undefined)) {
+          const newData: SkillstarChain = {
+            participant_id: contextState.participant.id,
+            sessions: [
+              {
+                session_type: ChainSessionType.probe,
+                step_attempts: [],
+              },
+            ],
+          };
+
+          try {
+            const newDbData = await api.addChainData(newData);
+            if (!isCancelled && newDbData) {
+              const newChainData = new ChainData(newDbData);
+              console.log('newChainData added for participant');
+              contextDispatch({ type: 'chainData', payload: newChainData });
+            }
+          } catch (e) {
+            console.error(e);
+          }
         }
       }
     };
@@ -108,6 +129,7 @@ const ChainsHomeScreen: FC<Props> = props => {
       _load().then(() => {
         isLoading = false;
         if (!isCancelled) {
+          setSessionTypeAndNmbr();
           setOrient(portrait);
         }
       });
@@ -118,18 +140,34 @@ const ChainsHomeScreen: FC<Props> = props => {
     };
   }, [portrait]);
 
-  /**
-   * Mastery Algorithm
-   * UTIL function (can be moved to another file)
-   *
-   * Params: chainData = the entire SkillstarChain
-   * Returns one of the following:
-   * - An empty probe session, if the user has no attempted sessions yet
-   * - The next session the participant should be attempting, if there is one.
-   * - An empty probe session, if there are none left to attempt (???)
-   */
-  const setSessionTypeAndNmbr = (chainData: SkillstarChain) => {
-    console.log(chainData.sessions.length);
+  useEffect(() => {
+    let isCancelled = false;
+
+    if (!isCancelled) {
+      const shouldLoad =
+        !contextState.isLoading || !contextState.chainSteps || !contextState.chainData;
+
+      setContextIsLoading(!shouldLoad);
+    }
+
+    return () => {
+      isCancelled = true;
+    };
+  }, [contextState.isLoading]);
+
+  // TODO: Replace this with the real mastery algorithm
+  const setSessionTypeAndNmbr = () => {
+    console.log('*** setSessionTypeAndNmbr ***');
+    contextDispatch({ type: 'isLoading', payload: true });
+    const { chainData, isLoading } = contextState;
+
+    console.log('isLoading', isLoading);
+
+    if (!chainData) {
+      return;
+    }
+
+    console.log('chainData.sessions.length', chainData.sessions.length);
 
     // Some of the sessions will be future/not attempted sessions.
     // We want the next session the participant should be attempting.
@@ -176,6 +214,8 @@ const ChainsHomeScreen: FC<Props> = props => {
         setAsideContents(PROBE_INSTRUCTIONS);
       }
     }
+
+    contextDispatch({ type: 'isLoading', payload: false });
   };
 
   const navToProbeOrTraining = () => {
@@ -183,33 +223,46 @@ const ChainsHomeScreen: FC<Props> = props => {
   };
 
   const key = contextState.chainData ? contextState.chainData.participant_id : -1;
-  const { chainData, chainSteps, session } = contextState;
-  const chainSessionId = session && session.id !== undefined ? session.id : -1;
+  const chainSessionId =
+    contextState.session && contextState.session.id !== undefined ? contextState.session.id : -1;
+
+  function _getMasteryInfo(chainData: ChainData, chainStepId: number) {
+    // return MasteryService.getMasteryInfoForStep(chainData, chainStepId);
+    return { chainStepId: chainStepId, stepStatus: ChainStepStatus.not_complete } as MasteryInfo;
+  }
 
   return (
     <ImageBackground
       key={'chains_home_sreen_' + key}
-      source={require('../assets/images/sunrise-muted.jpg')}
+      source={BackgroundImages.sunrise_muted}
       resizeMode={'cover'}
       style={styles.bkgrdImage}
     >
       <View style={portrait ? styles.container : styles.landscapeContainer}>
         <AppHeader name='Chains Home' />
-        {chainSteps && chainData !== undefined && (
+        {!contextIsLoading && contextState.chainSteps && contextState.chainData ? (
           <View style={styles.listContainer}>
             <SessionDataAside asideContent={asideContent} />
-            <FlatList
-              style={styles.list}
-              data={chainSteps || []}
-              keyExtractor={chainStep => 'scorecard_chain_step_' + chainStep.id.toString()}
-              renderItem={({ item, index, separators }) => (
-                <ScorecardListItem
-                  chainStep={item}
-                  stepAttempt={chainData.getStep(chainSessionId, item.id)}
-                  masteryInfo={MasteryService.getMasteryInfoForStep(chainData, item.id)}
-                />
-              )}
-            />
+            {contextState.chainSteps && (
+              <ScrollView style={styles.list}>
+                {contextState.chainSteps.map(chainStep => {
+                  return contextState.chainData ? (
+                    <ScorecardListItem
+                      key={'scorecard_list_chain_step_' + chainStep.id}
+                      chainStep={chainStep}
+                      stepAttempt={contextState.chainData.getStep(chainSessionId, chainStep.id)}
+                      masteryInfo={_getMasteryInfo(contextState.chainData, chainStep.id)}
+                    />
+                  ) : (
+                    <Text>Error</Text>
+                  );
+                })}
+              </ScrollView>
+            )}
+          </View>
+        ) : (
+          <View>
+            <ActivityIndicator animating={true} color={CustomColors.uva.mountain} />
           </View>
         )}
         <TouchableOpacity
@@ -271,6 +324,9 @@ const styles = StyleSheet.create({
     marginBottom: 4,
     padding: 5,
     paddingBottom: 30,
+  },
+  listItem: {
+    height: 60,
   },
   startSessionBtn: {
     width: '90%',

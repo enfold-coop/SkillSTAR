@@ -1,7 +1,7 @@
 import { MaterialIcons } from '@expo/vector-icons';
 import date from 'date-and-time';
 import React, { useEffect, useState } from 'react';
-import { ImageSourcePropType, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import * as Animatable from 'react-native-animatable';
 import { Card } from 'react-native-paper';
 import CustomColors from '../../styles/Colors';
@@ -9,16 +9,6 @@ import { MasteryIcon } from '../../styles/MasteryIcon';
 import { ChainStep } from '../../types/CHAIN/ChainStep';
 import { MasteryInfo } from '../../types/CHAIN/MasteryLevel';
 import { StepAttempt } from '../../types/CHAIN/StepAttempt';
-
-interface ImageSourceMap {
-  [key: string]: ImageSourcePropType;
-}
-
-const Icons: ImageSourceMap = {
-  masteredIcon: require('../../assets/icons/ribbon-icon_1.png'),
-  focusIcon: require('../../assets/icons/in-progress-icon_1.png'),
-  notStartedIcon: require('../../assets/icons/waving-icon.png'),
-};
 
 interface ScorecardListItemProps {
   chainStep: ChainStep;
@@ -29,16 +19,7 @@ interface ScorecardListItemProps {
 const ScorecardListItem = (props: ScorecardListItemProps) => {
   const { chainStep, stepAttempt, masteryInfo } = props;
   const [isPressed, setIsPressed] = useState(false);
-  const [icon, setIcon] = useState<ImageSourcePropType>();
   const [stepData, setStepData] = useState<StepAttempt>();
-
-  const determineMastery = () => {
-    if (chainStep.id === 0 && stepData) {
-      setIcon(Icons.focusIcon);
-    } else if (chainStep.id > 0) {
-      setIcon(Icons.notStartedIcon);
-    }
-  };
 
   const handleDateVals = (d?: Date): string => {
     if (d) {
@@ -53,8 +34,6 @@ const ScorecardListItem = (props: ScorecardListItemProps) => {
 
     if (!isCancelled) {
       setStepData(stepAttempt);
-      determineMastery();
-      // setDateIntro();
     }
 
     return () => {

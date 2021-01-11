@@ -36,6 +36,10 @@ export class ChainData {
    * @param newStep: Data to update the step with
    */
   updateStep(sessionId: number, chainStepId: number, newStep: StepAttempt) {
+    console.log('SkillstarChain.ts > ChainData > updateStep ***');
+    console.log('sessionId', sessionId);
+    console.log('chainStepId', chainStepId);
+    console.log('newStep', newStep);
     this.sessions.forEach((session, i) => {
       if (session.id === sessionId) {
         session.step_attempts.forEach((stepAttempt, j) => {
@@ -53,6 +57,7 @@ export class ChainData {
    * @param newSession: Data to update the session with
    */
   updateSession(sessionId: number, newSession: ChainSession) {
+    console.log('SkillstarChain.ts > ChainData > updateSession ***');
     this.sessions.forEach((session, i) => {
       if (session.id === sessionId) {
         this.sessions[i] = newSession;

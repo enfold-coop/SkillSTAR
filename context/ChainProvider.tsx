@@ -15,7 +15,8 @@ type Action =
   | { type: 'user'; payload: User }
   | { type: 'participant'; payload: Participant }
   | { type: 'chainData'; payload: ChainData }
-  | { type: 'masteryInfo'; payload: MasteryInfo };
+  | { type: 'masteryInfo'; payload: MasteryInfo }
+  | { type: 'isLoading'; payload: boolean };
 
 type Dispatch = (action: Action) => void;
 
@@ -32,9 +33,11 @@ type ChainProviderState = {
   participant?: Participant;
   chainData?: ChainData;
   masteryInfo?: MasteryInfo;
+  isLoading: boolean;
 };
 
 const initialState: ChainProviderState = {
+  isLoading: true,
   sessionType: ChainSessionType.probe,
   sessionNumber: 0,
 };
@@ -63,6 +66,8 @@ const reducer = (state: any, action: Action) => {
       return { ...state, chainData: action.payload };
     case 'masteryInfo':
       return { ...state, masteryInfo: action.payload };
+    case 'isLoading':
+      return { ...state, isLoading: action.payload };
     default:
       throw new Error(`Unhandled action type: ${actionType}`);
   }

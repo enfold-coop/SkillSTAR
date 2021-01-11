@@ -17,10 +17,12 @@ export const SelectParticipant = (): ReactElement => {
   const [menuItems, setMenuItems] = useState<ReactElement[]>();
   const [selectedParticipant, setSelectedParticipant] = useState<Participant>();
   const [participants, setParticipants] = useState<Participant[]>();
+  const [shouldNavigate, setShouldNavigate] = useState<boolean>(false);
   const closeMenu = () => setIsVisible(false);
   const openMenu = () => setIsVisible(true);
 
   const selectParticipant = async (selectedParticipant: Participant) => {
+    contextDispatch({ type: 'isLoading', payload: true });
     const participant = await api.selectParticipant(selectedParticipant.id);
 
     if (participant) {
@@ -29,10 +31,23 @@ export const SelectParticipant = (): ReactElement => {
 
       const dbChainData = await api.getChainDataForSelectedParticipant();
       if (dbChainData) {
-        contextDispatch({ type: 'chainData', payload: new ChainData(dbChainData) });
+        const chainData = new ChainData(dbChainData);
+        contextDispatch({ type: 'chainData', payload: chainData });
+
+        if (chainData.sessions && chainData.sessions.length > 0) {
+          contextDispatch({
+            type: 'session',
+            payload: chainData.sessions[chainData.sessions.length - 1],
+          });
+          contextDispatch({
+            type: 'sessionNumber',
+            payload: chainData.sessions.length,
+          });
+        }
       }
 
-      await navigation.navigate('ChainsHomeScreen');
+      setShouldNavigate(true);
+      contextDispatch({ type: 'isLoading', payload: false });
     }
 
     await closeMenu();
@@ -123,6 +138,20 @@ export const SelectParticipant = (): ReactElement => {
       isCancelled = true;
     };
   }, [contextState.user, selectedParticipant, participants]);
+
+  useEffect(() => {
+    let isCancelled = false;
+
+    if (!isCancelled) {
+      if (shouldNavigate) {
+        navigation.navigate('ChainsHomeScreen');
+      }
+    }
+
+    return () => {
+      isCancelled = true;
+    };
+  }, [contextState.isLoading]);
 
   const btnLabel = contextState.participant
     ? `Participant: ${participantName(contextState.participant)}`
