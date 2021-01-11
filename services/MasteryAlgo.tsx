@@ -58,7 +58,7 @@ export class MasteryAlgo {
         this.determineCurrentFocusStepId();
         this._setPrevSessionType();
         this.isSessionProbeOrTraining();
-        // this.determineIfBoosterSession();
+        this.determineIfBoosterSession();
     }
 
     static isSessionProbeOrTraining(){
@@ -105,41 +105,48 @@ export class MasteryAlgo {
         
     }
 
+    static _meetsBoosterCriteria(sessions: StepAttempt[], sessionType: string){
+        let trainingBoosterMax = sessionType === "training" ? 3 : 2;
+        let meetsCritCount = 0;
+        for (let i = trainingBoosterMax; i > 0; i--) {
+            console.log(steps[i]);
+            if (steps[i].had_challenging_behavior || steps[i].was_prompted) {
+                meetsCritCount += 1;
+            } else {
+                meetsCritCount = 0;
+            }
+        }
+        if(meetsCritCount >= trainingBoosterMax){
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     // contains logic to determine if a session is a booster session
     static determineIfBoosterSession(){
         let prevCount = 0;
-        let prevSession
-        
-        if(this.prevSessionType === "probe"){
-            console.log("this is a probve");
-            
-        } else if (this.prevSessionType === "training"){
-            
-            // if(this.sessionsArray.length >= 3){
-            // if(MOCKSESSIONSLENGTH >= 3){
-                // for (let i = this.sessionsArray.length; i > 0 ; i--) {
-                // for (let i = MOCKSESSIONSLENGTH; i > 0 ; i--) { 
-                    // get prevFocusStep info
-                    // if(this.sessionsArray[i])
-                    
-                // }
-                console.log("t");
-        } else {
-            console.log("this is an mistake");
-            
+        let prevSession;
+        let sessionLength = this.sessionsArray.length;
+        // 1. get prevSessType
+        // 2. get focusStepId
+        // 3. decl var TOTAL_SESSIONS_MET_COUNT = 0
+        // 4. decl sessions.length var
+        // 5. IF: (prevSessType == "training")
+        // ---- THEN: MAXCRITCOUNT = 3;
+        // 6. ELSE:
+        // ---- THEN MAXCRITCOUNT = 2;
+        // 7. FOR_LOOP:
+        // ---- FOR(MAXCRITCOUNT; index--): 
+        // -------- IF(session[index].step_attempt[stepID] had: CHAL_BEHAV -OR- NEEDED_PROMPTING ): 
+        // ------------ THEN: TOTAL_SESSIONS_MET_COUNT += 1
+        // -------- ELSE: 
+        // ------------ THEN: TOTAL_SESSIONS_MET_COUNT = 0;
+        // 8. IF:(TOTAL_SESSIONS_MET_COUNT >= MAXCRITCOUNT):
+        // ---- THEN: currSession = BOOSTER
+        // 9. ELSE:
+        // ---- THEN: currSession = NOT booster
         }
-            
-        //     if(this.prevSessionData.)
-        
-        // }
-        // THEN: 
-        // ---- IF(2 preVFocusSteps had: challBehav || needed Prompting)
-        // -------- THEN: currSession is Booster
-        // IF(prevFocus was Training)
-        // THEN: 
-        // ---- IF(3 preVFocusSteps had: challBehav || needed Prompting)
-        // -------- THEN: currSession is Booster
-    }
 
     /**
      * 

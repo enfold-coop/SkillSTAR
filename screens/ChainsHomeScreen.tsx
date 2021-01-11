@@ -203,7 +203,6 @@ const ChainsHomeScreen: FC<Props> = props => {
         setBtnText(START_TRAINING_SESSION_BTN);
       }
       if (lastSess.session_type === ChainSessionType.probe) {
-        // console.log(chainData.sessions.length + 1);
         setType('probe');
         setSessionNmbr(chainData.sessions.length + 1);
         dispatch({ type: ADD_CURR_SESSION_NMBR, payload: sessionNmbr });
