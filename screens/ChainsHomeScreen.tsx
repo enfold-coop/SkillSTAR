@@ -107,7 +107,6 @@ const ChainsHomeScreen: FC<Props> = props => {
 
   useEffect(() => {
     let isCancelled = false;
-
     const _load = async () => {
       if (chainData != undefined && !isCancelled) {
         callAlgo(chainData);
@@ -149,18 +148,17 @@ const ChainsHomeScreen: FC<Props> = props => {
           if (dbChainData && !isCancelled) {
             setChainData(new ChainData(dbChainData));
           }
-
           setSessionNumber(1);
         }
       }
     };
 
     _load();
-
     return () => {
       isCancelled = true;
     };
-  }, [chainData]);
+  });
+//   }, [chainData]);
 
   useEffect(() => {
     let isCancelled = false;
@@ -219,14 +217,14 @@ const ChainsHomeScreen: FC<Props> = props => {
         await ApiService.contextDispatch({ type: 'sessionType', payload: 'probe' });
       }
       if (lastSess) {
-        if (lastSess.session_type === ChainSessionType.training) {
+        if (MasteryAlgo.prevSessionType === ChainSessionType.training) {
           setType('training');
           setSessionNumber(chainData.sessions.length + 1);
           await ApiService.contextDispatch({ type: 'sessionNumber', payload: sessionNumber });
           await ApiService.contextDispatch({ type: 'sessionType', payload: 'training' });
           setBtnText(START_TRAINING_SESSION_BTN);
         }
-        if (lastSess.session_type === ChainSessionType.probe) {
+        if (MasteryAlgo.prevSessionType === ChainSessionType.probe) {
           setType('probe');
           setSessionNumber(chainData.sessions.length + 1);
           await ApiService.contextDispatch({ type: 'sessionNumber', payload: sessionNumber });

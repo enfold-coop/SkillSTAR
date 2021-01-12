@@ -40,7 +40,7 @@ export class MasteryAlgo {
     // [X] = determine focus-step index
     // [X] = determine current session number
     // [X] = determine probe or trainging session
-    // [ ] = determine booster session (line 94)
+    // [ ] = determine booster session (line 164)
     // [ ] = determine ...
 
     
@@ -60,7 +60,7 @@ export class MasteryAlgo {
         this._setPrevSessionType();
         this.determinePrevFocusStepId();
         this.isSessionProbeOrTraining();
-        this.determineIfBoosterSession();
+        this.determineIfBoosterSession(); // line 186?
     }
 
     // util: converting map to array
@@ -191,15 +191,18 @@ export class MasteryAlgo {
         // 2. get focusStepId
         let id = this.prevFocusStepId;
 
-        // 5. IF: (prevSessType == "training")
-        let maxPrevCount = lastSessType === "training" ? 3 : 2;
+        let minimumAmntPrevFSAttemptsMastered = lastSessType === "training" ? 3 : 2;
         // 7. FOR_LOOP:
 
         // ---- FOR(MAXCRITCOUNT; index--): 
-        for (let i = maxPrevCount; i >= 0 ; i--) {
+        for (let i = minimumAmntPrevFSAttemptsMastered; i > 0 ; i--) {
             // -------- IF(session[index].step_attempt[stepID] had: CHAL_BEHAV -OR- NEEDED_PROMPTING ): 
-            let prevFS = this.sessionsArray[i].step_attempts[id];
+            let prevFS = this.sessionsArray[i].step_attempts[0];
+            // console.log(prevFS);
             console.log(prevFS);
+            console.log(i);
+            
+            
             
             
         }
