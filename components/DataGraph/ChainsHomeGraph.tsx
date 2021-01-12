@@ -1,24 +1,26 @@
 import React, { FC, useEffect, useState } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { LayoutRectangle, StyleSheet, View } from 'react-native';
 import Plotly from 'react-native-plotly';
 import CustomColors from '../../styles/Colors';
 
 type Props = {
-  dimensions: {};
+  dimensions?: LayoutRectangle;
 };
 
 const ChainsHomeGraph: FC<Props> = props => {
   const { dimensions } = props;
-  const [dimens, setDimens] = useState({});
+  const [dimens, setDimens] = useState<LayoutRectangle>();
 
   useEffect(() => {
-    setDimens(dimensions);
+    if (dimensions && !dimens) {
+      setDimens(dimensions);
+    }
   }, []);
 
   const data = [
     {
       x: [1, 2, 3, 4, 5],
-      y: [1, 4, 3, 4, 8],
+      y: [1, 2, 3, 4, 5],
       mode: 'markers',
       name: 'Probe Session',
       marker: {
@@ -31,13 +33,13 @@ const ChainsHomeGraph: FC<Props> = props => {
       },
     },
     {
-      x: [4, 2, 4, 4, 5],
-      y: [2, 3, 4, 5, 6],
+      x: [1, 2, 3, 4, 5],
+      y: [1, 2, 3, 4, 5],
       mode: 'lines',
       name: 'Training Session',
     },
     {
-      x: [4, 2, 4, 4, 5],
+      x: [1, 2, 3, 4, 5],
       y: [1, 2, 3, 4, 5],
       mode: 'lines',
       name: 'Challenging Behavior',
@@ -45,8 +47,8 @@ const ChainsHomeGraph: FC<Props> = props => {
   ];
 
   const layout = {
-    width: 270,
-    height: 190,
+    width: dimens ? dimens.width : 270,
+    height: dimens ? dimens.width : 190,
     plot_bgcolor: CustomColors.uva.sky,
     margin: {
       r: 0,

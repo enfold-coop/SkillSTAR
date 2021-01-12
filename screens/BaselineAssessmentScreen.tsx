@@ -1,58 +1,59 @@
 import { useNavigation } from '@react-navigation/native';
-import React, { ReactNode, useEffect, useState } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import { Dimensions, StyleSheet, Text, View } from 'react-native';
-import { Button } from 'react-native-paper';
+import { ActivityIndicator, Button } from 'react-native-paper';
 import AppHeader from '../components/Header/AppHeader';
 import DataVerificationList from '../components/Probe/DataVerificationList';
 import { RootNavProps } from '../navigation/root_types';
 import { ApiService } from '../services/ApiService';
 import CustomColors from '../styles/Colors';
-import { ChainData, SkillstarChain } from '../types/CHAIN/SkillstarChain';
-import { ChainSession } from '../types/CHAIN/ChainSession';
-import { ChainStepStatus, StepAttempt } from '../types/CHAIN/StepAttempt';
+import { ChainSession, ChainSessionType, ChainSessionTypeMap } from '../types/CHAIN/ChainSession';
+import { ChainStep } from '../types/CHAIN/ChainStep';
+import { ChainData } from '../types/CHAIN/SkillstarChain';
+import { ChainStepStatus, StepAttempt, StepAttemptField } from '../types/CHAIN/StepAttempt';
+import { DataVerificationControlCallback } from '../types/DataVerificationControlCallback';
+
+console.log('\n=== BaselineAssessmentScreen.tsx ===\n')
 
 type Props = {
   route: RootNavProps<'BaselineAssessmentScreen'>;
   navigation: RootNavProps<'BaselineAssessmentScreen'>;
 };
 
-const windowWidth = Dimensions.get('window').width;
-const windowHeight = Dimensions.get('window').height;
-
 /**
  *
  */
-function BaselineAssessmentScreen({ route }: Props): ReactNode {
+const BaselineAssessmentScreen: FC<Props> = props => {
   /**
    * Set session type: Probe or Training
    */
-  const api = new ApiService();
   const navigation = useNavigation();
-  const [stepIndex, setStepIndex] = useState(0);
-  const [readyToSubmit, setReadyToSubmit] = useState(false);
-  const [questionnaireId, setQuestionnaireId] = useState<number>();
   const [sessionReady, setSessionReady] = useState(false);
-  const [chainData, setChainData] = useState<ChainData>();
   const [chainSession, setChainSession] = useState<ChainSession>();
-  const [text, setText] = useState('');
+  const [chainSteps, setChainSteps] = useState<ChainStep[]>();
+  const [chainData, setChainData] = useState<ChainData>();
 
   /** START: Lifecycle calls */
   useEffect(() => {
     let isCancelled = false;
 
     const _load = async () => {
-      const chainSteps = await api.getChainSteps();
-      const qId = await api.getChainQuestionnaireId();
-
-      if (qId !== undefined && !isCancelled) {
-        setQuestionnaireId(qId);
-        const dbChainData = await api.getChainData(qId);
-        if (dbChainData) {
-          setChainData(new ChainData(dbChainData));
-        }
+      console.log('BaselineAssessmentScreen > useEffect 1 > _load');
+      const contextChainData = await ApiService.contextState('chainSteps');
+      if (!isCancelled && !chainData && contextChainData) {
+        console.log('BaselineAssessmentScreen.tsx > useEffect > _load > Setting chainData.');
+        const newChainData = new ChainData(contextChainData);
+        setChainData(newChainData);
       }
 
-      if (chainSteps) {
+      const contextChainSteps = await ApiService.contextState('chainSteps');
+      if (!isCancelled && !chainSteps && contextChainSteps) {
+        console.log('BaselineAssessmentScreen.tsx > useEffect > _load > Setting chainSteps.');
+        setChainSteps(contextChainSteps as ChainStep[]);
+      }
+
+      if (!isCancelled && chainSteps && chainData) {
+        console.log('BaselineAssessmentScreen > useEffect 1 > _load > Setting session...');
         const stepAttempts: StepAttempt[] = chainSteps.map(chainStep => {
           return {
             chain_step_id: chainStep.id,
@@ -63,99 +64,119 @@ function BaselineAssessmentScreen({ route }: Props): ReactNode {
         });
 
         const newChainSession: ChainSession = {
+          date: new Date(),
+          completed: false,
+          session_type: ChainSessionType.probe,
           step_attempts: stepAttempts,
         };
 
-        if (!isCancelled) {
+        if (!isCancelled && !chainSession) {
           setChainSession(newChainSession);
+          setSessionReady(true);
         }
-      }
-
-      if (!isCancelled) {
-        setSessionReady(true);
       }
     };
 
-    if (!chainSession) {
+    if (!isCancelled) {
       _load();
     }
+
 
     return () => {
       isCancelled = true;
     };
-  }, []);
+  });
   /** END: Lifecycle calls */
 
-  const updateChainData = async (stepId: number, fieldName: string, fieldValue: boolean) => {
+  const updateChainData: DataVerificationControlCallback = async (
+    chainStepId: number,
+    fieldName: string,
+    fieldValue: StepAttemptField,
+  ) => {
+    if (chainData && chainSession && chainSession.id !== undefined) {
+      //  Get the step
+      const newStep: StepAttempt = chainData.getStep(chainSession.id, chainStepId);
 
-    //  Find the step that matches the stepId
-    //  Set the value of the fieldName for that step
-    if (questionnaireId !== undefined && chainData && chainSession) {
-      chainData.sessions.push(chainSession);
-      await api.upsertChainData(chainData);
+      // Modify the value
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore-next-line
+      newStep[fieldName] = fieldValue;
+
+      //  Set the value of the fieldName for a specific step
+      if (chainData && chainData.id !== undefined) {
+        chainData.updateStep(chainSession.id, chainStepId, newStep);
+      }
     }
   };
 
   const setSessionData = async () => {
-    // Context API set session data
-    if (questionnaireId !== undefined && chainData && chainSession) {
-      chainData.sessions.push(chainSession);
-      await api.upsertChainData(chainData);
+    console.log('*** setSessionData ***');
+    if (chainData && chainSession) {
+      if (!chainData.sessions) {
+        chainData.sessions = [];
+      }
 
-      // navigate to chainshomescreen
-      navigation.navigate('ChainsHomeScreen');
+      chainData.sessions.push(chainSession);
+
+      const dbChainData = await ApiService.upsertChainData(chainData);
+      if (dbChainData) {
+        navigation.navigate('ChainsHomeScreen');
+      } else {
+        console.error('Something went wrong with saving the chain data.');
+      }
     }
   };
 
   return (
-    // <ImageBackground
-    // 	source={require("../assets/images/sunrise-muted.png")}
-    // 	resizeMode={"cover"}
-    // 	style={styles.image}
-    // >
     <View style={styles.image}>
-      {sessionReady && (
-        <View style={styles.container}>
-          <AppHeader name='Brushing Teeth' />
+      <View style={styles.container}>
+        <AppHeader name='Brushing Teeth' />
+        {sessionReady && chainSession ? (
           <View style={styles.instructionContainer}>
-            {/* <Text style={styles.screenHeader}>Probe Session</Text> */}
+            <Text style={styles.screenHeader}>
+              {(ChainSessionTypeMap[chainSession.session_type as string].value ||
+                'Baseline Assessment') + ' Session'}
+            </Text>
             <Text style={styles.instruction}>
               Please instruct the child to brush their teeth. As they do, please complete this
               survey for each step.
             </Text>
           </View>
-          <View style={styles.formContainer}>
-            {
-              <DataVerificationList
-                stepAttempts={chainSession ? chainSession.step_attempts : []}
-                onChange={updateChainData}
-              />
-            }
+        ) : (
+          <View>
+            <ActivityIndicator animating={true} color={CustomColors.uva.mountain} />
           </View>
-
-          <View style={styles.nextBackBtnsContainer}>
-            <Button
-              style={styles.nextButton}
-              color={CustomColors.uva.orange}
-              labelStyle={{
-                fontSize: 16,
-                fontWeight: '600',
-                color: CustomColors.uva.blue,
-              }}
-              mode='contained'
-              onPress={() => {
-                setSessionData();
-              }}
-            >
-              NEXT
-            </Button>
-          </View>
+        )}
+        <View style={styles.formContainer}>
+          {
+            <DataVerificationList
+              stepAttempts={chainSession ? chainSession.step_attempts : []}
+              onChange={updateChainData}
+            />
+          }
         </View>
-      )}
+
+        <View style={styles.nextBackBtnsContainer}>
+          <Button
+            style={styles.nextButton}
+            color={CustomColors.uva.orange}
+            labelStyle={{
+              fontSize: 16,
+              fontWeight: '600',
+              color: CustomColors.uva.blue,
+            }}
+            mode='contained'
+            onPress={() => {
+              setSessionData();
+            }}
+          >
+            NEXT
+          </Button>
+        </View>
+      </View>
     </View>
-    // </ImageBackground>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {

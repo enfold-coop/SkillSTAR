@@ -1,18 +1,17 @@
-import React, { FC } from "react";
-import { StyleSheet, FlatList, View, Text } from "react-native";
-import { SkillListCard } from "./index";
-import { RootNavProps } from "../../navigation/root_types";
+import React, { FC } from 'react';
+import { StyleSheet, View } from 'react-native';
+import { RootNavProps } from '../../navigation/root_types';
 
 type SkillsListProps = {
-	data?: {}[];
-	route: RootNavProps<"SkillsHomeScreen">;
-	navigation: RootNavProps<"SkillsHomeScreen">;
+  data?: {}[];
+  route: RootNavProps<'SkillsHomeScreen'>;
+  navigation: RootNavProps<'SkillsHomeScreen'>;
 };
 
-const SkillsList: FC<SkillsListProps> = (props) => {
-	return (
-		<View style={styles.container}>
-			{/* <Text style={styles.title}></Text>
+const SkillsList: FC<SkillsListProps> = props => {
+  return (
+    <View style={styles.container}>
+      {/* <Text style={styles.title}></Text>
 			{props.data && (
 				<FlatList
 					contentContainerStyle={{
@@ -25,20 +24,20 @@ const SkillsList: FC<SkillsListProps> = (props) => {
 					renderItem={(item) => <SkillListCard dataItem={item} />}
 				/>
 			)} */}
-		</View>
-	);
+    </View>
+  );
 };
 
 const styles = StyleSheet.create({
-	container: {
-		flex: 1,
-		marginLeft: 10,
-		marginRight: 10,
-	},
-	title: {
-		fontSize: 20,
-		fontWeight: "900",
-	},
+  container: {
+    flex: 1,
+    marginLeft: 10,
+    marginRight: 10,
+  },
+  title: {
+    fontSize: 20,
+    fontWeight: '900',
+  },
 });
 
 export default SkillsList;

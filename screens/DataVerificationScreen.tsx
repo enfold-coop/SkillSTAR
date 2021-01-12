@@ -1,5 +1,5 @@
 import { useNavigation } from '@react-navigation/native';
-import React, { ReactNode, useEffect, useState } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import { FlatList, StyleSheet, Text, View } from 'react-native';
 import * as Animatable from 'react-native-animatable';
 import 'react-native-get-random-values';
@@ -10,6 +10,7 @@ import ColumnLabels from '../components/DataVerification/ColumnLabels';
 import { createSession } from '../components/DataVerification/mock_session';
 import AppHeader from '../components/Header/AppHeader';
 import CustomColors from '../styles/Colors';
+import { StepAttempt } from '../types/CHAIN/StepAttempt';
 
 type Props = {
   session: [];
@@ -18,12 +19,13 @@ type Props = {
 /**
  *
  */
-function DataVerificationScreen({ session }: Props): ReactNode {
+const DataVerificationScreen: FC<Props> = props => {
+  const { session } = props;
   const navigation = useNavigation();
   const [stepIndex, setStepIndex] = useState(0);
   const [readyToSubmit, setReadyToSubmit] = useState(false);
   const [confirmSubmit, setConfirmSubmit] = useState(false);
-  const [sessionData, setSessionData] = useState();
+  const [stepAttempts, setStepAttempts] = useState<StepAttempt[]>();
   const [scrolling, setScrolling] = useState(false);
   let mockSesh;
 
@@ -45,7 +47,7 @@ function DataVerificationScreen({ session }: Props): ReactNode {
   useEffect(() => {
     if (session == undefined) {
       mockSesh = createSession();
-      setSessionData(mockSesh.data);
+      setStepAttempts(mockSesh.data);
     }
   }, []);
   /**
@@ -60,7 +62,7 @@ function DataVerificationScreen({ session }: Props): ReactNode {
 
   return (
     <View style={styles.container}>
-      <AppHeader name='Brushing Teeth' />
+      {/*<AppHeader name='Brushing Teeth' />*/}
       <View style={styles.instructionContainer}>
         <Text style={[scrolling ? styles.smallHeader : styles.screenHeader]}>Probe Session</Text>
         <Animatable.Text
@@ -74,13 +76,13 @@ function DataVerificationScreen({ session }: Props): ReactNode {
       </View>
       <View style={styles.formContainer}>
         <ColumnLabels />
-        {sessionData && (
+        {stepAttempts && (
           <FlatList
             onScrollBeginDrag={() => {
               setScrolling(true);
               setReadyToSubmit(true);
             }}
-            data={sessionData}
+            data={stepAttempts}
             renderItem={item => {
               return <DataVerifItem stepAttempt={item.item} />;
             }}
@@ -117,7 +119,7 @@ function DataVerificationScreen({ session }: Props): ReactNode {
       )}
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {

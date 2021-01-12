@@ -1,21 +1,63 @@
 import { DEFAULT_USER_EMAIL, DEFAULT_USER_PASSWORD } from '@env';
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Image, ImageBackground, StyleSheet, View } from 'react-native';
 import * as Animatable from 'react-native-animatable';
 import { Button, Text, TextInput } from 'react-native-paper';
-import { AuthContext } from '../context/AuthProvider';
 import { RootNavProps as Props } from '../navigation/root_types';
 import { ApiService } from '../services/ApiService';
 import CustomColors from '../styles/Colors';
-import { AuthProviderProps } from '../types/AuthProvider';
 
 export default function LandingScreen({ navigation }: Props<'LandingScreen'>) {
   const [email, setEmail] = useState(DEFAULT_USER_EMAIL);
   const [password, setPassword] = useState(DEFAULT_USER_PASSWORD);
   const [isValid, setIsValid] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string>('');
-  const api = new ApiService();
-  const context = useContext<AuthProviderProps>(AuthContext);
+
+  /** LIFECYCLE METHODS */
+  useEffect(() => {
+    let isCancelled = false;
+    let isLoading = false;
+
+    const _loadUser = async () => {
+      isLoading = true;
+      const user = await ApiService.getUser();
+
+      if (user) {
+        await ApiService.contextDispatch({ type: 'user', payload: user });
+
+        // Get cached participant, or participant from STAR DRIVE if none cached.
+        const selectedParticipant = await ApiService.getSelectedParticipant();
+
+        if (selectedParticipant) {
+          // When the participant is returned, go to the ChainsHomeScreen.
+          await ApiService.contextDispatch({ type: 'participant', payload: selectedParticipant });
+          navigation.navigate('ChainsHomeScreen');
+        } else {
+          // TODO: There is a cached user, but the user account has no participants.
+          //  Render a message that instructs the user to go to STAR DRIVE and
+          //  add a dependent to their profile.
+          console.error('No participants for the current user');
+        }
+      } else {
+        // If no cached user, this screen will render the login form.
+        console.error('No cached user session. Please log in.');
+      }
+
+      isLoading = false;
+    };
+
+    if (!isCancelled) {
+      setIsValid(!!(email && password));
+      if (!isLoading) {
+        _loadUser();
+      }
+    }
+
+    return () => {
+      isCancelled = true;
+    };
+  }, [isValid]);
+  /** END LIFECYCLE METHODS */
 
   const _checkEmail = (inputText: string) => {
     setErrorMessage('');
@@ -29,43 +71,22 @@ export default function LandingScreen({ navigation }: Props<'LandingScreen'>) {
     setPassword(inputText);
   };
 
-  useEffect(() => {
-    setIsValid(!!(email && password));
+  const _handleLogin = async () => {
+    setErrorMessage('');
 
-    api.getUser().then(
-      user => {
-        if (user) {
-          if (user.token) {
-            context.state.user = user;
-          }
-
-          // Get cached participant, or participant from STAR DRIVE if none cached.
-          api.getSelectedParticipant().then(
-            selectedParticipant => {
-              if (selectedParticipant) {
-                // When the participant is returned, go to the ChainsHomeScreen.
-                context.state.participant = selectedParticipant;
-                navigation.navigate('ChainsHomeScreen');
-              } else {
-                // TODO: There is a cached user, but the user account has no participants.
-                //  Render a message that instructs the user to go to STAR DRIVE and
-                //  add a dependent to their profile.
-              }
-            },
-            error => {
-              console.error('No participants for the current user', error);
-            },
-          );
-        } else {
-          // If no cached user, this screen will render the login form.
-        }
-      },
-      error => {
-        // If no cached user, this screen will render the login form.
-        console.error('No cached user session. Please log in.', error);
-      },
-    );
-  });
+    try {
+      const user = await ApiService.login(email, password);
+      if (user) {
+        await ApiService.contextDispatch({ type: 'user', payload: user });
+        navigation.navigate('ChainsHomeScreen');
+      }
+    } catch (e) {
+      setErrorMessage(
+        'Invalid username or password. Please check your login information and try again.',
+      );
+      console.error(e);
+    }
+  };
 
   return (
     <ImageBackground
@@ -111,18 +132,7 @@ export default function LandingScreen({ navigation }: Props<'LandingScreen'>) {
           mode='contained'
           disabled={!isValid}
           onPress={() => {
-            setErrorMessage('');
-            api.login(email, password).then(user => {
-              // console.log("user", user);
-              if (user) {
-                context.state.user = user;
-                navigation.navigate('ChainsHomeScreen');
-              } else {
-                setErrorMessage(
-                  'Invalid username or password. Please check your login information and try again.',
-                );
-              }
-            });
+            _handleLogin();
           }}
         >
           <Text style={styles.btnText}>Log In</Text>

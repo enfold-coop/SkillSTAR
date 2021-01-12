@@ -18,8 +18,8 @@ import {
  * - An empty probe session, if there are none left to attempt (???)
  */
 export class MasteryService {
-	// TODO: Figure out where to store where the user started in this hierarchy.
-	// TODO: Also figure out where to store where the user currently is, on a session-by-session basis...?
+	// TODO: Figure out where to ChainProviderContext where the user started in this hierarchy.
+	// TODO: Also figure out where to ChainProviderContext where the user currently is, on a session-by-session basis...?
 	promptHierarchy = [
 		ChainStepPromptLevel.full_physical,
 		ChainStepPromptLevel.full_physical,

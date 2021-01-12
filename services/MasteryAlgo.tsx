@@ -9,6 +9,7 @@ import {
     ChainStepStatusMap,
     ChallengingBehaviorSeverityMap
 } from "../types/CHAIN/StepAttempt";
+import { TouchableHighlight } from "react-native-gesture-handler";
 
 // MOCK SESSIONS ARRAY LENGTH
 const MOCKSESSIONSLENGTH = 5;
@@ -57,6 +58,7 @@ export class MasteryAlgo {
         this.determineStepAttemptPromptLevel(chainData);
         this.determineCurrentFocusStepId();
         this._setPrevSessionType();
+        this.determinePrevFocusStepId();
         this.isSessionProbeOrTraining();
         this.determineIfBoosterSession();
     }
@@ -116,6 +118,12 @@ export class MasteryAlgo {
     }
 
     // 
+    static determinePrevFocusStepId(){
+        if(this.prevFocusStep){
+            this.prevFocusStepId = this.prevFocusStep.chain_step?.id;
+        }
+    }
+    // Sets the current focus step id
     static determineCurrentFocusStepId(){
         if(this.prevFocusStep){
             if(this._isPrevFocusMastered()){
@@ -157,7 +165,7 @@ export class MasteryAlgo {
         let trainingBoosterMax = sessionType === "training" ? 3 : 2;
         let meetsCritCount = 0;
         for (let i = trainingBoosterMax; i > 0; i--) {
-            console.log(steps[i]);
+            // console.log(steps[i]);
             if (steps[i].had_challenging_behavior || steps[i].was_prompted) {
                 meetsCritCount += 1;
             } else {
@@ -174,19 +182,27 @@ export class MasteryAlgo {
     // contains logic to determine if a session is a booster session
     static determineIfBoosterSession(){
         let prevCount = 0;
+        // 3. decl var TOTAL_SESSIONS_MET_COUNT = 0
         let TOTAL_SESSIONS_MET_COUNT = 0;
+        // 4. decl sessions.length var
         let sessionLength = this.sessionsArray.length;
         // 1. get prevSessType
+        let lastSessType = this.sessionsArray[sessionLength-1].session_type;
         // 2. get focusStepId
-        // 3. decl var TOTAL_SESSIONS_MET_COUNT = 0
-        // 4. decl sessions.length var
+        let id = this.prevFocusStepId;
+
         // 5. IF: (prevSessType == "training")
-        // ---- THEN: MAXCRITCOUNT = 3;
-        // 6. ELSE:
-        // ---- THEN MAXCRITCOUNT = 2;
+        let maxPrevCount = lastSessType === "training" ? 3 : 2;
         // 7. FOR_LOOP:
+
         // ---- FOR(MAXCRITCOUNT; index--): 
-        // -------- IF(session[index].step_attempt[stepID] had: CHAL_BEHAV -OR- NEEDED_PROMPTING ): 
+        for (let i = maxPrevCount; i >= 0 ; i--) {
+            // -------- IF(session[index].step_attempt[stepID] had: CHAL_BEHAV -OR- NEEDED_PROMPTING ): 
+            let prevFS = this.sessionsArray[i].step_attempts[id];
+            console.log(prevFS);
+            
+            
+        }
         // ------------ THEN: TOTAL_SESSIONS_MET_COUNT += 1
         // -------- ELSE: 
         // ------------ THEN: TOTAL_SESSIONS_MET_COUNT = 0;
