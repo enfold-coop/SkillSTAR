@@ -194,7 +194,7 @@ export class MasteryAlgo {
         // ---- THEN: currSession = BOOSTER
         // 9. ELSE:
         // ---- THEN: currSession = NOT booster
-        }
+    }
 
     /**
      * _getNextPromptLevel()
