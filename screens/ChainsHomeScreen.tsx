@@ -157,8 +157,7 @@ const ChainsHomeScreen: FC<Props> = props => {
     return () => {
       isCancelled = true;
     };
-  });
-//   }, [chainData]);
+  }, [chainData]);
 
   useEffect(() => {
     let isCancelled = false;

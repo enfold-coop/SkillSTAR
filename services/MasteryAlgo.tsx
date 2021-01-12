@@ -191,20 +191,18 @@ export class MasteryAlgo {
         // 2. get focusStepId
         let id = this.prevFocusStepId;
 
-        let minimumAmntPrevFSAttemptsMastered = lastSessType === "training" ? 3 : 2;
+        let minAmntPrevMastered = lastSessType === "training" ? 3 : 2;
         // 7. FOR_LOOP:
 
         // ---- FOR(MAXCRITCOUNT; index--): 
-        for (let i = minimumAmntPrevFSAttemptsMastered; i > 0 ; i--) {
-            // -------- IF(session[index].step_attempt[stepID] had: CHAL_BEHAV -OR- NEEDED_PROMPTING ): 
-            let prevFS = this.sessionsArray[i].step_attempts[0];
-            // console.log(prevFS);
-            console.log(prevFS);
-            console.log(i);
-            
-            
-            
-            
+        if(minAmntPrevMastered < sessionLength){
+            for (let i = minAmntPrevMastered; i > 0 ; i--) {
+                // -------- IF(session[index].step_attempt[stepID] had: CHAL_BEHAV -OR- NEEDED_PROMPTING ): 
+                console.log(i);
+            }
+        } else {
+            console.log("*** Doesn't qualify as booster ***");
+            return;
         }
         // ------------ THEN: TOTAL_SESSIONS_MET_COUNT += 1
         // -------- ELSE: 
