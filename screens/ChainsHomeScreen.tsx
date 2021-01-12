@@ -17,7 +17,7 @@ import { RootNavProps } from '../navigation/root_types';
 import { ApiService } from '../services/ApiService';
 import { MasteryAlgo } from '../services/MasteryAlgo';
 import CustomColors from '../styles/Colors';
-import { ChainSession, ChainSessionType, ChainSessionTypeMap } from '../types/CHAIN/ChainSession';
+import { ChainSession, ChainSessionType, ChainSessionTypeLabels } from '../types/CHAIN/ChainSession';
 import { ChainStep } from '../types/CHAIN/ChainStep';
 import { MasteryInfo } from '../types/CHAIN/MasteryLevel';
 import { ChainData, SkillstarChain } from '../types/CHAIN/SkillstarChain';
@@ -32,10 +32,11 @@ type Props = {
 // Chain Home Screen
 const ChainsHomeScreen: FC<Props> = props => {
   const [asideContent, setAsideContents] = useState('');
-  const [btnText, setBtnText] = useState('Start Session');
+  const [btnText, setBtnText] = useState<string>();
   const [orient, setOrient] = useState(false);
   const [sessionNumber, setSessionNumber] = useState<number>(0);
-  const [type, setType] = useState<string>('type');
+  const [type, setType] = useState<ChainSessionType>();
+  const [typeLabel, setTypeLabel] = useState<ChainSessionTypeLabels>();
   const navigation = useNavigation();
   const { portrait } = useDeviceOrientation();
   const [participant, setParticipant] = useState<Participant>();
@@ -98,7 +99,71 @@ const ChainsHomeScreen: FC<Props> = props => {
       }
     };
 
-    _load();
+    // TODO: Replace this with the real mastery algorithm
+    const _setSessionTypeAndNmbr = async () => {
+      console.log('*** _setSessionTypeAndNmbr ***');
+      if (!chainData) {
+        return;
+      }
+
+      console.log('chainData.sessions.length', chainData.sessions.length);
+
+      // Some of the sessions will be future/not attempted sessions.
+      // We want the next session the participant should be attempting.
+      const numSessions = chainData.sessions ? chainData.sessions.length : 0;
+
+      // If there are no sessions, return a probe session.
+
+      // Otherwise, return the first un-attempted session OR the last attempted session, if there are no un-attempted sessions?
+
+      const lastSess = numSessions > 0 ? chainData.sessions[numSessions - 1] : null;
+      // console.log(lastSess);
+
+      // !! overriding type for dev purposes
+      // lastSess.session_type = ChainSessionType.training;
+
+      if (lastSess === null) {
+        setSessionNumber(1);
+        setType(ChainSessionType.probe);
+        setTypeLabel(ChainSessionTypeLabels.probe);
+
+        // Session count (how many sessions attempted)
+        // i.e., sessions with attempts. Sessions with no attempts would not be included in this count?
+        await ApiService.contextDispatch({ type: 'sessionNumber', payload: 1 });
+
+        // chainData.sessions[i].session_type
+        await ApiService.contextDispatch({ type: 'sessionType', payload: 'probe' });
+      }
+      if (lastSess) {
+        // TODO: Hook this up to the real session type
+        // if (lastSess.session_type === ChainSessionType.training) {
+        // For now, just base the session type on whether the session number is even or odd.
+        const isOdd = sessionNumber % 2 === 1;
+        if (isOdd) {
+          setType(ChainSessionType.training);
+          setTypeLabel(ChainSessionTypeLabels.training);
+          // console.log(chainData.sessions.length + 1);
+
+          setSessionNumber(chainData.sessions.length + 1);
+          await ApiService.contextDispatch({ type: 'sessionNumber', payload: sessionNumber });
+          await ApiService.contextDispatch({ type: 'sessionType', payload: 'training' });
+          setBtnText(START_TRAINING_SESSION_BTN);
+        } else {
+          // console.log(chainData.sessions.length + 1);
+          setType(ChainSessionType.probe);
+          setTypeLabel(ChainSessionTypeLabels.probe);
+          setSessionNumber(chainData.sessions.length + 1);
+          await ApiService.contextDispatch({ type: 'sessionNumber', payload: sessionNumber });
+          await ApiService.contextDispatch({ type: 'sessionType', payload: 'probe' });
+          setBtnText(START_PROBE_SESSION_BTN);
+          setAsideContents(PROBE_INSTRUCTIONS);
+        }
+      }
+    };
+
+    _load().then(() => {
+      _setSessionTypeAndNmbr();
+    });
 
     return () => {
       isCancelled = true;
@@ -206,69 +271,11 @@ const ChainsHomeScreen: FC<Props> = props => {
       }
     };
 
-    // TODO: Replace this with the real mastery algorithm
-    const _setSessionTypeAndNmbr = async () => {
-      console.log('*** _setSessionTypeAndNmbr ***');
-      if (!chainData) {
-        return;
-      }
-
-      console.log('chainData.sessions.length', chainData.sessions.length);
-
-      // Some of the sessions will be future/not attempted sessions.
-      // We want the next session the participant should be attempting.
-      const numSessions = chainData.sessions ? chainData.sessions.length : 0;
-
-      // If there are no sessions, return a probe session.
-
-      // Otherwise, return the first un-attempted session OR the last attempted session, if there are no un-attempted sessions?
-
-      const lastSess = numSessions > 0 ? chainData.sessions[numSessions - 1] : null;
-      // console.log(lastSess);
-
-      // !! overriding type for dev purposes
-      // lastSess.session_type = ChainSessionType.training;
-
-      if (lastSess === null) {
-        setSessionNumber(1);
-        setType('probe');
-
-        // Session count (how many sessions attempted)
-        // i.e., sessions with attempts. Sessions with no attempts would not be included in this count?
-        await ApiService.contextDispatch({ type: 'sessionNumber', payload: 1 });
-
-        // chainData.sessions[i].session_type
-        await ApiService.contextDispatch({ type: 'sessionType', payload: 'probe' });
-      }
-      if (lastSess) {
-        if (lastSess.session_type === ChainSessionType.training) {
-          setType('training');
-          // console.log(chainData.sessions.length + 1);
-
-          setSessionNumber(chainData.sessions.length + 1);
-          await ApiService.contextDispatch({ type: 'sessionNumber', payload: sessionNumber });
-          await ApiService.contextDispatch({ type: 'sessionType', payload: 'training' });
-          setBtnText(START_TRAINING_SESSION_BTN);
-        }
-        if (lastSess.session_type === ChainSessionType.probe) {
-          // console.log(chainData.sessions.length + 1);
-          setType('probe');
-          setSessionNumber(chainData.sessions.length + 1);
-          await ApiService.contextDispatch({ type: 'sessionNumber', payload: sessionNumber });
-          await ApiService.contextDispatch({ type: 'sessionType', payload: 'probe' });
-          setBtnText(START_PROBE_SESSION_BTN);
-          setAsideContents(PROBE_INSTRUCTIONS);
-        }
-      }
-    };
-
     if (!isLoading) {
       _load().then(() => {
         isLoading = false;
         if (!isCancelled) {
-          _setSessionTypeAndNmbr().then(() => {
-            setOrient(portrait);
-          });
+          setOrient(portrait);
         }
       });
     }
@@ -335,7 +342,7 @@ const ChainsHomeScreen: FC<Props> = props => {
           onPress={navToProbeOrTraining}
         >
           <Animatable.Text animation='bounceIn' duration={2000} style={styles.btnText}>
-            {btnText}
+            Start {typeLabel} Session
           </Animatable.Text>
         </TouchableOpacity>
       </View>
