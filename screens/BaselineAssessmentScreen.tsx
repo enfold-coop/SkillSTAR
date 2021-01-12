@@ -39,7 +39,7 @@ const BaselineAssessmentScreen: FC<Props> = props => {
 
     const _load = async () => {
       console.log('BaselineAssessmentScreen > useEffect 1 > _load');
-      const contextChainData = await ApiService.contextState('chainSteps');
+      const contextChainData = await ApiService.contextState('chainData');
       if (!isCancelled && !chainData && contextChainData) {
         console.log('BaselineAssessmentScreen.tsx > useEffect > _load > Setting chainData.');
         const newChainData = new ChainData(contextChainData);
@@ -112,6 +112,7 @@ const BaselineAssessmentScreen: FC<Props> = props => {
   const setSessionData = async () => {
     console.log('*** setSessionData ***');
     if (chainData && chainSession) {
+      console.log('chainData.id', chainData.id);
       if (!chainData.sessions) {
         chainData.sessions = [];
       }
