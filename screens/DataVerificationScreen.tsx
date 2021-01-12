@@ -3,37 +3,37 @@ import React, { FC, useEffect, useState } from 'react';
 import { FlatList, StyleSheet, Text, View } from 'react-native';
 import * as Animatable from 'react-native-animatable';
 import 'react-native-get-random-values';
-import { Button } from 'react-native-paper';
+import { ActivityIndicator, Button } from 'react-native-paper';
 import { DataVerifItem } from '../components/DataVerification';
 import ColumnLabels from '../components/DataVerification/ColumnLabels';
-// MOCK IMPORT:
-import { createSession } from '../components/DataVerification/mock_session';
 import AppHeader from '../components/Header/AppHeader';
+import { ApiService } from '../services/ApiService';
 import CustomColors from '../styles/Colors';
+import { ChainSession } from '../types/CHAIN/ChainSession';
+import { ChainStep } from '../types/CHAIN/ChainStep';
+import { ChainData } from '../types/CHAIN/SkillstarChain';
 import { StepAttempt } from '../types/CHAIN/StepAttempt';
 
-type Props = {
-  session: [];
-};
+type Props = {};
 
 /**
  *
  */
 const DataVerificationScreen: FC<Props> = props => {
-  const { session } = props;
   const navigation = useNavigation();
-  const [stepIndex, setStepIndex] = useState(0);
+  const [chainData, setChainData] = useState<ChainData>();
+  const [chainSession, setChainSession] = useState<ChainSession>();
+  const [chainSteps, setChainSteps] = useState<ChainStep[]>();
   const [readyToSubmit, setReadyToSubmit] = useState(false);
   const [confirmSubmit, setConfirmSubmit] = useState(false);
   const [stepAttempts, setStepAttempts] = useState<StepAttempt[]>();
   const [scrolling, setScrolling] = useState(false);
-  let mockSesh;
 
   // Called on 2nd press of Submit button
   const submitAndNavigate = () => {
     setConfirmSubmit(false);
     postData();
-    navigation.navigate('RewardsScreens');
+    navigation.navigate('ChainsHomeScreen');
   };
 
   // Post state data to API
@@ -41,28 +41,63 @@ const DataVerificationScreen: FC<Props> = props => {
     console.log('POSTING DATA');
   };
 
-  /**
-   * BEGIN: MOCK
-   */
-  useEffect(() => {
-    if (session == undefined) {
-      mockSesh = createSession();
-      setStepAttempts(mockSesh.data);
-    }
-  }, []);
-  /**
-   * END: MOCK
-   */
-
   /** START: Lifecycle calls */
-  // useEffect(() => {
-  // 	setSessionData(session);
-  // }, []);
+  useEffect(() => {
+    let isCancelled = false;
+
+    const _load = async () => {
+      if (!isCancelled) {
+        if (!chainData) {
+          const contextChainData = await ApiService.contextState('chainData');
+          if (!isCancelled && contextChainData) {
+            setChainData(contextChainData as ChainData);
+          }
+        }
+
+        if (!chainSession) {
+          const contextSession = await ApiService.contextState('session');
+          if (!isCancelled && contextSession) {
+            setChainSession(contextSession as ChainSession);
+          }
+        }
+
+        if (!chainSteps) {
+          const contextChainSteps = await ApiService.contextState('chainSteps');
+          if (!isCancelled && contextChainSteps) {
+            setChainSteps(contextChainSteps as ChainStep[]);
+          }
+        }
+      }
+    };
+
+    _load();
+
+    return () => {
+      isCancelled = true;
+    };
+  }, []);
+
+  // Runs when session is updated.
+  useEffect(() => {
+    let isCancelled = false;
+
+    const _load = async () => {
+      if (!isCancelled && chainSession && !stepAttempts) {
+        setStepAttempts(chainSession.step_attempts);
+      }
+    };
+
+    _load();
+
+    return () => {
+      isCancelled = true;
+    };
+  }, [chainSession]);
   /** END: Lifecycle calls */
 
   return (
     <View style={styles.container}>
-      {/*<AppHeader name='Brushing Teeth' />*/}
+      <AppHeader name='Brushing Teeth' />
       <View style={styles.instructionContainer}>
         <Text style={[scrolling ? styles.smallHeader : styles.screenHeader]}>Probe Session</Text>
         <Animatable.Text
@@ -76,7 +111,7 @@ const DataVerificationScreen: FC<Props> = props => {
       </View>
       <View style={styles.formContainer}>
         <ColumnLabels />
-        {stepAttempts && (
+        {chainSteps && chainData && chainSession && stepAttempts ? (
           <FlatList
             onScrollBeginDrag={() => {
               setScrolling(true);
@@ -84,10 +119,14 @@ const DataVerificationScreen: FC<Props> = props => {
             }}
             data={stepAttempts}
             renderItem={item => {
-              return <DataVerifItem stepAttempt={item.item} />;
+              return <DataVerifItem stepAttempt={item.item} chainSteps={chainSteps} />;
             }}
             keyExtractor={() => `${Math.floor(Math.random() * 10000)}`}
           />
+        ) : (
+          <View>
+            <ActivityIndicator animating={true} color={CustomColors.uva.mountain} />
+          </View>
         )}
       </View>
 

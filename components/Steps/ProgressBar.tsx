@@ -2,16 +2,17 @@ import React, { FC, useEffect, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { ProgressBar as ProgBar } from 'react-native-paper';
 import CustomColors from '../../styles/Colors';
+import { ChainStep } from '../../types/CHAIN/ChainStep';
 
 type Props = {
   masteryLevel: string;
-  currStep: number;
+  currentStepIndex: number;
   totalSteps: number;
-  steps: {}[];
+  chainSteps: ChainStep[];
 };
 
 const ProgressBar: FC<Props> = props => {
-  const { totalSteps, currStep, masteryLevel, steps } = props;
+  const { totalSteps, currentStepIndex, masteryLevel, chainSteps } = props;
   // console.log(steps);
 
   const [mastery, setMastery] = useState('focus');
@@ -32,7 +33,7 @@ const ProgressBar: FC<Props> = props => {
     }
   };
 
-  useEffect(() => {}, [currStep]);
+  useEffect(() => {}, [currentStepIndex]);
 
   useEffect(() => {
     setMastery(masteryLevel);
@@ -43,11 +44,11 @@ const ProgressBar: FC<Props> = props => {
     <View style={styles.container}>
       <ProgBar
         style={styles.progressBar}
-        progress={progressBarCalculation(totalSteps, currStep)}
+        progress={progressBarCalculation(totalSteps, currentStepIndex)}
         color={barColor}
       />
       <Text style={styles.progressText}>
-        Step {steps[currStep].stepId} out of {steps.length}
+        Step {currentStepIndex + 1} out of {chainSteps.length}
       </Text>
     </View>
   );
@@ -57,7 +58,8 @@ export default ProgressBar;
 
 const styles = StyleSheet.create({
   container: {
-    justifyContent: 'flex-start',
+    flexDirection: 'column',
+    justifyContent: 'center',
     alignContent: 'flex-start',
   },
   progressBar: {
