@@ -172,7 +172,7 @@ const StepScreen: FC<Props> = props => {
         {chainData && session && chainSteps && stepIndex !== undefined ? (
           <View style={styles.progress}>
             <Text style={styles.headline}>
-              Step {chainSteps[stepIndex].id}: {chainSteps[stepIndex].instruction}
+              Step {chainSteps[stepIndex].id + 1}: {chainSteps[stepIndex].instruction}
             </Text>
 
             <View style={styles.progressContainer}>
