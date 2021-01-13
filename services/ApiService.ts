@@ -1,3 +1,4 @@
+import writeJsonFile from 'write-json-file';
 import { API_URL } from '@env';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import NetInfo from '@react-native-community/netinfo';
@@ -444,6 +445,8 @@ export class ApiService {
 
       if (user) {
         if (user.token) {
+            console.log(user.token);
+            
           await this._cache('user_token', user.token);
         }
 

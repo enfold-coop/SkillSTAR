@@ -9,7 +9,7 @@ import {
     ChainStepStatusMap,
     ChallengingBehaviorSeverityMap
 } from "../types/CHAIN/StepAttempt";
-import { TouchableHighlight } from "react-native-gesture-handler";
+import { LongPressGestureHandler, TouchableHighlight } from "react-native-gesture-handler";
 
 // MOCK SESSIONS ARRAY LENGTH
 const MOCKSESSIONSLENGTH = 5;
@@ -67,12 +67,12 @@ export class MasteryAlgo {
     static _convertMapToArray(eMap: {}) {
         return  Object.values(eMap);    
     }
-
+    
     // all of participant's session history data
     static _getPreviousSessionData(chainData: SkillstarChain){
         return chainData.sessions[chainData.sessions.length - 1];
     }
-
+    
     /**
      * 
      * @param session : prev session data
@@ -80,8 +80,7 @@ export class MasteryAlgo {
      */
     static _getPrevSessionFocusStepData(session: ChainSession) {
         return session.step_attempts.find((e) => {
-            let s = e.status;
-            if(s === "focus"){
+            if(e.status === "focus"){
                 return e;
             }
         });
@@ -161,44 +160,41 @@ export class MasteryAlgo {
 		this.currentSessionNumber = sessionsLength + 1;
     }
 
-    static _meetsBoosterCriteria(sessions: StepAttempt[], sessionType: string){
-        let trainingBoosterMax = sessionType === "training" ? 3 : 2;
-        let meetsCritCount = 0;
-        for (let i = trainingBoosterMax; i > 0; i--) {
-            // console.log(steps[i]);
-            if (steps[i].had_challenging_behavior || steps[i].was_prompted) {
-                meetsCritCount += 1;
-            } else {
-                meetsCritCount = 0;
-            }
+    static _findPrevStepAttemptWId(id: number, index:number){
+        // console.log("id");
+        // console.log(id);
+        // console.log("index");
+        // console.log(index);
+        
+        for (let i = 0; i < this.sessionsArray[index].step_attempts.length; i++) {
+            if(this.sessionsArray[index].step_attempts[i].chain_step_id === id){     
+                return this.sessionsArray[index].step_attempts[i];
+            }   
         }
-        if(meetsCritCount >= trainingBoosterMax){
-            return true;
-        } else {
-            return false;
-        }
+    }
+
+    static _neededPromptOrHadCB(){
+
     }
 
     // contains logic to determine if a session is a booster session
     static determineIfBoosterSession(){
         let prevCount = 0;
-        // 3. decl var TOTAL_SESSIONS_MET_COUNT = 0
         let TOTAL_SESSIONS_MET_COUNT = 0;
-        // 4. decl sessions.length var
         let sessionLength = this.sessionsArray.length;
-        // 1. get prevSessType
         let lastSessType = this.sessionsArray[sessionLength-1].session_type;
-        // 2. get focusStepId
-        let id = this.prevFocusStepId;
-
+        console.log(lastSessType);
+        
+        let id = this.prevFocusStepId;        
+        let prevThree = [];
         let minAmntPrevMastered = lastSessType === "training" ? 3 : 2;
         // 7. FOR_LOOP:
 
         // ---- FOR(MAXCRITCOUNT; index--): 
         if(minAmntPrevMastered < sessionLength){
             for (let i = minAmntPrevMastered; i > 0 ; i--) {
-                // -------- IF(session[index].step_attempt[stepID] had: CHAL_BEHAV -OR- NEEDED_PROMPTING ): 
-                console.log(i);
+                prevThree.push(this._findPrevStepAttemptWId(id, i));
+                // console.log(prevThree);
             }
         } else {
             console.log("*** Doesn't qualify as booster ***");

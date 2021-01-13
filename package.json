@@ -7,6 +7,7 @@
     "web": "expo start --web",
     "eject": "expo eject",
     "test": "jest",
+    "prettier-watch": "onchange \"**/*\" -- prettier --write --ignore-unknown {{changed}}",
     "test:debug": "node --inspect-brk node_modules/jest/bin/jest.js --runInBand"
   },
   "jest": {
@@ -37,6 +38,7 @@
     "expo-splash-screen": "~0.8.1",
     "expo-status-bar": "~1.0.2",
     "expo-web-browser": "~8.6.0",
+    "jsonfile": "^6.1.0",
     "react": "16.13.1",
     "react-dom": "16.13.1",
     "react-native": "^0.63.4",
@@ -44,7 +46,7 @@
     "react-native-chart-kit": "^6.8.1",
     "react-native-check-box": "^2.1.7",
     "react-native-dotenv": "^2.4.3",
-    "react-native-gesture-handler": "~1.8.0",
+    "react-native-gesture-handler": "1.4.0",
     "react-native-get-random-values": "^1.5.0",
     "react-native-paper": "^4.6.0",
     "react-native-plotly": "^4.0.0",
@@ -57,7 +59,8 @@
     "react-native-webview": "11.0.0",
     "shortid": "^2.2.16",
     "telejson": "^5.1.0",
-    "ts-jest": "^26.4.1"
+    "ts-jest": "^26.4.1",
+    "write-json-file": "^4.3.0"
   },
   "devDependencies": {
     "@babel/core": "~7.9.0",

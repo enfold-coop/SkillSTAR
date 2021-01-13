@@ -1,9 +1,10 @@
-import React, { FC, useState } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import { Image, ImageRequireSource, StyleSheet, Text, View } from 'react-native';
-import { chainSteps } from '../../data/chainSteps';
+import { ActivityIndicator } from 'react-native-paper';
 import CustomColors from '../../styles/Colors';
 import { MasteryIcon } from '../../styles/MasteryIcon';
-import { StepAttempt } from '../../types/CHAIN/StepAttempt';
+import { ChainStep } from '../../types/CHAIN/ChainStep';
+import { ChainStepPromptLevel, StepAttempt } from '../../types/CHAIN/StepAttempt';
 import { DataVerificationControlCallback } from '../../types/DataVerificationControlCallback';
 import BehavAccordion from './BehavAccordion';
 import BehavDataVerifSwitch from './BehavDataVerifSwitch';
@@ -23,14 +24,36 @@ const getPromptIcon = (level: string): ImageRequireSource => {
 
 type Props = {
   stepAttempt: StepAttempt;
+  chainSteps: ChainStep[];
 };
 
 const DataVerifItem: FC<Props> = props => {
-  const { stepAttempt } = props;
+  const { stepAttempt, chainSteps } = props;
   const [promptSwitch, setPromptSwitch] = useState(false);
   const [behavSwitch, setBehavSwitch] = useState(false);
   const [icon, setIcon] = useState();
   const [promptIcon, setPromptIcon] = useState<ImageRequireSource>();
+
+  /** Lifecycle calls */
+  // Runs when session is updated.
+  useEffect(() => {
+    let isCancelled = false;
+
+    const _load = async () => {
+      if (!isCancelled && stepAttempt && !promptIcon) {
+        const promptLevel = stepAttempt.prompt_level || ChainStepPromptLevel.full_physical;
+        const _promptLevelIcon = getPromptIcon(promptLevel as string);
+        setPromptIcon(_promptLevelIcon);
+      }
+    };
+
+    _load();
+
+    return () => {
+      isCancelled = true;
+    };
+  }, [stepAttempt]);
+  /** END: Lifecycle calls */
 
   const handlePromptSwitch: DataVerificationControlCallback = async (
     chainStepId,
@@ -47,18 +70,16 @@ const DataVerifItem: FC<Props> = props => {
     setBehavSwitch(!behavSwitch);
   };
 
-  const promptLevelIcon = () => {
-    const _promptLevelIcon = getPromptIcon(stepAttempt.prompt_level as string);
-    setPromptIcon(_promptLevelIcon);
-  };
-
-  return chainSteps && stepAttempt && stepAttempt.chain_step ? (
+  return promptIcon &&
+    chainSteps &&
+    stepAttempt &&
+    stepAttempt.chain_step &&
+    stepAttempt.chain_step_id !== undefined ? (
     <View style={styles.container}>
       <View style={styles.defaultFormContainer}>
         <MasteryIcon chainStepStatus={stepAttempt.status} />
         <Text style={styles.stepTitle}>"{stepAttempt.chain_step.instruction}"</Text>
-        <Text style={styles.promptLevelIcon}>{'FP'}</Text>
-        <Image style={styles.promptLevelIcon} source={promptIcon} resizeMode='contain' />
+        <Image style={styles.promptLevelImage} source={promptIcon} resizeMode='contain' />
         <View style={styles.switchContainer}>
           <View style={styles.questionContainer}>
             <PromptDataVerifSwitch
@@ -82,7 +103,7 @@ const DataVerifItem: FC<Props> = props => {
       </View>
     </View>
   ) : (
-    <Text>Error</Text>
+    <Text>...</Text>
   );
 };
 
@@ -113,8 +134,6 @@ const styles = StyleSheet.create({
     borderWidth: 0,
   },
   promptLevelIcon: {
-    // width: 30,
-    // height: 30,
     fontSize: 20,
     fontWeight: '800',
     borderRadius: 5,
@@ -123,6 +142,11 @@ const styles = StyleSheet.create({
     color: CustomColors.uva.gray,
     padding: 5,
     textAlign: 'center',
+    alignSelf: 'center',
+  },
+  promptLevelImage: {
+    width: 32,
+    height: 32,
     alignSelf: 'center',
   },
   stepTitle: {

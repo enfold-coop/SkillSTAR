@@ -109,8 +109,9 @@ const ChainsHomeScreen: FC<Props> = props => {
     let isCancelled = false;
     const _load = async () => {
       if (chainData != undefined && !isCancelled) {
+          
         callAlgo(chainData);
-
+        
         if (chainData.sessions && chainData.sessions.length > 0) {
           const lastSession = chainData.sessions[chainData.sessions.length - 1];
           await ApiService.contextDispatch({
@@ -168,7 +169,7 @@ const ChainsHomeScreen: FC<Props> = props => {
 
       if (participant && (!chainData || (chainData && chainData.id === undefined))) {
         // Check that the current participant has chain data. If not, add it.
-        const dbData = await ApiService.getChainDataForSelectedParticipant();
+        const dbData = await ApiService.getChainDataForSelectedParticipant();        
 
         if (!dbData || (dbData && dbData.id === undefined)) {
           const newData: SkillstarChain = {
@@ -211,7 +212,7 @@ const ChainsHomeScreen: FC<Props> = props => {
         // Session count (how many sessions attempted)
         // i.e., sessions with attempts. Sessions with no attempts would not be included in this count?
         await ApiService.contextDispatch({ type: 'sessionNumber', payload: 1 });
-
+        
         // chainData.sessions[i].session_type
         await ApiService.contextDispatch({ type: 'sessionType', payload: 'probe' });
       }
