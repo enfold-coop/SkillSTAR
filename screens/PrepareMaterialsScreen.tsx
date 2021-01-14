@@ -6,16 +6,10 @@ import { Button, Card, Title } from 'react-native-paper';
 import AppHeader from '../components/Header/AppHeader';
 import { BackgroundImages } from '../data/images';
 import { MaterialsItems } from '../data/prep_materials';
-import { RootNavProps } from '../navigation/root_types';
 import { ApiService } from '../services/ApiService';
 import CustomColors from '../styles/Colors';
 import { ChainSessionType } from '../types/CHAIN/ChainSession';
 import { ChainData } from '../types/CHAIN/SkillstarChain';
-
-type Props = {
-  route: RootNavProps<'PrepareMaterialsScreen'>;
-  navigation: RootNavProps<'PrepareMaterialsScreen'>;
-};
 
 const PrepareMaterialsScreen: FC<Props> = props => {
   const navigation = useNavigation();

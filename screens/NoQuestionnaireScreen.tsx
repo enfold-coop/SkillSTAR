@@ -1,17 +1,13 @@
-import React, {FC} from "react";
-import {StyleSheet, Text, View} from "react-native";
-import AppHeader from "../components/Header/AppHeader";
-import {RootNavProps} from "../navigation/root_types";
+import React, { FC } from 'react';
+import { StyleSheet, Text, View } from 'react-native';
+import AppHeader from '../components/Header/AppHeader';
 
-type Props = {
-  route: RootNavProps<"NoQuestionnaireScreen">;
-  navigation: RootNavProps<"NoQuestionnaireScreen">;
-};
+type Props = {};
 
-const NoQuestionnaireScreen: FC<Props> = ({navigation, route}) => {
+const NoQuestionnaireScreen: FC<Props> = props => {
   return (
     <View style={styles.container}>
-      <AppHeader name={"No SkillSTAR data found for participant"}/>
+      <AppHeader name={'No SkillSTAR data found for participant'} />
       <Text>Please visit STAR DRIVE to fill out the profile for the selected participant.</Text>
     </View>
   );
@@ -25,7 +21,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 20,
-    fontWeight: "bold",
+    fontWeight: 'bold',
   },
   separator: {
     marginVertical: 30,

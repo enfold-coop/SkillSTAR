@@ -13,12 +13,9 @@ import { ChainData } from '../types/CHAIN/SkillstarChain';
 import { ChainStepStatus, StepAttempt, StepAttemptField } from '../types/CHAIN/StepAttempt';
 import { DataVerificationControlCallback } from '../types/DataVerificationControlCallback';
 
-console.log('\n=== BaselineAssessmentScreen.tsx ===\n')
+console.log('\n=== BaselineAssessmentScreen.tsx ===\n');
 
-type Props = {
-  route: RootNavProps<'BaselineAssessmentScreen'>;
-  navigation: RootNavProps<'BaselineAssessmentScreen'>;
-};
+type Props = {};
 
 /**
  *
@@ -80,7 +77,6 @@ const BaselineAssessmentScreen: FC<Props> = props => {
     if (!isCancelled) {
       _load();
     }
-
 
     return () => {
       isCancelled = true;

@@ -15,10 +15,7 @@ import { ChainStep } from '../types/CHAIN/ChainStep';
 import { ChainData } from '../types/CHAIN/SkillstarChain';
 import { ChainStepPromptLevel, ChainStepStatus, StepAttempt } from '../types/CHAIN/StepAttempt';
 
-interface Props {
-  route: RootNavProps<'StepScreen'>;
-  navigation: RootNavProps<'StepScreen'>;
-}
+interface Props {}
 
 const StepScreen: FC<Props> = props => {
   const navigation = useNavigation();

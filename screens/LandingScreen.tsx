@@ -1,13 +1,17 @@
 import { DEFAULT_USER_EMAIL, DEFAULT_USER_PASSWORD } from '@env';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, FC } from 'react';
 import { Image, ImageBackground, StyleSheet, View } from 'react-native';
 import * as Animatable from 'react-native-animatable';
 import { Button, Text, TextInput } from 'react-native-paper';
-import { RootNavProps as Props } from '../navigation/root_types';
+// import { RootNavProps as Props } from '../navigation/root_types';
+import { useNavigation } from '@react-navigation/native';
 import { ApiService } from '../services/ApiService';
 import CustomColors from '../styles/Colors';
 
-export default function LandingScreen({ navigation }: Props<'LandingScreen'>) {
+type Props = {};
+
+const LandingScreen: FC<Props> = props => {
+  const navigation = useNavigation();
   const [email, setEmail] = useState(DEFAULT_USER_EMAIL);
   const [password, setPassword] = useState(DEFAULT_USER_PASSWORD);
   const [isValid, setIsValid] = useState<boolean>(false);
@@ -140,7 +144,9 @@ export default function LandingScreen({ navigation }: Props<'LandingScreen'>) {
       </View>
     </ImageBackground>
   );
-}
+};
+
+export default LandingScreen;
 
 const styles = StyleSheet.create({
   container: {

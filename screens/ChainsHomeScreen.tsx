@@ -13,31 +13,29 @@ import ScorecardListItem from '../components/Chain/ScorecardListItem';
 import SessionDataAside from '../components/Chain/SessionDataAside';
 import AppHeader from '../components/Header/AppHeader';
 import { BackgroundImages } from '../data/images';
-import { RootNavProps } from '../navigation/root_types';
 import { ApiService } from '../services/ApiService';
 import { MasteryAlgo } from '../services/MasteryAlgo';
 import CustomColors from '../styles/Colors';
-import { ChainSession, ChainSessionType, ChainSessionTypeLabels } from '../types/CHAIN/ChainSession';
+import {
+  ChainSession,
+  ChainSessionType,
+  ChainSessionTypeLabels,
+} from '../types/CHAIN/ChainSession';
 import { ChainStep } from '../types/CHAIN/ChainStep';
 import { MasteryInfo } from '../types/CHAIN/MasteryLevel';
 import { ChainData, SkillstarChain } from '../types/CHAIN/SkillstarChain';
 import { ChainStepStatus, StepAttempt } from '../types/CHAIN/StepAttempt';
 import { Participant } from '../types/User';
 
-type Props = {
-  route: RootNavProps<'ChainsHomeScreen'>;
-  navigation: RootNavProps<'ChainsHomeScreen'>;
-};
-
 // Chain Home Screen
 const ChainsHomeScreen: FC<Props> = props => {
+  const navigation = useNavigation();
   const [asideContent, setAsideContents] = useState('');
   const [btnText, setBtnText] = useState<string>();
   const [orient, setOrient] = useState(false);
   const [sessionNumber, setSessionNumber] = useState<number>(0);
   const [type, setType] = useState<ChainSessionType>();
   const [typeLabel, setTypeLabel] = useState<ChainSessionTypeLabels>();
-  const navigation = useNavigation();
   const { portrait } = useDeviceOrientation();
   const [participant, setParticipant] = useState<Participant>();
   const [chainSteps, setChainSteps] = useState<ChainStep[]>();
