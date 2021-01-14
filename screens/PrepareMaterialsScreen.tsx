@@ -10,6 +10,7 @@ import { RootNavProps } from '../navigation/root_types';
 import { ApiService } from '../services/ApiService';
 import CustomColors from '../styles/Colors';
 import { ChainSessionType } from '../types/CHAIN/ChainSession';
+import { ChainData } from '../types/CHAIN/SkillstarChain';
 
 type Props = {
   route: RootNavProps<'PrepareMaterialsScreen'>;
@@ -20,14 +21,30 @@ const PrepareMaterialsScreen: FC<Props> = props => {
   const navigation = useNavigation();
   const [chainSessionType, setChainSessionType] = useState<ChainSessionType>();
 
+  /**
+   * BEGIN: LIFECYCLE CALLS
+   */
   useEffect(() => {
     let isCancelled = false;
 
     const _load = async () => {
       if (!isCancelled) {
-        const contextSession = await ApiService.contextState('session');
-        if (contextSession) {
-          setChainSessionType(contextSession.session_type);
+        // TODO: Hook this up to the real session
+        // if (!chainSessionType) {
+        //   const contextSession = await ApiService.contextState('session');
+        //   if (!isCancelled && contextSession) {
+        //     setChainSessionType(contextSession.session_type);
+        //   }
+        // }
+
+        // For now, just base the session type on whether the session number is even or odd.
+        if (!chainSessionType) {
+          const contextChainData = await ApiService.contextState('chainData');
+          if (!isCancelled && contextChainData) {
+            const chainData = new ChainData(contextChainData);
+            const isOdd = chainData.sessions.length % 2 === 1;
+            setChainSessionType(isOdd ? ChainSessionType.training : ChainSessionType.probe);
+          }
         }
       }
     };
@@ -37,7 +54,10 @@ const PrepareMaterialsScreen: FC<Props> = props => {
     return () => {
       isCancelled = true;
     };
-  });
+  }, []);
+  /**
+   * END: LIFECYCLE CALLS
+   */
 
   const materialsList = MaterialsItems.map(m => (
     <Card style={styles.listItem} key={'materials_list_item_' + m.id}>
@@ -68,7 +88,8 @@ const PrepareMaterialsScreen: FC<Props> = props => {
               if ((chainSessionType as string) === 'training') {
                 navigation.navigate('StepScreen');
               } else {
-                navigation.navigate('BaselineAssessmentScreen');
+                navigation.navigate('StepScreen');
+                // navigation.navigate('BaselineAssessmentScreen');
               }
             }}
           >

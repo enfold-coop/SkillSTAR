@@ -1,4 +1,3 @@
-import writeJsonFile from 'write-json-file';
 import { API_URL } from '@env';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import NetInfo from '@react-native-community/netinfo';
@@ -88,7 +87,7 @@ export class ApiService {
       try {
         const headers = await this._getHeaders('GET');
         const response = await fetch(url, headers);
-        const dbData = await this._parseResponse(response);
+        const dbData = await this._parseResponse(response, 'getChainSteps', headers.method);
 
         // Cache them locally.
         if (dbData) {
@@ -132,9 +131,13 @@ export class ApiService {
       );
 
       try {
-        const header = await this._getHeaders('GET');
-        const response = await fetch(url, header);
-        const dbData = (await this._parseResponse(response)) as StarDriveFlow;
+        const headers = await this._getHeaders('GET');
+        const response = await fetch(url, headers);
+        const dbData = (await this._parseResponse(
+          response,
+          'getChainQuestionnaireId',
+          headers.method,
+        )) as StarDriveFlow;
 
         if (
           dbData &&
@@ -186,9 +189,9 @@ export class ApiService {
 
       console.log('url', url);
 
-      const header = await this._getHeaders('GET');
-      const response = await fetch(url, header);
-      const dbData = await this._parseResponse(response);
+      const headers = await this._getHeaders('GET');
+      const response = await fetch(url, headers);
+      const dbData = await this._parseResponse(response, 'getChainData', headers.method);
 
       if (dbData && dbData.hasOwnProperty('id')) {
         console.log('dbData', dbData.id);
@@ -262,7 +265,7 @@ export class ApiService {
       }
       const headers = await this._getHeaders('POST', data);
       const response = await fetch(url, headers);
-      const dbData = await this._parseResponse(response);
+      const dbData = await this._parseResponse(response, 'addChainData', headers.method);
 
       // Cache the chain data.
       if (dbData) {
@@ -289,9 +292,9 @@ export class ApiService {
     );
     console.log('url', url);
     try {
-      const header = await this._getHeaders('PUT', data);
-      const response = await fetch(url, header);
-      const dbData = await this._parseResponse(response);
+      const headers = await this._getHeaders('PUT', data);
+      const response = await fetch(url, headers);
+      const dbData = await this._parseResponse(response, 'editChainData', headers.method);
       return dbData as SkillstarChain;
     } catch (e) {
       console.error(e);
@@ -302,16 +305,9 @@ export class ApiService {
   static async deleteChainData(data: SkillstarChain, participantId: number) {
     const url = this.endpoints.chain + '/' + participantId;
     try {
-      const response = await fetch(url, {
-        method: 'DELETE',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data),
-      });
-
-      const dbData = await this._parseResponse(response);
+      const headers = await this._getHeaders('DELETE', data);
+      const response = await fetch(url, headers);
+      const dbData = await this._parseResponse(response, 'deleteChainData', headers.method);
       return dbData as SkillstarChain;
     } catch (e) {
       console.error(e);
@@ -348,7 +344,7 @@ export class ApiService {
     try {
       const headers = await this._getHeaders('GET');
       const response = await fetch(this.endpoints.refreshSession, headers);
-      const user: User = await this._parseResponse(response);
+      const user: User = await this._parseResponse(response, 'refreshSession', headers.method);
 
       if (user) {
         await this._cache('user', user);
@@ -441,12 +437,12 @@ export class ApiService {
         email_token,
       });
       const response = await fetch(this.endpoints.login, headers);
-      const user: User = await this._parseResponse(response);
+      const user: User = await this._parseResponse(response, 'login', headers.method);
 
       if (user) {
         if (user.token) {
-            console.log(user.token);
-            
+          console.log(user.token);
+
           await this._cache('user_token', user.token);
         }
 
@@ -468,9 +464,8 @@ export class ApiService {
     await AsyncStorage.clear();
   }
 
-  static async _getHeaders(method: 'GET' | 'POST' | 'PUT', data?: any) {
+  static async _getHeaders(method: 'GET' | 'POST' | 'PUT' | 'DELETE', data?: any) {
     const token = await this._getCached('user_token');
-
     const headers = {
       Accept: 'application/json',
       'Content-Type': 'application/json',
@@ -517,10 +512,10 @@ export class ApiService {
     }
   }
 
-  static async _parseResponse(response: Response) {
+  static async _parseResponse(response: Response, methodName: string, requestMethod: string) {
     if (!response.ok) {
       console.error(response);
-      throw new Error('Response' + response.statusText);
+      throw new Error(`Error in ${methodName} ${requestMethod} response: ` + response.statusText);
     } else {
       return await response.json();
     }

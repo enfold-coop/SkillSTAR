@@ -1,4 +1,6 @@
-export const videos: { [key: string]: any } = {
+import { AVPlaybackSource } from 'expo-av/build/AV';
+
+export const videos: { [key: string]: AVPlaybackSource } = {
   step_1: require('../assets/videos/toothbrushing_01.mp4'),
   step_2: require('../assets/videos/toothbrushing_02.mp4'),
   step_3: require('../assets/videos/toothbrushing_03.mp4'),

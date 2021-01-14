@@ -1,29 +1,35 @@
 {
-    "expo": {
-        "name": "SkillSTAR",
-        "slug": "SkillSTAR",
-        "privacy": "unlisted",
-        "version": "1.0.0",
-        "orientation": "portrait",
-        "icon": "./assets/images/logo.png",
-        "scheme": "myapp",
-        "userInterfaceStyle": "automatic",
-        "splash": {
-            "image": "./assets/images/logo-bkgrd.png",
-            "resizeMode": "contain",
-            "backgroundColor": "#ffffff"
-        },
-        "updates": {
-            "fallbackToCacheTimeout": 0
-        },
-        "assetBundlePatterns": ["**/*"],
-        "ios": {
-            "supportsTablet": true,
-            "bundleIdentifier": "SkillSTAR"
-        },
-        "web": {
-            "favicon": "./assets/images/favicon.png"
-        },
-        "description": ""
+  "expo": {
+    "name": "SkillSTAR",
+    "slug": "SkillSTAR",
+    "privacy": "unlisted",
+    "version": "1.0.1",
+    "orientation": "portrait",
+    "icon": "./assets/images/app_icon.png",
+    "scheme": "myapp",
+    "userInterfaceStyle": "automatic",
+    "splash": {
+      "image": "./assets/images/logo-bkgrd.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "updates": {
+      "fallbackToCacheTimeout": 0
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "SkillSTAR"
+    },
+    "web": {
+      "favicon": "./assets/images/favicon.png"
+    },
+    "description": "",
+    "githubUrl": "https://github.com/sartography/skillstar",
+    "android": {
+      "package": "com.ajlouie.SkillSTAR"
     }
+  }
 }
