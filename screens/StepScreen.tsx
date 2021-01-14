@@ -1,5 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
 import { Video } from 'expo-av';
+import { AVPlaybackSource } from 'expo-av/build/AV';
 import React, { FC, useEffect, useState } from 'react';
 import { ImageBackground, StyleSheet, Text, View } from 'react-native';
 import * as Animatable from 'react-native-animatable';
@@ -24,7 +25,7 @@ const StepScreen: FC<Props> = props => {
   const [chainData, setChainData] = useState<ChainData>();
   const [session, setSession] = useState<ChainSession>();
   const [chainSteps, setChainSteps] = useState<ChainStep[]>();
-  const [video, setVideo] = useState();
+  const [video, setVideo] = useState<AVPlaybackSource>();
 
   /**
    * BEGIN: LIFECYCLE CALLS
@@ -140,7 +141,7 @@ const StepScreen: FC<Props> = props => {
   };
 
   const ReturnVideoComponent = () => {
-    return video ? (
+    return video && stepIndex !== undefined ? (
       <Video
         source={video}
         rate={1.0}
