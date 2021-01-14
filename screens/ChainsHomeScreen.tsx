@@ -47,6 +47,8 @@ const ChainsHomeScreen: FC<Props> = props => {
   };
 
   /** LIFECYCLE METHODS */
+
+  // Runs on load.
   useEffect(() => {
     let isCancelled = false;
 
@@ -71,6 +73,7 @@ const ChainsHomeScreen: FC<Props> = props => {
     };
   }, []);
 
+  // Runs when participant is updated.
   useEffect(() => {
     let isCancelled = false;
 
@@ -109,6 +112,7 @@ const ChainsHomeScreen: FC<Props> = props => {
     };
   }, [participant]);
 
+  // Runs when chainData is updated.
   useEffect(() => {
     let isCancelled = false;
     const _load = async () => {
@@ -163,7 +167,7 @@ const ChainsHomeScreen: FC<Props> = props => {
     };
   }, [chainData]);
 
-  // Runs only when chainData is updated
+  // Runs when participant and/or device orientation is changed.
   useEffect(() => {
     let isCancelled = false;
     let isLoading = false;
