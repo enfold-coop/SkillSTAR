@@ -441,6 +441,8 @@ export class ApiService {
 
       if (user) {
         if (user.token) {
+          console.log(user.token);
+
           await this._cache('user_token', user.token);
         }
 

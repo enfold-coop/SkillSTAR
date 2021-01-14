@@ -17,7 +17,7 @@ import { RootNavProps } from '../navigation/root_types';
 import { ApiService } from '../services/ApiService';
 import { MasteryAlgo } from '../services/MasteryAlgo';
 import CustomColors from '../styles/Colors';
-import { ChainSession, ChainSessionType, ChainSessionTypeLabels } from '../types/CHAIN/ChainSession';
+import { ChainSession, ChainSessionType, ChainSessionTypeLabels, } from '../types/CHAIN/ChainSession';
 import { ChainStep } from '../types/CHAIN/ChainStep';
 import { MasteryInfo } from '../types/CHAIN/MasteryLevel';
 import { ChainData, SkillstarChain } from '../types/CHAIN/SkillstarChain';
@@ -45,7 +45,7 @@ const ChainsHomeScreen: FC<Props> = props => {
   const [session, setSession] = useState<ChainSession>();
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const callAlgo = (chainData: SkillstarChain) => {
-    MasteryAlgo.determineStepAttemptPromptLevel(chainData);
+    MasteryAlgo.init(chainData);
   };
 
   /** LIFECYCLE METHODS */
@@ -172,16 +172,9 @@ const ChainsHomeScreen: FC<Props> = props => {
 
   useEffect(() => {
     let isCancelled = false;
-
     const _load = async () => {
       if (chainData != undefined && !isCancelled) {
-        // callAlgo(chainData);
-        // TODO: Ask the Mastery Service for...
-        //  - the current session
-        //  - MasteryInfo for each step
-
-        // For now, just use the last ChainSession available in the ChainData.
-        console.log('chainData.sessions.length', chainData.sessions.length);
+        callAlgo(chainData);
 
         if (chainData.sessions && chainData.sessions.length > 0) {
           const lastSession = chainData.sessions[chainData.sessions.length - 1];
@@ -195,7 +188,7 @@ const ChainsHomeScreen: FC<Props> = props => {
             setSessionNumber(chainData.sessions.length);
           }
         } else if (chainSteps && chainSteps.length > 0) {
-          console.log('Creating a new session.');
+          //   console.log('Creating a new session.');
           const newChainSession: ChainSession = {
             session_type: ChainSessionType.training,
             date: new Date(),
@@ -213,8 +206,6 @@ const ChainsHomeScreen: FC<Props> = props => {
           if (!isCancelled) {
             setSession(newChainSession);
           }
-
-          console.log('newChainSession');
           const newChainData = new ChainData(chainData);
           newChainData.sessions.push(newChainSession);
           const dbChainData = await ApiService.upsertChainData(newChainData);
@@ -222,14 +213,12 @@ const ChainsHomeScreen: FC<Props> = props => {
           if (dbChainData && !isCancelled) {
             setChainData(new ChainData(dbChainData));
           }
-
           setSessionNumber(1);
         }
       }
     };
 
     _load();
-
     return () => {
       isCancelled = true;
     };
@@ -267,6 +256,45 @@ const ChainsHomeScreen: FC<Props> = props => {
           } catch (e) {
             console.error(e);
           }
+        }
+      }
+    };
+
+    // TODO: Replace this with the real mastery algorithm
+    const _setSessionTypeAndNmbr = async () => {
+      console.log('*** _setSessionTypeAndNmbr ***');
+      if (!chainData) {
+        return;
+      }
+      const numSessions = chainData.sessions ? chainData.sessions.length : 0;
+      const lastSess = numSessions > 0 ? chainData.sessions[numSessions - 1] : null;
+
+      if (lastSess === null) {
+        setSessionNumber(1);
+        setType(ChainSessionType.probe);
+
+        // Session count (how many sessions attempted)
+        // i.e., sessions with attempts. Sessions with no attempts would not be included in this count?
+        await ApiService.contextDispatch({ type: 'sessionNumber', payload: 1 });
+
+        // chainData.sessions[i].session_type
+        await ApiService.contextDispatch({ type: 'sessionType', payload: 'probe' });
+      }
+      if (lastSess) {
+        if (MasteryAlgo.prevSessionType === ChainSessionType.training) {
+          setType(ChainSessionType.training);
+          setSessionNumber(chainData.sessions.length + 1);
+          await ApiService.contextDispatch({ type: 'sessionNumber', payload: sessionNumber });
+          await ApiService.contextDispatch({ type: 'sessionType', payload: 'training' });
+          setBtnText(START_TRAINING_SESSION_BTN);
+        }
+        if (MasteryAlgo.prevSessionType === ChainSessionType.probe) {
+          setType(ChainSessionType.probe);
+          setSessionNumber(chainData.sessions.length + 1);
+          await ApiService.contextDispatch({ type: 'sessionNumber', payload: sessionNumber });
+          await ApiService.contextDispatch({ type: 'sessionType', payload: 'probe' });
+          setBtnText(START_PROBE_SESSION_BTN);
+          setAsideContents(PROBE_INSTRUCTIONS);
         }
       }
     };

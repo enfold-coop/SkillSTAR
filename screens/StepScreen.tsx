@@ -144,7 +144,7 @@ const StepScreen: FC<Props> = props => {
   };
 
   const ReturnVideoComponent = () => {
-    return video ? (
+    return video && stepIndex !== undefined ? (
       <Video
         source={video}
         rate={1.0}
