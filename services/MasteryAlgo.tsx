@@ -93,10 +93,13 @@ export class MasteryAlgo {
         });
     }
 
+    // sets 'chainData.sessions' to a property "this.sessionsArray" of MasteryAlgo,
+    // for use access outside of this file
     static setSessionArray(chainData:SkillstarChain){
         this.sessionsArray = chainData.sessions;
     }
 
+    // sets the current session number by indexing (+1) of the total sessions length
     static determineCurrentSessionNumber(chainData: SkillstarChain){
         this.currentSessionNumber = chainData.sessions.length + 1;
     }
@@ -108,9 +111,12 @@ export class MasteryAlgo {
      * @param chainData : all of participant's session history data
      */
     static determineStepAttemptPromptLevel(chainData: SkillstarChain){
-        // this.promptHierarchy = this._convertMapToArray(ChainStepPromptLevelMap);
-        // let prevSessionData = this._getPreviousSessionData(chainData);
-        // let prevFocusStep = this._getPrevSessionFocusStepData(prevSessionData);
+        this.promptHierarchy = this._convertMapToArray(ChainStepPromptLevelMap);
+        let prevSessionData = this._getPreviousSessionData(chainData);
+        let prevFocusStep = this._getPrevSessionFocusStepData(prevSessionData);
+        console.log('====================================');
+        console.log(prevFocusStep);
+        console.log('====================================');
 
         let prevPromptLevel = this.prevFocusStep?.prompt_level;
         
