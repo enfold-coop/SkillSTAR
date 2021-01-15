@@ -52,7 +52,6 @@ export class MasteryAlgo {
     static init(chainData: SkillstarChain){
         this.promptHierarchy = this._convertMapToArray(ChainStepPromptLevelMap);
         this.prevSessionData = this._getPreviousSessionData(chainData);
-        this.prevFocusStep = this._getPrevSessionFocusStepData(this.prevSessionData);
         this.setSessionArray(chainData);
         this.determineCurrentSessionNumber(chainData);
         this.determineStepAttemptPromptLevel(chainData);
@@ -60,7 +59,15 @@ export class MasteryAlgo {
         this._setPrevSessionType();
         this.determinePrevFocusStepId();
         this.isSessionProbeOrTraining();
-        this.determineIfBoosterSession(); // line 186?
+        this.getCurrFocusStep();
+        // this.determineIfBoosterSession(); // line 186?
+    }
+
+    static getCurrFocusStep(){
+        if(this.prevFocusStep && this.prevFocusStep.completed){
+            // get prev focus step's id and set currFocusStep 
+            //  (this.prevFocusStep.chain_step_id as number) + 1;
+        }
     }
 
     // util: converting map to array
@@ -200,13 +207,6 @@ export class MasteryAlgo {
             console.log("*** Doesn't qualify as booster ***");
             return;
         }
-        // ------------ THEN: TOTAL_SESSIONS_MET_COUNT += 1
-        // -------- ELSE: 
-        // ------------ THEN: TOTAL_SESSIONS_MET_COUNT = 0;
-        // 8. IF:(TOTAL_SESSIONS_MET_COUNT >= MAXCRITCOUNT):
-        // ---- THEN: currSession = BOOSTER
-        // 9. ELSE:
-        // ---- THEN: currSession = NOT booster
     }
 
     /**

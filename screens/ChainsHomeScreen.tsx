@@ -44,6 +44,11 @@ const ChainsHomeScreen: FC<Props> = props => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const callAlgo = (chainData: SkillstarChain) => {
     MasteryAlgo.init(chainData);
+    console.log('====================================');
+    let { currFocusStep, prevFocusStep, currFocusStepPromptLevel } = MasteryAlgo;
+
+    // console.log(prevFocusStep);
+    console.log('====================================');
   };
 
   /** LIFECYCLE METHODS */
