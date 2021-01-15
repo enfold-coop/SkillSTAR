@@ -11,7 +11,7 @@ import { ChainData } from '../../types/CHAIN/SkillstarChain';
 import { Participant, User } from '../../types/User';
 
 export interface SelectParticipantProps {
-  onChange: () => void;
+  onChange: (participant: Participant) => void;
 }
 
 export const SelectParticipant = (props: SelectParticipantProps): ReactElement => {
@@ -66,7 +66,9 @@ export const SelectParticipant = (props: SelectParticipantProps): ReactElement =
         }
 
         if (!isCancelled && shouldGoHome) {
-          onChange();
+          if (selectedParticipant) {
+            onChange(selectedParticipant);
+          }
           navigation.navigate('ChainsHomeScreen');
         }
       }

@@ -47,48 +47,56 @@ const ChainsHomeScreen: FC<Props> = props => {
   };
 
   /** LIFECYCLE METHODS */
+
+  // Runs on load.
   useEffect(() => {
     let isCancelled = false;
 
     const _load = async () => {
       if (!isCancelled) {
+        // Load selected participant
         if (!participant) {
-          console.log('*** ChainsHomeScreen.tsx > useEffect > _load > loading participant... ***');
-          const contextParticipant = await ApiService.contextState('participant');
-          if (!isCancelled && contextParticipant) {
-            setParticipant(contextParticipant as Participant);
-          } else {
-            const dbParticipant = await ApiService.getSelectedParticipant();
-            if (!isCancelled && dbParticipant) {
-              setParticipant(dbParticipant as Participant);
-            }
-          }
+          await ApiService.load<Participant>(
+            'participant',
+            ApiService.getSelectedParticipant,
+            setParticipant,
+            isCancelled,
+          );
         }
+      }
+    };
 
+    _load();
+
+    return () => {
+      isCancelled = true;
+    };
+  }, []);
+
+  // Runs when participant is updated.
+  useEffect(() => {
+    let isCancelled = false;
+
+    const _load = async () => {
+      if (!isCancelled) {
+        // Load chain steps
         if (!chainSteps) {
-          console.log('*** ChainsHomeScreen.tsx > useEffect > _load > loading chainSteps... ***');
-          const contextChainSteps = await ApiService.contextState('chainSteps');
-          if (!isCancelled && contextChainSteps) {
-            setChainSteps(contextChainSteps as ChainStep[]);
-          } else {
-            const dbChainSteps = await ApiService.getChainSteps();
-            if (!isCancelled && dbChainSteps) {
-              setChainSteps(dbChainSteps);
-            }
-          }
+          await ApiService.load<ChainStep[]>(
+            'chainSteps',
+            ApiService.getChainSteps,
+            setChainSteps,
+            isCancelled,
+          );
         }
 
+        // Load chain data
         if (!chainData) {
-          console.log('*** ChainsHomeScreen.tsx > useEffect > _load > loading chainSteps... ***');
-          const contextChainData = await ApiService.contextState('chainData');
-          if (!isCancelled && contextChainData) {
-            setChainData(contextChainData as ChainData);
-          } else {
-            const dbChainData = await ApiService.getChainDataForSelectedParticipant();
-            if (!isCancelled && dbChainData) {
-              setChainData(new ChainData(dbChainData));
-            }
-          }
+          await ApiService.load<ChainData>(
+            'chainData',
+            ApiService.getChainDataForSelectedParticipant,
+            setChainData,
+            isCancelled,
+          );
         }
       }
 
@@ -97,77 +105,14 @@ const ChainsHomeScreen: FC<Props> = props => {
       }
     };
 
-    // TODO: Replace this with the real mastery algorithm
-    const _setSessionTypeAndNmbr = async () => {
-      console.log('*** _setSessionTypeAndNmbr ***');
-      if (!chainData) {
-        return;
-      }
-
-      console.log('chainData.sessions.length', chainData.sessions.length);
-
-      // Some of the sessions will be future/not attempted sessions.
-      // We want the next session the participant should be attempting.
-      const numSessions = chainData.sessions ? chainData.sessions.length : 0;
-
-      // If there are no sessions, return a probe session.
-
-      // Otherwise, return the first un-attempted session OR the last attempted session, if there are no un-attempted sessions?
-
-      const lastSess = numSessions > 0 ? chainData.sessions[numSessions - 1] : null;
-      // console.log(lastSess);
-
-      // !! overriding type for dev purposes
-      // lastSess.session_type = ChainSessionType.training;
-
-      if (lastSess === null) {
-        setSessionNumber(1);
-        setType(ChainSessionType.probe);
-        setTypeLabel(ChainSessionTypeLabels.probe);
-
-        // Session count (how many sessions attempted)
-        // i.e., sessions with attempts. Sessions with no attempts would not be included in this count?
-        await ApiService.contextDispatch({ type: 'sessionNumber', payload: 1 });
-
-        // chainData.sessions[i].session_type
-        await ApiService.contextDispatch({ type: 'sessionType', payload: 'probe' });
-      }
-      if (lastSess) {
-        // TODO: Hook this up to the real session type
-        // if (lastSess.session_type === ChainSessionType.training) {
-        // For now, just base the session type on whether the session number is even or odd.
-        const isOdd = sessionNumber % 2 === 1;
-        if (isOdd) {
-          setType(ChainSessionType.training);
-          setTypeLabel(ChainSessionTypeLabels.training);
-          // console.log(chainData.sessions.length + 1);
-
-          setSessionNumber(chainData.sessions.length + 1);
-          await ApiService.contextDispatch({ type: 'sessionNumber', payload: sessionNumber });
-          await ApiService.contextDispatch({ type: 'sessionType', payload: 'training' });
-          setBtnText(START_TRAINING_SESSION_BTN);
-        } else {
-          // console.log(chainData.sessions.length + 1);
-          setType(ChainSessionType.probe);
-          setTypeLabel(ChainSessionTypeLabels.probe);
-          setSessionNumber(chainData.sessions.length + 1);
-          await ApiService.contextDispatch({ type: 'sessionNumber', payload: sessionNumber });
-          await ApiService.contextDispatch({ type: 'sessionType', payload: 'probe' });
-          setBtnText(START_PROBE_SESSION_BTN);
-          setAsideContents(PROBE_INSTRUCTIONS);
-        }
-      }
-    };
-
-    _load().then(() => {
-      _setSessionTypeAndNmbr();
-    });
+    _load();
 
     return () => {
       isCancelled = true;
     };
-  }, [isLoading]);
+  }, [participant]);
 
+  // Runs when chainData is updated.
   useEffect(() => {
     let isCancelled = false;
     const _load = async () => {
@@ -222,6 +167,7 @@ const ChainsHomeScreen: FC<Props> = props => {
     };
   }, [chainData]);
 
+  // Runs when participant and/or device orientation is changed.
   useEffect(() => {
     let isCancelled = false;
     let isLoading = false;
@@ -302,6 +248,7 @@ const ChainsHomeScreen: FC<Props> = props => {
         isLoading = false;
         if (!isCancelled) {
           setOrient(portrait);
+          _setSessionTypeAndNmbr();
         }
       });
     }
@@ -309,7 +256,7 @@ const ChainsHomeScreen: FC<Props> = props => {
     return () => {
       isCancelled = true;
     };
-  }, [portrait]);
+  }, [participant, portrait]);
   /** END LIFECYCLE METHODS */
 
   const navToProbeOrTraining = () => {
@@ -334,8 +281,9 @@ const ChainsHomeScreen: FC<Props> = props => {
       <View style={portrait ? styles.container : styles.landscapeContainer}>
         <AppHeader
           name='Chains Home'
-          onParticipantChange={() => {
+          onParticipantChange={selectedParticipant => {
             setIsLoading(true);
+            setParticipant(selectedParticipant);
           }}
         />
         {!isLoading && chainSteps && chainData ? (

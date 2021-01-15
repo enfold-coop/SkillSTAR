@@ -3,11 +3,12 @@ import { useNavigation } from '@react-navigation/native';
 import React, { FC, useEffect, useState } from 'react';
 import { Image, StyleSheet, Text, View } from 'react-native';
 import CustomColors from '../../styles/Colors';
+import { Participant } from '../../types/User';
 import { SelectParticipant } from '../SelectParticipant/SelectParticipant';
 
 type AppHeaderProps = {
   name: string;
-  onParticipantChange?: () => void;
+  onParticipantChange?: (participant: Participant) => void;
 };
 
 const AppHeader = (props: AppHeaderProps) => {
@@ -29,9 +30,9 @@ const AppHeader = (props: AppHeaderProps) => {
         />
         <Text style={orient ? styles.headline : styles.headlineLandscape}>{props.name}</Text>
         <SelectParticipant
-          onChange={() => {
+          onChange={(participant: Participant) => {
             if (onParticipantChange) {
-              onParticipantChange();
+              onParticipantChange(participant);
             } else {
               navigation.navigate('ChainsHomeScreen');
             }
