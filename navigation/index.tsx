@@ -20,7 +20,7 @@ import CustomColors from '../styles/Colors';
 import { screenOpts } from '../types/NavigationOptions';
 import { RootStackParamList } from './root_types';
 
-export default function Navigation({ colorScheme }: { colorScheme: ColorSchemeName }) {
+export default function Navigation({ colorScheme }: { colorScheme: ColorSchemeName }): JSX.Element {
   return (
     <NavigationContainer>
       <RootNavigator />

@@ -3,7 +3,6 @@ import * as SplashScreen from 'expo-splash-screen';
 import React, { useEffect, useState } from 'react';
 import { Provider } from 'react-native-paper';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-import { ChainProvider } from './context/ChainProvider';
 import useColorScheme from './hooks/useColorScheme';
 import Navigation from './navigation';
 import { customFonts } from './styles/Fonts';
@@ -11,7 +10,7 @@ import { customFonts } from './styles/Fonts';
 /**
  * Entry for the application.
  */
-export default function App() {
+export default function App(): JSX.Element | null {
   const colorScheme = useColorScheme();
   const [isLoadingComplete, setIsLoadingComplete] = useState<boolean>(false);
 
