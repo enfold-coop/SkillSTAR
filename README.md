@@ -37,3 +37,16 @@ npm install
 expo install
 expo start -c
 ```
+
+### Un-ejecting expo
+If you eject the from the managed Expo project and want to undo it, just revert any changes to `package.json` to the pre-ejected version, then run these commands:
+```bash
+rm -rf android
+rm -rf ios
+rm -rf node_modules
+rm -rf package-lock.json
+rm -rf .expo
+npm install
+expo install
+expo start -c
+```

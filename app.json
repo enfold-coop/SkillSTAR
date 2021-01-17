@@ -3,7 +3,7 @@
     "name": "SkillSTAR",
     "slug": "SkillSTAR",
     "privacy": "unlisted",
-    "version": "1.0.2",
+    "version": "1.0.3",
     "orientation": "portrait",
     "icon": "./assets/images/app_icon.png",
     "scheme": "myapp",
@@ -21,7 +21,13 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "SkillSTAR"
+      "bundleIdentifier": "SkillSTAR",
+      "infoPlist": {
+        "UIBackgroundModes": [
+          "fetch",
+          "remote-notification"
+        ]
+      }
     },
     "web": {
       "favicon": "./assets/images/favicon.png"

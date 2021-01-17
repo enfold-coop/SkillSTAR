@@ -1,6 +1,7 @@
-import { StackNavigationOptions } from '@react-navigation/stack';
-import React from 'react';
+import { RouteProp } from '@react-navigation/native';
+import { StackNavigationOptions, StackNavigationProp } from '@react-navigation/stack';
 import CustomColors from '../styles/Colors';
+import { ChainSession } from './CHAIN/ChainSession';
 
 export const screenOpts: StackNavigationOptions = {
   headerStyle: {
@@ -11,4 +12,22 @@ export const screenOpts: StackNavigationOptions = {
     fontWeight: 'bold',
     color: '#fff',
   },
+};
+
+export type RootStackParamList = {
+  LandingScreen: undefined;
+  BaselineAssessmentScreen: undefined;
+  ChainsHomeScreen: undefined;
+  PrepareMaterialsScreen: undefined;
+  StepScreen: undefined;
+  ProbeScreen: undefined;
+  DataVerificationScreen: undefined;
+  RewardsScreens: undefined;
+  NoQuestionnaireScreen: undefined;
+};
+
+// A generic used to provide propTypes to Root Screens.
+export type RootNavProps<T extends keyof RootStackParamList> = {
+  navigation: StackNavigationProp<RootStackParamList, T>;
+  route: RouteProp<RootStackParamList, T>;
 };

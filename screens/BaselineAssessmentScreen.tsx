@@ -1,10 +1,10 @@
 import { useNavigation } from '@react-navigation/native';
 import React, { FC, useEffect, useState } from 'react';
-import { Dimensions, StyleSheet, Text, View } from 'react-native';
-import { ActivityIndicator, Button } from 'react-native-paper';
+import { StyleSheet, Text, View } from 'react-native';
+import { Button } from 'react-native-paper';
 import AppHeader from '../components/Header/AppHeader';
+import { Loading } from '../components/Loading/Loading';
 import DataVerificationList from '../components/Probe/DataVerificationList';
-import { RootNavProps } from '../navigation/root_types';
 import { ApiService } from '../services/ApiService';
 import CustomColors from '../styles/Colors';
 import { ChainSession, ChainSessionType, ChainSessionTypeMap } from '../types/CHAIN/ChainSession';
@@ -140,9 +140,7 @@ const BaselineAssessmentScreen: FC<Props> = props => {
             </Text>
           </View>
         ) : (
-          <View>
-            <ActivityIndicator animating={true} color={CustomColors.uva.mountain} />
-          </View>
+          <Loading />
         )}
         <View style={styles.formContainer}>
           {

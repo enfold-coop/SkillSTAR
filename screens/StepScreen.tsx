@@ -8,7 +8,6 @@ import { ActivityIndicator, Button } from 'react-native-paper';
 import AppHeader from '../components/Header/AppHeader';
 import { MasteryIconContainer, ProgressBar, StarsNIconsContainer } from '../components/Steps/index';
 import { videos } from '../data/videos';
-import { RootNavProps } from '../navigation/root_types';
 import { ApiService } from '../services/ApiService';
 import CustomColors from '../styles/Colors';
 import { ChainSession } from '../types/CHAIN/ChainSession';

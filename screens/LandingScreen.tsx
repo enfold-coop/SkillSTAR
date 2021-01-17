@@ -3,7 +3,6 @@ import React, { useEffect, useState, FC } from 'react';
 import { Image, ImageBackground, StyleSheet, View } from 'react-native';
 import * as Animatable from 'react-native-animatable';
 import { Button, Text, TextInput } from 'react-native-paper';
-// import { RootNavProps as Props } from '../navigation/root_types';
 import { useNavigation } from '@react-navigation/native';
 import { ApiService } from '../services/ApiService';
 import CustomColors from '../styles/Colors';
@@ -44,7 +43,7 @@ const LandingScreen: FC<Props> = props => {
         }
       } else {
         // If no cached user, this screen will render the login form.
-        console.error('No cached user session. Please log in.');
+        console.log('No cached user session. Please log in.');
       }
 
       isLoading = false;
