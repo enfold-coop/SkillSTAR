@@ -20,6 +20,7 @@
       "**/*"
     ],
     "ios": {
+      "buildNumber": "3",
       "supportsTablet": true,
       "bundleIdentifier": "SkillSTAR",
       "infoPlist": {

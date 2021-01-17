@@ -107,12 +107,14 @@ const StepScreen: FC<Props> = props => {
 
   const incrIndex = () => {
     if (stepIndex !== undefined) {
+      setVideo(undefined);
       setStepIndex(stepIndex + 1);
     }
   };
 
   const decrIndex = () => {
     if (stepIndex !== undefined && stepIndex > 0) {
+      setVideo(undefined);
       setStepIndex(stepIndex - 1);
     }
   };

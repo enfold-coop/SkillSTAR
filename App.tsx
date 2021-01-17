@@ -1,17 +1,14 @@
-import * as Font from 'expo-font';
-import React, { createRef, ReactElement, useEffect, useState } from 'react';
-import { ActivityIndicator, Button, Provider } from 'react-native-paper';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
-import { customFonts } from './styles/Fonts';
 import {
   NavigationContainer,
   NavigationContainerRef,
   ParamListBase,
 } from '@react-navigation/native';
 import { createStackNavigator, StackNavigationProp } from '@react-navigation/stack';
-import CustomColors from './styles/Colors';
-import { ApiService } from './services/ApiService';
-import { RootStackParamList } from './types/NavigationOptions';
+import * as Font from 'expo-font';
+import React, { createRef, ReactElement, useEffect, useState } from 'react';
+import { Button, Provider } from 'react-native-paper';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { Loading } from './components/Loading/Loading';
 import {
   BaselineAssessmentScreen,
   ChainsHomeScreen,
@@ -23,9 +20,11 @@ import {
   RewardsScreens,
   StepScreen,
 } from './screens';
-import { screenOpts } from './types/NavigationOptions';
-import { View, StyleSheet } from 'react-native';
-import { Loading } from './components/Loading/Loading';
+import { ApiService } from './services/ApiService';
+import CustomColors from './styles/Colors';
+import { customFonts } from './styles/Fonts';
+import { globalTheme } from './styles/Global';
+import { RootStackParamList, screenOpts } from './types/NavigationOptions';
 
 const containerRef = createRef<NavigationContainerRef>();
 const Stack = createStackNavigator<RootStackParamList>();
@@ -80,10 +79,7 @@ export default (): JSX.Element | null => {
 
   const Navigation = (): JSX.Element => (
     <NavigationContainer ref={containerRef}>
-      <Stack.Navigator
-        initialRouteName='LandingScreen'
-        // screenOptions={{ headerShown: true }}
-      >
+      <Stack.Navigator initialRouteName='LandingScreen'>
         <Stack.Screen
           name='LandingScreen'
           component={LandingScreen}
@@ -159,7 +155,7 @@ export default (): JSX.Element | null => {
 
   return isLoadingComplete ? (
     <SafeAreaProvider>
-      <Provider>
+      <Provider theme={globalTheme}>
         <Navigation />
       </Provider>
     </SafeAreaProvider>
@@ -167,14 +163,3 @@ export default (): JSX.Element | null => {
     <Loading />
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    flexDirection: 'column',
-    alignContent: 'center',
-    justifyContent: 'center',
-    padding: 0,
-    marginTop: 100,
-  },
-});
