@@ -76,7 +76,7 @@ const PrepareMaterialsScreen: FC<Props> = props => {
             mode='contained'
             color={CustomColors.uva.blue}
             style={styles.nextBtn}
-            labelStyle={{ fontSize: 20 }}
+            labelStyle={{ fontSize: 24 }}
             onPress={() => {
               console.log('chainSessionType', chainSessionType);
               if ((chainSessionType as string) === 'training') {

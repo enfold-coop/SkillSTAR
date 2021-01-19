@@ -381,7 +381,6 @@ const styles = StyleSheet.create({
     width: '90%',
     alignSelf: 'center',
     margin: 10,
-    // marginBottom: 20,
     borderRadius: 10,
     paddingVertical: 10,
     backgroundColor: CustomColors.uva.orange,
