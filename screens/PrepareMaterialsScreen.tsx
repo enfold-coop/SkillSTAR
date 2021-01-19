@@ -76,7 +76,7 @@ const PrepareMaterialsScreen: FC<Props> = props => {
             mode='contained'
             color={CustomColors.uva.blue}
             style={styles.nextBtn}
-            labelStyle={{ fontSize: 24 }}
+            labelStyle={{ fontSize: 24, paddingVertical:5 }}
             onPress={() => {
               console.log('chainSessionType', chainSessionType);
               if ((chainSessionType as string) === 'training') {
@@ -132,10 +132,8 @@ const styles = StyleSheet.create({
     fontWeight: '400',
   },
   nextBtn: {
-    padding: 10,
-    fontSize: 24,
+    padding: 0,
     margin: 10,
-    marginRight: 0,
     width: 222,
     alignSelf: 'flex-end',
   },

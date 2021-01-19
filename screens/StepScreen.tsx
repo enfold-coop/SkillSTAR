@@ -209,6 +209,7 @@ const StepScreen: FC<Props> = props => {
 					</Button> */}
           <Button
             style={styles.neededPromptingBtn}
+            labelStyle={{ fontSize: 24, paddingVertical:5, color:CustomColors.uva.white }}
             color={CustomColors.uva.orange}
             mode='contained'
             onPress={() => {
@@ -221,6 +222,7 @@ const StepScreen: FC<Props> = props => {
         <View style={styles.nextBackBtnsContainer}>
           <Button
             style={styles.backButton}
+            labelStyle={{ fontSize: 24, paddingVertical:5 }}
             disabled={!stepIndex}
             color={CustomColors.uva.blue}
             mode='outlined'
@@ -232,6 +234,7 @@ const StepScreen: FC<Props> = props => {
           </Button>
           <Button
             style={styles.nextButton}
+            labelStyle={{ fontSize: 24, paddingVertical:5 }}
             color={CustomColors.uva.blue}
             mode='contained'
             onPress={() => {
@@ -278,7 +281,6 @@ const styles = StyleSheet.create({
   },
   headline: {
     width: '60%',
-    // textAlign: "",
     fontSize: 22,
     fontWeight: '600',
     padding: 10,
