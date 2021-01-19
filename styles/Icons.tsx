@@ -3,5 +3,5 @@ import icoMoonConfig from "../assets/fonts/skillstar/selection.json";
 export const SkillStarIcons = createIconSetFromIcoMoon(
 	icoMoonConfig,
 	"SkillStarIcons",
-	"skillstar_icons.ttf"
+	"skillstar.ttf"
 );
