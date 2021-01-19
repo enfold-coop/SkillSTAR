@@ -2,9 +2,9 @@ import { convertEnumToMap } from '../../_util/ConvertEnumToMap';
 import { StepAttempt } from './StepAttempt';
 
 export enum ChainSessionType {
-  'training' = 'training',
-  'probe' = 'probe',
-  'booster' = 'booster',
+  'training' = 'Training',
+  'probe' = 'Probe',
+  'booster' = 'Booster',
 }
 
 export enum ChainSessionTypeLabels {

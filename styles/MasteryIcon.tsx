@@ -11,6 +11,9 @@ export interface MasteryIconProps {
 
 export function MasteryIcon(props: MasteryIconProps) {
   const { chainStepStatus } = props;
+  console.log('====================================');
+  console.log(chainStepStatus);
+  console.log('====================================');
   const statusMap = ChainStepStatusMap[chainStepStatus as string];
   const icons: { [key: string]: MasteryStatus } = {
     not_complete: {
@@ -22,7 +25,7 @@ export function MasteryIcon(props: MasteryIconProps) {
     focus: {
       stepStatus: ChainStepStatus.focus,
       label: 'Focus Step',
-      icon: 'not_mastered',
+      icon: 'focus_step',
       color: CustomColor.uva.mountain,
     },
     mastered: {
