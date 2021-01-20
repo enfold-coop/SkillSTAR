@@ -98,13 +98,13 @@ export interface StepAttempt {
   last_updated?: Date;
   chain_step_id: number;
   chain_step?: ChainStep;
-  date: Date;
-  status: ChainStepStatus;
-  completed: boolean;
-  was_prompted: boolean;
-  prompt_level: ChainStepPromptLevel;
-  had_challenging_behavior: boolean;
-  reason_step_incomplete: StepIncompleteReason;
+  date?: Date;
+  status?: ChainStepStatus;
+  completed?: boolean;
+  was_prompted?: boolean;
+  prompt_level?: ChainStepPromptLevel;
+  had_challenging_behavior?: boolean;
+  reason_step_incomplete?: StepIncompleteReason;
   challenging_behaviors?: ChallengingBehavior[];
   session_type?: ChainSessionType;
 

@@ -14,13 +14,9 @@ import SessionDataAside from '../components/Chain/SessionDataAside';
 import AppHeader from '../components/Header/AppHeader';
 import { BackgroundImages } from '../data/images';
 import { ApiService } from '../services/ApiService';
-import { MasteryAlgo } from '../services/ChainMastery';
+import { ChainMastery } from '../services/ChainMastery';
 import CustomColors from '../styles/Colors';
-import {
-  ChainSession,
-  ChainSessionType,
-  ChainSessionTypeLabels,
-} from '../types/CHAIN/ChainSession';
+import { ChainSession, ChainSessionType, ChainSessionTypeLabels } from '../types/CHAIN/ChainSession';
 import { ChainStep } from '../types/CHAIN/ChainStep';
 import { MasteryInfo } from '../types/CHAIN/MasteryLevel';
 import { ChainData, SkillstarChain } from '../types/CHAIN/SkillstarChain';
@@ -42,16 +38,9 @@ const ChainsHomeScreen: FC<Props> = props => {
   const [chainData, setChainData] = useState<ChainData>();
   const [session, setSession] = useState<ChainSession>();
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const callAlgo = (_chainData: ChainData) => {
-    const masteryAlgo = new MasteryAlgo(_chainData);
-    console.log('====================================');
-    // const { currFocusStep, prevFocusStep, currFocusStepPromptLevel } = masteryAlgo;
-    // console.log(prevFocusStep);
-    console.log('====================================');
-  };
+  const [chainMastery, setChainMastery] = useState<ChainMastery>();
 
   /** LIFECYCLE METHODS */
-
   // Runs on load.
   useEffect(() => {
     let isCancelled = false;
@@ -85,12 +74,7 @@ const ChainsHomeScreen: FC<Props> = props => {
       if (!isCancelled) {
         // Load chain steps
         if (!chainSteps) {
-          await ApiService.load<ChainStep[]>(
-            'chainSteps',
-            ApiService.getChainSteps,
-            setChainSteps,
-            isCancelled,
-          );
+          await ApiService.load<ChainStep[]>('chainSteps', ApiService.getChainSteps, setChainSteps, isCancelled);
         }
 
         // Load chain data
@@ -121,7 +105,8 @@ const ChainsHomeScreen: FC<Props> = props => {
     let isCancelled = false;
     const _load = async () => {
       if (chainData != undefined && !isCancelled) {
-        callAlgo(chainData);
+        const mastery = new ChainMastery(chainData);
+        setChainMastery(mastery);
 
         if (chainData.sessions && chainData.sessions.length > 0) {
           const lastSession = chainData.sessions[chainData.sessions.length - 1];
@@ -208,16 +193,15 @@ const ChainsHomeScreen: FC<Props> = props => {
       }
     };
 
-    // TODO: Replace this with the real mastery algorithm
-    const _setSessionTypeAndNmbr = async () => {
+    const _setSessionTypeAndNmbr = async (isCancelled: boolean) => {
       console.log('*** _setSessionTypeAndNmbr ***');
-      if (!chainData) {
+      if (!(chainData && chainMastery)) {
         return;
       }
-      const numSessions = chainData.sessions ? chainData.sessions.length : 0;
-      const lastSess = numSessions > 0 ? chainData.sessions[numSessions - 1] : null;
 
-      if (lastSess === null) {
+      const numSessions = chainData.sessions ? chainData.sessions.length : 0;
+
+      if (!chainMastery.previousSession && !isCancelled) {
         setSessionNumber(1);
         setType(ChainSessionType.probe);
 
@@ -227,16 +211,19 @@ const ChainsHomeScreen: FC<Props> = props => {
 
         // chainData.sessions[i].session_type
         await ApiService.contextDispatch({ type: 'sessionType', payload: 'probe' });
+
+        // TODO: Add draft session to chainMastery??
       }
-      if (lastSess) {
-        if (MasteryAlgo.prevSessionType === ChainSessionType.training) {
+
+      if (chainMastery.previousSession && !isCancelled) {
+        if (chainMastery.previousSession.session_type === ChainSessionType.training) {
           setType(ChainSessionType.training);
           setSessionNumber(chainData.sessions.length + 1);
           await ApiService.contextDispatch({ type: 'sessionNumber', payload: sessionNumber });
           await ApiService.contextDispatch({ type: 'sessionType', payload: 'training' });
           setBtnText(START_TRAINING_SESSION_BTN);
         }
-        if (MasteryAlgo.prevSessionType === ChainSessionType.probe) {
+        if (chainMastery.previousSession.session_type === ChainSessionType.probe) {
           setType(ChainSessionType.probe);
           setSessionNumber(chainData.sessions.length + 1);
           await ApiService.contextDispatch({ type: 'sessionNumber', payload: sessionNumber });
@@ -252,7 +239,7 @@ const ChainsHomeScreen: FC<Props> = props => {
         isLoading = false;
         if (!isCancelled) {
           setOrient(portrait);
-          _setSessionTypeAndNmbr();
+          _setSessionTypeAndNmbr(isCancelled);
         }
       });
     }
@@ -315,10 +302,7 @@ const ChainsHomeScreen: FC<Props> = props => {
             <ActivityIndicator animating={true} color={CustomColors.uva.mountain} />
           </View>
         )}
-        <TouchableOpacity
-          style={[styles.startSessionBtn, { marginBottom: 0 }]}
-          onPress={navToProbeOrTraining}
-        >
+        <TouchableOpacity style={[styles.startSessionBtn, { marginBottom: 0 }]} onPress={navToProbeOrTraining}>
           <Animatable.Text animation='bounceIn' duration={2000} style={styles.btnText}>
             Start {typeLabel} Session
           </Animatable.Text>

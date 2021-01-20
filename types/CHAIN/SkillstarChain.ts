@@ -78,27 +78,16 @@ export class ChainData implements SkillstarChain {
    * @param sessionId
    * @param chainStepId
    */
-  getStep(sessionId: number, chainStepId: number): StepAttempt {
-    let shouldBreak = false;
-    let stepAttempt: StepAttempt = { status: ChainStepStatus.not_complete, completed: false };
-
+  getStep(sessionId: number, chainStepId: number): StepAttempt | undefined {
     for (const session of this.sessions) {
-      if (shouldBreak) {
-        break;
-      }
-
       if (session.id === sessionId) {
-        for (const step of session.step_attempts) {
-          if (chainStepId === step.chain_step_id) {
-            stepAttempt = step;
-            shouldBreak = true; // Don't keep iterating through the rest of the sessions
-            break;
+        for (const stepAttempt of session.step_attempts) {
+          if (chainStepId === stepAttempt.chain_step_id) {
+            return stepAttempt;
           }
         }
       }
     }
-
-    return stepAttempt;
   }
 
   /**
@@ -117,6 +106,11 @@ export class ChainData implements SkillstarChain {
     return stepAttempts;
   }
 
+  /**
+   * Given a SkillstarChain, returns a list of sessions, sorted by date in ascending order (from past to present).
+   * @param skillstarChain
+   * @private
+   */
   private sortSessions(skillstarChain: SkillstarChain): ChainSession[] {
     return skillstarChain.sessions.sort((a, b) => {
       if (a && b && a.date && b.date) {
