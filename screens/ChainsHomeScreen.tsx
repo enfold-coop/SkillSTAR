@@ -14,7 +14,7 @@ import SessionDataAside from '../components/Chain/SessionDataAside';
 import AppHeader from '../components/Header/AppHeader';
 import { BackgroundImages } from '../data/images';
 import { ApiService } from '../services/ApiService';
-import { MasteryAlgo } from '../services/MasteryAlgo';
+import { MasteryAlgo } from '../services/ChainMastery';
 import CustomColors from '../styles/Colors';
 import {
   ChainSession,
@@ -42,11 +42,10 @@ const ChainsHomeScreen: FC<Props> = props => {
   const [chainData, setChainData] = useState<ChainData>();
   const [session, setSession] = useState<ChainSession>();
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const callAlgo = (chainData: SkillstarChain) => {
-    MasteryAlgo.init(chainData);
+  const callAlgo = (_chainData: ChainData) => {
+    const masteryAlgo = new MasteryAlgo(_chainData);
     console.log('====================================');
-    let { currFocusStep, prevFocusStep, currFocusStepPromptLevel } = MasteryAlgo;
-
+    // const { currFocusStep, prevFocusStep, currFocusStepPromptLevel } = masteryAlgo;
     // console.log(prevFocusStep);
     console.log('====================================');
   };

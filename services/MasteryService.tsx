@@ -8,14 +8,17 @@ import {
 } from "../types/CHAIN/StepAttempt";
 
 /**
- * Mastery Algorithm
- * UTIL function (can be moved to another file)
+ * Mastery Service
  *
- * Params: chainData = the entire SkillstarChain
- * Returns one of the following:
- * - An empty probe session, if the user has no attempted sessions yet
- * - The next session the participant should be attempting, if there is one.
- * - An empty probe session, if there are none left to attempt (???)
+ * This service encapsulates the mastery algorithm logic and chain state.
+ *
+ * The service has a singleton ChainMastery class instance that holds the chain data and
+ * the mastery info for each step in that chain. This class instance is used
+ * globally to be the single source of truth for the current chain session,
+ * focus step, and mastery state for each step in the current session.
+ *
+ * Static methods are intended to be used by consumers of the service to
+ *
  */
 export class MasteryService {
 	// TODO: Figure out where to ChainProviderContext where the user started in this hierarchy.

@@ -26,7 +26,15 @@ export class ChainData implements SkillstarChain {
     this.participant_id = skillstarChain.participant_id;
     this.user_id = skillstarChain.user_id;
     this.time_on_task_ms = skillstarChain.time_on_task_ms;
-    this.sessions = skillstarChain.sessions;
+    this.sessions = this.sortSessions(skillstarChain);
+  }
+
+  get numSessions(): number {
+    return this.sessions.length;
+  }
+
+  get lastSession(): ChainSession {
+    return this.sessions[this.sessions.length - 1];
   }
 
   /**
@@ -91,5 +99,31 @@ export class ChainData implements SkillstarChain {
     }
 
     return stepAttempt;
+  }
+
+  /**
+   * Returns all step attempts across all sessions that match the given chainStepId
+   * @param chainStepId
+   */
+  getAllStepAttemptsForChainStep(chainStepId: number): StepAttempt[] {
+    const stepAttempts: StepAttempt[] = [];
+    this.sessions.forEach(session => {
+      session.step_attempts.forEach(stepAttempt => {
+        if (stepAttempt.chain_step_id === chainStepId) {
+          stepAttempts.push(stepAttempt);
+        }
+      });
+    });
+    return stepAttempts;
+  }
+
+  private sortSessions(skillstarChain: SkillstarChain): ChainSession[] {
+    return skillstarChain.sessions.sort((a, b) => {
+      if (a && b && a.date && b.date) {
+        return a.date.getTime() - b.date.getTime();
+      } else {
+        return 0;
+      }
+    });
   }
 }

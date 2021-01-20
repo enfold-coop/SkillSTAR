@@ -14,4 +14,21 @@ export interface MasteryInfo {
   dateMastered?: Date;
   dateBoosterInitiated?: Date;
   dateBoosterMastered?: Date;
+  numAttemptsSince: MasteryInfoNumAttemptsSince;
+}
+
+export interface MasteryInfoNumAttemptsSince {
+  firstIntroduced: number;
+  firstCompleted: number;
+  lastCompleted: number;
+  lastCompletedWithoutChallenge: number;
+  lastCompletedWithoutPrompt: number;
+  lastProbe: number;
+  firstMastered: number;
+  boosterInitiated: number;
+  boosterMastered: number;
+}
+
+export interface MasteryInfoMap {
+  [key: number]: MasteryInfo;
 }

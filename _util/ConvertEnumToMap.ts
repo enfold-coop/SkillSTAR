@@ -3,6 +3,7 @@ export type Enum = { [key: string]: string };
 export interface EnumItemMap {
   key: string;
   value: string;
+  order: number;
 }
 
 export type EnumMap = { [key: string]: EnumItemMap };
@@ -34,8 +35,8 @@ export type EnumMap = { [key: string]: EnumItemMap };
  */
 export const convertEnumToMap = (keysEnumObject: Enum, labelsEnumObject: Enum) => {
   const enumMap: EnumMap = {};
-  Object.keys(keysEnumObject).forEach((key: string) => {
-    enumMap[key] = { key, value: labelsEnumObject[key] };
+  Object.keys(keysEnumObject).forEach((key: string, order: number) => {
+    enumMap[key] = { key, value: labelsEnumObject[key], order };
   });
   return enumMap;
 };

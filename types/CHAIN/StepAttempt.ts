@@ -37,10 +37,28 @@ export enum ChainStepPromptLevelLabels {
   'full_physical' = 'Full Physical Prompt (hand-over-hand)',
 }
 
-export const ChainStepPromptLevelMap = convertEnumToMap(
-  ChainStepPromptLevel,
-  ChainStepPromptLevelLabels,
-);
+export const ChainStepPromptLevelMap = {
+  none: {
+    order: 0,
+    key: ChainStepPromptLevel.none,
+    value: ChainStepPromptLevelLabels.none,
+  },
+  shadow: {
+    order: 1,
+    key: ChainStepPromptLevel.shadow,
+    value: ChainStepPromptLevelLabels.shadow,
+  },
+  partial_physical: {
+    order: 2,
+    key: ChainStepPromptLevel.partial_physical,
+    value: ChainStepPromptLevelLabels.partial_physical,
+  },
+  full_physical: {
+    order: 3,
+    key: ChainStepPromptLevel.full_physical,
+    value: ChainStepPromptLevelLabels.full_physical,
+  },
+};
 
 export enum ChallengingBehaviorSeverity {
   'mild' = 'mild',
@@ -59,20 +77,40 @@ export const ChallengingBehaviorSeverityMap = convertEnumToMap(
   ChallengingBehaviorSeverityLabels,
 );
 
+export enum StepIncompleteReason {
+  'lack_of_attending' = 'lack_of_attending',
+  'challenging_behavior' = 'challenging_behavior',
+  'sensory_issues' = 'sensory_issues',
+  'other' = 'other',
+}
+
+export enum StepIncompleteReasonLabels {
+  'lack_of_attending' = 'Lack of Attending',
+  'challenging_behavior' = 'Challenging Behavior',
+  'sensory_issues' = 'Sensory Issues(materials are aversive)',
+  'other' = 'Other',
+}
+
+export const StepIncompleteReasonMap = convertEnumToMap(StepIncompleteReason, StepIncompleteReasonLabels);
+
 export interface StepAttempt {
   id?: number;
   last_updated?: Date;
-  chain_step_id?: number;
+  chain_step_id: number;
   chain_step?: ChainStep;
-  date?: Date;
+  date: Date;
   status: ChainStepStatus;
   completed: boolean;
-  was_prompted?: boolean;
-  prompt_level?: ChainStepPromptLevel;
-  had_challenging_behavior?: boolean;
-  challenging_behavior_severity?: ChallengingBehaviorSeverity;
+  was_prompted: boolean;
+  prompt_level: ChainStepPromptLevel;
+  had_challenging_behavior: boolean;
+  reason_step_incomplete: StepIncompleteReason;
   challenging_behaviors?: ChallengingBehavior[];
   session_type?: ChainSessionType;
+
+  // Focus steps
+  was_focus_step?: boolean;
+  target_prompt_level?: ChainStepPromptLevel;
 }
 
 export type StepAttemptField =
