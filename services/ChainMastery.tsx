@@ -316,62 +316,29 @@ export class ChainMastery {
         lastCompletedWithoutPrompt: this._numSinceLastCompletedWithoutPrompt(stepAttempts),
         lastProbe: this._numSinceLastProbe(stepAttempts),
         firstMastered: this._numSinceFirstMastered(stepAttempts),
-        boosterInitiated: -1, // TODO
-        boosterMastered: -1, // TODO
+        boosterInitiated: this._numSinceBoosterInitiated(stepAttempts), // TODO
+        boosterMastered: this._numSinceBoosterMastered(stepAttempts), // TODO
       },
     };
 
-    // First attempt will be the attempt where the step was introduced, so the number of steps since
-    // it was introduced would just be the total number of attempts, minus 1.
-    m.numAttemptsSince.firstIntroduced = stepAttempts.length - 1;
+    if (stepAttempts.length > 0) {
+      m.dateIntroduced = stepAttempts[0].date;
+    }
 
-    // Iterate through all step attempts across all chain sessions matching this chainStepId
-    stepAttempts.forEach((thisAttempt, i) => {
-      const prevAttempt = i > 0 ? stepAttempts[i - 1] : undefined;
-      const nextAttempt = i < stepAttempts.length - 1 ? stepAttempts[i + 1] : undefined;
+    if (m.numAttemptsSince.firstMastered >= 0) {
+      const firstMasteredIndex = stepAttempts.length - m.numAttemptsSince.firstMastered - 1;
+      m.dateMastered = stepAttempts[firstMasteredIndex].date;
+    }
 
-      // Number of attempts since last completed attempt
-      if (thisAttempt.completed) {
-        // Latest complete attempt
-        m.numAttemptsSince.lastCompleted = 0;
+    if (m.numAttemptsSince.boosterInitiated >= 0) {
+      const boosterInitiatedIndex = stepAttempts.length - m.numAttemptsSince.boosterInitiated - 1;
+      m.dateBoosterInitiated = stepAttempts[boosterInitiatedIndex].date;
+    }
 
-        if (m.numAttemptsSince.firstMastered === -1 && thisAttempt.status === ChainStepStatus.mastered) {
-          // First attempt mastered. Set date mastered.
-          m.dateMastered = new Date(thisAttempt.date);
-          m.numAttemptsSince.firstMastered = 0;
-        } else if (m.numAttemptsSince.firstMastered >= 0) {
-          // Increment number of days since this step was first mastered.
-          m.numAttemptsSince.firstMastered++;
-        }
-
-        // First attempt completed
-        if (m.numAttemptsSince.firstCompleted === -1) {
-          m.numAttemptsSince.firstCompleted = 0;
-        } else {
-          // Increment number of attempts since first completed attempt
-          m.numAttemptsSince.firstCompleted++;
-        }
-      } else if (m.numAttemptsSince.firstCompleted !== -1) {
-        // Step not complete. Increment number of attempts since last completed attempt.
-        m.numAttemptsSince.lastCompleted++;
-      } else if (m.numAttemptsSince.firstCompleted !== -1) {
-        // If m.numAttemptsSinceFirstCompleted is still -1, then the
-        // chain step has never been completed.
-        m.stepStatus = ChainStepStatus.not_complete;
-      }
-
-      if (!prevAttempt) {
-        // First attempt. Set the date introduced.
-        m.dateIntroduced = thisAttempt.date;
-      } else {
-        // Compare this step to the previous step and increment the various
-        // numAttemptsSince if applicable.
-        // set the date mastered to this attempt's date.
-        // if (prevStep.completed) {}
-      }
-    });
-
-    return m;
+    if (m.numAttemptsSince.boosterInitiated >= 0) {
+      const boosterMasteredIndex = stepAttempts.length - m.numAttemptsSince.boosterMastered - 1;
+      m.dateBoosterMastered = stepAttempts[boosterMasteredIndex].date;
+    }
   }
 
   /**
