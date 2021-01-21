@@ -181,7 +181,7 @@ const StepScreen: FC<Props> = props => {
             </Text>
 
             <View style={styles.progressContainer}>
-              <MasteryIconContainer masteryLevel={'focus'} />
+              <MasteryIconContainer masteryLevel={'focus_step'} />
               <ProgressBar
                 currentStepIndex={stepIndex}
                 totalSteps={session.step_attempts.length}
