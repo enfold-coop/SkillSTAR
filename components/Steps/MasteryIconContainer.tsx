@@ -34,7 +34,7 @@ const MasteryIconContainer: FC<Props> = props => {
 
   return (
     <View style={styles.container}>
-      <MasteryIcon chainStepStatus={level} />
+      <MasteryIcon chainStepStatus={level} iconSize={50}/>
     </View>
   );
 };
@@ -45,13 +45,11 @@ const styles = StyleSheet.create({
   container: {
     justifyContent: 'center',
     alignContent: 'center',
-    paddingBottom: 10,
+    margin:10,
   },
   img: {
     alignSelf: 'center',
     marginRight: 10,
-    height: 50,
-    width: 50,
     resizeMode: 'contain',
   },
 });

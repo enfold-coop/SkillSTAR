@@ -18,6 +18,7 @@ interface ScorecardListItemProps {
 
 const ScorecardListItem = (props: ScorecardListItemProps) => {
   const { chainStep, stepAttempt, masteryInfo } = props;
+
   const [isPressed, setIsPressed] = useState(false);
   const [stepData, setStepData] = useState<StepAttempt>();
 
@@ -52,7 +53,7 @@ const ScorecardListItem = (props: ScorecardListItemProps) => {
         >
           <Text style={styles.id}>{chainStep.id + 1}. </Text>
           <Text style={styles.skill}>{chainStep.instruction}</Text>
-          <MasteryIcon chainStepStatus={stepAttempt.status} />
+          <MasteryIcon chainStepStatus={stepAttempt.status} iconSize={40} />
           <MaterialIcons
             name={isPressed ? 'expand-less' : 'expand-more'}
             size={24}
