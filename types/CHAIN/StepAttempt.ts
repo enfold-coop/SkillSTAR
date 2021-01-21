@@ -13,12 +13,16 @@ export enum ChainStepStatus {
   'not_complete' = 'not_complete',
   'focus' = 'focus',
   'mastered' = 'mastered',
+  'booster_needed' = 'booster_needed',
+  'booster_mastered' = 'booster_mastered',
 }
 
 export enum ChainStepStatusLabels {
   'not_complete' = 'Not complete',
   'focus' = 'Focus',
   'mastered' = 'Mastered',
+  'booster_needed' = 'Booster needed',
+  'booster_mastered' = 'Booster mastered',
 }
 
 export const ChainStepStatusMap = convertEnumToMap(ChainStepStatus, ChainStepStatusLabels);
