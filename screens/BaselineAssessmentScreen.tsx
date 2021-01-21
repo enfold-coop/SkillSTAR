@@ -108,7 +108,7 @@ const BaselineAssessmentScreen: FC<Props> = props => {
   const setSessionData = async () => {
     console.log('*** setSessionData ***');
     if (chainData && chainSession) {
-      console.log('chainData.id', chainData.id);
+    //   console.log('chainData.id', chainData.id);
       if (!chainData.sessions) {
         chainData.sessions = [];
       }

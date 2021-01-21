@@ -115,7 +115,7 @@ export class MasteryAlgo {
         let prevSessionData = this._getPreviousSessionData(chainData);
         let prevFocusStep = this._getPrevSessionFocusStepData(prevSessionData);
         console.log('====================================');
-        console.log(prevFocusStep);
+        // console.log(prevFocusStep);
         console.log('====================================');
 
         let prevPromptLevel = this.prevFocusStep?.prompt_level;
@@ -196,7 +196,7 @@ export class MasteryAlgo {
         let TOTAL_SESSIONS_MET_COUNT = 0;
         let sessionLength = this.sessionsArray.length;
         let lastSessType = this.sessionsArray[sessionLength-1].session_type;
-        console.log(lastSessType);
+        // console.log(lastSessType);
         
         let id = this.prevFocusStepId;        
         let prevThree = [];

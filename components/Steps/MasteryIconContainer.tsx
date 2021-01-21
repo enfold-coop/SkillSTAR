@@ -1,5 +1,6 @@
 import React, { FC, useEffect, useState } from 'react';
 import { Image, StyleSheet, View } from 'react-native';
+import { MasteryIcon } from '../../styles/MasteryIcon';
 
 type Props = {
   masteryLevel: string;
@@ -7,6 +8,9 @@ type Props = {
 
 const MasteryIconContainer: FC<Props> = props => {
   const { masteryLevel } = props;
+//   console.log('====================================');
+//   console.log(masteryLevel);
+//   console.log('====================================');
   const masteredIcon = require('../../assets/icons/ribbon-icon_1.png');
   const focusIcon = require('../../assets/icons/in-progress-icon.png');
   const notStartedIcon = require('../../assets/icons/waving-icon.png');
@@ -28,7 +32,7 @@ const MasteryIconContainer: FC<Props> = props => {
 
   return (
     <View style={styles.container}>
-      <Image style={styles.img} source={icon} />
+      {/* <MasteryIcon chainStepStatus={stepAttempt.status} /> */}
     </View>
   );
 };

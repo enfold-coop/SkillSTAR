@@ -44,11 +44,7 @@ const ChainsHomeScreen: FC<Props> = props => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const callAlgo = (chainData: SkillstarChain) => {
     MasteryAlgo.init(chainData);
-    console.log('====================================');
     let { currFocusStep, prevFocusStep, currFocusStepPromptLevel } = MasteryAlgo;
-
-    // console.log(prevFocusStep);
-    console.log('====================================');
   };
 
   /** LIFECYCLE METHODS */
@@ -199,7 +195,7 @@ const ChainsHomeScreen: FC<Props> = props => {
             const newDbData = await ApiService.addChainData(newData);
             if (!isCancelled && newDbData) {
               const newChainData = new ChainData(newDbData);
-              console.log('newChainData added for participant');
+            //   console.log('newChainData added for participant');
               await ApiService.contextDispatch({ type: 'chainData', payload: newChainData });
             }
           } catch (e) {
@@ -211,7 +207,7 @@ const ChainsHomeScreen: FC<Props> = props => {
 
     // TODO: Replace this with the real mastery algorithm
     const _setSessionTypeAndNmbr = async () => {
-      console.log('*** _setSessionTypeAndNmbr ***');
+    //   console.log('*** _setSessionTypeAndNmbr ***');
       if (!chainData) {
         return;
       }

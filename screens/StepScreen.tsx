@@ -17,6 +17,12 @@ import { ChainStepPromptLevel, ChainStepStatus, StepAttempt } from '../types/CHA
 
 interface Props {}
 
+
+/**
+ * 
+ * @param props: NEEDS CHAIN DATA
+ * @returns
+ */
 const StepScreen: FC<Props> = props => {
   const navigation = useNavigation();
   const [visible, setVisible] = React.useState(false);
@@ -120,7 +126,7 @@ const StepScreen: FC<Props> = props => {
   };
 
   const createAttempts = () => {
-    console.log(chainSteps);
+    // console.log(chainSteps);
 
     if (chainData && chainSteps && session) {
       chainSteps.forEach((chainStep, i) => {
