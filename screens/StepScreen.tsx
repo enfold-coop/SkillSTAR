@@ -207,6 +207,23 @@ const StepScreen: FC<Props> = props => {
 					>
 						Exit
 					</Button> */}
+        
+        </View>
+        <View style={styles.nextBackBtnsContainer}>
+          <Button
+            style={styles.backButton}
+            labelStyle={{ alignSelf:"flex-start", fontSize: 24, paddingVertical:5 }}
+            disabled={!stepIndex}
+            color={CustomColors.uva.blue}
+            mode='outlined'
+            onPress={() => {
+              decrIndex();
+            }}
+          >
+            Previous Step
+          </Button>
+          <View style={styles.nextBackSubContainer}>
+          <Text style={styles.needAddlPrompt}>Needed Add'l Prompting</Text>
           <Button
             style={styles.neededPromptingBtn}
             labelStyle={{ fontSize: 24, paddingVertical:5, color:CustomColors.uva.white }}
@@ -216,21 +233,7 @@ const StepScreen: FC<Props> = props => {
               console.log('NEEDING PROMPTING');
             }}
           >
-            Needed Additional Prompting
-          </Button>
-        </View>
-        <View style={styles.nextBackBtnsContainer}>
-          <Button
-            style={styles.backButton}
-            labelStyle={{ fontSize: 24, paddingVertical:5 }}
-            disabled={!stepIndex}
-            color={CustomColors.uva.blue}
-            mode='outlined'
-            onPress={() => {
-              decrIndex();
-            }}
-          >
-            Previous Step
+            +
           </Button>
           <Button
             style={styles.nextButton}
@@ -247,6 +250,7 @@ const StepScreen: FC<Props> = props => {
           >
             Step Complete
           </Button>
+          </View>
         </View>
       </View>
     </ImageBackground>
@@ -326,17 +330,33 @@ const styles = StyleSheet.create({
     paddingVertical: 15,
     margin: 15,
   },
-  neededPromptingBtn: {},
+  neededPromptingBtn: {
+      margin:15
+  },
   exitButton: {},
   nextBackBtnsContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+    alignContent:"center",
+    // backgroundColor:"#f0f"
+  },
+  nextBackSubContainer:{
+    flexDirection:"row"
+  },
+  needAddlPrompt:{
+      width:80,
+      paddingTop:0,
+      color:CustomColors.uva.grayDark,
+      fontSize:16,
+      alignSelf:"center",
+      textAlign:"center"
   },
   nextButton: {
     width: 244,
     margin: 15,
   },
   backButton: {
+      alignSelf:"flex-start",
     margin: 15,
   },
   loadingContainer: {
