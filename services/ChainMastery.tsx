@@ -78,11 +78,9 @@ export class ChainMastery {
   }
 
   /**
-   * Returns the chain step ID that should be focused on next, or undefined if not applicable.
-   *
-   * TODO: Refactor _chainStepNeedsFocus to use this method.
+   * Returns the chain step ID that should be focused on next, or undefined if all steps have been mastered.
    */
-  get nextFocusStepChainStepId(): number | undefined {
+  get nextFocusChainStepId(): number | undefined {
     // Check for already-mastered (no booster needed yet) and booster-mastered steps
     const masteredChainStepIds = this._getMasteredChainStepIds();
 
@@ -105,6 +103,9 @@ export class ChainMastery {
 
       if (focusStepId < this.chainSteps.length) {
         return focusStepId;
+      } else {
+        // All steps have been mastered.
+        return undefined;
       }
     } else {
       // No steps have been mastered yet. The first step should be focused.
@@ -123,7 +124,7 @@ export class ChainMastery {
   /**
    * Returns true if previous focus step was mastered. Otherwise, returns false.
    */
-  get _isPrevFocusMastered(): boolean {
+  get isPrevFocusMastered(): boolean {
     if (!this.previousFocusStep) {
       return false;
     }
@@ -150,6 +151,8 @@ export class ChainMastery {
     const newDraftSession: ChainSession = {
       step_attempts: [],
     };
+    let focusChainStepId: number | undefined = undefined;
+    let boosterChainStepId: number | undefined = undefined;
 
     // Should the draft session be...
     // ...a probe session?
@@ -158,13 +161,14 @@ export class ChainMastery {
     }
 
     // ...a booster?
-    else if (this._newDraftSessionShouldBeBoosterSession()) {
+    else if ((boosterChainStepId = this.nextBoosterChainStepId) !== undefined) {
       newDraftSession.session_type = ChainSessionType.booster;
     }
 
     // ...a training session?
     else {
       newDraftSession.session_type = ChainSessionType.training;
+      focusChainStepId = this.nextFocusChainStepId;
     }
 
     // Populate step attempts
@@ -177,28 +181,66 @@ export class ChainMastery {
       } as StepAttempt;
     });
 
-    // Determine which chain step should be the focus step.
+    // For booster and training sessions, mark which chain step should be the focus and/or booster step, if applicable.
     if (
       newDraftSession.session_type === ChainSessionType.booster ||
       newDraftSession.session_type === ChainSessionType.training
     ) {
-      const focusChainStepId = this.nextFocusStepChainStepId;
       newDraftSession.step_attempts.forEach((stepAttempt, i) => {
-        if (this._chainStepNeedsFocus(stepAttempt.chain_step_id)) {
-          newDraftSession.step_attempts[i];
+        // Mark which chain step should be the focus step.
+        if (focusChainStepId !== undefined) {
+          newDraftSession.step_attempts[i].was_focus_step = stepAttempt.chain_step_id === focusChainStepId;
+
+          if (focusChainStepId === stepAttempt.chain_step_id) {
+            newDraftSession.step_attempts[i].status = ChainStepStatus.focus;
+          }
+        }
+
+        // Mark which chain step should needs a booster.
+        if (boosterChainStepId !== undefined) {
+          if (boosterChainStepId === stepAttempt.chain_step_id) {
+            newDraftSession.step_attempts[i].status = ChainStepStatus.booster_needed;
+          }
         }
       });
-      // TODO: Determine which chain step should be the focus step.
-      // Walk through all sessions and step attempts and their mastery info.
-      // Make a list of all the unmastered steps that have been focused on.
-      // If there aren't any unmastered steps, set the draft session focus step to undefined.
-      // Otherwise, set the draft session focus step to EITHER the last focused step OR the first unmastered step.
 
       // TODO: Determine the target prompt level for the draft session focus step.
       //  - Get all the step attempts across all sessions for the focus step.
       //  - Of those step attempts, look at the target prompt levels vs. the actual prompt levels.
-      //  - If the last 3 attempts were completed at the target prompt level, move on to the next prompt level.
+      //  - If the last 3 (?) attempts were completed at the target prompt level, move on to the next prompt level.
       //  - Otherwise, set the target prompt level to the target prompt level from the last focus step.
+      if (focusChainStepId) {
+        const focusStepPastAttempts = this.chainData.getAllStepAttemptsForChainStep(focusChainStepId);
+        let numTargetLevelsMet = 0;
+        let lastAttemptLevel: ChainStepPromptLevel | undefined = undefined;
+        let lastAttemptSessionType: ChainSessionType | undefined = undefined;
+
+        for (const pastAttempt of focusStepPastAttempts.reverse()) {
+          const isConsecutive =
+            lastAttemptLevel === pastAttempt.target_prompt_level && lastAttemptSessionType === pastAttempt.session_type;
+
+          if (isConsecutive && pastAttempt.target_prompt_level === pastAttempt.prompt_level) {
+            numTargetLevelsMet++;
+          } else {
+            numTargetLevelsMet = 0;
+          }
+
+          if (
+            (pastAttempt.session_type === ChainSessionType.training &&
+              numTargetLevelsMet > NUM_COMPLETE_TRAINING_ATTEMPTS_FOR_MASTERY) ||
+            (pastAttempt.session_type === ChainSessionType.probe &&
+              numTargetLevelsMet > NUM_COMPLETE_PROBE_ATTEMPTS_FOR_MASTERY)
+          ) {
+            // TODO:
+            //  - set next prompt level
+            //  - set the target prompt level for the focus step in the draft session
+            //  - break out of for loop
+          }
+
+          lastAttemptLevel = pastAttempt.target_prompt_level;
+          lastAttemptSessionType = pastAttempt.session_type;
+        }
+      }
     }
 
     return newDraftSession;
@@ -233,37 +275,20 @@ export class ChainMastery {
   }
 
   /**
-   * Returns true if the next new draft session should be a booster session
-   *
-   *
-   *
+   * Returns the ID of the first chain step that needs a booster in the next new draft session.
+   * If no steps need a booster, returns undefined.
    */
-  private _newDraftSessionShouldBeBoosterSession(): boolean {
+  get nextBoosterChainStepId(): number | undefined {
     // Look at each chain step across all chain data sessions.
     // For each step, if there have been 3 incomplete training attempts in a row OR
     // 2 incomplete probe attempts in a row, return true.
-    const sessionLength = this.chainData.sessions.length;
 
-    if (this.previousSession && this.previousFocusStep) {
-      const prevSessionType = this.previousSession.session_type;
-      const chainStepId = this.previousFocusStep.chain_step_id;
-      const prevThree = [];
-      const numMastered =
-        prevSessionType === ChainSessionType.training
-          ? NUM_INCOMPLETE_TRAINING_ATTEMPTS_FOR_BOOSTER
-          : NUM_INCOMPLETE_PROBE_ATTEMPTS_FOR_BOOSTER;
-
-      if (numMastered < sessionLength) {
-        for (let i = numMastered; i > 0; i--) {
-          prevThree.push(this._findStepAttemptInSession(chainStepId, i));
-        }
-      } else {
-        console.log("*** Doesn't qualify as booster ***");
-        return false;
+    for (const chainStep of this.chainSteps) {
+      const stepAttempts = this.chainData.getAllStepAttemptsForChainStep(chainStep.id);
+      if (this._chainStepNeedsBooster(stepAttempts)) {
+        return chainStep.id;
       }
     }
-
-    return false;
   }
 
   /**
@@ -779,8 +804,6 @@ export class ChainMastery {
    * Given a chain step ID, returns true if the next attempt for that chain step needs to be the focus step.
    * Otherwise, returns false.
    *
-   * TODO: Put core logic into a separate method so it can be reused
-   *
    * @param stepAttempts
    * @private
    */
@@ -790,34 +813,11 @@ export class ChainMastery {
     const wasMastered = masteredChainStepIds.includes(chainStepId);
 
     if (wasMastered) {
-      // It's been mastered already, and no booster needed. Return false.
+      // It's been mastered already, and no booster is needed. Return false.
       return false;
     }
 
-    // Get the list of all chain step IDs that have been focused on, in order.
-    const focusedChainStepIds = this._getFocusedChainStepIds();
-
-    // Remove all the mastered chain steps.
-    const unmasteredFocusedChainStepIds = focusedChainStepIds.filter(s => !masteredChainStepIds.includes(s));
-
-    // Get the most recent unmastered focus step.
-    if (unmasteredFocusedChainStepIds.length > 0) {
-      // If there is one and its ID is not the same as this chainStepId, return false.
-      const mostRecentFocusStepId = unmasteredFocusedChainStepIds[unmasteredFocusedChainStepIds.length - 1];
-      if (mostRecentFocusStepId !== chainStepId) {
-        return false;
-      }
-    }
-
-    // There isn't a current unmastered focus step. Find the biggest chain step ID that has been mastered and increment it.
-    if (masteredChainStepIds.length > 0) {
-      const biggestId = masteredChainStepIds[masteredChainStepIds.length - 1];
-      const focusStepId = biggestId + 1;
-      return focusStepId === chainStepId;
-    } else {
-      // No steps have been mastered yet. The first step should be focused.
-      return this.chainSteps[0].id === chainStepId;
-    }
+    return this.nextFocusChainStepId === chainStepId;
   }
 
   /**

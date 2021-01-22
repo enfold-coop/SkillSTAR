@@ -106,7 +106,7 @@ describe('ChainMastery', () => {
   });
 
   it('should is prev focus mastered', () => {
-    const result = ChainMastery._isPrevFocusMastered();
+    const result = ChainMastery.isPrevFocusMastered();
     expect(result).toBeTruthy();
   });
 });
