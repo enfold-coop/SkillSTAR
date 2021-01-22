@@ -41,7 +41,13 @@ export enum ChainStepPromptLevelLabels {
   'full_physical' = 'Full Physical Prompt (hand-over-hand)',
 }
 
-export const ChainStepPromptLevelMap = {
+export interface ChainStepPromptLevelMapItem {
+  order: number;
+  key: ChainStepPromptLevel;
+  value: ChainStepPromptLevelLabels;
+}
+
+export const ChainStepPromptLevelMap: { [key: string]: ChainStepPromptLevelMapItem } = {
   none: {
     order: 0,
     key: ChainStepPromptLevel.none,

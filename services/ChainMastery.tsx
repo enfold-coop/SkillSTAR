@@ -13,6 +13,7 @@ import { ChainData } from '../types/CHAIN/SkillstarChain';
 import {
   ChainStepPromptLevel,
   ChainStepPromptLevelMap,
+  ChainStepPromptLevelMapItem,
   ChainStepStatus,
   StepAttempt,
 } from '../types/CHAIN/StepAttempt';
@@ -69,6 +70,9 @@ export class ChainMastery {
     }
   }
 
+  /**
+   * Returns the last (by date) focus chain step id that was attempted.
+   */
   get prevFocusStepChainStepId(): number | undefined {
     // Get the most recent unmastered focus step.
     if (this.unmasteredFocusedChainStepIds.length > 0) {
@@ -184,18 +188,18 @@ export class ChainMastery {
         }
       });
 
-      // TODO: Determine the target prompt level for the draft session focus step.
-      //  - Get all the step attempts across all sessions for the focus step.
-      //  - Of those step attempts, look at the target prompt levels vs. the actual prompt levels.
-      //  - If the last 3 (?) attempts were completed at the target prompt level, move on to the next prompt level.
-      //  - Otherwise, set the target prompt level to the target prompt level from the last focus step.
+      // Determine the target prompt level for the draft session focus step.
       if (focusChainStepId) {
+        // Get all the step attempts across all sessions for the focus step.
+        const draftFocusStepIndex = newDraftSession.step_attempts.findIndex(s => s.chain_step_id === focusChainStepId);
         const focusStepPastAttempts = this.chainData.getAllStepAttemptsForChainStep(focusChainStepId);
         let numTargetLevelsMet = 0;
         let lastAttemptLevel: ChainStepPromptLevel | undefined = undefined;
         let lastAttemptSessionType: ChainSessionType | undefined = undefined;
 
+        // Look at the most recent attempts.
         for (const pastAttempt of focusStepPastAttempts.reverse()) {
+          // Look at the target prompt levels vs. the actual prompt levels.
           const isConsecutive =
             lastAttemptLevel === pastAttempt.target_prompt_level && lastAttemptSessionType === pastAttempt.session_type;
 
@@ -205,20 +209,41 @@ export class ChainMastery {
             numTargetLevelsMet = 0;
           }
 
+          // If the last 2 or 3 (depending on session type) attempts were completed at the target prompt level,
+          // move on to the next prompt level.
           if (
             (pastAttempt.session_type === ChainSessionType.training &&
+              numTargetLevelsMet > NUM_COMPLETE_TRAINING_ATTEMPTS_FOR_MASTERY) ||
+            (pastAttempt.session_type === ChainSessionType.booster &&
               numTargetLevelsMet > NUM_COMPLETE_TRAINING_ATTEMPTS_FOR_MASTERY) ||
             (pastAttempt.session_type === ChainSessionType.probe &&
               numTargetLevelsMet > NUM_COMPLETE_PROBE_ATTEMPTS_FOR_MASTERY)
           ) {
-            // TODO:
-            //  - set next prompt level
-            //  - set the target prompt level for the focus step in the draft session
-            //  - break out of for loop
+            // Set the target prompt level for the focus step in the draft session
+            if (lastAttemptLevel) {
+              const nextLevel = lastAttemptLevel
+                ? this.getNextPromptLevel(lastAttemptLevel).key
+                : ChainStepPromptLevel.partial_physical;
+              newDraftSession.step_attempts[draftFocusStepIndex].target_prompt_level = nextLevel;
+              break;
+            }
           }
 
           lastAttemptLevel = pastAttempt.target_prompt_level;
           lastAttemptSessionType = pastAttempt.session_type;
+        }
+
+        // If this is a training session and target level hasn't been set yet,
+        // set the target prompt level to the target prompt level from the last focus step.
+        if (draftFocusStepIndex >= 0) {
+          const draftFocusStepAttempt = newDraftSession.step_attempts[draftFocusStepIndex];
+          if (
+            (newDraftSession.session_type === ChainSessionType.training ||
+              newDraftSession.session_type === ChainSessionType.booster) &&
+            !draftFocusStepAttempt.target_prompt_level
+          ) {
+            newDraftSession.step_attempts[draftFocusStepIndex].target_prompt_level = lastAttemptLevel;
+          }
         }
       }
     }
@@ -265,9 +290,9 @@ export class ChainMastery {
 
   /**
    * Given a prompt level, returns the next prompt level in the prompt hierarchy.
-   * @param promptLvl: "string" is the previous prompt level
+   * @param promptLvl: the previous prompt level
    */
-  getNextPromptLevel(promptLvl: ChainStepPromptLevel) {
+  getNextPromptLevel(promptLvl: ChainStepPromptLevel): ChainStepPromptLevelMapItem {
     const currentIndex = this.promptHierarchy.findIndex(e => e.key === promptLvl);
     const nextIndex = currentIndex > 1 ? currentIndex - 1 : 0; // 0 if prompt level is already 0 (none/independent)
     return this.promptHierarchy[nextIndex];

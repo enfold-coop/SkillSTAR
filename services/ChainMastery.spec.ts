@@ -18,4 +18,6 @@ describe('ChainMastery', () => {
     expect(chainMastery.unmasteredFocusedChainStepIds).toBeTruthy();
     expect(chainMastery.unmasteredFocusedChainStepIds).toBeInstanceOf(Array);
   });
+
+
 });
