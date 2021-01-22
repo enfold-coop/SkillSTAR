@@ -104,8 +104,8 @@ const ChainsHomeScreen: FC<Props> = props => {
   useEffect(() => {
     let isCancelled = false;
     const _load = async () => {
-      if (chainData != undefined && !isCancelled) {
-        const mastery = new ChainMastery(chainData);
+      if (chainSteps !== undefined && chainData != undefined && !isCancelled) {
+        const mastery = new ChainMastery(chainSteps, chainData);
         setChainMastery(mastery);
 
         if (chainData.sessions && chainData.sessions.length > 0) {
