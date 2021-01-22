@@ -1,6 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
 import React, { FC, useEffect, useState } from 'react';
-import { Image, ImageBackground, StyleSheet, View } from 'react-native';
+import { Image, ImageBackground, StyleSheet, View, LogBox} from 'react-native';
 import * as Animatable from 'react-native-animatable';
 import { Button, Card, Title } from 'react-native-paper';
 import AppHeader from '../components/Header/AppHeader';
@@ -12,6 +12,7 @@ import { ChainSessionType } from '../types/CHAIN/ChainSession';
 import { ChainData } from '../types/CHAIN/SkillstarChain';
 
 const PrepareMaterialsScreen: FC<Props> = props => {
+    LogBox.ignoreAllLogs();
   const navigation = useNavigation();
   const [chainSessionType, setChainSessionType] = useState<ChainSessionType>();
 

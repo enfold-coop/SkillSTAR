@@ -2,7 +2,7 @@ import { useNavigation } from '@react-navigation/native';
 import { Video } from 'expo-av';
 import { AVPlaybackSource } from 'expo-av/build/AV';
 import React, { FC, useEffect, useState } from 'react';
-import { ImageBackground, StyleSheet, Text, View } from 'react-native';
+import { ImageBackground, StyleSheet, Text, View,LogBox } from 'react-native';
 import * as Animatable from 'react-native-animatable';
 import { ActivityIndicator, Button } from 'react-native-paper';
 import AppHeader from '../components/Header/AppHeader';
@@ -24,6 +24,7 @@ interface Props {}
  * @returns
  */
 const StepScreen: FC<Props> = props => {
+    LogBox.ignoreAllLogs();
   const navigation = useNavigation();
   const [visible, setVisible] = React.useState(false);
   const [stepIndex, setStepIndex] = useState<number>();
@@ -126,8 +127,6 @@ const StepScreen: FC<Props> = props => {
   };
 
   const createAttempts = () => {
-    // console.log(chainSteps);
-
     if (chainData && chainSteps && session) {
       chainSteps.forEach((chainStep, i) => {
         const newStepAttempt: StepAttempt = {

@@ -1,6 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
 import React, { FC, useEffect, useState } from 'react';
-import { ImageBackground, StyleSheet, View } from 'react-native';
+import { ImageBackground, StyleSheet, View, LogBox } from 'react-native';
 import { Button } from 'react-native-paper';
 import AppHeader from '../components/Header/AppHeader';
 import { Loading } from '../components/Loading/Loading';
@@ -21,6 +21,7 @@ type Props = {
 };
 
 const ProbeScreen: FC<Props> = props => {
+    LogBox.ignoreAllLogs();
   const navigation = useNavigation();
   const [stepIndex, setStepIndex] = useState(0);
   const [readyToSubmit, setReadyToSubmit] = useState(false);

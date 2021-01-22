@@ -1,7 +1,7 @@
 import { useDeviceOrientation } from '@react-native-community/hooks';
 import { useNavigation } from '@react-navigation/native';
 import React, { FC, useEffect, useState } from 'react';
-import { ImageBackground, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { ImageBackground, ScrollView, StyleSheet, TouchableOpacity, View, LogBox } from 'react-native';
 import * as Animatable from 'react-native-animatable';
 import { ActivityIndicator, Text } from 'react-native-paper';
 import {
@@ -29,6 +29,7 @@ import { Participant } from '../types/User';
 
 // Chain Home Screen
 const ChainsHomeScreen: FC<Props> = props => {
+    LogBox.ignoreAllLogs();
   const navigation = useNavigation();
   const [asideContent, setAsideContents] = useState('');
   const [btnText, setBtnText] = useState<string>();

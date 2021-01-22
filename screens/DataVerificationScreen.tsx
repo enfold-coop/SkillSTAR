@@ -1,6 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
 import React, { FC, useEffect, useState } from 'react';
-import { FlatList, StyleSheet, Text, View } from 'react-native';
+import { FlatList, StyleSheet, Text, View, LogBox } from 'react-native';
 import * as Animatable from 'react-native-animatable';
 import 'react-native-get-random-values';
 import { ActivityIndicator, Button } from 'react-native-paper';
@@ -20,6 +20,7 @@ type Props = {};
  *
  */
 const DataVerificationScreen: FC<Props> = props => {
+    LogBox.ignoreAllLogs();
   const navigation = useNavigation();
   const [chainData, setChainData] = useState<ChainData>();
   const [chainSession, setChainSession] = useState<ChainSession>();

@@ -114,9 +114,6 @@ export class MasteryAlgo {
         this.promptHierarchy = this._convertMapToArray(ChainStepPromptLevelMap);
         let prevSessionData = this._getPreviousSessionData(chainData);
         let prevFocusStep = this._getPrevSessionFocusStepData(prevSessionData);
-        console.log('====================================');
-        // console.log(prevFocusStep);
-        console.log('====================================');
 
         let prevPromptLevel = this.prevFocusStep?.prompt_level;
         

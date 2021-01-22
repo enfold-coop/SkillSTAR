@@ -1,10 +1,11 @@
 import React, { FC } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View, LogBox } from 'react-native';
 import AppHeader from '../components/Header/AppHeader';
 
 type Props = {};
 
 const NoQuestionnaireScreen: FC<Props> = props => {
+    LogBox.ignoreAllLogs();
   return (
     <View style={styles.container}>
       <AppHeader name={'No SkillSTAR data found for participant'} />
