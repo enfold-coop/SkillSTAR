@@ -83,7 +83,7 @@ const PrepareMaterialsScreen: FC<Props> = props => {
               if ((chainSessionType as string) === 'training') {
                 navigation.navigate('StepScreen');
               } else {
-                navigation.navigate('StepScreen');
+                navigation.navigate('BaselineAssessmentScreen');
                 // navigation.navigate('BaselineAssessmentScreen');
               }
             }}

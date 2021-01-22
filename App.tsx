@@ -103,7 +103,7 @@ export default (): JSX.Element | null => {
           name='PrepareMaterialsScreen'
           component={PrepareMaterialsScreen}
         />
-        <Stack.Screen
+        {/* <Stack.Screen
           options={({ navigation }) => ({
             ...screenOpts,
             title: 'Probe Session',
@@ -111,7 +111,7 @@ export default (): JSX.Element | null => {
           })}
           name='ProbeScreen'
           component={ProbeScreen}
-        />
+        /> */}
         <Stack.Screen
           options={({ navigation }) => ({
             ...screenOpts,

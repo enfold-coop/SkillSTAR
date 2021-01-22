@@ -79,7 +79,7 @@ const BaselineAssessmentScreen: FC<Props> = props => {
     return () => {
       isCancelled = true;
     };
-  });
+  },[]);
   /** END: Lifecycle calls */
 
   const updateChainData: DataVerificationControlCallback = async (
@@ -104,7 +104,7 @@ const BaselineAssessmentScreen: FC<Props> = props => {
   };
 
   const setSessionData = async () => {
-    console.log('*** setSessionData ***');
+    // console.log('*** setSessionData ***');
     if (chainData && chainSession) {
     //   console.log('chainData.id', chainData.id);
       if (!chainData.sessions) {
@@ -154,9 +154,9 @@ const BaselineAssessmentScreen: FC<Props> = props => {
             style={styles.nextButton}
             color={CustomColors.uva.orange}
             labelStyle={{
-              fontSize: 16,
+              fontSize: 24,
               fontWeight: '600',
-              color: CustomColors.uva.blue,
+              color: CustomColors.uva.white,
             }}
             mode='contained'
             onPress={() => {

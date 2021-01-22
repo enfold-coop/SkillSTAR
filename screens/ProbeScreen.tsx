@@ -134,6 +134,7 @@ const ProbeScreen: FC<Props> = props => {
           <Button
             style={styles.backButton}
             color={CustomColors.uva.blue}
+            labelStyle={{ fontSize: 24, paddingVertical:5 }}
             mode='contained'
             onPress={() => {
               decIndex();
@@ -144,6 +145,7 @@ const ProbeScreen: FC<Props> = props => {
           <Button
             style={styles.nextButton}
             color={CustomColors.uva.blue}
+            labelStyle={{ fontSize: 24, paddingVertical:5 }}
             mode='contained'
             onPress={() => {
               if (stepIndex + 1 <= chainSteps.length - 1) {
@@ -160,6 +162,7 @@ const ProbeScreen: FC<Props> = props => {
         {readyToSubmit && (
           <Button
             mode='contained'
+            labelStyle={{ fontSize: 24, paddingVertical:5 }}
             onPress={() => {
               navigation.navigate('ChainsHomeScreen');
             }}
