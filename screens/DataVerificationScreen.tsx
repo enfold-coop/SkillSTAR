@@ -140,9 +140,10 @@ const DataVerificationScreen: FC<Props> = props => {
             mode='contained'
             color={CustomColors.uva.orange}
             labelStyle={{
-              fontSize: 16,
-              fontWeight: '600',
-              color: CustomColors.uva.blue,
+              fontSize: 28,
+            //   fontWeight: '600',
+              color: CustomColors.uva.white,
+              paddingVertical:15,
             }}
             style={styles.nextButton}
             onPress={() => {
@@ -153,7 +154,7 @@ const DataVerificationScreen: FC<Props> = props => {
               }
             }}
           >
-            {confirmSubmit ? 'Confirm and Submit' : 'Submit'}
+            {confirmSubmit ? 'Confirm and Submit' : 'Confirm and Submit'}
           </Button>
         </View>
       )}
@@ -228,11 +229,8 @@ const styles = StyleSheet.create({
   },
   nextButton: {
     width: '90%',
-    height: 50,
-    margin: 10,
     justifyContent: 'center',
     alignSelf: 'center',
-    fontWeight: '600',
   },
 });
 
