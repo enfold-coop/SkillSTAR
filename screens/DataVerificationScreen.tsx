@@ -2,8 +2,8 @@ import { useNavigation } from '@react-navigation/native';
 import React, { FC, useEffect, useState } from 'react';
 import { FlatList, StyleSheet, Text, View } from 'react-native';
 import * as Animatable from 'react-native-animatable';
-import 'react-native-get-random-values';
 import { ActivityIndicator, Button } from 'react-native-paper';
+import { randomId } from '../_util/RandomId';
 import { DataVerifItem } from '../components/DataVerification';
 import ColumnLabels from '../components/DataVerification/ColumnLabels';
 import AppHeader from '../components/Header/AppHeader';
@@ -121,7 +121,7 @@ const DataVerificationScreen: FC<Props> = props => {
             renderItem={item => {
               return <DataVerifItem stepAttempt={item.item} chainSteps={chainSteps} />;
             }}
-            keyExtractor={() => `${Math.floor(Math.random() * 10000)}`}
+            keyExtractor={randomId}
           />
         ) : (
           <View>

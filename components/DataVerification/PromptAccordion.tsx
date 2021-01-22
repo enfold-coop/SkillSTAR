@@ -1,9 +1,8 @@
-import { nanoid } from 'nanoid';
 import React, { FC, useEffect, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import * as Animatable from 'react-native-animatable';
-import 'react-native-get-random-values';
 import { RadioButton } from 'react-native-paper';
+import { randomId } from '../../_util/RandomId';
 import CustomColors from '../../styles/Colors';
 import { StepAttempt } from '../../types/CHAIN/StepAttempt';
 import { MOCK_PROMP_Q, MOCK_PROMPT_OPTS } from './mock_session';
@@ -42,7 +41,7 @@ const PromptAccordion: FC<Props> = props => {
         <View style={[styles.promptOptsContainer]}>
           {promptOpts.map((e, i) => {
             return (
-              <View style={styles.checkboxContainer} key={nanoid()}>
+              <View style={styles.checkboxContainer} key={randomId()}>
                 <View
                   style={{
                     height: 40,
