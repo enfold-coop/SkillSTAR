@@ -30,5 +30,5 @@ export interface MasteryInfoNumAttemptsSince {
 }
 
 export interface MasteryInfoMap {
-  [key: number]: MasteryInfo;
+  [key: string]: MasteryInfo;
 }

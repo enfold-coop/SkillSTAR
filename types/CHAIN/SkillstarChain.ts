@@ -8,8 +8,6 @@ export interface SkillstarChain {
   user_id?: number;
   time_on_task_ms?: number;
   sessions: ChainSession[];
-
-  // TODO: Add the group?
 }
 
 export class ChainData implements SkillstarChain {
@@ -112,12 +110,14 @@ export class ChainData implements SkillstarChain {
    * @private
    */
   private sortSessions(skillstarChain: SkillstarChain): ChainSession[] {
-    return skillstarChain.sessions.sort((a, b) => {
-      if (a && b && a.date && b.date) {
-        return a.date.getTime() - b.date.getTime();
-      } else {
-        return 0;
-      }
-    });
+    return skillstarChain.sessions
+      .slice() // Make a copy of the array first, so the sort doesn't mutate the original.
+      .sort((a, b) => {
+        if (a && b && a.date && b.date) {
+          return a.date.getTime() - b.date.getTime();
+        } else {
+          return 0;
+        }
+      });
   }
 }
