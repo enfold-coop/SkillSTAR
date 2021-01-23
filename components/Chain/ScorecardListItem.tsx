@@ -12,7 +12,7 @@ import { StepAttempt } from '../../types/CHAIN/StepAttempt';
 
 interface ScorecardListItemProps {
   chainStep: ChainStep;
-  stepAttempt: StepAttempt;
+  stepAttempt?: StepAttempt;
   masteryInfo: MasteryInfo;
 }
 

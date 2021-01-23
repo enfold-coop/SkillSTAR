@@ -11,7 +11,9 @@
     "plugin:jest/recommended"
   ],
   "rules": {
-    "jest/no-conditional-expect": "warn",
+    "@typescript-eslint/no-explicit-any": "off",
+    "@typescript-eslint/ban-ts-comment": "warn",
+    "jest/no-conditional-expect": "off",
     "jest/no-disabled-tests": "warn",
     "jest/no-focused-tests": "error",
     "jest/no-identical-title": "error",

@@ -13,12 +13,7 @@ import { ChainData } from '../types/CHAIN/SkillstarChain';
 import { ChainStepStatus, StepAttempt, StepAttemptField } from '../types/CHAIN/StepAttempt';
 import { DataVerificationControlCallback } from '../types/DataVerificationControlCallback';
 
-type Props = {};
-
-/**
- *
- */
-const BaselineAssessmentScreen: FC<Props> = props => {
+const BaselineAssessmentScreen: FC<Props> = () => {
   /**
    * Set session type: Probe or Training
    */
@@ -89,16 +84,17 @@ const BaselineAssessmentScreen: FC<Props> = props => {
   ) => {
     if (chainData && chainSession && chainSession.id !== undefined) {
       //  Get the step
-      const newStep: StepAttempt = chainData.getStep(chainSession.id, chainStepId);
+      const newStep: StepAttempt | undefined = chainData.getStep(chainSession.id, chainStepId);
 
-      // Modify the value
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore-next-line
-      newStep[fieldName] = fieldValue;
+      if (newStep !== undefined && newStep.hasOwnProperty(fieldName)) {
+        // Modify the value
+        // @ts-ignore-next-line
+        newStep[fieldName] = fieldValue;
 
-      //  Set the value of the fieldName for a specific step
-      if (chainData && chainData.id !== undefined) {
-        chainData.updateStep(chainSession.id, chainStepId, newStep);
+        //  Set the value of the fieldName for a specific step
+        if (chainData && chainData.id !== undefined) {
+          chainData.updateStep(chainSession.id, chainStepId, newStep);
+        }
       }
     }
   };

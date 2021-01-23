@@ -4,7 +4,7 @@ import { Image, ImageBackground, StyleSheet, View, LogBox } from 'react-native';
 import * as Animatable from 'react-native-animatable';
 import { Button, Card, Title } from 'react-native-paper';
 import AppHeader from '../components/Header/AppHeader';
-import { BackgroundImages } from '../data/images';
+import { ImageAssets } from '../data/images';
 import { MaterialsItems } from '../data/prep_materials';
 import { ApiService } from '../services/ApiService';
 import CustomColors from '../styles/Colors';
@@ -64,7 +64,7 @@ const PrepareMaterialsScreen: FC<Props> = props => {
   ));
 
   return (
-    <ImageBackground source={BackgroundImages.sunrise_muted} resizeMode={'cover'} style={styles.image}>
+    <ImageBackground source={ImageAssets.sunrise_muted} resizeMode={'cover'} style={styles.image}>
       <View style={styles.container}>
         <AppHeader name='Prepare Materials' />
         {materialsList}

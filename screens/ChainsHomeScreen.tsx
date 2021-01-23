@@ -12,7 +12,7 @@ import {
 import ScorecardListItem from '../components/Chain/ScorecardListItem';
 import SessionDataAside from '../components/Chain/SessionDataAside';
 import AppHeader from '../components/Header/AppHeader';
-import { BackgroundImages } from '../data/images';
+import { ImageAssets } from '../data/images';
 import { ApiService } from '../services/ApiService';
 import { ChainMastery } from '../services/ChainMastery';
 import CustomColors from '../styles/Colors';
@@ -259,14 +259,13 @@ const ChainsHomeScreen: FC<Props> = props => {
   const chainSessionId = session && session.id !== undefined ? session.id : -1;
 
   function _getMasteryInfo(chainData: ChainData, chainStepId: number) {
-    // return MasteryService.getMasteryInfoForStep(chainData, chainStepId);
     return { chainStepId: chainStepId, stepStatus: ChainStepStatus.not_complete } as MasteryInfo;
   }
 
   return (
     <ImageBackground
       key={'chains_home_sreen_' + key}
-      source={BackgroundImages.sunrise_muted}
+      source={ImageAssets.sunrise_muted}
       resizeMode={'cover'}
       style={styles.bkgrdImage}
     >

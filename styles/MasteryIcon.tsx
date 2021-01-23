@@ -6,11 +6,11 @@ import { ChainStepStatus, ChainStepStatusMap } from '../types/CHAIN/StepAttempt'
 import { SkillStarIcons } from './Icons';
 
 export interface MasteryIconProps {
-  chainStepStatus: ChainStepStatus;
+  chainStepStatus?: ChainStepStatus;
   iconSize: number;
 }
 
-export function MasteryIcon(props: MasteryIconProps) {
+export function MasteryIcon(props: MasteryIconProps): JSX.Element {
   const { chainStepStatus, iconSize } = props;
   const [size, setIconSize] = useState(30);
 

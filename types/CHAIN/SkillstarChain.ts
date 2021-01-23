@@ -1,5 +1,5 @@
 import { ChainSession } from './ChainSession';
-import { ChainStepStatus, StepAttempt } from './StepAttempt';
+import { StepAttempt } from './StepAttempt';
 
 export interface SkillstarChain {
   id?: number;
@@ -41,7 +41,7 @@ export class ChainData implements SkillstarChain {
    * @param chainStepId: The chain_step_id in the step attempt
    * @param newStep: Data to update the step with
    */
-  updateStep(sessionId: number, chainStepId: number, newStep: StepAttempt) {
+  updateStep(sessionId: number, chainStepId: number, newStep: StepAttempt): void {
     console.log('SkillstarChain.ts > ChainData > updateStep ***');
     console.log('sessionId', sessionId);
     console.log('chainStepId', chainStepId);
@@ -62,7 +62,7 @@ export class ChainData implements SkillstarChain {
    * @param sessionId: The id of the session
    * @param newSession: Data to update the session with
    */
-  updateSession(sessionId: number, newSession: ChainSession) {
+  updateSession(sessionId: number, newSession: ChainSession): void {
     console.log('SkillstarChain.ts > ChainData > updateSession ***');
     this.sessions.forEach((session, i) => {
       if (session.id === sessionId) {

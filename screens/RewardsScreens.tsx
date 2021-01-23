@@ -1,16 +1,14 @@
-import React, { FC, useState } from 'react';
-import { StyleSheet, Text, View, Image, LogBox } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import AppHeader from '../components/Header/AppHeader';
+import React, { FC } from 'react';
+import { Image, LogBox, StyleSheet, Text, View } from 'react-native';
 import { Button } from 'react-native-paper';
+import AppHeader from '../components/Header/AppHeader';
+import { ImageAssets } from '../data/images';
 import CustomColors from '../styles/Colors';
 
-type Props = {};
-
-const RewardsScreens: FC<Props> = props => {
+const RewardsScreens: FC<Props> = () => {
   LogBox.ignoreAllLogs();
   const navigation = useNavigation();
-  const star = require('../assets/images/reward_screen/reward-star-01.png');
   // const awesomeJobText = require("../assets/images/reward_screen/awesome-job-text-v3.png");
   return (
     <View style={styles.container}>
@@ -24,7 +22,7 @@ const RewardsScreens: FC<Props> = props => {
         <Text style={styles.awesomeText}>Awesome job!</Text>
       </View>
       <View style={styles.mainRewardContainer}>
-        <Image style={styles.img} source={star} />
+        <Image style={styles.img} source={ImageAssets.reward_star} />
         {/* <Image style={styles.awesomeText} source={star} /> */}
       </View>
       <Button
