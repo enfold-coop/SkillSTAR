@@ -6,17 +6,17 @@ import {
   NUM_INCOMPLETE_TRAINING_ATTEMPTS_FOR_BOOSTER,
   NUM_PROMPTED_ATTEMPTS_FOR_FOCUS,
 } from '../constants/MasteryAlgorithm';
-import { ChainSession, ChainSessionType } from '../types/CHAIN/ChainSession';
-import { ChainStep } from '../types/CHAIN/ChainStep';
-import { MasteryInfo, MasteryInfoMap } from '../types/CHAIN/MasteryLevel';
-import { ChainData } from '../types/CHAIN/SkillstarChain';
+import { ChainSession, ChainSessionType } from '../types/chain/ChainSession';
+import { ChainStep } from '../types/chain/ChainStep';
+import { MasteryInfo, MasteryInfoMap } from '../types/chain/MasteryLevel';
+import { ChainData } from '../types/chain/SkillstarChain';
 import {
   ChainStepPromptLevel,
   ChainStepPromptLevelMap,
   ChainStepPromptLevelMapItem,
   ChainStepStatus,
   StepAttempt,
-} from '../types/CHAIN/StepAttempt';
+} from '../types/chain/StepAttempt';
 
 /**
  * Holds the chain data and mastery info for each step in the chain data.

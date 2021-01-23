@@ -7,10 +7,10 @@ import { Loading } from '../components/Loading/Loading';
 import DataVerificationList from '../components/Probe/DataVerificationList';
 import { ApiService } from '../services/ApiService';
 import CustomColors from '../styles/Colors';
-import { ChainSession, ChainSessionType, ChainSessionTypeMap } from '../types/CHAIN/ChainSession';
-import { ChainStep } from '../types/CHAIN/ChainStep';
-import { ChainData } from '../types/CHAIN/SkillstarChain';
-import { ChainStepStatus, StepAttempt, StepAttemptField } from '../types/CHAIN/StepAttempt';
+import { ChainSession, ChainSessionType, ChainSessionTypeMap } from '../types/chain/ChainSession';
+import { ChainStep } from '../types/chain/ChainStep';
+import { ChainData } from '../types/chain/SkillstarChain';
+import { ChainStepStatus, StepAttempt, StepAttemptField } from '../types/chain/StepAttempt';
 import { DataVerificationControlCallback } from '../types/DataVerificationControlCallback';
 
 const BaselineAssessmentScreen = (): JSX.Element => {

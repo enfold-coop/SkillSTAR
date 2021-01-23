@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { ProgressBar as ProgBar } from 'react-native-paper';
 import CustomColors from '../../styles/Colors';
-import { ChainStep } from '../../types/CHAIN/ChainStep';
+import { ChainStep } from '../../types/chain/ChainStep';
 
 interface ProgressBarProps {
   masteryLevel: string;

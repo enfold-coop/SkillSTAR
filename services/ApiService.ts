@@ -3,11 +3,11 @@ import { API_URL } from '@env';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import NetInfo from '@react-native-community/netinfo';
 import { parse, stringify } from 'telejson';
-import { ChainSession } from '../types/CHAIN/ChainSession';
-import { ChainStep } from '../types/CHAIN/ChainStep';
-import { MasteryInfo } from '../types/CHAIN/MasteryLevel';
-import { ChainData, SkillstarChain } from '../types/CHAIN/SkillstarChain';
-import { StarDriveFlow } from '../types/CHAIN/StarDriveFlow';
+import { ChainSession } from '../types/chain/ChainSession';
+import { ChainStep } from '../types/chain/ChainStep';
+import { MasteryInfo } from '../types/chain/MasteryLevel';
+import { ChainData, SkillstarChain } from '../types/chain/SkillstarChain';
+import { StarDriveFlow } from '../types/chain/StarDriveFlow';
 import { ContextDispatchAction, ContextStateValue } from '../types/Context';
 import { Participant, User } from '../types/User';
 

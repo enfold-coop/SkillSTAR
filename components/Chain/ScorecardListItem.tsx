@@ -6,9 +6,9 @@ import * as Animatable from 'react-native-animatable';
 import { Card } from 'react-native-paper';
 import CustomColors from '../../styles/Colors';
 import { MasteryIcon } from '../../styles/MasteryIcon';
-import { ChainStep } from '../../types/CHAIN/ChainStep';
-import { MasteryInfo } from '../../types/CHAIN/MasteryLevel';
-import { StepAttempt } from '../../types/CHAIN/StepAttempt';
+import { ChainStep } from '../../types/chain/ChainStep';
+import { MasteryInfo } from '../../types/chain/MasteryLevel';
+import { StepAttempt } from '../../types/chain/StepAttempt';
 
 interface ScorecardListItemProps {
   chainStep: ChainStep;

@@ -1,7 +1,7 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-import { ChainSessionType } from '../../types/CHAIN/ChainSession';
-import { ChainStepPromptLevel, StepAttempt } from '../../types/CHAIN/StepAttempt';
+import { ChainSessionType } from '../../types/chain/ChainSession';
+import { ChainStepPromptLevel, StepAttempt } from '../../types/chain/StepAttempt';
 
 interface TrainingAsideProps {
   sessionType?: ChainSessionType;

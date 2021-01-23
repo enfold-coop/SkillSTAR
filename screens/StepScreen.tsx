@@ -11,10 +11,10 @@ import { ImageAssets } from '../data/images';
 import { videos } from '../data/videos';
 import { ApiService } from '../services/ApiService';
 import CustomColors from '../styles/Colors';
-import { ChainSession } from '../types/CHAIN/ChainSession';
-import { ChainStep } from '../types/CHAIN/ChainStep';
-import { ChainData } from '../types/CHAIN/SkillstarChain';
-import { ChainStepPromptLevel, ChainStepStatus, StepAttempt } from '../types/CHAIN/StepAttempt';
+import { ChainSession } from '../types/chain/ChainSession';
+import { ChainStep } from '../types/chain/ChainStep';
+import { ChainData } from '../types/chain/SkillstarChain';
+import { ChainStepPromptLevel, ChainStepStatus, StepAttempt } from '../types/chain/StepAttempt';
 
 const StepScreen = (): JSX.Element => {
   const navigation = useNavigation();

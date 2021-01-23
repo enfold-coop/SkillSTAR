@@ -8,8 +8,8 @@ import { ImageAssets } from '../data/images';
 import { MaterialsItems } from '../data/prep_materials';
 import { ApiService } from '../services/ApiService';
 import CustomColors from '../styles/Colors';
-import { ChainSessionType } from '../types/CHAIN/ChainSession';
-import { ChainData } from '../types/CHAIN/SkillstarChain';
+import { ChainSessionType } from '../types/chain/ChainSession';
+import { ChainData } from '../types/chain/SkillstarChain';
 
 const PrepareMaterialsScreen = (): JSX.Element => {
   const navigation = useNavigation();

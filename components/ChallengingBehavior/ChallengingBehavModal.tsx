@@ -2,7 +2,7 @@ import React from 'react';
 import { Modal, StyleSheet, Text, View } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { Button, TextInput } from 'react-native-paper';
-import { StepAttempt } from '../../types/CHAIN/StepAttempt';
+import { StepAttempt } from '../../types/chain/StepAttempt';
 
 interface ChallengingBehavModalProps {
   stepComplete: string;

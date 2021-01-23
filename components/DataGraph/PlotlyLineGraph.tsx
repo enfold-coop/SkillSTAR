@@ -4,8 +4,8 @@ import Plotly from 'react-native-plotly';
 import { FilterSessionsByType } from '../../_util/FilterSessionType';
 import { ApiService } from '../../services/ApiService';
 import CustomColors from '../../styles/Colors';
-import { ChainSession } from '../../types/CHAIN/ChainSession';
-import { ChainData } from '../../types/CHAIN/SkillstarChain';
+import { ChainSession } from '../../types/chain/ChainSession';
+import { ChainData } from '../../types/chain/SkillstarChain';
 
 interface PlotlyGraphDimensions {
   width: number;

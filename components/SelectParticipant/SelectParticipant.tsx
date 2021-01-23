@@ -5,7 +5,7 @@ import { StyleSheet, Text, View } from 'react-native';
 import { Button, Menu } from 'react-native-paper';
 import { ApiService } from '../../services/ApiService';
 import CustomColors from '../../styles/Colors';
-import { ChainStep } from '../../types/CHAIN/ChainStep';
+import { ChainStep } from '../../types/chain/ChainStep';
 import { Participant, User } from '../../types/User';
 
 export interface SelectParticipantProps {

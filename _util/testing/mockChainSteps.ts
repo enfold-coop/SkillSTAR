@@ -1,4 +1,4 @@
-import { ChainStep } from '../../types/CHAIN/ChainStep';
+import { ChainStep } from '../../types/chain/ChainStep';
 
 export const mockChainSteps: ChainStep[] = [
   {

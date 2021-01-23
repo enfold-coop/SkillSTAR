@@ -9,10 +9,10 @@ import ColumnLabels from '../components/DataVerification/ColumnLabels';
 import AppHeader from '../components/Header/AppHeader';
 import { ApiService } from '../services/ApiService';
 import CustomColors from '../styles/Colors';
-import { ChainSession } from '../types/CHAIN/ChainSession';
-import { ChainStep } from '../types/CHAIN/ChainStep';
-import { ChainData } from '../types/CHAIN/SkillstarChain';
-import { StepAttempt } from '../types/CHAIN/StepAttempt';
+import { ChainSession } from '../types/chain/ChainSession';
+import { ChainStep } from '../types/chain/ChainStep';
+import { ChainData } from '../types/chain/SkillstarChain';
+import { StepAttempt } from '../types/chain/StepAttempt';
 
 const DataVerificationScreen = (): JSX.Element => {
   const navigation = useNavigation();

@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import CustomColor from '../styles/Colors';
-import { MasteryStatus } from '../types/CHAIN/MasteryLevel';
-import { ChainStepStatus, ChainStepStatusMap } from '../types/CHAIN/StepAttempt';
+import { MasteryStatus } from '../types/chain/MasteryLevel';
+import { ChainStepStatus, ChainStepStatusMap } from '../types/chain/StepAttempt';
 import { SkillStarIcons } from './Icons';
 
 export interface MasteryIconProps {

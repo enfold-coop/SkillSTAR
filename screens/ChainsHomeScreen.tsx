@@ -16,11 +16,11 @@ import { ImageAssets } from '../data/images';
 import { ApiService } from '../services/ApiService';
 import { ChainMastery } from '../services/ChainMastery';
 import CustomColors from '../styles/Colors';
-import { ChainSession, ChainSessionType, ChainSessionTypeLabels } from '../types/CHAIN/ChainSession';
-import { ChainStep } from '../types/CHAIN/ChainStep';
-import { MasteryInfo } from '../types/CHAIN/MasteryLevel';
-import { ChainData, SkillstarChain } from '../types/CHAIN/SkillstarChain';
-import { ChainStepStatus, StepAttempt } from '../types/CHAIN/StepAttempt';
+import { ChainSession, ChainSessionType, ChainSessionTypeLabels } from '../types/chain/ChainSession';
+import { ChainStep } from '../types/chain/ChainStep';
+import { MasteryInfo } from '../types/chain/MasteryLevel';
+import { ChainData, SkillstarChain } from '../types/chain/SkillstarChain';
+import { ChainStepStatus, StepAttempt } from '../types/chain/StepAttempt';
 import { Participant } from '../types/User';
 
 // Chain Home Screen

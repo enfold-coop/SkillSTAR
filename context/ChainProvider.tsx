@@ -1,5 +1,5 @@
 import React, { createContext, useReducer } from 'react';
-import { ChainSessionType } from '../types/CHAIN/ChainSession';
+import { ChainSessionType } from '../types/chain/ChainSession';
 import { ChainProviderProps, ChainProviderState, ContextDispatch, ContextDispatchAction } from '../types/Context';
 
 const initialState: ChainProviderState = {

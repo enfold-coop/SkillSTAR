@@ -4,8 +4,8 @@ import { LayoutRectangle, StyleSheet, Text, TouchableOpacity, View } from 'react
 import { ActivityIndicator, Card } from 'react-native-paper';
 import { ApiService } from '../../services/ApiService';
 import CustomColors from '../../styles/Colors';
-import { ChainSession, ChainSessionType, ChainSessionTypeMap } from '../../types/CHAIN/ChainSession';
-import { ChainStepPromptLevel } from '../../types/CHAIN/StepAttempt';
+import { ChainSession, ChainSessionType, ChainSessionTypeMap } from '../../types/chain/ChainSession';
+import { ChainStepPromptLevel } from '../../types/chain/StepAttempt';
 import GraphModal from '../DataGraph/GraphModal';
 import { ChainsHomeGraph } from '../DataGraph/index';
 import { ProbeAside, TrainingAside } from './index';

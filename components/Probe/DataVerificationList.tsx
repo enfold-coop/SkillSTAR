@@ -1,7 +1,7 @@
 import React from 'react';
 import { FlatList, StyleSheet, View } from 'react-native';
 import shortid from 'shortid';
-import { StepAttempt } from '../../types/CHAIN/StepAttempt';
+import { StepAttempt } from '../../types/chain/StepAttempt';
 import { DataVerificationControlCallback } from '../../types/DataVerificationControlCallback';
 import { DataVerificationListItem } from './DataVerificationListItem';
 

@@ -4,7 +4,7 @@ import * as Animatable from 'react-native-animatable';
 import { RadioButton } from 'react-native-paper';
 import { randomId } from '../../_util/RandomId';
 import CustomColors from '../../styles/Colors';
-import { StepAttempt } from '../../types/CHAIN/StepAttempt';
+import { StepAttempt } from '../../types/chain/StepAttempt';
 import { MOCK_PROMP_Q, MOCK_PROMPT_OPTS } from './mock_session';
 
 interface PromptAccordionProps {

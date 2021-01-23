@@ -1,4 +1,4 @@
-import { SkillstarChain } from '../../types/CHAIN/SkillstarChain';
+import { SkillstarChain } from '../../types/chain/SkillstarChain';
 import {
   mockSession0,
   mockSession1,

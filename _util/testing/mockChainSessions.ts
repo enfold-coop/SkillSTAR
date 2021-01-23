@@ -1,5 +1,5 @@
-import { ChainSession, ChainSessionType } from '../../types/CHAIN/ChainSession';
-import { ChainStepPromptLevel, ChainStepStatus } from '../../types/CHAIN/StepAttempt';
+import { ChainSession, ChainSessionType } from '../../types/chain/ChainSession';
+import { ChainStepPromptLevel, ChainStepStatus } from '../../types/chain/StepAttempt';
 import { mockChainSteps } from './mockChainSteps';
 
 export const mockSession0: ChainSession = {

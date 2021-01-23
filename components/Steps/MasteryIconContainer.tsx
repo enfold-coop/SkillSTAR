@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { MasteryIcon } from '../../styles/MasteryIcon';
-import { ChainStepStatus } from '../../types/CHAIN/StepAttempt';
+import { ChainStepStatus } from '../../types/chain/StepAttempt';
 
 interface MasteryIconContainerProps {
   masteryLevel: string;

@@ -1,5 +1,5 @@
-import { ChainSession, ChainSessionType } from '../types/CHAIN/ChainSession';
-import { FilteredSessions } from '../types/CHAIN/FilteredSessions';
+import { ChainSession, ChainSessionType } from '../types/chain/ChainSession';
+import { FilteredSessions } from '../types/chain/FilteredSessions';
 
 // Filters user session data by session type.
 // RETURNS: 2 arrays
