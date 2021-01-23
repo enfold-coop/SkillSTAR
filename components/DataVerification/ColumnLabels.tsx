@@ -2,7 +2,7 @@ import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import CustomColors from '../../styles/Colors';
 
-const ColumnLabels = () => {
+const ColumnLabels = (): JSX.Element => {
   return (
     <View style={styles.container}>
       <Text style={[styles.mastery, styles.text]}>Mastery</Text>

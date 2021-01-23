@@ -18,9 +18,6 @@ import {
   StepAttempt,
 } from '../types/CHAIN/StepAttempt';
 
-// MOCK SESSIONS ARRAY LENGTH
-const MOCKSESSIONSLENGTH = 5;
-
 /**
  * Holds the chain data and mastery info for each step in the chain data.
  * Also provides quick access to the current chain session, focus step, and
@@ -44,6 +41,8 @@ export class ChainMastery {
    * @param chainData: all of a participant's session history data
    */
   constructor(chainSteps: ChainStep[], chainData: ChainData) {
+    console.log('ChainMastery constructor chainSteps', chainSteps);
+    console.log('ChainMastery constructor chainData', chainData);
     this.chainSteps = chainSteps;
     this.chainData = new ChainData(chainData);
     this.masteryInfoMap = this.buildMasteryInfoMap();
@@ -304,7 +303,7 @@ export class ChainMastery {
    * -- determines and sets current session's focus step prompt-level
    * @param chainData : all of participant's session history data
    */
-  determineStepAttemptPromptLevel() {
+  determineStepAttemptPromptLevel(): void {
     const prevPromptLevel = this.previousFocusStep ? this.previousFocusStep.prompt_level : undefined;
 
     if (prevPromptLevel && this.previousFocusStep && this.previousFocusStep.completed) {
@@ -317,7 +316,7 @@ export class ChainMastery {
     }
   }
 
-  setCurrPromptLevel(prompt: ChainStepPromptLevel) {
+  setCurrPromptLevel(prompt: ChainStepPromptLevel): void {
     if (prompt !== undefined && this.currentFocusStep) {
       this.currentFocusStep.prompt_level = prompt;
     }
@@ -951,9 +950,13 @@ export class ChainMastery {
    */
   chainStepHasBeenMastered(chain_step_id: number): boolean {
     const m = this.masteryInfoMap[`${chain_step_id}`];
+
+    console.log('chainStepHasBeenMastered m', m);
+
     return !!(
-      (m.dateMastered && !m.dateBoosterInitiated && !m.dateBoosterMastered) ||
-      (m.dateMastered && m.dateBoosterInitiated && m.dateBoosterMastered)
+      m &&
+      ((m.dateMastered && !m.dateBoosterInitiated && !m.dateBoosterMastered) ||
+        (m.dateMastered && m.dateBoosterInitiated && m.dateBoosterMastered))
     );
   }
 

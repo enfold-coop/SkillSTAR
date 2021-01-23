@@ -1,8 +1,9 @@
-node_modules
-dist
 .expo
 .expo-shared
-web-build
-coverage
+__mocks__
 __snapshots__
 assets
+coverage
+dist
+node_modules
+web-build

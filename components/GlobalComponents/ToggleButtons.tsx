@@ -1,17 +1,20 @@
-import React, { FC, useState, useEffect } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { StyleSheet, View } from 'react-native';
 import { Button } from 'react-native-paper';
 import CustomColors from '../../styles/Colors';
+import NamedStyles = StyleSheet.NamedStyles;
 
-type Props = {
-  btnStyle: {};
+interface ToggleButtonsProps {
+  btnStyle: NamedStyles<any>;
   stepTitle: string;
-};
+}
 
-const ToggleButtons: FC<Props> = props => {
+type ButtonMode = 'text' | 'outlined' | 'contained';
+
+const ToggleButtons = (props: ToggleButtonsProps): JSX.Element => {
   const { btnStyle, stepTitle } = props;
-  const [btn1Mode, setBtn1Mode] = useState('outlined');
-  const [btn2Mode, setBtn2Mode] = useState('outlined');
+  const [btn1Mode, setBtn1Mode] = useState<ButtonMode>('outlined');
+  const [btn2Mode, setBtn2Mode] = useState<ButtonMode>('outlined');
   const [title, setTitle] = useState('');
 
   useEffect(() => {

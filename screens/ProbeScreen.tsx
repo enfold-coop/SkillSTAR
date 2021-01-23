@@ -1,31 +1,22 @@
 import { useNavigation } from '@react-navigation/native';
-import React, { FC, useEffect, useState } from 'react';
-import { ImageBackground, StyleSheet, View, LogBox } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { ImageBackground, StyleSheet, View } from 'react-native';
 import { Button } from 'react-native-paper';
 import AppHeader from '../components/Header/AppHeader';
 import { Loading } from '../components/Loading/Loading';
 import { DataVerificationListItem } from '../components/Probe/';
+import { ImageAssets } from '../data/images';
 import { ApiService } from '../services/ApiService';
 import CustomColors from '../styles/Colors';
 import { ChainSession, ChainSessionType } from '../types/CHAIN/ChainSession';
 import { ChainStep } from '../types/CHAIN/ChainStep';
-import { Session } from '../types/CHAIN/Session';
 import { ChainData } from '../types/CHAIN/SkillstarChain';
 import { ChainStepStatus, StepAttempt } from '../types/CHAIN/StepAttempt';
-import { RootNavProps } from '../types/NavigationOptions';
 
-type Props = {
-  route: RootNavProps<'ProbeScreen'>;
-  navigation: RootNavProps<'ProbeScreen'>;
-  session: Session;
-};
-
-const ProbeScreen: FC<Props> = props => {
-  LogBox.ignoreAllLogs();
+const ProbeScreen = (): JSX.Element => {
   const navigation = useNavigation();
   const [stepIndex, setStepIndex] = useState(0);
   const [readyToSubmit, setReadyToSubmit] = useState(false);
-  const [text, setText] = useState('');
   const [sessionReady, setSessionReady] = useState(false);
   const [chainSession, setChainSession] = useState<ChainSession>();
   const [chainSteps, setChainSteps] = useState<ChainStep[]>();
@@ -116,9 +107,9 @@ const ProbeScreen: FC<Props> = props => {
   };
 
   return chainSession && chainSteps ? (
-    <ImageBackground source={require('../assets/images/sunrise-muted.png')} resizeMode={'cover'} style={styles.image}>
+    <ImageBackground source={ImageAssets.sunrise_muted} resizeMode={'cover'} style={styles.image}>
       <View style={styles.container}>
-        <AppHeader name='Probe' />
+        <AppHeader name={'Probe'} />
         <View style={styles.formContainer}>
           <DataVerificationListItem stepAttempt={chainSession.step_attempts[stepIndex]} onChange={onChange} />
         </View>
@@ -128,7 +119,7 @@ const ProbeScreen: FC<Props> = props => {
             style={styles.backButton}
             color={CustomColors.uva.blue}
             labelStyle={{ fontSize: 24, paddingVertical: 5 }}
-            mode='contained'
+            mode={'contained'}
             onPress={() => {
               decIndex();
             }}
@@ -139,7 +130,7 @@ const ProbeScreen: FC<Props> = props => {
             style={styles.nextButton}
             color={CustomColors.uva.blue}
             labelStyle={{ fontSize: 24, paddingVertical: 5 }}
-            mode='contained'
+            mode={'contained'}
             onPress={() => {
               if (stepIndex + 1 <= chainSteps.length - 1) {
                 incrIndex();
@@ -154,7 +145,7 @@ const ProbeScreen: FC<Props> = props => {
         </View>
         {readyToSubmit && (
           <Button
-            mode='contained'
+            mode={'contained'}
             labelStyle={{ fontSize: 24, paddingVertical: 5 }}
             onPress={() => {
               navigation.navigate('ChainsHomeScreen');

@@ -1,8 +1,7 @@
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
 import { Checkbox } from 'react-native-paper';
 
-const DataItemCheckBox = () => {
+const DataItemCheckBox = (): JSX.Element => {
   const [checked, setChecked] = React.useState(false);
 
   return (
@@ -16,5 +15,3 @@ const DataItemCheckBox = () => {
 };
 
 export default DataItemCheckBox;
-
-const styles = StyleSheet.create({});

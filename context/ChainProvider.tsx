@@ -39,7 +39,7 @@ const reducer = (state: any, action: ContextDispatchAction) => {
   }
 };
 
-const ChainProvider = ({ children }: ChainProviderProps) => {
+const ChainProvider = ({ children }: ChainProviderProps): JSX.Element => {
   const [state, dispatch] = useReducer(reducer, initialState);
 
   return (
@@ -49,7 +49,7 @@ const ChainProvider = ({ children }: ChainProviderProps) => {
   );
 };
 
-function useChainState() {
+function useChainState(): ChainProviderState {
   const context = React.useContext(ChainStateContext);
 
   if (context === undefined) {
@@ -59,7 +59,7 @@ function useChainState() {
   return context;
 }
 
-function useChainDispatch() {
+function useChainDispatch(): ContextDispatch {
   const context = React.useContext(ChainDispatchContext);
 
   if (context === undefined) {

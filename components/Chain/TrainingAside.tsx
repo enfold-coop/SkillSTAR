@@ -1,15 +1,15 @@
-import React, { FC } from 'react';
+import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { ChainSessionType } from '../../types/CHAIN/ChainSession';
 import { ChainStepPromptLevel, StepAttempt } from '../../types/CHAIN/StepAttempt';
 
-type Props = {
+interface TrainingAsideProps {
   sessionType?: ChainSessionType;
   stepAttempt?: StepAttempt;
   promptLevel?: ChainStepPromptLevel;
-};
+}
 
-const TrainingAside: FC<Props> = props => {
+const TrainingAside = (props: TrainingAsideProps): JSX.Element => {
   const { sessionType, stepAttempt, promptLevel } = props;
 
   return sessionType && stepAttempt && promptLevel ? (

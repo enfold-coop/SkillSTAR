@@ -16,7 +16,7 @@ interface ScorecardListItemProps {
   masteryInfo: MasteryInfo;
 }
 
-const ScorecardListItem = (props: ScorecardListItemProps) => {
+const ScorecardListItem = (props: ScorecardListItemProps): JSX.Element => {
   const { chainStep, stepAttempt, masteryInfo } = props;
 
   const [isPressed, setIsPressed] = useState(false);
@@ -43,7 +43,7 @@ const ScorecardListItem = (props: ScorecardListItemProps) => {
   }, [stepAttempt]);
 
   return stepAttempt && chainStep ? (
-    <Animatable.View animation='fadeIn' duration={500 * chainStep.id}>
+    <Animatable.View animation={'fadeIn'} duration={500 * chainStep.id}>
       <Card style={styles.container}>
         <TouchableOpacity
           style={[styles.touchable]}
@@ -57,7 +57,7 @@ const ScorecardListItem = (props: ScorecardListItemProps) => {
           <MaterialIcons
             name={isPressed ? 'expand-less' : 'expand-more'}
             size={24}
-            color='black'
+            color={'black'}
             style={styles.nextIcon}
           />
         </TouchableOpacity>
@@ -84,7 +84,7 @@ const ScorecardListItem = (props: ScorecardListItemProps) => {
       </Card>
     </Animatable.View>
   ) : (
-    <Animatable.View animation='fadeIn' duration={1000}>
+    <Animatable.View animation={'fadeIn'} duration={1000}>
       <Card style={styles.container}>
         <View style={styles.dropDownContainer}>
           <Text style={styles.dropDownLabel}>...</Text>

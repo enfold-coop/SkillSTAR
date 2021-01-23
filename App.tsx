@@ -12,7 +12,6 @@ import {
   LandingScreen,
   NoQuestionnaireScreen,
   PrepareMaterialsScreen,
-  ProbeScreen,
   RewardsScreens,
   StepScreen,
 } from './screens';
@@ -28,7 +27,7 @@ const Stack = createStackNavigator<RootStackParamList>();
 /**
  * Entry for the application.
  */
-export default (): JSX.Element | null => {
+export default function App(): JSX.Element | null {
   const [isLoadingComplete, setIsLoadingComplete] = useState<boolean>(false);
 
   useEffect(() => {
@@ -73,72 +72,78 @@ export default (): JSX.Element | null => {
     );
   };
 
+  const getHeaderRightFunc = (navigation: StackNavigationProp<any>): (() => JSX.Element) => {
+    return function headerRightFunc() {
+      return <LogoutButton navigation={navigation} />;
+    };
+  };
+
   const Navigation = (): JSX.Element => (
     <NavigationContainer ref={containerRef}>
-      <Stack.Navigator initialRouteName='LandingScreen'>
-        <Stack.Screen name='LandingScreen' component={LandingScreen} options={{ headerShown: false }} />
+      <Stack.Navigator initialRouteName={'LandingScreen'}>
+        <Stack.Screen name={'LandingScreen'} component={LandingScreen} options={{ headerShown: false }} />
         <Stack.Screen
           options={({ navigation }) => ({
             ...screenOpts,
             title: 'Chains', // TODO: Replace this title with something more useful
-            headerRight: () => <LogoutButton navigation={navigation} />,
+            headerRight: getHeaderRightFunc(navigation),
           })}
-          name='ChainsHomeScreen'
+          name={'ChainsHomeScreen'}
           component={ChainsHomeScreen}
         />
         <Stack.Screen
           options={({ navigation }) => ({
             ...screenOpts,
             title: 'Prepare Materials',
-            headerRight: () => <LogoutButton navigation={navigation} />,
+            headerRight: getHeaderRightFunc(navigation),
           })}
-          name='PrepareMaterialsScreen'
+          name={'PrepareMaterialsScreen'}
           component={PrepareMaterialsScreen}
         />
         {/* <Stack.Screen
           options={({ navigation }) => ({
             ...screenOpts,
             title: 'Probe Session',
-            headerRight: () => <LogoutButton navigation={navigation} />,
+            headerRight: getHeaderRightFunc(navigation,
           })}
-          name='ProbeScreen'
+          name={'ProbeScreen'}
           component={ProbeScreen}
         /> */}
         <Stack.Screen
           options={({ navigation }) => ({
             ...screenOpts,
             title: 'Baseline Assessment',
-            headerRight: () => <LogoutButton navigation={navigation} />,
+            headerRight: getHeaderRightFunc(navigation),
           })}
-          name='BaselineAssessmentScreen'
+          name={'BaselineAssessmentScreen'}
           component={BaselineAssessmentScreen}
         />
         <Stack.Screen
           options={{ ...screenOpts, title: 'Data verification' }}
-          name='DataVerificationScreen'
+          name={'DataVerificationScreen'}
           component={DataVerificationScreen}
         />
         <Stack.Screen
           options={({ navigation }) => ({
             ...screenOpts,
             title: 'Step', // TODO: Replace this title with something more useful
-            headerRight: () => <LogoutButton navigation={navigation} />,
+            headerRight: getHeaderRightFunc(navigation),
           })}
-          name='StepScreen'
+          name={'StepScreen'}
           component={StepScreen}
         />
         <Stack.Screen
           options={{ ...screenOpts, title: 'Congrats!' }}
-          name='RewardsScreens'
+          name={'RewardsScreens'}
           component={RewardsScreens}
         />
         <Stack.Screen
           options={({ navigation }) => ({
             ...screenOpts,
             title: 'No SkillSTAR Data for this participant', // TODO: Replace this title with something more useful
-            headerRight: () => <LogoutButton navigation={navigation} />,
+            headerRight: getHeaderRightFunc(navigation),
           })}
-          name='NoQuestionnaireScreen'
+          name={'NoQuestionnaireScreen'}
           component={NoQuestionnaireScreen}
         />
       </Stack.Navigator>
@@ -154,4 +159,4 @@ export default (): JSX.Element | null => {
   ) : (
     <Loading />
   );
-};
+}

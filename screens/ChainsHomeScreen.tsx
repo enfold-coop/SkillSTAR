@@ -1,7 +1,7 @@
 import { useDeviceOrientation } from '@react-native-community/hooks';
 import { useNavigation } from '@react-navigation/native';
-import React, { FC, useEffect, useState } from 'react';
-import { ImageBackground, ScrollView, StyleSheet, TouchableOpacity, View, LogBox } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { ImageBackground, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 import * as Animatable from 'react-native-animatable';
 import { ActivityIndicator, Text } from 'react-native-paper';
 import {
@@ -24,12 +24,10 @@ import { ChainStepStatus, StepAttempt } from '../types/CHAIN/StepAttempt';
 import { Participant } from '../types/User';
 
 // Chain Home Screen
-const ChainsHomeScreen: FC<Props> = props => {
-  LogBox.ignoreAllLogs();
+const ChainsHomeScreen = (): JSX.Element => {
   const navigation = useNavigation();
   const [asideContent, setAsideContents] = useState('');
-  const [btnText, setBtnText] = useState<string>();
-  const [orient, setOrient] = useState(false);
+  const [btnText, setBtnText] = useState<string>('');
   const [sessionNumber, setSessionNumber] = useState<number>(0);
   const [type, setType] = useState<ChainSessionType>();
   const [typeLabel, setTypeLabel] = useState<ChainSessionTypeLabels>();
@@ -200,8 +198,6 @@ const ChainsHomeScreen: FC<Props> = props => {
         return;
       }
 
-      const numSessions = chainData.sessions ? chainData.sessions.length : 0;
-
       if (!chainMastery.previousSession && !isCancelled) {
         setSessionNumber(1);
         setType(ChainSessionType.probe);
@@ -239,7 +235,6 @@ const ChainsHomeScreen: FC<Props> = props => {
       _load().then(() => {
         isLoading = false;
         if (!isCancelled) {
-          setOrient(portrait);
           _setSessionTypeAndNmbr(isCancelled);
         }
       });
@@ -271,7 +266,7 @@ const ChainsHomeScreen: FC<Props> = props => {
     >
       <View style={portrait ? styles.container : styles.landscapeContainer}>
         <AppHeader
-          name='Chains Home'
+          name={'Chains Home'}
           onParticipantChange={selectedParticipant => {
             setIsLoading(true);
             setParticipant(selectedParticipant);
@@ -303,8 +298,8 @@ const ChainsHomeScreen: FC<Props> = props => {
           </View>
         )}
         <TouchableOpacity style={[styles.startSessionBtn, { marginBottom: 0 }]} onPress={navToProbeOrTraining}>
-          <Animatable.Text animation='bounceIn' duration={2000} style={styles.btnText}>
-            Start {typeLabel} Session
+          <Animatable.Text animation={'bounceIn'} duration={2000} style={styles.btnText}>
+            {typeLabel ? `Start ${typeLabel} Session` : btnText}
           </Animatable.Text>
         </TouchableOpacity>
       </View>

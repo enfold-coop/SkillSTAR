@@ -1,6 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
-import React, { FC, useEffect, useState } from 'react';
-import { Image, ImageBackground, StyleSheet, View, LogBox } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { Image, ImageBackground, StyleSheet, View } from 'react-native';
 import * as Animatable from 'react-native-animatable';
 import { Button, Card, Title } from 'react-native-paper';
 import AppHeader from '../components/Header/AppHeader';
@@ -11,8 +11,7 @@ import CustomColors from '../styles/Colors';
 import { ChainSessionType } from '../types/CHAIN/ChainSession';
 import { ChainData } from '../types/CHAIN/SkillstarChain';
 
-const PrepareMaterialsScreen: FC<Props> = props => {
-  LogBox.ignoreAllLogs();
+const PrepareMaterialsScreen = (): JSX.Element => {
   const navigation = useNavigation();
   const [chainSessionType, setChainSessionType] = useState<ChainSessionType>();
 
@@ -56,7 +55,7 @@ const PrepareMaterialsScreen: FC<Props> = props => {
 
   const materialsList = MaterialsItems.map(m => (
     <Card style={styles.listItem} key={'materials_list_item_' + m.id}>
-      <Animatable.View animation='fadeIn' style={styles.listItem}>
+      <Animatable.View animation={'fadeIn'} style={styles.listItem}>
         <Image style={styles.itemIcon} source={m.image} />
         <Title style={styles.itemTitle}>{m.title}</Title>
       </Animatable.View>
@@ -66,11 +65,11 @@ const PrepareMaterialsScreen: FC<Props> = props => {
   return (
     <ImageBackground source={ImageAssets.sunrise_muted} resizeMode={'cover'} style={styles.image}>
       <View style={styles.container}>
-        <AppHeader name='Prepare Materials' />
+        <AppHeader name={'Prepare Materials'} />
         {materialsList}
-        <Animatable.View animation='bounceIn'>
+        <Animatable.View animation={'bounceIn'}>
           <Button
-            mode='contained'
+            mode={'contained'}
             color={CustomColors.uva.blue}
             style={styles.nextBtn}
             labelStyle={{ fontSize: 24, paddingVertical: 5 }}

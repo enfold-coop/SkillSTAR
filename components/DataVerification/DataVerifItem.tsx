@@ -1,6 +1,5 @@
 import React, { FC, useEffect, useState } from 'react';
 import { Image, ImageRequireSource, StyleSheet, Text, View } from 'react-native';
-import { ActivityIndicator } from 'react-native-paper';
 import CustomColors from '../../styles/Colors';
 import { MasteryIcon } from '../../styles/MasteryIcon';
 import { ChainStep } from '../../types/CHAIN/ChainStep';
@@ -22,16 +21,15 @@ const getPromptIcon = (level: string): ImageRequireSource => {
   return icons[level];
 };
 
-type Props = {
+interface DataVerifItemProps {
   stepAttempt: StepAttempt;
   chainSteps: ChainStep[];
-};
+}
 
-const DataVerifItem: FC<Props> = props => {
+const DataVerifItem: FC<DataVerifItemProps> = (props: DataVerifItemProps): JSX.Element => {
   const { stepAttempt, chainSteps } = props;
   const [promptSwitch, setPromptSwitch] = useState(false);
   const [behavSwitch, setBehavSwitch] = useState(false);
-  const [icon, setIcon] = useState();
   const [promptIcon, setPromptIcon] = useState<ImageRequireSource>();
 
   /** Lifecycle calls */
@@ -70,8 +68,8 @@ const DataVerifItem: FC<Props> = props => {
     <View style={styles.container}>
       <View style={styles.defaultFormContainer}>
         <MasteryIcon chainStepStatus={stepAttempt.status} iconSize={40} />
-        <Text style={styles.stepTitle}>"{stepAttempt.chain_step.instruction}"</Text>
-        <Image style={styles.promptLevelImage} source={promptIcon} resizeMode='contain' />
+        <Text style={styles.stepTitle}>{`"${stepAttempt.chain_step.instruction}"`}</Text>
+        <Image style={styles.promptLevelImage} source={promptIcon} resizeMode={'contain'} />
         <View style={styles.switchContainer}>
           <View style={styles.questionContainer}>
             <PromptDataVerifSwitch

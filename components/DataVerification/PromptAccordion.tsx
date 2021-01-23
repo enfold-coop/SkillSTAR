@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import * as Animatable from 'react-native-animatable';
 import { RadioButton } from 'react-native-paper';
@@ -7,12 +7,12 @@ import CustomColors from '../../styles/Colors';
 import { StepAttempt } from '../../types/CHAIN/StepAttempt';
 import { MOCK_PROMP_Q, MOCK_PROMPT_OPTS } from './mock_session';
 
-type Props = {
+interface PromptAccordionProps {
   stepAttempt: StepAttempt;
   switched: boolean;
-};
+}
 
-const PromptAccordion: FC<Props> = props => {
+const PromptAccordion = (props: PromptAccordionProps): JSX.Element => {
   const { switched } = props;
   const [checked, setChecked] = React.useState(0);
   const [expanded, setExpanded] = useState(false);

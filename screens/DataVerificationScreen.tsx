@@ -1,6 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
-import React, { FC, useEffect, useState } from 'react';
-import { FlatList, StyleSheet, Text, View, LogBox } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { FlatList, StyleSheet, Text, View } from 'react-native';
 import * as Animatable from 'react-native-animatable';
 import { ActivityIndicator, Button } from 'react-native-paper';
 import { randomId } from '../_util/RandomId';
@@ -14,13 +14,7 @@ import { ChainStep } from '../types/CHAIN/ChainStep';
 import { ChainData } from '../types/CHAIN/SkillstarChain';
 import { StepAttempt } from '../types/CHAIN/StepAttempt';
 
-type Props = {};
-
-/**
- *
- */
-const DataVerificationScreen: FC<Props> = props => {
-  LogBox.ignoreAllLogs();
+const DataVerificationScreen = (): JSX.Element => {
   const navigation = useNavigation();
   const [chainData, setChainData] = useState<ChainData>();
   const [chainSession, setChainSession] = useState<ChainSession>();
@@ -98,11 +92,11 @@ const DataVerificationScreen: FC<Props> = props => {
 
   return (
     <View style={styles.container}>
-      <AppHeader name='Brushing Teeth' />
+      <AppHeader name={'Brushing Teeth'} />
       <View style={styles.instructionContainer}>
         <Text style={[scrolling ? styles.smallHeader : styles.screenHeader]}>Probe Session</Text>
         <Animatable.Text
-          transition='fontSize'
+          transition={'fontSize'}
           duration={1000}
           style={[scrolling ? styles.smallInstruction : styles.instruction]}
         >
@@ -134,7 +128,7 @@ const DataVerificationScreen: FC<Props> = props => {
         <View style={styles.btnContainer}>
           <Text style={styles.btnContainerText}>Please confirm your selections, then press Submit.</Text>
           <Button
-            mode='contained'
+            mode={'contained'}
             color={CustomColors.uva.orange}
             labelStyle={{
               fontSize: 28,

@@ -1,19 +1,15 @@
-import React, { FC } from 'react';
+import React from 'react';
 import { Image, StyleSheet, Text, View } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
+import { ImageAssets } from '../../data/images';
 
-// import
-
-type Props = {};
-
-const ChallengingBehavBtn: FC<Props> = props => {
-  const flagIcon = require('../../assets/icons/CB_flag_icon_v3.png');
+const ChallengingBehavBtn = (): JSX.Element => {
   return (
     <View style={styles.container}>
       <View style={styles.iconContainer}>
         <TouchableOpacity>
-          {/* <SvgUri width="100%" height="100%" uri={flagIcon} /> */}
-          <Image source={flagIcon} style={styles.img} />
+          {/* <SvgUri width={'100%" height="100%'} uri={flagIcon} /> */}
+          <Image source={ImageAssets.flag_icon} style={styles.img} />
         </TouchableOpacity>
       </View>
       <Text style={styles.difficultyParagraph}>

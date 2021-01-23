@@ -1,7 +1,8 @@
 import { useDeviceOrientation } from '@react-native-community/hooks';
 import { useNavigation } from '@react-navigation/native';
-import React, { FC, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Image, StyleSheet, Text, View } from 'react-native';
+import { ImageAssets } from '../../data/images';
 import CustomColors from '../../styles/Colors';
 import { Participant } from '../../types/User';
 import { SelectParticipant } from '../SelectParticipant/SelectParticipant';
@@ -11,7 +12,7 @@ type AppHeaderProps = {
   onParticipantChange?: (participant: Participant) => void;
 };
 
-const AppHeader = (props: AppHeaderProps) => {
+const AppHeader = (props: AppHeaderProps): JSX.Element => {
   const { portrait } = useDeviceOrientation();
   const [orient, setOrient] = useState(false);
   const { onParticipantChange } = props;
@@ -24,7 +25,7 @@ const AppHeader = (props: AppHeaderProps) => {
   return (
     <View style={styles.container}>
       <View style={styles.skillTextContainer}>
-        <Image source={require('../../assets/images/logo.png')} style={orient ? styles.logo : styles.landscapeLogo} />
+        <Image source={ImageAssets.logo} style={orient ? styles.logo : styles.landscapeLogo} />
         <Text style={orient ? styles.headline : styles.headlineLandscape}>{props.name}</Text>
         <SelectParticipant
           onChange={(participant: Participant) => {

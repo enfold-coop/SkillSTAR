@@ -1,5 +1,5 @@
 import { convertEnumToMap } from '../../_util/ConvertEnumToMap';
-import { ChainStepPromptLevel, StepAttempt } from './StepAttempt';
+import { StepAttempt } from './StepAttempt';
 
 export enum ChainSessionType {
   'training' = 'training',

@@ -1,14 +1,14 @@
-import React, { useState, useEffect, useRef, FC } from 'react';
-import { StyleSheet, Text, View, Modal } from 'react-native';
-import { Portal, Provider, Button } from 'react-native-paper';
+import React, { useEffect, useRef, useState } from 'react';
+import { Modal, StyleSheet, Text, View } from 'react-native';
+import { Button } from 'react-native-paper';
 import CustomColors from '../../styles/Colors';
 
-type Props = {
-  verify: () => void;
+interface OnSubmitModalProps {
+  verify: (value: boolean) => void;
   isVisible: boolean;
-};
+}
 
-const OnSubmitModal: FC<Props> = props => {
+const OnSubmitModal = (props: OnSubmitModalProps): JSX.Element => {
   const { verify, isVisible } = props;
   const refIsActive = useRef(false);
   const [isActive, setIsActive] = useState(false);
@@ -22,14 +22,14 @@ const OnSubmitModal: FC<Props> = props => {
     }
   }, [isVisible]);
 
-  const handleVerification = (b: boolean) => {
+  const handleVerification = (value: boolean) => {
     setIsActive(false);
-    return verify(b);
+    return verify(value);
   };
 
   return (
     <Modal
-      // animationType="slide"
+      // animationType={'slide'}
       transparent={true}
       visible={isActive}
       onRequestClose={() => {
@@ -38,12 +38,12 @@ const OnSubmitModal: FC<Props> = props => {
     >
       <View style={styles.container}>
         <View style={styles.subContainer}>
-          <Text style={styles.headline}>Are you sure you're ready to submit this data?</Text>
+          <Text style={styles.headline}>{`Are you sure you're ready to submit this data?`}</Text>
           <View style={styles.btnContainer}>
             <Button
               style={styles.submitBtn}
               color={CustomColors.uva.gray}
-              mode='contained'
+              mode={'contained'}
               onPress={() => {
                 handleVerification(false);
                 setIsActive(false);
@@ -53,7 +53,7 @@ const OnSubmitModal: FC<Props> = props => {
             </Button>
             <Button
               style={styles.submitBtn}
-              mode='contained'
+              mode={'contained'}
               onPress={() => {
                 handleVerification(true);
                 console.log('submit');

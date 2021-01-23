@@ -1,15 +1,13 @@
 import { useNavigation } from '@react-navigation/native';
-import React, { FC } from 'react';
-import { Image, LogBox, StyleSheet, Text, View } from 'react-native';
+import React from 'react';
+import { Image, StyleSheet, Text, View } from 'react-native';
 import { Button } from 'react-native-paper';
 import AppHeader from '../components/Header/AppHeader';
 import { ImageAssets } from '../data/images';
 import CustomColors from '../styles/Colors';
 
-const RewardsScreens: FC<Props> = () => {
-  LogBox.ignoreAllLogs();
+const RewardsScreens = (): JSX.Element => {
   const navigation = useNavigation();
-  // const awesomeJobText = require("../assets/images/reward_screen/awesome-job-text-v3.png");
   return (
     <View style={styles.container}>
       <AppHeader name={'Congrats!'} />
@@ -26,7 +24,7 @@ const RewardsScreens: FC<Props> = () => {
         {/* <Image style={styles.awesomeText} source={star} /> */}
       </View>
       <Button
-        mode='contained'
+        mode={'contained'}
         labelStyle={{ fontSize: 28, paddingVertical: 5 }}
         style={styles.submitBtn}
         onPress={() => navigation.navigate('DataVerificationScreen')}

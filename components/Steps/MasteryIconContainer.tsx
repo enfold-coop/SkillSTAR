@@ -1,15 +1,14 @@
-import React, { FC, useEffect, useState } from 'react';
-import { Image, StyleSheet, View } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { StyleSheet, View } from 'react-native';
 import { MasteryIcon } from '../../styles/MasteryIcon';
-import { ChainStepStatus, ChainStepStatusMap } from '../../types/CHAIN/StepAttempt';
+import { ChainStepStatus } from '../../types/CHAIN/StepAttempt';
 
-type Props = {
+interface MasteryIconContainerProps {
   masteryLevel: string;
-};
+}
 
-const MasteryIconContainer: FC<Props> = props => {
+const MasteryIconContainer = (props: MasteryIconContainerProps): JSX.Element => {
   const { masteryLevel } = props;
-
   const [level, setMasteryLevel] = useState(ChainStepStatus.not_complete);
 
   const getMasteryLevel = () => {

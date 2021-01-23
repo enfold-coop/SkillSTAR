@@ -27,7 +27,7 @@ export class ApiService {
     apiMethod: () => Promise<T | undefined>,
     callback: React.Dispatch<React.SetStateAction<T | undefined>>,
     isCancelled: boolean,
-  ) {
+  ): Promise<void> {
     const contextValue = await ApiService.contextState(actionType);
     if (!isCancelled && contextValue) {
       callback(contextValue as T);
@@ -217,7 +217,7 @@ export class ApiService {
   }
 
   // Add a new chain if none exists. Otherwise updated an existing chain.
-  static async upsertChainData(data: SkillstarChain) {
+  static async upsertChainData(data: SkillstarChain): Promise<SkillstarChain | undefined> {
     const questionnaireId = data && data.hasOwnProperty('id') ? data.id : await ApiService.getChainQuestionnaireId();
 
     // console.log('questionnaireId =', questionnaireId);
@@ -233,7 +233,7 @@ export class ApiService {
 
   // No questionnaire exists for the participant yet. If we're not online, we'll need to ChainProviderContext the
   // questionnaire data somewhere until we can upload it to the server and get a questionnaire ID for it.
-  static async addChainData(data: SkillstarChain) {
+  static async addChainData(data: SkillstarChain): Promise<SkillstarChain | undefined> {
     const dataHasParticipantId =
       data.hasOwnProperty('participant_id') && data.participant_id !== null && data.participant_id !== undefined;
 
@@ -281,11 +281,10 @@ export class ApiService {
       }
     } catch (e) {
       console.error(e);
-      return null;
     }
   }
 
-  static async editChainData(data: SkillstarChain, questionnaireId: number) {
+  static async editChainData(data: SkillstarChain, questionnaireId: number): Promise<SkillstarChain | undefined> {
     console.log('*** editChainData ***');
     const url = ApiService.endpoints.chainSession.replace('<questionnaire_id>', questionnaireId.toString());
     console.log('url', url);
@@ -296,11 +295,10 @@ export class ApiService {
       return dbData as SkillstarChain;
     } catch (e) {
       console.error(e);
-      return null;
     }
   }
 
-  static async deleteChainData(data: SkillstarChain, participantId: number) {
+  static async deleteChainData(data: SkillstarChain, participantId: number): Promise<SkillstarChain | undefined> {
     const url = ApiService.endpoints.chain + '/' + participantId;
     try {
       const headers = await ApiService._getHeaders('DELETE', data);
@@ -309,7 +307,6 @@ export class ApiService {
       return dbData as SkillstarChain;
     } catch (e) {
       console.error(e);
-      return null;
     }
   }
 
@@ -431,6 +428,8 @@ export class ApiService {
   }
 
   static async login(email: string, password: string, email_token = ''): Promise<User | null> {
+    console.log('*** login ***');
+
     try {
       const headers = await ApiService._getHeaders('POST', {
         email,
@@ -439,6 +438,8 @@ export class ApiService {
       });
       const response = await fetch(ApiService.endpoints.login, headers);
       const user: User = await ApiService._parseResponse(response, 'login', headers.method);
+
+      console.log('user', user);
 
       if (user) {
         if (user.token) {
@@ -465,13 +466,20 @@ export class ApiService {
     await AsyncStorage.clear();
   }
 
-  static async _getHeaders(method: 'GET' | 'POST' | 'PUT' | 'DELETE', data?: any) {
+  static async _getHeaders(method: 'GET' | 'POST' | 'PUT' | 'DELETE', data?: any): Promise<RequestInit> {
+    console.log('*** _getHeaders ***');
     const token = await ApiService._getCached('user_token');
+    console.log('cached token =', token);
     const headers = {
       Accept: 'application/json',
       'Content-Type': 'application/json',
-      Authorization: `Bearer ${token || 'NO_TOKEN_ERROR'}`,
+      Authorization: '',
     };
+
+    if (token) {
+      headers.Authorization = `Bearer ${token}`;
+    }
+
     if (method === 'GET') {
       return {
         method,
@@ -513,11 +521,12 @@ export class ApiService {
     }
   }
 
-  static async _parseResponse(response: Response, methodName: string, requestMethod: string) {
+  static async _parseResponse(response: Response, methodName: string, requestMethod: string | undefined): Promise<any> {
+    console.log('*** _parseResponse ***');
     if (!response.ok) {
       console.error(response);
       throw new Error(`Error in ${methodName} ${requestMethod} response: ` + response.statusText);
-    } else if (!!(response && response.body && response.json)) {
+    } else {
       return await response.json();
     }
   }

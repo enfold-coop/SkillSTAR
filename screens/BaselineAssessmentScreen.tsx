@@ -1,5 +1,5 @@
 import { useNavigation } from '@react-navigation/native';
-import React, { FC, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { Button } from 'react-native-paper';
 import AppHeader from '../components/Header/AppHeader';
@@ -13,7 +13,7 @@ import { ChainData } from '../types/CHAIN/SkillstarChain';
 import { ChainStepStatus, StepAttempt, StepAttemptField } from '../types/CHAIN/StepAttempt';
 import { DataVerificationControlCallback } from '../types/DataVerificationControlCallback';
 
-const BaselineAssessmentScreen: FC<Props> = () => {
+const BaselineAssessmentScreen = (): JSX.Element => {
   /**
    * Set session type: Probe or Training
    */
@@ -81,7 +81,7 @@ const BaselineAssessmentScreen: FC<Props> = () => {
     chainStepId: number,
     fieldName: string,
     fieldValue: StepAttemptField,
-  ) => {
+  ): Promise<void> => {
     if (chainData && chainSession && chainSession.id !== undefined) {
       //  Get the step
       const newStep: StepAttempt | undefined = chainData.getStep(chainSession.id, chainStepId);
@@ -99,7 +99,7 @@ const BaselineAssessmentScreen: FC<Props> = () => {
     }
   };
 
-  const setSessionData = async () => {
+  const setSessionData = async (): Promise<void> => {
     // console.log('*** setSessionData ***');
     if (chainData && chainSession) {
       //   console.log('chainData.id', chainData.id);
@@ -121,7 +121,7 @@ const BaselineAssessmentScreen: FC<Props> = () => {
   return (
     <View style={styles.image}>
       <View style={styles.container}>
-        <AppHeader name='Brushing Teeth' />
+        <AppHeader name={'Brushing Teeth'} />
         {sessionReady && chainSession ? (
           <View style={styles.instructionContainer}>
             <Text style={styles.screenHeader}>
@@ -152,7 +152,7 @@ const BaselineAssessmentScreen: FC<Props> = () => {
               fontWeight: '600',
               color: CustomColors.uva.white,
             }}
-            mode='contained'
+            mode={'contained'}
             onPress={() => {
               setSessionData();
             }}

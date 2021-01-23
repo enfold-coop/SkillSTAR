@@ -1,23 +1,23 @@
-import React, { FC } from 'react';
+import React from 'react';
 import { Modal, StyleSheet, Text, View } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { Button, TextInput } from 'react-native-paper';
 import { StepAttempt } from '../../types/CHAIN/StepAttempt';
 
-type Props = {
+interface ChallengingBehavModalProps {
   stepComplete: string;
   challengeOccur: string;
   visible: boolean;
   toggleModal: () => void;
   attempt: StepAttempt;
-};
+}
 
-const ChallengingBehavModal: FC<Props> = props => {
+const ChallengingBehavModal = (props: ChallengingBehavModalProps): JSX.Element => {
   const { visible } = props;
 
   return (
     <Modal
-      animationType='slide'
+      animationType={'slide'}
       transparent={true}
       visible={visible}
       onRequestClose={() => {
@@ -40,7 +40,7 @@ const ChallengingBehavModal: FC<Props> = props => {
             </TouchableOpacity>
             <Text style={styles.headline}>Step {props.attempt.chain_step_id || 0 + 1} Challenging Behavior</Text>
             <Text style={styles.textInputPrompt} />
-            <TextInput label='Challenging behavior' mode='outlined' style={styles.textInput} />
+            <TextInput label={'Challenging behavior'} mode={'outlined'} style={styles.textInput} />
           </View>
           <View style={styles.questionContainer}>
             <Text style={styles.questionText}>
@@ -48,10 +48,10 @@ const ChallengingBehavModal: FC<Props> = props => {
               {props.stepComplete}
             </Text>
             <View style={styles.buttonContainer}>
-              <Button style={styles.button} mode='contained'>
+              <Button style={styles.button} mode={'contained'}>
                 Yes
               </Button>
-              <Button style={styles.button} mode='contained'>
+              <Button style={styles.button} mode={'contained'}>
                 No
               </Button>
             </View>
@@ -62,17 +62,17 @@ const ChallengingBehavModal: FC<Props> = props => {
               {props.stepComplete}
             </Text>
             <View style={styles.buttonContainer}>
-              <Button style={styles.button} mode='contained'>
+              <Button style={styles.button} mode={'contained'}>
                 Yes
               </Button>
-              <Button style={styles.button} mode='contained'>
+              <Button style={styles.button} mode={'contained'}>
                 No
               </Button>
             </View>
           </View>
           <Button
             style={styles.submitBtn}
-            mode='contained'
+            mode={'contained'}
             onPress={() => {
               console.log('submit');
             }}

@@ -3,11 +3,9 @@ import { useNavigation } from '@react-navigation/native';
 import React, { ReactElement, useEffect, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { Button, Menu } from 'react-native-paper';
-import { chainSteps } from '../../data/chainSteps';
 import { ApiService } from '../../services/ApiService';
 import CustomColors from '../../styles/Colors';
 import { ChainStep } from '../../types/CHAIN/ChainStep';
-import { ChainData } from '../../types/CHAIN/SkillstarChain';
 import { Participant, User } from '../../types/User';
 
 export interface SelectParticipantProps {
@@ -19,7 +17,6 @@ export const SelectParticipant = (props: SelectParticipantProps): ReactElement =
   const [isVisible, setIsVisible] = useState<boolean>(false);
   const [menuItems, setMenuItems] = useState<ReactElement[]>();
   const [chainSteps, setChainSteps] = useState<ChainStep[]>();
-  const [chainData, setChainData] = useState<ChainData>();
   const [user, setUser] = useState<User>();
   const [selectedParticipant, setSelectedParticipant] = useState<Participant>();
   const [participants, setParticipants] = useState<Participant[]>();
@@ -195,7 +192,7 @@ export const SelectParticipant = (props: SelectParticipantProps): ReactElement =
           <Button onPress={openMenu} color={CustomColors.uva.orange} style={styles.menuButton}>
             {btnLabel}
             <View style={styles.iconContainer}>
-              <MaterialIcons name='arrow-drop-down' size={24} color={CustomColors.uva.orange} />
+              <MaterialIcons name={'arrow-drop-down'} size={24} color={CustomColors.uva.orange} />
             </View>
           </Button>
         }

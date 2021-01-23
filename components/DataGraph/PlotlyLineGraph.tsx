@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import Plotly from 'react-native-plotly';
 import { FilterSessionsByType } from '../../_util/FilterSessionType';
@@ -12,7 +12,7 @@ interface PlotlyGraphDimensions {
   height: number;
 }
 
-type Props = {
+type PlotlyLineGraphProps = {
   dimensions: PlotlyGraphDimensions;
   modal: boolean;
 };
@@ -25,7 +25,7 @@ type Props = {
  * - (challenging behavior) X: SessionNumber, Y: %chal.behav
  */
 
-const PlotlyLineGraph: FC<Props> = props => {
+const PlotlyLineGraph = (props: PlotlyLineGraphProps): JSX.Element => {
   const { dimensions, modal } = props;
   const [thisHeight, setHeight] = useState<number>();
   const [thisWidth, setWidth] = useState<number>();
@@ -33,9 +33,6 @@ const PlotlyLineGraph: FC<Props> = props => {
   const [probeSessions, setProbeSessions] = useState<ChainSession[]>([]);
   const [trainingSessions, setTrainingSessions] = useState<ChainSession[]>([]);
   const [chainData, setChainData] = useState<ChainData>();
-
-  //
-  const trainingDataXY = () => {};
 
   useEffect(() => {
     let isCancelled = false;

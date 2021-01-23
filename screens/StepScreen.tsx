@@ -1,12 +1,13 @@
 import { useNavigation } from '@react-navigation/native';
 import { Video } from 'expo-av';
 import { AVPlaybackSource } from 'expo-av/build/AV';
-import React, { FC, useEffect, useState } from 'react';
-import { ImageBackground, StyleSheet, Text, View, LogBox } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { ImageBackground, StyleSheet, Text, View } from 'react-native';
 import * as Animatable from 'react-native-animatable';
 import { ActivityIndicator, Button } from 'react-native-paper';
 import AppHeader from '../components/Header/AppHeader';
 import { MasteryIconContainer, ProgressBar, StarsNIconsContainer } from '../components/Steps/index';
+import { ImageAssets } from '../data/images';
 import { videos } from '../data/videos';
 import { ApiService } from '../services/ApiService';
 import CustomColors from '../styles/Colors';
@@ -15,17 +16,8 @@ import { ChainStep } from '../types/CHAIN/ChainStep';
 import { ChainData } from '../types/CHAIN/SkillstarChain';
 import { ChainStepPromptLevel, ChainStepStatus, StepAttempt } from '../types/CHAIN/StepAttempt';
 
-interface Props {}
-
-/**
- *
- * @param props: NEEDS CHAIN DATA
- * @returns
- */
-const StepScreen: FC<Props> = props => {
-  LogBox.ignoreAllLogs();
+const StepScreen = (): JSX.Element => {
   const navigation = useNavigation();
-  const [visible, setVisible] = React.useState(false);
   const [stepIndex, setStepIndex] = useState<number>();
   const [chainData, setChainData] = useState<ChainData>();
   const [session, setSession] = useState<ChainSession>();
@@ -127,7 +119,7 @@ const StepScreen: FC<Props> = props => {
 
   const createAttempts = () => {
     if (chainData && chainSteps && session) {
-      chainSteps.forEach((chainStep, i) => {
+      chainSteps.forEach(chainStep => {
         const newStepAttempt: StepAttempt = {
           chain_step_id: chainStep.id,
           chain_step: chainStep,
@@ -152,7 +144,7 @@ const StepScreen: FC<Props> = props => {
         rate={1.0}
         volume={1.0}
         isMuted={true}
-        resizeMode='cover'
+        resizeMode={'cover'}
         isLooping={false}
         useNativeControls={true}
         style={styles.video}
@@ -165,7 +157,7 @@ const StepScreen: FC<Props> = props => {
   };
 
   return (
-    <ImageBackground source={require('../assets/images/sunrise-muted.jpg')} resizeMode={'cover'} style={styles.image}>
+    <ImageBackground source={ImageAssets.sunrise_muted} resizeMode={'cover'} style={styles.image}>
       <View style={styles.container}>
         <AppHeader name={'Brush Teeth'} />
         {chainData && session && chainSteps && stepIndex !== undefined ? (
@@ -199,7 +191,7 @@ const StepScreen: FC<Props> = props => {
           {/* <Button
 						style={styles.exitButton}
 						color={CustomColors.uva.blue}
-						mode="outlined"
+						mode={'outlined'}
 						onPress={() => {
 							console.log("exit");
 							navigation.navigate("ChainsHomeScreen");
@@ -214,7 +206,7 @@ const StepScreen: FC<Props> = props => {
             labelStyle={{ alignSelf: 'flex-start', fontSize: 24, paddingVertical: 5 }}
             disabled={!stepIndex}
             color={CustomColors.uva.blue}
-            mode='outlined'
+            mode={'outlined'}
             onPress={() => {
               decrIndex();
             }}
@@ -222,12 +214,12 @@ const StepScreen: FC<Props> = props => {
             Previous Step
           </Button>
           <View style={styles.nextBackSubContainer}>
-            <Text style={styles.needAddlPrompt}>Needed Add'l Prompting</Text>
+            <Text style={styles.needAddlPrompt}>{`Needed Add'l Prompting`}</Text>
             <Button
               style={styles.neededPromptingBtn}
               labelStyle={{ fontSize: 24, paddingVertical: 5, color: CustomColors.uva.white }}
               color={CustomColors.uva.orange}
-              mode='contained'
+              mode={'contained'}
               onPress={() => {
                 console.log('NEEDING PROMPTING');
               }}
@@ -238,7 +230,7 @@ const StepScreen: FC<Props> = props => {
               style={styles.nextButton}
               labelStyle={{ fontSize: 24, paddingVertical: 5 }}
               color={CustomColors.uva.blue}
-              mode='contained'
+              mode={'contained'}
               onPress={() => {
                 if (stepIndex !== undefined && chainSteps && stepIndex + 1 <= chainSteps.length - 1) {
                   incrIndex();

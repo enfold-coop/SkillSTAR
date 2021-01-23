@@ -1,11 +1,9 @@
-import React, { FC } from 'react';
+import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import ChallengingBehavBtn from './ChallengingBehavBtn';
 import StepAttemptStars from './StepAttemptStars';
 
-type Props = {};
-
-const StarsNIconsContainer: FC<Props> = props => {
+const StarsNIconsContainer = (): JSX.Element => {
   return (
     <View style={styles.container}>
       <View style={styles.subContainer}>
