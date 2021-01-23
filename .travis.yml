@@ -8,6 +8,7 @@ node_js:
   - 12
 
 install:
+  - npm install --global expo-cli
   - npm install
   - expo install
 
