@@ -9,7 +9,7 @@ import { MaterialsItems } from '../data/prep_materials';
 import { ApiService } from '../services/ApiService';
 import CustomColors from '../styles/Colors';
 import { ChainSessionType } from '../types/chain/ChainSession';
-import { ChainData } from '../types/chain/SkillstarChain';
+import { ChainData } from '../types/chain/ChainData';
 
 const PrepareMaterialsScreen = (): JSX.Element => {
   const navigation = useNavigation();
@@ -74,12 +74,10 @@ const PrepareMaterialsScreen = (): JSX.Element => {
             style={styles.nextBtn}
             labelStyle={{ fontSize: 24, paddingVertical: 5 }}
             onPress={() => {
-              console.log('chainSessionType', chainSessionType);
               if ((chainSessionType as string) === 'training') {
                 navigation.navigate('StepScreen');
               } else {
                 navigation.navigate('BaselineAssessmentScreen');
-                // navigation.navigate('BaselineAssessmentScreen');
               }
             }}
           >

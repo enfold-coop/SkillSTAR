@@ -3,7 +3,7 @@ import { useNavigation } from '@react-navigation/native';
 import React, { useEffect, useState } from 'react';
 import { ImageBackground, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 import * as Animatable from 'react-native-animatable';
-import { ActivityIndicator, Text } from 'react-native-paper';
+import { Text } from 'react-native-paper';
 import {
   PROBE_INSTRUCTIONS,
   START_PROBE_SESSION_BTN,
@@ -12,14 +12,15 @@ import {
 import ScorecardListItem from '../components/Chain/ScorecardListItem';
 import SessionDataAside from '../components/Chain/SessionDataAside';
 import AppHeader from '../components/Header/AppHeader';
+import { Loading } from '../components/Loading/Loading';
 import { ImageAssets } from '../data/images';
 import { ApiService } from '../services/ApiService';
 import { ChainMastery } from '../services/ChainMastery';
 import CustomColors from '../styles/Colors';
+import { ChainData, SkillstarChain } from '../types/chain/ChainData';
 import { ChainSession, ChainSessionType, ChainSessionTypeLabels } from '../types/chain/ChainSession';
 import { ChainStep } from '../types/chain/ChainStep';
 import { MasteryInfo } from '../types/chain/MasteryLevel';
-import { ChainData, SkillstarChain } from '../types/chain/SkillstarChain';
 import { ChainStepStatus, StepAttempt } from '../types/chain/StepAttempt';
 import { Participant } from '../types/User';
 
@@ -30,12 +31,11 @@ const ChainsHomeScreen = (): JSX.Element => {
   const [btnText, setBtnText] = useState<string>('');
   const [sessionNumber, setSessionNumber] = useState<number>(0);
   const [type, setType] = useState<ChainSessionType>();
-  const [typeLabel, setTypeLabel] = useState<ChainSessionTypeLabels>();
   const { portrait } = useDeviceOrientation();
   const [participant, setParticipant] = useState<Participant>();
   const [chainSteps, setChainSteps] = useState<ChainStep[]>();
   const [chainData, setChainData] = useState<ChainData>();
-  const [session, setSession] = useState<ChainSession>();
+  const [chainSession, setChainSession] = useState<ChainSession>();
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [chainMastery, setChainMastery] = useState<ChainMastery>();
 
@@ -115,11 +115,11 @@ const ChainsHomeScreen = (): JSX.Element => {
           });
 
           if (!isCancelled) {
-            setSession(lastSession);
+            setChainSession(lastSession);
             setSessionNumber(chainData.sessions.length);
           }
         } else if (chainSteps && chainSteps.length > 0) {
-          //   console.log('Creating a new session.');
+          console.log('Creating a new session.');
           const newChainSession: ChainSession = {
             session_type: ChainSessionType.training,
             date: new Date(),
@@ -135,7 +135,7 @@ const ChainsHomeScreen = (): JSX.Element => {
           };
 
           if (!isCancelled) {
-            setSession(newChainSession);
+            setChainSession(newChainSession);
           }
           const newChainData = new ChainData(chainData);
           newChainData.sessions.push(newChainSession);
@@ -149,7 +149,46 @@ const ChainsHomeScreen = (): JSX.Element => {
       }
     };
 
-    _load();
+    const _setSessionTypeAndNmbr = async (isCancelled: boolean) => {
+      if (!(chainData && chainMastery && chainMastery.masteryInfoMap)) {
+        return;
+      }
+
+      if (chainMastery.previousSession && !isCancelled) {
+        if (chainMastery.previousSession.session_type === ChainSessionType.training) {
+          setType(ChainSessionType.training);
+          setSessionNumber(chainData.sessions.length + 1);
+          await ApiService.contextDispatch({ type: 'sessionNumber', payload: sessionNumber });
+          await ApiService.contextDispatch({ type: 'sessionType', payload: 'training' });
+          setBtnText(START_TRAINING_SESSION_BTN);
+        } else if (chainMastery.previousSession.session_type === ChainSessionType.probe) {
+          setType(ChainSessionType.probe);
+          setSessionNumber(chainData.sessions.length + 1);
+          await ApiService.contextDispatch({ type: 'sessionNumber', payload: sessionNumber });
+          await ApiService.contextDispatch({ type: 'sessionType', payload: 'probe' });
+          setBtnText(START_PROBE_SESSION_BTN);
+          setAsideContents(PROBE_INSTRUCTIONS);
+        }
+      } else if (!isCancelled) {
+        setSessionNumber(1);
+        setType(ChainSessionType.probe);
+        setBtnText(START_PROBE_SESSION_BTN);
+        setAsideContents(PROBE_INSTRUCTIONS);
+
+        // Session count (how many sessions attempted)
+        // i.e., sessions with attempts. Sessions with no attempts would not be included in this count?
+        await ApiService.contextDispatch({ type: 'sessionNumber', payload: 1 });
+
+        // chainData.sessions[i].session_type
+        await ApiService.contextDispatch({ type: 'sessionType', payload: 'probe' });
+      }
+    };
+
+    _load().then(() => {
+      if (!isCancelled && !isLoading) {
+        _setSessionTypeAndNmbr(isCancelled);
+      }
+    });
     return () => {
       isCancelled = true;
     };
@@ -158,11 +197,8 @@ const ChainsHomeScreen = (): JSX.Element => {
   // Runs when participant and/or device orientation is changed.
   useEffect(() => {
     let isCancelled = false;
-    let isLoading = false;
 
     const _load = async () => {
-      isLoading = true; // Block while loading
-
       if (participant && (!chainData || (chainData && chainData.id === undefined))) {
         // Check that the current participant has chain data. If not, add it.
         const dbData = await ApiService.getChainDataForSelectedParticipant();
@@ -170,12 +206,7 @@ const ChainsHomeScreen = (): JSX.Element => {
         if (!dbData || (dbData && dbData.id === undefined)) {
           const newData: SkillstarChain = {
             participant_id: participant.id,
-            sessions: [
-              {
-                session_type: ChainSessionType.probe,
-                step_attempts: [],
-              },
-            ],
+            sessions: [],
           };
 
           try {
@@ -192,52 +223,8 @@ const ChainsHomeScreen = (): JSX.Element => {
       }
     };
 
-    const _setSessionTypeAndNmbr = async (isCancelled: boolean) => {
-      console.log('*** _setSessionTypeAndNmbr ***');
-      if (!(chainData && chainMastery)) {
-        return;
-      }
-
-      if (!chainMastery.previousSession && !isCancelled) {
-        setSessionNumber(1);
-        setType(ChainSessionType.probe);
-
-        // Session count (how many sessions attempted)
-        // i.e., sessions with attempts. Sessions with no attempts would not be included in this count?
-        await ApiService.contextDispatch({ type: 'sessionNumber', payload: 1 });
-
-        // chainData.sessions[i].session_type
-        await ApiService.contextDispatch({ type: 'sessionType', payload: 'probe' });
-
-        // TODO: Add draft session to chainMastery??
-      }
-
-      if (chainMastery.previousSession && !isCancelled) {
-        if (chainMastery.previousSession.session_type === ChainSessionType.training) {
-          setType(ChainSessionType.training);
-          setSessionNumber(chainData.sessions.length + 1);
-          await ApiService.contextDispatch({ type: 'sessionNumber', payload: sessionNumber });
-          await ApiService.contextDispatch({ type: 'sessionType', payload: 'training' });
-          setBtnText(START_TRAINING_SESSION_BTN);
-        }
-        if (chainMastery.previousSession.session_type === ChainSessionType.probe) {
-          setType(ChainSessionType.probe);
-          setSessionNumber(chainData.sessions.length + 1);
-          await ApiService.contextDispatch({ type: 'sessionNumber', payload: sessionNumber });
-          await ApiService.contextDispatch({ type: 'sessionType', payload: 'probe' });
-          setBtnText(START_PROBE_SESSION_BTN);
-          setAsideContents(PROBE_INSTRUCTIONS);
-        }
-      }
-    };
-
-    if (!isLoading) {
-      _load().then(() => {
-        isLoading = false;
-        if (!isCancelled) {
-          _setSessionTypeAndNmbr(isCancelled);
-        }
-      });
+    if (!isCancelled && !isLoading) {
+      _load();
     }
 
     return () => {
@@ -247,11 +234,11 @@ const ChainsHomeScreen = (): JSX.Element => {
   /** END LIFECYCLE METHODS */
 
   const navToProbeOrTraining = () => {
-    navigation.navigate('PrepareMaterialsScreen', { chainSession: session });
+    navigation.navigate('PrepareMaterialsScreen');
   };
 
   const key = chainData ? chainData.participant_id : -1;
-  const chainSessionId = session && session.id !== undefined ? session.id : -1;
+  const chainSessionId = chainSession && chainSession.id !== undefined ? chainSession.id : -1;
 
   function _getMasteryInfo(chainData: ChainData, chainStepId: number) {
     return { chainStepId: chainStepId, stepStatus: ChainStepStatus.not_complete } as MasteryInfo;
@@ -293,15 +280,17 @@ const ChainsHomeScreen = (): JSX.Element => {
             )}
           </View>
         ) : (
-          <View>
-            <ActivityIndicator animating={true} color={CustomColors.uva.mountain} />
-          </View>
+          <Loading />
         )}
-        <TouchableOpacity style={[styles.startSessionBtn, { marginBottom: 0 }]} onPress={navToProbeOrTraining}>
-          <Animatable.Text animation={'bounceIn'} duration={2000} style={styles.btnText}>
-            {typeLabel ? `Start ${typeLabel} Session` : btnText}
-          </Animatable.Text>
-        </TouchableOpacity>
+        {btnText ? (
+          <TouchableOpacity style={[styles.startSessionBtn, { marginBottom: 0 }]} onPress={navToProbeOrTraining}>
+            <Animatable.Text animation={'bounceIn'} duration={2000} style={styles.btnText}>
+              {btnText}
+            </Animatable.Text>
+          </TouchableOpacity>
+        ) : (
+          <Loading />
+        )}
       </View>
     </ImageBackground>
   );

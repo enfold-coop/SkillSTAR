@@ -5,7 +5,7 @@ import { FilterSessionsByType } from '../../_util/FilterSessionType';
 import { ApiService } from '../../services/ApiService';
 import CustomColors from '../../styles/Colors';
 import { ChainSession } from '../../types/chain/ChainSession';
-import { ChainData } from '../../types/chain/SkillstarChain';
+import { ChainData } from '../../types/chain/ChainData';
 
 interface PlotlyGraphDimensions {
   width: number;

@@ -33,13 +33,11 @@ export const SelectParticipant = (props: SelectParticipantProps): ReactElement =
 
     const _load = async () => {
       if (!isCancelled) {
-        console.log('*** SelectParticipant.tsx > useEffect > _load > loading selectedParticipant... ***');
         const dbSelectedParticipant = await ApiService.getSelectedParticipant();
         if (!isCancelled && dbSelectedParticipant && !selectedParticipant && !shouldGoHome) {
           setSelectedParticipant(dbSelectedParticipant);
         }
 
-        console.log('*** SelectParticipant.tsx > useEffect > _load > loading chainData... ***');
         if (!isCancelled) {
           const dbChainData = await ApiService.getChainDataForSelectedParticipant();
 
@@ -74,7 +72,6 @@ export const SelectParticipant = (props: SelectParticipantProps): ReactElement =
     }
 
     return () => {
-      console.log('SelectParticipant > useEffect 1 > unsubscribe');
       isCancelled = true;
     };
   }, [selectedParticipant]);
@@ -89,7 +86,6 @@ export const SelectParticipant = (props: SelectParticipantProps): ReactElement =
       isLoading = true;
 
       if (!user) {
-        console.log('*** SelectParticipant.tsx > useEffect > _load > loading user... ***');
         const contextUser = await ApiService.contextState('user');
         if (!isCancelled && contextUser) {
           setUser(contextUser as User);
@@ -102,7 +98,6 @@ export const SelectParticipant = (props: SelectParticipantProps): ReactElement =
       }
 
       if (!chainSteps) {
-        console.log('*** SelectParticipant.tsx > useEffect > _load > loading chainSteps... ***');
         const contextChainSteps = await ApiService.contextState('chainSteps');
         if (!isCancelled && contextChainSteps) {
           setChainSteps(contextChainSteps as ChainStep[]);
@@ -143,7 +138,6 @@ export const SelectParticipant = (props: SelectParticipantProps): ReactElement =
     }
 
     return () => {
-      console.log('SelectParticipant > useEffect 2 > unsubscribe');
       isCancelled = true;
     };
   }, [user, participants]);

@@ -11,7 +11,7 @@ import { ApiService } from '../services/ApiService';
 import CustomColors from '../styles/Colors';
 import { ChainSession } from '../types/chain/ChainSession';
 import { ChainStep } from '../types/chain/ChainStep';
-import { ChainData } from '../types/chain/SkillstarChain';
+import { ChainData } from '../types/chain/ChainData';
 import { StepAttempt } from '../types/chain/StepAttempt';
 
 const DataVerificationScreen = (): JSX.Element => {

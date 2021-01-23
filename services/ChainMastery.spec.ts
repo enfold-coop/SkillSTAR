@@ -1,6 +1,6 @@
 import { mockChainQuestionnaire } from '../_util/testing/mockChainQuestionnaire';
 import { mockChainSteps } from '../_util/testing/mockChainSteps';
-import { ChainData } from '../types/chain/SkillstarChain';
+import { ChainData } from '../types/chain/ChainData';
 import { ChainMastery } from './ChainMastery';
 
 describe('ChainMastery', () => {

@@ -1,5 +1,5 @@
 import { mockChainQuestionnaire } from '../../_util/testing/mockChainQuestionnaire';
-import { ChainData } from './SkillstarChain';
+import { ChainData } from './ChainData';
 
 describe('ChainData', () => {
   const chainData = new ChainData(mockChainQuestionnaire);

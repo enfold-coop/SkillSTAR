@@ -9,7 +9,7 @@ import {
 import { ChainSession, ChainSessionType } from '../types/chain/ChainSession';
 import { ChainStep } from '../types/chain/ChainStep';
 import { MasteryInfo, MasteryInfoMap } from '../types/chain/MasteryLevel';
-import { ChainData } from '../types/chain/SkillstarChain';
+import { ChainData } from '../types/chain/ChainData';
 import {
   ChainStepPromptLevel,
   ChainStepPromptLevelMap,
@@ -41,8 +41,6 @@ export class ChainMastery {
    * @param chainData: all of a participant's session history data
    */
   constructor(chainSteps: ChainStep[], chainData: ChainData) {
-    console.log('ChainMastery constructor chainSteps', chainSteps);
-    console.log('ChainMastery constructor chainData', chainData);
     this.chainSteps = chainSteps;
     this.chainData = new ChainData(chainData);
     this.masteryInfoMap = this.buildMasteryInfoMap();
@@ -950,9 +948,6 @@ export class ChainMastery {
    */
   chainStepHasBeenMastered(chain_step_id: number): boolean {
     const m = this.masteryInfoMap[`${chain_step_id}`];
-
-    console.log('chainStepHasBeenMastered m', m);
-
     return !!(
       m &&
       ((m.dateMastered && !m.dateBoosterInitiated && !m.dateBoosterMastered) ||

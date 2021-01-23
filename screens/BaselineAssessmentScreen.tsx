@@ -6,10 +6,11 @@ import AppHeader from '../components/Header/AppHeader';
 import { Loading } from '../components/Loading/Loading';
 import DataVerificationList from '../components/Probe/DataVerificationList';
 import { ApiService } from '../services/ApiService';
+import { ChainMastery } from '../services/ChainMastery';
 import CustomColors from '../styles/Colors';
 import { ChainSession, ChainSessionType, ChainSessionTypeMap } from '../types/chain/ChainSession';
 import { ChainStep } from '../types/chain/ChainStep';
-import { ChainData } from '../types/chain/SkillstarChain';
+import { ChainData } from '../types/chain/ChainData';
 import { ChainStepStatus, StepAttempt, StepAttemptField } from '../types/chain/StepAttempt';
 import { DataVerificationControlCallback } from '../types/DataVerificationControlCallback';
 
@@ -19,50 +20,36 @@ const BaselineAssessmentScreen = (): JSX.Element => {
    */
   const navigation = useNavigation();
   const [sessionReady, setSessionReady] = useState(false);
+  const [chainData, setChainData] = useState<ChainData>();
+  const [chainMastery, setChainMastery] = useState<ChainMastery>();
   const [chainSession, setChainSession] = useState<ChainSession>();
   const [chainSteps, setChainSteps] = useState<ChainStep[]>();
-  const [chainData, setChainData] = useState<ChainData>();
 
   /** START: Lifecycle calls */
   useEffect(() => {
     let isCancelled = false;
 
     const _load = async () => {
-      //   console.log('BaselineAssessmentScreen > useEffect 1 > _load');
       const contextChainData = await ApiService.contextState('chainData');
       if (!isCancelled && !chainData && contextChainData) {
-        // console.log('BaselineAssessmentScreen.tsx > useEffect > _load > Setting chainData.');
         const newChainData = new ChainData(contextChainData);
         setChainData(newChainData);
       }
 
       const contextChainSteps = await ApiService.contextState('chainSteps');
       if (!isCancelled && !chainSteps && contextChainSteps) {
-        // console.log('BaselineAssessmentScreen.tsx > useEffect > _load > Setting chainSteps.');
         setChainSteps(contextChainSteps as ChainStep[]);
       }
 
       if (!isCancelled && chainSteps && chainData) {
-        // console.log('BaselineAssessmentScreen > useEffect 1 > _load > Setting session...');
-        const stepAttempts: StepAttempt[] = chainSteps.map(chainStep => {
-          return {
-            chain_step_id: chainStep.id,
-            chain_step: chainStep,
-            status: ChainStepStatus.not_complete,
-            completed: false,
-          };
-        });
-
-        const newChainSession: ChainSession = {
-          date: new Date(),
-          completed: false,
-          session_type: ChainSessionType.probe,
-          step_attempts: stepAttempts,
-        };
-
         if (!isCancelled && !chainSession) {
-          setChainSession(newChainSession);
-          setSessionReady(true);
+          const newChainMastery = new ChainMastery(chainSteps, chainData);
+
+          if (newChainMastery && newChainMastery.draftSession && !isCancelled) {
+            setChainMastery(newChainMastery);
+            setChainSession(newChainMastery.draftSession);
+            setSessionReady(true);
+          }
         }
       }
     };
@@ -86,7 +73,7 @@ const BaselineAssessmentScreen = (): JSX.Element => {
       //  Get the step
       const newStep: StepAttempt | undefined = chainData.getStep(chainSession.id, chainStepId);
 
-      if (newStep !== undefined && newStep.hasOwnProperty(fieldName)) {
+      if (newStep !== undefined && newStep.hasOwnProperty && newStep.hasOwnProperty(fieldName)) {
         // Modify the value
         // @ts-ignore-next-line
         newStep[fieldName] = fieldValue;
@@ -99,10 +86,8 @@ const BaselineAssessmentScreen = (): JSX.Element => {
     }
   };
 
-  const setSessionData = async (): Promise<void> => {
-    // console.log('*** setSessionData ***');
+  const updateSession = async (): Promise<void> => {
     if (chainData && chainSession) {
-      //   console.log('chainData.id', chainData.id);
       if (!chainData.sessions) {
         chainData.sessions = [];
       }
@@ -154,7 +139,7 @@ const BaselineAssessmentScreen = (): JSX.Element => {
             }}
             mode={'contained'}
             onPress={() => {
-              setSessionData();
+              updateSession();
             }}
           >
             NEXT

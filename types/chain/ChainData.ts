@@ -42,7 +42,7 @@ export class ChainData implements SkillstarChain {
    * @param newStep: Data to update the step with
    */
   updateStep(sessionId: number, chainStepId: number, newStep: StepAttempt): void {
-    console.log('SkillstarChain.ts > ChainData > updateStep ***');
+    console.log('ChainData.ts > ChainData > updateStep ***');
     console.log('sessionId', sessionId);
     console.log('chainStepId', chainStepId);
     console.log('newStep', newStep);
@@ -63,7 +63,7 @@ export class ChainData implements SkillstarChain {
    * @param newSession: Data to update the session with
    */
   updateSession(sessionId: number, newSession: ChainSession): void {
-    console.log('SkillstarChain.ts > ChainData > updateSession ***');
+    console.log('ChainData.ts > ChainData > updateSession ***');
     this.sessions.forEach((session, i) => {
       if (session.id === sessionId) {
         this.sessions[i] = newSession;
@@ -110,14 +110,22 @@ export class ChainData implements SkillstarChain {
    * @private
    */
   private sortSessions(skillstarChain: SkillstarChain): ChainSession[] {
-    return skillstarChain.sessions
-      .slice() // Make a copy of the array first, so the sort doesn't mutate the original.
-      .sort((a, b) => {
-        if (a && b && a.date && b.date) {
-          return a.date.getTime() - b.date.getTime();
-        } else {
-          return 0;
-        }
-      });
+    return (
+      skillstarChain.sessions
+        // Make sure all the dates are actually dates
+        .map(s => {
+          s.date = s.date ? new Date(s.date) : new Date();
+          return s;
+        })
+        .sort((a, b) => {
+          if (a && b && a.date && b.date) {
+            a.date = new Date(a.date);
+            b.date = new Date(b.date);
+            return a.date.getTime() - b.date.getTime();
+          } else {
+            return 0;
+          }
+        })
+    );
   }
 }

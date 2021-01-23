@@ -13,7 +13,7 @@ import { ApiService } from '../services/ApiService';
 import CustomColors from '../styles/Colors';
 import { ChainSession } from '../types/chain/ChainSession';
 import { ChainStep } from '../types/chain/ChainStep';
-import { ChainData } from '../types/chain/SkillstarChain';
+import { ChainData } from '../types/chain/ChainData';
 import { ChainStepPromptLevel, ChainStepStatus, StepAttempt } from '../types/chain/StepAttempt';
 
 const StepScreen = (): JSX.Element => {
