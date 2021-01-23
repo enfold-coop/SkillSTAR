@@ -21,9 +21,7 @@ export const DataVerificationListItem: FC<Props> = props => {
    */
 
   const stepId = stepAttempt.chain_step_id !== undefined ? stepAttempt.chain_step_id : -1;
-  const instruction = props.stepAttempt.chain_step
-    ? props.stepAttempt.chain_step.instruction
-    : 'LOADING';
+  const instruction = props.stepAttempt.chain_step ? props.stepAttempt.chain_step.instruction : 'LOADING';
 
   return (
     <View style={styles.container}>

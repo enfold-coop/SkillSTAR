@@ -9,7 +9,7 @@ type Props = {
 };
 
 const StepAttemptStars: FC<Props> = props => {
-  let { attemptsWPromptType } = props;
+  const { attemptsWPromptType } = props;
   return (
     <View style={styles.container}>
       <View style={styles.subContainer} />
@@ -17,25 +17,9 @@ const StepAttemptStars: FC<Props> = props => {
         <Text style={styles.promptTypeText}>{props.promptType + ':'}</Text>
         {attemptsWPromptType.map((e, i) => {
           if (e) {
-            return (
-              <AntDesign
-                name='star'
-                size={40}
-                color={CustomColors.uva.orange}
-                style={styles.star}
-                key={i}
-              />
-            );
+            return <AntDesign name='star' size={40} color={CustomColors.uva.orange} style={styles.star} key={i} />;
           } else {
-            return (
-              <AntDesign
-                name='staro'
-                size={40}
-                color={CustomColors.uva.orange}
-                style={styles.star}
-                key={i}
-              />
-            );
+            return <AntDesign name='staro' size={40} color={CustomColors.uva.orange} style={styles.star} key={i} />;
           }
         })}
       </View>

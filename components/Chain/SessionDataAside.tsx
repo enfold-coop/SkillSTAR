@@ -4,11 +4,7 @@ import { LayoutRectangle, StyleSheet, Text, TouchableOpacity, View } from 'react
 import { ActivityIndicator, Card } from 'react-native-paper';
 import { ApiService } from '../../services/ApiService';
 import CustomColors from '../../styles/Colors';
-import {
-  ChainSession,
-  ChainSessionType,
-  ChainSessionTypeMap,
-} from '../../types/CHAIN/ChainSession';
+import { ChainSession, ChainSessionType, ChainSessionTypeMap } from '../../types/CHAIN/ChainSession';
 import { ChainStepPromptLevel } from '../../types/CHAIN/StepAttempt';
 import GraphModal from '../DataGraph/GraphModal';
 import { ChainsHomeGraph } from '../DataGraph/index';
@@ -80,9 +76,7 @@ const SessionDataAside: FC<Props> = props => {
   };
 
   const dateString =
-    session && session.date && session.date instanceof Date
-      ? date.format(session.date, 'MM/DD/YYYY')
-      : '...';
+    session && session.date && session.date instanceof Date ? date.format(session.date, 'MM/DD/YYYY') : '...';
 
   return session ? (
     <View style={styles.container}>

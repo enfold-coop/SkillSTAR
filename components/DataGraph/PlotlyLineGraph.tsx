@@ -53,7 +53,6 @@ const PlotlyLineGraph: FC<Props> = props => {
           setProbeSessions(probeArr);
         }
       }
-
     };
 
     _load();

@@ -14,11 +14,11 @@ const MasteryIconContainer: FC<Props> = props => {
 
   const getMasteryLevel = () => {
     if (masteryLevel === 'mastered') {
-        setMasteryLevel(ChainStepStatus.mastered);
+      setMasteryLevel(ChainStepStatus.mastered);
     } else if (masteryLevel === 'focus') {
-        setMasteryLevel(ChainStepStatus.focus);
+      setMasteryLevel(ChainStepStatus.focus);
     } else {
-        setMasteryLevel(ChainStepStatus.not_complete);
+      setMasteryLevel(ChainStepStatus.not_complete);
     }
   };
 
@@ -28,7 +28,7 @@ const MasteryIconContainer: FC<Props> = props => {
 
   return (
     <View style={styles.container}>
-      <MasteryIcon chainStepStatus={level} iconSize={50}/>
+      <MasteryIcon chainStepStatus={level} iconSize={50} />
     </View>
   );
 };
@@ -39,7 +39,7 @@ const styles = StyleSheet.create({
   container: {
     justifyContent: 'center',
     alignContent: 'center',
-    margin:10,
+    margin: 10,
   },
   img: {
     alignSelf: 'center',

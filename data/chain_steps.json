@@ -1,6 +1,6 @@
 {
-
-    "chainSteps": [{
+    "chainSteps": [
+        {
             "step": 1,
             "instruction": "Put toothpaste on your toothbrush",
             "video": "https://drive.google.com/file/d/1s8ySbB9b2qzUysSwg8svGi67HCdDSCPh/view?usp=sharing",

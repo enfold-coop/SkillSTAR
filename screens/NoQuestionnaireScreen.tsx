@@ -5,7 +5,7 @@ import AppHeader from '../components/Header/AppHeader';
 type Props = {};
 
 const NoQuestionnaireScreen: FC<Props> = props => {
-    LogBox.ignoreAllLogs();
+  LogBox.ignoreAllLogs();
   return (
     <View style={styles.container}>
       <AppHeader name={'No SkillSTAR data found for participant'} />

@@ -13,7 +13,7 @@ type Props = {
 };
 
 const ChallengingBehavModal: FC<Props> = props => {
-  let { visible } = props;
+  const { visible } = props;
 
   return (
     <Modal
@@ -38,9 +38,7 @@ const ChallengingBehavModal: FC<Props> = props => {
             >
               <Text>EXIT</Text>
             </TouchableOpacity>
-            <Text style={styles.headline}>
-              Step {props.attempt.chain_step_id || 0 + 1} Challenging Behavior
-            </Text>
+            <Text style={styles.headline}>Step {props.attempt.chain_step_id || 0 + 1} Challenging Behavior</Text>
             <Text style={styles.textInputPrompt} />
             <TextInput label='Challenging behavior' mode='outlined' style={styles.textInput} />
           </View>

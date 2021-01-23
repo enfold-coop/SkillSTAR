@@ -33,7 +33,7 @@ const BaselineAssessmentScreen: FC<Props> = props => {
     let isCancelled = false;
 
     const _load = async () => {
-    //   console.log('BaselineAssessmentScreen > useEffect 1 > _load');
+      //   console.log('BaselineAssessmentScreen > useEffect 1 > _load');
       const contextChainData = await ApiService.contextState('chainData');
       if (!isCancelled && !chainData && contextChainData) {
         // console.log('BaselineAssessmentScreen.tsx > useEffect > _load > Setting chainData.');
@@ -79,7 +79,7 @@ const BaselineAssessmentScreen: FC<Props> = props => {
     return () => {
       isCancelled = true;
     };
-  },[]);
+  }, []);
   /** END: Lifecycle calls */
 
   const updateChainData: DataVerificationControlCallback = async (
@@ -106,7 +106,7 @@ const BaselineAssessmentScreen: FC<Props> = props => {
   const setSessionData = async () => {
     // console.log('*** setSessionData ***');
     if (chainData && chainSession) {
-    //   console.log('chainData.id', chainData.id);
+      //   console.log('chainData.id', chainData.id);
       if (!chainData.sessions) {
         chainData.sessions = [];
       }
@@ -129,12 +129,10 @@ const BaselineAssessmentScreen: FC<Props> = props => {
         {sessionReady && chainSession ? (
           <View style={styles.instructionContainer}>
             <Text style={styles.screenHeader}>
-              {(ChainSessionTypeMap[chainSession.session_type as string].value ||
-                'Baseline Assessment') + ' Session'}
+              {(ChainSessionTypeMap[chainSession.session_type as string].value || 'Baseline Assessment') + ' Session'}
             </Text>
             <Text style={styles.instruction}>
-              Please instruct the child to brush their teeth. As they do, please complete this
-              survey for each step.
+              Please instruct the child to brush their teeth. As they do, please complete this survey for each step.
             </Text>
           </View>
         ) : (

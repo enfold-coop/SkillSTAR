@@ -2,7 +2,7 @@ import { useNavigation } from '@react-navigation/native';
 import { Video } from 'expo-av';
 import { AVPlaybackSource } from 'expo-av/build/AV';
 import React, { FC, useEffect, useState } from 'react';
-import { ImageBackground, StyleSheet, Text, View,LogBox } from 'react-native';
+import { ImageBackground, StyleSheet, Text, View, LogBox } from 'react-native';
 import * as Animatable from 'react-native-animatable';
 import { ActivityIndicator, Button } from 'react-native-paper';
 import AppHeader from '../components/Header/AppHeader';
@@ -17,14 +17,13 @@ import { ChainStepPromptLevel, ChainStepStatus, StepAttempt } from '../types/CHA
 
 interface Props {}
 
-
 /**
- * 
+ *
  * @param props: NEEDS CHAIN DATA
  * @returns
  */
 const StepScreen: FC<Props> = props => {
-    LogBox.ignoreAllLogs();
+  LogBox.ignoreAllLogs();
   const navigation = useNavigation();
   const [visible, setVisible] = React.useState(false);
   const [stepIndex, setStepIndex] = useState<number>();
@@ -166,11 +165,7 @@ const StepScreen: FC<Props> = props => {
   };
 
   return (
-    <ImageBackground
-      source={require('../assets/images/sunrise-muted.jpg')}
-      resizeMode={'cover'}
-      style={styles.image}
-    >
+    <ImageBackground source={require('../assets/images/sunrise-muted.jpg')} resizeMode={'cover'} style={styles.image}>
       <View style={styles.container}>
         <AppHeader name={'Brush Teeth'} />
         {chainData && session && chainSteps && stepIndex !== undefined ? (
@@ -212,12 +207,11 @@ const StepScreen: FC<Props> = props => {
 					>
 						Exit
 					</Button> */}
-        
         </View>
         <View style={styles.nextBackBtnsContainer}>
           <Button
             style={styles.backButton}
-            labelStyle={{ alignSelf:"flex-start", fontSize: 24, paddingVertical:5 }}
+            labelStyle={{ alignSelf: 'flex-start', fontSize: 24, paddingVertical: 5 }}
             disabled={!stepIndex}
             color={CustomColors.uva.blue}
             mode='outlined'
@@ -228,33 +222,33 @@ const StepScreen: FC<Props> = props => {
             Previous Step
           </Button>
           <View style={styles.nextBackSubContainer}>
-          <Text style={styles.needAddlPrompt}>Needed Add'l Prompting</Text>
-          <Button
-            style={styles.neededPromptingBtn}
-            labelStyle={{ fontSize: 24, paddingVertical:5, color:CustomColors.uva.white }}
-            color={CustomColors.uva.orange}
-            mode='contained'
-            onPress={() => {
-              console.log('NEEDING PROMPTING');
-            }}
-          >
-            +
-          </Button>
-          <Button
-            style={styles.nextButton}
-            labelStyle={{ fontSize: 24, paddingVertical:5 }}
-            color={CustomColors.uva.blue}
-            mode='contained'
-            onPress={() => {
-              if (stepIndex !== undefined && chainSteps && stepIndex + 1 <= chainSteps.length - 1) {
-                incrIndex();
-              } else {
-                navigation.navigate('RewardsScreens');
-              }
-            }}
-          >
-            Step Complete
-          </Button>
+            <Text style={styles.needAddlPrompt}>Needed Add'l Prompting</Text>
+            <Button
+              style={styles.neededPromptingBtn}
+              labelStyle={{ fontSize: 24, paddingVertical: 5, color: CustomColors.uva.white }}
+              color={CustomColors.uva.orange}
+              mode='contained'
+              onPress={() => {
+                console.log('NEEDING PROMPTING');
+              }}
+            >
+              +
+            </Button>
+            <Button
+              style={styles.nextButton}
+              labelStyle={{ fontSize: 24, paddingVertical: 5 }}
+              color={CustomColors.uva.blue}
+              mode='contained'
+              onPress={() => {
+                if (stepIndex !== undefined && chainSteps && stepIndex + 1 <= chainSteps.length - 1) {
+                  incrIndex();
+                } else {
+                  navigation.navigate('RewardsScreens');
+                }
+              }}
+            >
+              Step Complete
+            </Button>
           </View>
         </View>
       </View>
@@ -336,32 +330,32 @@ const styles = StyleSheet.create({
     margin: 15,
   },
   neededPromptingBtn: {
-      margin:15
+    margin: 15,
   },
   exitButton: {},
   nextBackBtnsContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignContent:"center",
+    alignContent: 'center',
     // backgroundColor:"#f0f"
   },
-  nextBackSubContainer:{
-    flexDirection:"row"
+  nextBackSubContainer: {
+    flexDirection: 'row',
   },
-  needAddlPrompt:{
-      width:80,
-      paddingTop:0,
-      color:CustomColors.uva.grayDark,
-      fontSize:16,
-      alignSelf:"center",
-      textAlign:"center"
+  needAddlPrompt: {
+    width: 80,
+    paddingTop: 0,
+    color: CustomColors.uva.grayDark,
+    fontSize: 16,
+    alignSelf: 'center',
+    textAlign: 'center',
   },
   nextButton: {
     width: 244,
     margin: 15,
   },
   backButton: {
-      alignSelf:"flex-start",
+    alignSelf: 'flex-start',
     margin: 15,
   },
   loadingContainer: {

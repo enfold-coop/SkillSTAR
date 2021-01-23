@@ -1,13 +1,11 @@
-
-
 const headlineTestText = {
-    global: 'SKILL STAR',
-    teeth: 'TEETH BRUSING'
+  global: 'SKILL STAR',
+  teeth: 'TEETH BRUSING',
 };
 
 const subHeadlineTestText = {
-    global: 'SUBTEXT',
-    teeth: 'SUBTEXT TEETH'
+  global: 'SUBTEXT',
+  teeth: 'SUBTEXT TEETH',
 };
 
-export {headlineTestText, subHeadlineTestText}
+export { headlineTestText, subHeadlineTestText };

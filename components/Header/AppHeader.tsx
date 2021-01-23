@@ -24,10 +24,7 @@ const AppHeader = (props: AppHeaderProps) => {
   return (
     <View style={styles.container}>
       <View style={styles.skillTextContainer}>
-        <Image
-          source={require('../../assets/images/logo.png')}
-          style={orient ? styles.logo : styles.landscapeLogo}
-        />
+        <Image source={require('../../assets/images/logo.png')} style={orient ? styles.logo : styles.landscapeLogo} />
         <Text style={orient ? styles.headline : styles.headlineLandscape}>{props.name}</Text>
         <SelectParticipant
           onChange={(participant: Participant) => {

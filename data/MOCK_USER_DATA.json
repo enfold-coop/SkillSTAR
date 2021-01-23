@@ -1,5 +1,6 @@
 {
-    "chainSteps": [{
+    "chainSteps": [
+        {
             "step": 1,
             "instruction": "Put toothpaste on your toothbrush",
             "video": "assets/videos/1_Put_toothpaste_on_your_toothbrush.mp4"

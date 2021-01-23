@@ -21,7 +21,7 @@ type Props = {
 };
 
 const ProbeScreen: FC<Props> = props => {
-    LogBox.ignoreAllLogs();
+  LogBox.ignoreAllLogs();
   const navigation = useNavigation();
   const [stepIndex, setStepIndex] = useState(0);
   const [readyToSubmit, setReadyToSubmit] = useState(false);
@@ -116,25 +116,18 @@ const ProbeScreen: FC<Props> = props => {
   };
 
   return chainSession && chainSteps ? (
-    <ImageBackground
-      source={require('../assets/images/sunrise-muted.png')}
-      resizeMode={'cover'}
-      style={styles.image}
-    >
+    <ImageBackground source={require('../assets/images/sunrise-muted.png')} resizeMode={'cover'} style={styles.image}>
       <View style={styles.container}>
         <AppHeader name='Probe' />
         <View style={styles.formContainer}>
-          <DataVerificationListItem
-            stepAttempt={chainSession.step_attempts[stepIndex]}
-            onChange={onChange}
-          />
+          <DataVerificationListItem stepAttempt={chainSession.step_attempts[stepIndex]} onChange={onChange} />
         </View>
 
         <View style={styles.nextBackBtnsContainer}>
           <Button
             style={styles.backButton}
             color={CustomColors.uva.blue}
-            labelStyle={{ fontSize: 24, paddingVertical:5 }}
+            labelStyle={{ fontSize: 24, paddingVertical: 5 }}
             mode='contained'
             onPress={() => {
               decIndex();
@@ -145,7 +138,7 @@ const ProbeScreen: FC<Props> = props => {
           <Button
             style={styles.nextButton}
             color={CustomColors.uva.blue}
-            labelStyle={{ fontSize: 24, paddingVertical:5 }}
+            labelStyle={{ fontSize: 24, paddingVertical: 5 }}
             mode='contained'
             onPress={() => {
               if (stepIndex + 1 <= chainSteps.length - 1) {
@@ -162,7 +155,7 @@ const ProbeScreen: FC<Props> = props => {
         {readyToSubmit && (
           <Button
             mode='contained'
-            labelStyle={{ fontSize: 24, paddingVertical:5 }}
+            labelStyle={{ fontSize: 24, paddingVertical: 5 }}
             onPress={() => {
               navigation.navigate('ChainsHomeScreen');
             }}

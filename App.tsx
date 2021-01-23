@@ -1,8 +1,4 @@
-import {
-  NavigationContainer,
-  NavigationContainerRef,
-  ParamListBase,
-} from '@react-navigation/native';
+import { NavigationContainer, NavigationContainerRef, ParamListBase } from '@react-navigation/native';
 import { createStackNavigator, StackNavigationProp } from '@react-navigation/stack';
 import * as Font from 'expo-font';
 import React, { createRef, ReactElement, useEffect, useState } from 'react';
@@ -80,11 +76,7 @@ export default (): JSX.Element | null => {
   const Navigation = (): JSX.Element => (
     <NavigationContainer ref={containerRef}>
       <Stack.Navigator initialRouteName='LandingScreen'>
-        <Stack.Screen
-          name='LandingScreen'
-          component={LandingScreen}
-          options={{ headerShown: false }}
-        />
+        <Stack.Screen name='LandingScreen' component={LandingScreen} options={{ headerShown: false }} />
         <Stack.Screen
           options={({ navigation }) => ({
             ...screenOpts,

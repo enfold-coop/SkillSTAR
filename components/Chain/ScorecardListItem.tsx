@@ -65,27 +65,19 @@ const ScorecardListItem = (props: ScorecardListItemProps) => {
           <View style={styles.dropDownContainer}>
             <Text style={styles.dropDownLabel}>
               {`${'\u2022'} Date Introduced: `}
-              <Text style={styles.dropDownItemDate}>
-                {handleDateVals(masteryInfo.dateIntroduced)}
-              </Text>
+              <Text style={styles.dropDownItemDate}>{handleDateVals(masteryInfo.dateIntroduced)}</Text>
             </Text>
             <Text style={styles.dropDownLabel}>
               {`${'\u2022'} Date Mastered: `}
-              <Text style={styles.dropDownItemDate}>
-                {handleDateVals(masteryInfo.dateMastered)}
-              </Text>
+              <Text style={styles.dropDownItemDate}>{handleDateVals(masteryInfo.dateMastered)}</Text>
             </Text>
             <Text style={styles.dropDownLabel}>
               {`${'\u2022'} Date Booster training initiated: `}
-              <Text style={styles.dropDownItemDate}>
-                {handleDateVals(masteryInfo.dateBoosterInitiated)}
-              </Text>
+              <Text style={styles.dropDownItemDate}>{handleDateVals(masteryInfo.dateBoosterInitiated)}</Text>
             </Text>
             <Text style={styles.dropDownLabel}>
               {`${'\u2022'} Date Mastered Booster training: `}
-              <Text style={styles.dropDownItemDate}>
-                {handleDateVals(masteryInfo.dateBoosterMastered)}
-              </Text>
+              <Text style={styles.dropDownItemDate}>{handleDateVals(masteryInfo.dateBoosterMastered)}</Text>
             </Text>
           </View>
         )}

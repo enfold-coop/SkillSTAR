@@ -1,22 +1,24 @@
 {
-    "sessions": [{
-        "date": "",
-        "sessionType": "Probe",
-        "completed": false,
-        "stepAttempts": [{
+    "sessions": [
+        {
             "date": "",
-            "stepId": 0,
-            "step_status": "not_complete",
-            "instruction": "",
+            "sessionType": "Probe",
             "completed": false,
-            "was_prompted": false,
-            "prompt_level": 0,
-            "challenging_behavior": {
-                "did_occur": false,
-                "severity": 0
-            }
-
-        }]
-    }]
-
+            "stepAttempts": [
+                {
+                    "date": "",
+                    "stepId": 0,
+                    "step_status": "not_complete",
+                    "instruction": "",
+                    "completed": false,
+                    "was_prompted": false,
+                    "prompt_level": 0,
+                    "challenging_behavior": {
+                        "did_occur": false,
+                        "severity": 0
+                    }
+                }
+            ]
+        }
+    ]
 }

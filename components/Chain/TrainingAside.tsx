@@ -22,9 +22,9 @@ const TrainingAside: FC<Props> = props => {
     </View>
   ) : (
     <View>
-      <Text>sessionType: {!!sessionType ? 'Done' : 'Loading...'}</Text>
-      <Text>stepAttempt: {!!stepAttempt ? 'Done' : 'Loading...'}</Text>
-      <Text>promptLevel: {!!promptLevel ? 'Done' : 'Loading...'}</Text>
+      <Text>sessionType: {sessionType ? 'Done' : 'Loading...'}</Text>
+      <Text>stepAttempt: {stepAttempt ? 'Done' : 'Loading...'}</Text>
+      <Text>promptLevel: {promptLevel ? 'Done' : 'Loading...'}</Text>
     </View>
   );
 };

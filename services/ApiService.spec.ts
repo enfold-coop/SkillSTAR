@@ -1,22 +1,20 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import NetInfo from '@react-native-community/netinfo';
 import fetch from 'jest-fetch-mock';
-import {mockChainQuestionnaire} from '../_util/testing/mockChainQuestionnaire';
-import {mockUser, mockUserToken} from '../_util/testing/mockUser';
-import {wait} from '../_util/testing/wait';
-import {ChainStep} from '../types/CHAIN/ChainStep';
-import {ApiService} from './ApiService';
-
+import { mockChainQuestionnaire } from '../_util/testing/mockChainQuestionnaire';
+import { mockUser, mockUserToken } from '../_util/testing/mockUser';
+import { wait } from '../_util/testing/wait';
+import { ChainStep } from '../types/CHAIN/ChainStep';
+import { ApiService } from './ApiService';
 
 describe('ApiService', () => {
   beforeEach(() => {
     fetch.resetMocks();
   });
 
-
   afterEach(async () => {
     await wait();
-  })
+  });
 
   it('should get Chain Data for the Selected Participant', async () => {
     // Returns undefined when no chain data is available in AsyncStorage.
@@ -47,23 +45,23 @@ describe('ApiService', () => {
     const mockChainSteps: ChainStep[] = [
       {
         id: 0,
-        name: "toothbrushing_01",
-        instruction: "Put toothpaste on your toothbrush",
+        name: 'toothbrushing_01',
+        instruction: 'Put toothpaste on your toothbrush',
         last_updated: new Date(),
       },
       {
         id: 1,
-        name: "toothbrushing_02",
-        instruction: "Put toothpaste away",
+        name: 'toothbrushing_02',
+        instruction: 'Put toothpaste away',
         last_updated: new Date(),
       },
       {
         id: 2,
-        name: "toothbrushing_03",
-        instruction: "Get toothpaste and toothbrush wet",
+        name: 'toothbrushing_03',
+        instruction: 'Get toothpaste and toothbrush wet',
         last_updated: new Date(),
       },
-    ]
+    ];
 
     const stringified = JSON.stringify(mockChainSteps);
     const parsed = JSON.parse(stringified);
@@ -90,21 +88,21 @@ describe('ApiService', () => {
   it('should add new Chain Data or edit existing Chain Data', async () => {
     // upsertChainData
     const apiService = new ApiService();
-    const result = await apiService.upsertChainData({participant_id: 0, sessions: []});
+    const result = await apiService.upsertChainData({ participant_id: 0, sessions: [] });
     expect(result).toEqual(undefined);
   });
 
   it('should add new Chain Data', async () => {
     // addChainData
     const apiService = new ApiService();
-    const result = await apiService.addChainData({participant_id: 0, sessions: []});
+    const result = await apiService.addChainData({ participant_id: 0, sessions: [] });
     expect(result).toEqual(undefined);
   });
 
   it('should edit existing Chain Data', async () => {
     // editChainData
     const apiService = new ApiService();
-    const result = await apiService.editChainData({participant_id: 0, sessions: []}, 0);
+    const result = await apiService.editChainData({ participant_id: 0, sessions: [] }, 0);
     expect(result).toEqual(undefined);
   });
 
@@ -170,6 +168,4 @@ describe('ApiService', () => {
     const result = await apiService._isConnected();
     expect(result).toEqual(true);
   });
-
-
 });

@@ -10,7 +10,7 @@ import CustomColors from '../styles/Colors';
 type Props = {};
 
 const LandingScreen: FC<Props> = props => {
-    LogBox.ignoreAllLogs();
+  LogBox.ignoreAllLogs();
   const navigation = useNavigation();
   const [email, setEmail] = useState(DEFAULT_USER_EMAIL);
   const [password, setPassword] = useState(DEFAULT_USER_PASSWORD);
@@ -85,19 +85,13 @@ const LandingScreen: FC<Props> = props => {
         navigation.navigate('ChainsHomeScreen');
       }
     } catch (e) {
-      setErrorMessage(
-        'Invalid username or password. Please check your login information and try again.',
-      );
+      setErrorMessage('Invalid username or password. Please check your login information and try again.');
       console.error(e);
     }
   };
 
   return (
-    <ImageBackground
-      source={require('../assets/images/sunrise-muted.jpg')}
-      resizeMode={'cover'}
-      style={styles.image}
-    >
+    <ImageBackground source={require('../assets/images/sunrise-muted.jpg')} resizeMode={'cover'} style={styles.image}>
       <View style={styles.container}>
         <Animatable.View animation='zoomIn'>
           <Image style={styles.logo} source={require('../assets/images/logo.png')} />

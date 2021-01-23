@@ -20,7 +20,7 @@ type Props = {};
  *
  */
 const DataVerificationScreen: FC<Props> = props => {
-    LogBox.ignoreAllLogs();
+  LogBox.ignoreAllLogs();
   const navigation = useNavigation();
   const [chainData, setChainData] = useState<ChainData>();
   const [chainSession, setChainSession] = useState<ChainSession>();
@@ -106,8 +106,7 @@ const DataVerificationScreen: FC<Props> = props => {
           duration={1000}
           style={[scrolling ? styles.smallInstruction : styles.instruction]}
         >
-          Please instruct the child to brush their teeth. As they do, please complete this survey
-          for each step.
+          Please instruct the child to brush their teeth. As they do, please complete this survey for each step.
         </Animatable.Text>
       </View>
       <View style={styles.formContainer}>
@@ -133,17 +132,15 @@ const DataVerificationScreen: FC<Props> = props => {
 
       {readyToSubmit && (
         <View style={styles.btnContainer}>
-          <Text style={styles.btnContainerText}>
-            Please confirm your selections, then press Submit.
-          </Text>
+          <Text style={styles.btnContainerText}>Please confirm your selections, then press Submit.</Text>
           <Button
             mode='contained'
             color={CustomColors.uva.orange}
             labelStyle={{
               fontSize: 28,
-            //   fontWeight: '600',
+              //   fontWeight: '600',
               color: CustomColors.uva.white,
-              paddingVertical:15,
+              paddingVertical: 15,
             }}
             style={styles.nextButton}
             onPress={() => {

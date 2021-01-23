@@ -1,5 +1,5 @@
 import React, { FC, useState } from 'react';
-import { StyleSheet, Text, View, Image,LogBox } from 'react-native';
+import { StyleSheet, Text, View, Image, LogBox } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import AppHeader from '../components/Header/AppHeader';
 import { Button } from 'react-native-paper';
@@ -8,7 +8,7 @@ import CustomColors from '../styles/Colors';
 type Props = {};
 
 const RewardsScreens: FC<Props> = props => {
-    LogBox.ignoreAllLogs();
+  LogBox.ignoreAllLogs();
   const navigation = useNavigation();
   const star = require('../assets/images/reward_screen/reward-star-01.png');
   // const awesomeJobText = require("../assets/images/reward_screen/awesome-job-text-v3.png");
@@ -29,11 +29,11 @@ const RewardsScreens: FC<Props> = props => {
       </View>
       <Button
         mode='contained'
-        labelStyle={{ fontSize: 28, paddingVertical:5 }}
+        labelStyle={{ fontSize: 28, paddingVertical: 5 }}
         style={styles.submitBtn}
         onPress={() => navigation.navigate('DataVerificationScreen')}
-      >Back Home
-        
+      >
+        Back Home
       </Button>
     </View>
   );

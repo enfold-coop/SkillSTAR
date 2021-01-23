@@ -25,7 +25,7 @@ import { Participant } from '../types/User';
 
 // Chain Home Screen
 const ChainsHomeScreen: FC<Props> = props => {
-    LogBox.ignoreAllLogs();
+  LogBox.ignoreAllLogs();
   const navigation = useNavigation();
   const [asideContent, setAsideContents] = useState('');
   const [btnText, setBtnText] = useState<string>();
@@ -184,7 +184,7 @@ const ChainsHomeScreen: FC<Props> = props => {
             const newDbData = await ApiService.addChainData(newData);
             if (!isCancelled && newDbData) {
               const newChainData = new ChainData(newDbData);
-            //   console.log('newChainData added for participant');
+              //   console.log('newChainData added for participant');
               await ApiService.contextDispatch({ type: 'chainData', payload: newChainData });
             }
           } catch (e) {

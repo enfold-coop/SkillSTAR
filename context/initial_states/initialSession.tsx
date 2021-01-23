@@ -1,6 +1,6 @@
 import session_data from './sketch_of_all_data.json';
 
-let session = {
+const session = {
   date: '',
   sessionType: '',
   completed: false,
@@ -22,8 +22,8 @@ let session = {
 };
 
 const initState = () => {
-  let stringedUp = JSON.stringify(session_data);
-  let data = JSON.parse(stringedUp);
+  const stringedUp = JSON.stringify(session_data);
+  const data = JSON.parse(stringedUp);
   return data;
 };
 export { initState, session };

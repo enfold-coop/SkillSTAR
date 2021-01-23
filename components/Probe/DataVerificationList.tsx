@@ -17,7 +17,7 @@ const DataVerificationList: FC<Props> = props => {
     <View style={styles.container}>
       <FlatList
         data={stepAttempts}
-        renderItem={({ item }) => <DataVerificationListItem stepAttempt={item} onChange={onChange}/>}
+        renderItem={({ item }) => <DataVerificationListItem stepAttempt={item} onChange={onChange} />}
         keyExtractor={() => shortid()}
       />
     </View>

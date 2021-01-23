@@ -55,18 +55,10 @@ const DataVerifItem: FC<Props> = props => {
   }, [stepAttempt]);
   /** END: Lifecycle calls */
 
-  const handlePromptSwitch: DataVerificationControlCallback = async (
-    chainStepId,
-    fieldName,
-    fieldValue,
-  ) => {
+  const handlePromptSwitch: DataVerificationControlCallback = async (chainStepId, fieldName, fieldValue) => {
     setPromptSwitch(!promptSwitch);
   };
-  const handleBehavSwitch: DataVerificationControlCallback = async (
-    chainStepId,
-    fieldName,
-    fieldValue,
-  ) => {
+  const handleBehavSwitch: DataVerificationControlCallback = async (chainStepId, fieldName, fieldValue) => {
     setBehavSwitch(!behavSwitch);
   };
 
@@ -77,7 +69,7 @@ const DataVerifItem: FC<Props> = props => {
     stepAttempt.chain_step_id !== undefined ? (
     <View style={styles.container}>
       <View style={styles.defaultFormContainer}>
-        <MasteryIcon chainStepStatus={stepAttempt.status}  iconSize={40} />
+        <MasteryIcon chainStepStatus={stepAttempt.status} iconSize={40} />
         <Text style={styles.stepTitle}>"{stepAttempt.chain_step.instruction}"</Text>
         <Image style={styles.promptLevelImage} source={promptIcon} resizeMode='contain' />
         <View style={styles.switchContainer}>

@@ -15,5 +15,6 @@ module.exports = {
       options: {
         tabWidth: 4,
       },
-    ],
-  };
+    },
+  ],
+};

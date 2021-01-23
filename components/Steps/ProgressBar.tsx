@@ -12,7 +12,6 @@ type Props = {
 };
 
 const ProgressBar: FC<Props> = props => {
-
   const { totalSteps, currentStepIndex, masteryLevel, chainSteps } = props;
 
   const [mastery, setMastery] = useState('focus');
@@ -35,7 +34,7 @@ const ProgressBar: FC<Props> = props => {
   };
 
   useEffect(() => {
-      setProgPercent(progressBarCalculation(totalSteps, currentStepIndex));
+    setProgPercent(progressBarCalculation(totalSteps, currentStepIndex));
   }, [currentStepIndex]);
 
   useEffect(() => {
@@ -45,12 +44,7 @@ const ProgressBar: FC<Props> = props => {
 
   return (
     <View style={styles.container}>
-
-      <ProgBar
-        style={styles.progressBar}
-        progress={progPercent}
-        color={barColor}
-      />
+      <ProgBar style={styles.progressBar} progress={progPercent} color={barColor} />
       <Text style={styles.progressText}>
         Step {currentStepIndex + 1} out of {chainSteps.length}
       </Text>

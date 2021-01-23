@@ -7,21 +7,21 @@ import { SkillStarIcons } from './Icons';
 
 export interface MasteryIconProps {
   chainStepStatus: ChainStepStatus;
-  iconSize:number;
+  iconSize: number;
 }
 
 export function MasteryIcon(props: MasteryIconProps) {
   const { chainStepStatus, iconSize } = props;
   const [size, setIconSize] = useState(30);
 
-    useEffect(()=>{
-        if(iconSize != undefined){
-            setIconSize(iconSize);
-        }
-    });
+  useEffect(() => {
+    if (iconSize != undefined) {
+      setIconSize(iconSize);
+    }
+  });
 
   const statusMap = ChainStepStatusMap[chainStepStatus as string];
-  
+
   const icons: { [key: string]: MasteryStatus } = {
     not_complete: {
       stepStatus: ChainStepStatus.not_complete,

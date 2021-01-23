@@ -17,8 +17,7 @@ const ChallengingBehavBtn: FC<Props> = props => {
         </TouchableOpacity>
       </View>
       <Text style={styles.difficultyParagraph}>
-        Click on this icon anytime your child is having difficulty or experiening challenging
-        behavior.
+        Click on this icon anytime your child is having difficulty or experiening challenging behavior.
       </Text>
     </View>
   );

@@ -36,9 +36,7 @@ export const SelectParticipant = (props: SelectParticipantProps): ReactElement =
 
     const _load = async () => {
       if (!isCancelled) {
-        console.log(
-          '*** SelectParticipant.tsx > useEffect > _load > loading selectedParticipant... ***',
-        );
+        console.log('*** SelectParticipant.tsx > useEffect > _load > loading selectedParticipant... ***');
         const dbSelectedParticipant = await ApiService.getSelectedParticipant();
         if (!isCancelled && dbSelectedParticipant && !selectedParticipant && !shouldGoHome) {
           setSelectedParticipant(dbSelectedParticipant);
@@ -179,9 +177,7 @@ export const SelectParticipant = (props: SelectParticipantProps): ReactElement =
     }
   };
 
-  const btnLabel = selectedParticipant
-    ? `Participant: ${participantName(selectedParticipant)}`
-    : 'Select Participant';
+  const btnLabel = selectedParticipant ? `Participant: ${participantName(selectedParticipant)}` : 'Select Participant';
 
   const key = `select_participant_menu_${menuItems && menuItems.length > 0 ? menuItems.length : 0}`;
 

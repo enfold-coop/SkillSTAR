@@ -1,11 +1,6 @@
 import React, { createContext, useReducer } from 'react';
 import { ChainSessionType } from '../types/CHAIN/ChainSession';
-import {
-  ChainProviderProps,
-  ChainProviderState,
-  ContextDispatch,
-  ContextDispatchAction,
-} from '../types/Context';
+import { ChainProviderProps, ChainProviderState, ContextDispatch, ContextDispatchAction } from '../types/Context';
 
 const initialState: ChainProviderState = {
   isLoading: true,
