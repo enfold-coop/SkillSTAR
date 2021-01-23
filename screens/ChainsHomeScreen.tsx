@@ -149,7 +149,7 @@ const ChainsHomeScreen = (): JSX.Element => {
       }
     };
 
-    const _setSessionTypeAndNmbr = async (isCancelled: boolean) => {
+    const _setSessionTypeAndNmbr = async () => {
       if (!(chainData && chainMastery && chainMastery.masteryInfoMap)) {
         return;
       }
@@ -185,9 +185,7 @@ const ChainsHomeScreen = (): JSX.Element => {
     };
 
     _load().then(() => {
-      if (!isCancelled && !isLoading) {
-        _setSessionTypeAndNmbr(isCancelled);
-      }
+      _setSessionTypeAndNmbr();
     });
     return () => {
       isCancelled = true;
