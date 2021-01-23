@@ -11,13 +11,16 @@
     "plugin:jest/recommended"
   ],
   "rules": {
-    "no-console": 0,
-    "prettier/prettier": 2,
+    "jest/no-conditional-expect": "warn",
     "jest/no-disabled-tests": "warn",
     "jest/no-focused-tests": "error",
     "jest/no-identical-title": "error",
     "jest/prefer-to-have-length": "warn",
-    "jest/valid-expect": "error"
+    "jest/valid-expect": "error",
+    "no-console": 0,
+    "no-extra-boolean-cast": "off",
+    "no-prototype-builtins": "off",
+    "prettier/prettier": 2
   },
   "settings": {
     "react": {

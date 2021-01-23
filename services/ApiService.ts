@@ -127,7 +127,7 @@ export class ApiService {
     // console.log('cached skillstarChainId', skillstarChainId);
 
     // If it's been cached, just return it.
-    if (skillstarChainId) {
+    if (skillstarChainId !== null) {
       return parseInt(skillstarChainId, 10);
     }
 
@@ -517,7 +517,7 @@ export class ApiService {
     if (!response.ok) {
       console.error(response);
       throw new Error(`Error in ${methodName} ${requestMethod} response: ` + response.statusText);
-    } else {
+    } else if (!!(response && response.body && response.json)) {
       return await response.json();
     }
   }
