@@ -13,8 +13,6 @@ import { ChainData } from '../types/CHAIN/SkillstarChain';
 import { ChainStepStatus, StepAttempt, StepAttemptField } from '../types/CHAIN/StepAttempt';
 import { DataVerificationControlCallback } from '../types/DataVerificationControlCallback';
 
-console.log('\n=== BaselineAssessmentScreen.tsx ===\n');
-
 type Props = {};
 
 /**
@@ -35,22 +33,22 @@ const BaselineAssessmentScreen: FC<Props> = props => {
     let isCancelled = false;
 
     const _load = async () => {
-      console.log('BaselineAssessmentScreen > useEffect 1 > _load');
+    //   console.log('BaselineAssessmentScreen > useEffect 1 > _load');
       const contextChainData = await ApiService.contextState('chainData');
       if (!isCancelled && !chainData && contextChainData) {
-        console.log('BaselineAssessmentScreen.tsx > useEffect > _load > Setting chainData.');
+        // console.log('BaselineAssessmentScreen.tsx > useEffect > _load > Setting chainData.');
         const newChainData = new ChainData(contextChainData);
         setChainData(newChainData);
       }
 
       const contextChainSteps = await ApiService.contextState('chainSteps');
       if (!isCancelled && !chainSteps && contextChainSteps) {
-        console.log('BaselineAssessmentScreen.tsx > useEffect > _load > Setting chainSteps.');
+        // console.log('BaselineAssessmentScreen.tsx > useEffect > _load > Setting chainSteps.');
         setChainSteps(contextChainSteps as ChainStep[]);
       }
 
       if (!isCancelled && chainSteps && chainData) {
-        console.log('BaselineAssessmentScreen > useEffect 1 > _load > Setting session...');
+        // console.log('BaselineAssessmentScreen > useEffect 1 > _load > Setting session...');
         const stepAttempts: StepAttempt[] = chainSteps.map(chainStep => {
           return {
             chain_step_id: chainStep.id,
@@ -81,7 +79,7 @@ const BaselineAssessmentScreen: FC<Props> = props => {
     return () => {
       isCancelled = true;
     };
-  });
+  },[]);
   /** END: Lifecycle calls */
 
   const updateChainData: DataVerificationControlCallback = async (
@@ -106,9 +104,9 @@ const BaselineAssessmentScreen: FC<Props> = props => {
   };
 
   const setSessionData = async () => {
-    console.log('*** setSessionData ***');
+    // console.log('*** setSessionData ***');
     if (chainData && chainSession) {
-      console.log('chainData.id', chainData.id);
+    //   console.log('chainData.id', chainData.id);
       if (!chainData.sessions) {
         chainData.sessions = [];
       }
@@ -156,9 +154,9 @@ const BaselineAssessmentScreen: FC<Props> = props => {
             style={styles.nextButton}
             color={CustomColors.uva.orange}
             labelStyle={{
-              fontSize: 16,
+              fontSize: 24,
               fontWeight: '600',
-              color: CustomColors.uva.blue,
+              color: CustomColors.uva.white,
             }}
             mode='contained'
             onPress={() => {

@@ -1,6 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
 import React, { FC, useEffect, useState } from 'react';
-import { Image, ImageBackground, StyleSheet, View } from 'react-native';
+import { Image, ImageBackground, StyleSheet, View, LogBox} from 'react-native';
 import * as Animatable from 'react-native-animatable';
 import { Button, Card, Title } from 'react-native-paper';
 import AppHeader from '../components/Header/AppHeader';
@@ -12,6 +12,7 @@ import { ChainSessionType } from '../types/CHAIN/ChainSession';
 import { ChainData } from '../types/CHAIN/SkillstarChain';
 
 const PrepareMaterialsScreen: FC<Props> = props => {
+    LogBox.ignoreAllLogs();
   const navigation = useNavigation();
   const [chainSessionType, setChainSessionType] = useState<ChainSessionType>();
 
@@ -76,13 +77,13 @@ const PrepareMaterialsScreen: FC<Props> = props => {
             mode='contained'
             color={CustomColors.uva.blue}
             style={styles.nextBtn}
-            labelStyle={{ fontSize: 20 }}
+            labelStyle={{ fontSize: 24, paddingVertical:5 }}
             onPress={() => {
               console.log('chainSessionType', chainSessionType);
               if ((chainSessionType as string) === 'training') {
                 navigation.navigate('StepScreen');
               } else {
-                navigation.navigate('StepScreen');
+                navigation.navigate('BaselineAssessmentScreen');
                 // navigation.navigate('BaselineAssessmentScreen');
               }
             }}
@@ -132,10 +133,8 @@ const styles = StyleSheet.create({
     fontWeight: '400',
   },
   nextBtn: {
-    padding: 10,
-    fontSize: 24,
+    padding: 0,
     margin: 10,
-    marginRight: 0,
     width: 222,
     alignSelf: 'flex-end',
   },

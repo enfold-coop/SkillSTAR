@@ -1,6 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
 import React, { FC, useEffect, useState } from 'react';
-import { FlatList, StyleSheet, Text, View } from 'react-native';
+import { FlatList, StyleSheet, Text, View, LogBox } from 'react-native';
 import * as Animatable from 'react-native-animatable';
 import { ActivityIndicator, Button } from 'react-native-paper';
 import { randomId } from '../_util/RandomId';
@@ -20,6 +20,7 @@ type Props = {};
  *
  */
 const DataVerificationScreen: FC<Props> = props => {
+    LogBox.ignoreAllLogs();
   const navigation = useNavigation();
   const [chainData, setChainData] = useState<ChainData>();
   const [chainSession, setChainSession] = useState<ChainSession>();
@@ -139,9 +140,10 @@ const DataVerificationScreen: FC<Props> = props => {
             mode='contained'
             color={CustomColors.uva.orange}
             labelStyle={{
-              fontSize: 16,
-              fontWeight: '600',
-              color: CustomColors.uva.blue,
+              fontSize: 28,
+            //   fontWeight: '600',
+              color: CustomColors.uva.white,
+              paddingVertical:15,
             }}
             style={styles.nextButton}
             onPress={() => {
@@ -152,7 +154,7 @@ const DataVerificationScreen: FC<Props> = props => {
               }
             }}
           >
-            {confirmSubmit ? 'Confirm and Submit' : 'Submit'}
+            {confirmSubmit ? 'Confirm and Submit' : 'Confirm and Submit'}
           </Button>
         </View>
       )}
@@ -227,11 +229,8 @@ const styles = StyleSheet.create({
   },
   nextButton: {
     width: '90%',
-    height: 50,
-    margin: 10,
     justifyContent: 'center',
     alignSelf: 'center',
-    fontWeight: '600',
   },
 });
 

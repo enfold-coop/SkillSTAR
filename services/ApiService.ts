@@ -124,7 +124,7 @@ export class ApiService {
 
     // Check for a cached questionnaire ID
     const skillstarChainId = await AsyncStorage.getItem('selected_participant_questionnaire_id');
-    console.log('cached skillstarChainId', skillstarChainId);
+    // console.log('cached skillstarChainId', skillstarChainId);
 
     // If it's been cached, just return it.
     if (skillstarChainId) {
@@ -168,7 +168,7 @@ export class ApiService {
 
           if (questionnaireId !== undefined && questionnaireId !== null) {
             await ApiService._cache('selected_participant_questionnaire_id', questionnaireId);
-            console.log('questionnaireId from backend', questionnaireId);
+            // console.log('questionnaireId from backend', questionnaireId);
             return questionnaireId;
           }
         }
@@ -205,7 +205,7 @@ export class ApiService {
         questionnaireId.toString(),
       );
 
-      console.log('url', url);
+    //   console.log('url', url);
 
       const headers = await ApiService._getHeaders('GET');
       const response = await fetch(url, headers);
@@ -227,7 +227,7 @@ export class ApiService {
     const questionnaireId =
       data && data.hasOwnProperty('id') ? data.id : await ApiService.getChainQuestionnaireId();
 
-    console.log('questionnaireId =', questionnaireId);
+    // console.log('questionnaireId =', questionnaireId);
 
     if (questionnaireId !== undefined) {
       // If there's an existing questionnaire, it's an update.

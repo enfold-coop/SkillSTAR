@@ -1,7 +1,7 @@
 import { useDeviceOrientation } from '@react-native-community/hooks';
 import { useNavigation } from '@react-navigation/native';
 import React, { FC, useEffect, useState } from 'react';
-import { ImageBackground, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { ImageBackground, ScrollView, StyleSheet, TouchableOpacity, View, LogBox } from 'react-native';
 import * as Animatable from 'react-native-animatable';
 import { ActivityIndicator, Text } from 'react-native-paper';
 import {
@@ -25,6 +25,7 @@ import { Participant } from '../types/User';
 
 // Chain Home Screen
 const ChainsHomeScreen: FC<Props> = props => {
+    LogBox.ignoreAllLogs();
   const navigation = useNavigation();
   const [asideContent, setAsideContents] = useState('');
   const [btnText, setBtnText] = useState<string>();
@@ -183,7 +184,7 @@ const ChainsHomeScreen: FC<Props> = props => {
             const newDbData = await ApiService.addChainData(newData);
             if (!isCancelled && newDbData) {
               const newChainData = new ChainData(newDbData);
-              console.log('newChainData added for participant');
+            //   console.log('newChainData added for participant');
               await ApiService.contextDispatch({ type: 'chainData', payload: newChainData });
             }
           } catch (e) {
@@ -364,7 +365,6 @@ const styles = StyleSheet.create({
     width: '90%',
     alignSelf: 'center',
     margin: 10,
-    // marginBottom: 20,
     borderRadius: 10,
     paddingVertical: 10,
     backgroundColor: CustomColors.uva.orange,

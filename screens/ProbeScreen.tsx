@@ -1,6 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
 import React, { FC, useEffect, useState } from 'react';
-import { ImageBackground, StyleSheet, View } from 'react-native';
+import { ImageBackground, StyleSheet, View, LogBox } from 'react-native';
 import { Button } from 'react-native-paper';
 import AppHeader from '../components/Header/AppHeader';
 import { Loading } from '../components/Loading/Loading';
@@ -21,6 +21,7 @@ type Props = {
 };
 
 const ProbeScreen: FC<Props> = props => {
+    LogBox.ignoreAllLogs();
   const navigation = useNavigation();
   const [stepIndex, setStepIndex] = useState(0);
   const [readyToSubmit, setReadyToSubmit] = useState(false);
@@ -133,6 +134,7 @@ const ProbeScreen: FC<Props> = props => {
           <Button
             style={styles.backButton}
             color={CustomColors.uva.blue}
+            labelStyle={{ fontSize: 24, paddingVertical:5 }}
             mode='contained'
             onPress={() => {
               decIndex();
@@ -143,6 +145,7 @@ const ProbeScreen: FC<Props> = props => {
           <Button
             style={styles.nextButton}
             color={CustomColors.uva.blue}
+            labelStyle={{ fontSize: 24, paddingVertical:5 }}
             mode='contained'
             onPress={() => {
               if (stepIndex + 1 <= chainSteps.length - 1) {
@@ -159,6 +162,7 @@ const ProbeScreen: FC<Props> = props => {
         {readyToSubmit && (
           <Button
             mode='contained'
+            labelStyle={{ fontSize: 24, paddingVertical:5 }}
             onPress={() => {
               navigation.navigate('ChainsHomeScreen');
             }}

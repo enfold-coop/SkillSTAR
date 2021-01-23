@@ -1,5 +1,5 @@
 import React, { FC, useState } from 'react';
-import { StyleSheet, Text, View, Image } from 'react-native';
+import { StyleSheet, Text, View, Image,LogBox } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import AppHeader from '../components/Header/AppHeader';
 import { Button } from 'react-native-paper';
@@ -8,6 +8,7 @@ import CustomColors from '../styles/Colors';
 type Props = {};
 
 const RewardsScreens: FC<Props> = props => {
+    LogBox.ignoreAllLogs();
   const navigation = useNavigation();
   const star = require('../assets/images/reward_screen/reward-star-01.png');
   // const awesomeJobText = require("../assets/images/reward_screen/awesome-job-text-v3.png");
@@ -28,10 +29,11 @@ const RewardsScreens: FC<Props> = props => {
       </View>
       <Button
         mode='contained'
+        labelStyle={{ fontSize: 28, paddingVertical:5 }}
         style={styles.submitBtn}
         onPress={() => navigation.navigate('DataVerificationScreen')}
-      >
-        <Text style={{ color: CustomColors.uva.blue }}>Next</Text>
+      >Back Home
+        
       </Button>
     </View>
   );
@@ -78,8 +80,8 @@ const styles = StyleSheet.create({
     color: CustomColors.uva.blue,
   },
   img: {
-    height: '100%',
-    width: '100%',
+    height: '90%',
+    width: '90%',
     alignSelf: 'center',
     resizeMode: 'contain',
     margin: 10,
@@ -95,7 +97,7 @@ const styles = StyleSheet.create({
     color: CustomColors.uva.blue,
   },
   submitBtn: {
-    marginTop: 20,
+    // marginTop: 20,
     backgroundColor: CustomColors.uva.orange,
     width: 300,
     alignSelf: 'flex-end',

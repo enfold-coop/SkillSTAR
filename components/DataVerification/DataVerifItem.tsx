@@ -77,7 +77,7 @@ const DataVerifItem: FC<Props> = props => {
     stepAttempt.chain_step_id !== undefined ? (
     <View style={styles.container}>
       <View style={styles.defaultFormContainer}>
-        <MasteryIcon chainStepStatus={stepAttempt.status} />
+        <MasteryIcon chainStepStatus={stepAttempt.status}  iconSize={40} />
         <Text style={styles.stepTitle}>"{stepAttempt.chain_step.instruction}"</Text>
         <Image style={styles.promptLevelImage} source={promptIcon} resizeMode='contain' />
         <View style={styles.switchContainer}>

@@ -12,11 +12,12 @@ type Props = {
 };
 
 const ProgressBar: FC<Props> = props => {
+
   const { totalSteps, currentStepIndex, masteryLevel, chainSteps } = props;
-  // console.log(steps);
 
   const [mastery, setMastery] = useState('focus');
   const [barColor, setBarColor] = useState(CustomColors.uva.magenta);
+  const [progPercent, setProgPercent] = useState(0);
 
   // Convert progress to "0.1 - 1.0" value
   const progressBarCalculation = (len: number, currStep: number): number => {
@@ -33,7 +34,9 @@ const ProgressBar: FC<Props> = props => {
     }
   };
 
-  useEffect(() => {}, [currentStepIndex]);
+  useEffect(() => {
+      setProgPercent(progressBarCalculation(totalSteps, currentStepIndex));
+  }, [currentStepIndex]);
 
   useEffect(() => {
     setMastery(masteryLevel);
@@ -42,9 +45,10 @@ const ProgressBar: FC<Props> = props => {
 
   return (
     <View style={styles.container}>
+
       <ProgBar
         style={styles.progressBar}
-        progress={progressBarCalculation(totalSteps, currentStepIndex)}
+        progress={progPercent}
         color={barColor}
       />
       <Text style={styles.progressText}>

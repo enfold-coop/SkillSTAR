@@ -1,7 +1,7 @@
 import { createIconSetFromIcoMoon } from "@expo/vector-icons";
-import icoMoonConfig from "../assets/fonts/icons/skillstar_icons.json";
+import icoMoonConfig from "../assets/fonts/skillstar/selection.json";
 export const SkillStarIcons = createIconSetFromIcoMoon(
 	icoMoonConfig,
 	"SkillStarIcons",
-	"skillstar_icons.ttf"
+	"skillstar.ttf"
 );

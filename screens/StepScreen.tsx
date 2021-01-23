@@ -2,7 +2,7 @@ import { useNavigation } from '@react-navigation/native';
 import { Video } from 'expo-av';
 import { AVPlaybackSource } from 'expo-av/build/AV';
 import React, { FC, useEffect, useState } from 'react';
-import { ImageBackground, StyleSheet, Text, View } from 'react-native';
+import { ImageBackground, StyleSheet, Text, View,LogBox } from 'react-native';
 import * as Animatable from 'react-native-animatable';
 import { ActivityIndicator, Button } from 'react-native-paper';
 import AppHeader from '../components/Header/AppHeader';
@@ -17,7 +17,14 @@ import { ChainStepPromptLevel, ChainStepStatus, StepAttempt } from '../types/CHA
 
 interface Props {}
 
+
+/**
+ * 
+ * @param props: NEEDS CHAIN DATA
+ * @returns
+ */
 const StepScreen: FC<Props> = props => {
+    LogBox.ignoreAllLogs();
   const navigation = useNavigation();
   const [visible, setVisible] = React.useState(false);
   const [stepIndex, setStepIndex] = useState<number>();
@@ -120,8 +127,6 @@ const StepScreen: FC<Props> = props => {
   };
 
   const createAttempts = () => {
-    console.log(chainSteps);
-
     if (chainData && chainSteps && session) {
       chainSteps.forEach((chainStep, i) => {
         const newStepAttempt: StepAttempt = {
@@ -175,10 +180,10 @@ const StepScreen: FC<Props> = props => {
             </Text>
 
             <View style={styles.progressContainer}>
-              <MasteryIconContainer masteryLevel={'focus'} />
+              <MasteryIconContainer masteryLevel={'focus_step'} />
               <ProgressBar
                 currentStepIndex={stepIndex}
-                totalSteps={session.step_attempts.length}
+                totalSteps={chainSteps.length}
                 masteryLevel={'focus'}
                 chainSteps={chainSteps}
               />
@@ -207,20 +212,12 @@ const StepScreen: FC<Props> = props => {
 					>
 						Exit
 					</Button> */}
-          <Button
-            style={styles.neededPromptingBtn}
-            color={CustomColors.uva.orange}
-            mode='contained'
-            onPress={() => {
-              console.log('NEEDING PROMPTING');
-            }}
-          >
-            Needed Additional Prompting
-          </Button>
+        
         </View>
         <View style={styles.nextBackBtnsContainer}>
           <Button
             style={styles.backButton}
+            labelStyle={{ alignSelf:"flex-start", fontSize: 24, paddingVertical:5 }}
             disabled={!stepIndex}
             color={CustomColors.uva.blue}
             mode='outlined'
@@ -230,8 +227,22 @@ const StepScreen: FC<Props> = props => {
           >
             Previous Step
           </Button>
+          <View style={styles.nextBackSubContainer}>
+          <Text style={styles.needAddlPrompt}>Needed Add'l Prompting</Text>
+          <Button
+            style={styles.neededPromptingBtn}
+            labelStyle={{ fontSize: 24, paddingVertical:5, color:CustomColors.uva.white }}
+            color={CustomColors.uva.orange}
+            mode='contained'
+            onPress={() => {
+              console.log('NEEDING PROMPTING');
+            }}
+          >
+            +
+          </Button>
           <Button
             style={styles.nextButton}
+            labelStyle={{ fontSize: 24, paddingVertical:5 }}
             color={CustomColors.uva.blue}
             mode='contained'
             onPress={() => {
@@ -244,6 +255,7 @@ const StepScreen: FC<Props> = props => {
           >
             Step Complete
           </Button>
+          </View>
         </View>
       </View>
     </ImageBackground>
@@ -278,7 +290,6 @@ const styles = StyleSheet.create({
   },
   headline: {
     width: '60%',
-    // textAlign: "",
     fontSize: 22,
     fontWeight: '600',
     padding: 10,
@@ -324,17 +335,33 @@ const styles = StyleSheet.create({
     paddingVertical: 15,
     margin: 15,
   },
-  neededPromptingBtn: {},
+  neededPromptingBtn: {
+      margin:15
+  },
   exitButton: {},
   nextBackBtnsContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+    alignContent:"center",
+    // backgroundColor:"#f0f"
+  },
+  nextBackSubContainer:{
+    flexDirection:"row"
+  },
+  needAddlPrompt:{
+      width:80,
+      paddingTop:0,
+      color:CustomColors.uva.grayDark,
+      fontSize:16,
+      alignSelf:"center",
+      textAlign:"center"
   },
   nextButton: {
     width: 244,
     margin: 15,
   },
   backButton: {
+      alignSelf:"flex-start",
     margin: 15,
   },
   loadingContainer: {

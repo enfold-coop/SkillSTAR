@@ -1,6 +1,6 @@
 import { DEFAULT_USER_EMAIL, DEFAULT_USER_PASSWORD } from '@env';
 import React, { useEffect, useState, FC } from 'react';
-import { Image, ImageBackground, StyleSheet, View } from 'react-native';
+import { Image, ImageBackground, StyleSheet, View, LogBox } from 'react-native';
 import * as Animatable from 'react-native-animatable';
 import { Button, Text, TextInput } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
@@ -10,6 +10,7 @@ import CustomColors from '../styles/Colors';
 type Props = {};
 
 const LandingScreen: FC<Props> = props => {
+    LogBox.ignoreAllLogs();
   const navigation = useNavigation();
   const [email, setEmail] = useState(DEFAULT_USER_EMAIL);
   const [password, setPassword] = useState(DEFAULT_USER_PASSWORD);
