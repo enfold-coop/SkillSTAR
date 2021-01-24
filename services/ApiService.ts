@@ -407,7 +407,7 @@ export class ApiService {
         return await ApiService.selectParticipant(dependents[0].id);
       }
     } else {
-      console.error('no user found.');
+      console.log('no user found.');
     }
   }
 

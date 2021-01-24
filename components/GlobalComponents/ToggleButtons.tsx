@@ -2,10 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Button } from 'react-native-paper';
 import CustomColors from '../../styles/Colors';
-import NamedStyles = StyleSheet.NamedStyles;
 
 interface ToggleButtonsProps {
-  btnStyle: NamedStyles<any>;
+  btnStyle: StyleSheet.NamedStyles<any>;
   stepTitle: string;
 }
 
