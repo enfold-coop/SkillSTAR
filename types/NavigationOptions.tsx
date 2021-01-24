@@ -1,7 +1,6 @@
 import { RouteProp } from '@react-navigation/native';
 import { StackNavigationOptions, StackNavigationProp } from '@react-navigation/stack';
 import CustomColors from '../styles/Colors';
-import { ChainSession } from './CHAIN/ChainSession';
 
 export const screenOpts: StackNavigationOptions = {
   headerStyle: {

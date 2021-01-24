@@ -1,42 +1,39 @@
 {
-  "expo": {
-    "name": "SkillSTAR",
-    "slug": "SkillSTAR",
-    "privacy": "unlisted",
-    "version": "1.0.3",
-    "orientation": "portrait",
-    "icon": "./assets/images/app_icon.png",
-    "scheme": "myapp",
-    "userInterfaceStyle": "automatic",
-    "splash": {
-      "image": "./assets/images/logo-bkgrd.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
-    },
-    "updates": {
-      "fallbackToCacheTimeout": 0
-    },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
-    "ios": {
-      "buildNumber": "3",
-      "supportsTablet": true,
-      "bundleIdentifier": "SkillSTAR",
-      "infoPlist": {
-        "UIBackgroundModes": [
-          "fetch",
-          "remote-notification"
-        ]
-      }
-    },
-    "web": {
-      "favicon": "./assets/images/favicon.png"
-    },
-    "description": "",
-    "githubUrl": "https://github.com/sartography/skillstar",
-    "android": {
-      "package": "com.ajlouie.SkillSTAR"
+    "expo": {
+        "name": "SkillSTAR",
+        "slug": "SkillSTAR",
+        "privacy": "unlisted",
+        "version": "1.0.3",
+        "orientation": "portrait",
+        "icon": "./assets/images/app_icon.png",
+        "scheme": "myapp",
+        "userInterfaceStyle": "automatic",
+        "splash": {
+            "image": "./assets/images/logo-bkgrd.png",
+            "resizeMode": "contain",
+            "backgroundColor": "#ffffff"
+        },
+        "updates": {
+            "fallbackToCacheTimeout": 0
+        },
+        "assetBundlePatterns": ["**/*"],
+        "ios": {
+            "buildNumber": "3",
+            "supportsTablet": true,
+            "bundleIdentifier": "SkillSTAR",
+            "infoPlist": {
+                "UIBackgroundModes": ["fetch", "remote-notification"],
+                "ITSAppUsesNonExemptEncryption": "YES",
+                "ITSEncryptionExportComplianceCode": ""
+            }
+        },
+        "web": {
+            "favicon": "./assets/images/favicon.png"
+        },
+        "description": "",
+        "githubUrl": "https://github.com/sartography/skillstar",
+        "android": {
+            "package": "com.ajlouie.SkillSTAR"
+        }
     }
-  }
 }

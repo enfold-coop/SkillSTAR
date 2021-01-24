@@ -1,17 +1,17 @@
-import React, { FC, useEffect, useState } from 'react';
-import { Modal, StyleSheet, View } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { LayoutRectangle, Modal, StyleSheet, View } from 'react-native';
 import { Button } from 'react-native-paper';
-import PlotlyLineGraph from './PlotlyLineGraph';
 import CustomColors from '../../styles/Colors';
+import PlotlyLineGraph from './PlotlyLineGraph';
 
-type Props = {
+interface GraphModalProps {
   visible: boolean;
-  handleVis: Function;
-};
+  handleVis: () => void;
+}
 
-const GraphModal: FC<Props> = props => {
+const GraphModal = (props: GraphModalProps): JSX.Element => {
   const { visible, handleVis } = props;
-  const [graphDimens, setGraphDimens] = useState({});
+  const [graphDimens, setGraphDimens] = useState<LayoutRectangle>();
   const [vis, setVisible] = useState(false);
 
   const handleIsVis = () => {
@@ -30,8 +30,8 @@ const GraphModal: FC<Props> = props => {
   return (
     <Modal
       visible={vis}
-      animationType='slide'
-      presentationStyle='fullScreen'
+      animationType={'slide'}
+      presentationStyle={'fullScreen'}
       // transparent={true}
     >
       <View
@@ -40,19 +40,17 @@ const GraphModal: FC<Props> = props => {
           setGraphDimens(e.nativeEvent.layout);
         }}
       >
-        {graphDimens.height && <PlotlyLineGraph modal={true} dimensions={graphDimens} />}
+        {graphDimens && graphDimens.height && <PlotlyLineGraph modal={true} dimensions={graphDimens} />}
         <Button
           style={styles.closeBtn}
           labelStyle={{ fontSize: 16 }}
           color={CustomColors.uva.graySoft}
-          mode='outlined'
+          mode={'outlined'}
           onPress={() => {
             setVisible(!vis);
             handleIsVis();
           }}
-        >
-          Close
-        </Button>
+        >{`Close`}</Button>
       </View>
     </Modal>
   );

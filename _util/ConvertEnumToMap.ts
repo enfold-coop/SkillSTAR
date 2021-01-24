@@ -3,12 +3,14 @@ export type Enum = { [key: string]: string };
 export interface EnumItemMap {
   key: string;
   value: string;
+  order: number;
 }
 
 export type EnumMap = { [key: string]: EnumItemMap };
 
 /**
- * Returns a more useful object for the given enum.
+ * Returns a more useful object for the given string enum and its corresponding
+ * labels string enum
  *
  * Given 2 enums like this:
  * enum Fruit {
@@ -30,12 +32,13 @@ export type EnumMap = { [key: string]: EnumItemMap };
  *   orange: { key: 'orange', value: 'Orange' },
  * }
  *
- * @param enumObject: The enum to convert
+ * @param keysEnumObject: The string enum to convert
+ * @param labelsEnumObject: The enum labels, which is also a string enum
  */
-export const convertEnumToMap = (keysEnumObject: Enum, labelsEnumObject: Enum) => {
+export const convertEnumToMap = (keysEnumObject: Enum, labelsEnumObject: Enum): EnumMap => {
   const enumMap: EnumMap = {};
-  Object.keys(keysEnumObject).forEach((key: string) => {
-    enumMap[key] = { key, value: labelsEnumObject[key] };
+  Object.keys(keysEnumObject).forEach((key: string, order: number) => {
+    enumMap[key] = { key, value: labelsEnumObject[key], order };
   });
   return enumMap;
 };

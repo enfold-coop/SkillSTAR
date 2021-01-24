@@ -1,22 +1,18 @@
 import date from 'date-and-time';
-import React, { FC, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { LayoutRectangle, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { ActivityIndicator, Card } from 'react-native-paper';
 import { ApiService } from '../../services/ApiService';
 import CustomColors from '../../styles/Colors';
-import {
-  ChainSession,
-  ChainSessionType,
-  ChainSessionTypeMap,
-} from '../../types/CHAIN/ChainSession';
-import { ChainStepPromptLevel } from '../../types/CHAIN/StepAttempt';
+import { ChainSession, ChainSessionType, ChainSessionTypeMap } from '../../types/chain/ChainSession';
+import { ChainStepPromptLevel } from '../../types/chain/StepAttempt';
 import GraphModal from '../DataGraph/GraphModal';
 import { ChainsHomeGraph } from '../DataGraph/index';
 import { ProbeAside, TrainingAside } from './index';
 
-type Props = {
+interface SessionDataAsideProps {
   asideContent: string;
-};
+}
 
 /**
  * NEEDS:
@@ -26,7 +22,7 @@ type Props = {
  * **
  */
 
-const SessionDataAside: FC<Props> = props => {
+const SessionDataAside = (props: SessionDataAsideProps): JSX.Element => {
   const [isTraining, setIsTraining] = useState(false);
   const [graphContainerDimens, setGraphContainerDimens] = useState<LayoutRectangle>();
   const [modalVis, setModalVis] = useState(false);
@@ -80,9 +76,7 @@ const SessionDataAside: FC<Props> = props => {
   };
 
   const dateString =
-    session && session.date && session.date instanceof Date
-      ? date.format(session.date, 'MM/DD/YYYY')
-      : '...';
+    session && session.date && session.date instanceof Date ? date.format(session.date, 'MM/DD/YYYY') : '...';
 
   return session ? (
     <View style={styles.container}>
@@ -91,7 +85,7 @@ const SessionDataAside: FC<Props> = props => {
         <View>
           <Card>
             <View style={styles.sessionNumbAndDateContainer}>
-              <Text style={styles.sessionNum}>Session #{sessionNumber}</Text>
+              <Text style={styles.sessionNum}>{`Session #${sessionNumber}`}</Text>
               <Text style={styles.date}>{dateString}</Text>
             </View>
             <View style={styles.taskInfoContainer}>{setAsideContent()}</View>
@@ -111,7 +105,7 @@ const SessionDataAside: FC<Props> = props => {
                 setModalVis(true);
               }}
             >
-              <Text style={styles.graphText}>View your progress</Text>
+              <Text style={styles.graphText}>{`View your progress`}</Text>
             </TouchableOpacity>
           </Card>
         </View>

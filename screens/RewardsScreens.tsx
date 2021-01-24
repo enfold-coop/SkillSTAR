@@ -1,16 +1,13 @@
-import React, { FC, useState } from 'react';
-import { StyleSheet, Text, View, Image } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import AppHeader from '../components/Header/AppHeader';
+import React from 'react';
+import { Image, StyleSheet, Text, View } from 'react-native';
 import { Button } from 'react-native-paper';
+import AppHeader from '../components/Header/AppHeader';
+import { ImageAssets } from '../data/images';
 import CustomColors from '../styles/Colors';
 
-type Props = {};
-
-const RewardsScreens: FC<Props> = props => {
+const RewardsScreens = (): JSX.Element => {
   const navigation = useNavigation();
-  const star = require('../assets/images/reward_screen/reward-star-01.png');
-  // const awesomeJobText = require("../assets/images/reward_screen/awesome-job-text-v3.png");
   return (
     <View style={styles.container}>
       <AppHeader name={'Congrats!'} />
@@ -19,20 +16,19 @@ const RewardsScreens: FC<Props> = props => {
 				(Give reinforcement and praise.)
 			</Text> */}
       <View style={styles.instructionContainer}>
-        <Text style={styles.congratsMsg}>You brushed your teeth!</Text>
-        <Text style={styles.awesomeText}>Awesome job!</Text>
+        <Text style={styles.congratsMsg}>{`You brushed your teeth!`}</Text>
+        <Text style={styles.awesomeText}>{`Awesome job!`}</Text>
       </View>
       <View style={styles.mainRewardContainer}>
-        <Image style={styles.img} source={star} />
+        <Image style={styles.img} source={ImageAssets.reward_star} />
         {/* <Image style={styles.awesomeText} source={star} /> */}
       </View>
       <Button
-        mode='contained'
+        mode={'contained'}
+        labelStyle={{ fontSize: 28, paddingVertical: 5 }}
         style={styles.submitBtn}
         onPress={() => navigation.navigate('DataVerificationScreen')}
-      >
-        <Text style={{ color: CustomColors.uva.blue }}>Next</Text>
-      </Button>
+      >{`Back Home`}</Button>
     </View>
   );
 };
@@ -78,8 +74,8 @@ const styles = StyleSheet.create({
     color: CustomColors.uva.blue,
   },
   img: {
-    height: '100%',
-    width: '100%',
+    height: '90%',
+    width: '90%',
     alignSelf: 'center',
     resizeMode: 'contain',
     margin: 10,
@@ -95,7 +91,7 @@ const styles = StyleSheet.create({
     color: CustomColors.uva.blue,
   },
   submitBtn: {
-    marginTop: 20,
+    // marginTop: 20,
     backgroundColor: CustomColors.uva.orange,
     width: 300,
     alignSelf: 'flex-end',

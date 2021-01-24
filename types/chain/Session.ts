@@ -9,7 +9,7 @@ export class Session {
     this.data = [];
   }
 
-  addStepData(step: StepAttempt) {
+  addStepData(step: StepAttempt): void {
     this.data.push(step);
   }
 }

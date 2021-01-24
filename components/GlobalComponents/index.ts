@@ -1,2 +1,2 @@
-export { default as OnSubmitModal } from "./OnSubmitModal";
-export { default as ToggleButtons } from "./ToggleButtons";
+export { default as OnSubmitModal } from './OnSubmitModal';
+export { default as ToggleButtons } from './ToggleButtons';

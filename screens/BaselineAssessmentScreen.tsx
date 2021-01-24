@@ -1,75 +1,55 @@
 import { useNavigation } from '@react-navigation/native';
-import React, { FC, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { Button } from 'react-native-paper';
 import AppHeader from '../components/Header/AppHeader';
 import { Loading } from '../components/Loading/Loading';
 import DataVerificationList from '../components/Probe/DataVerificationList';
 import { ApiService } from '../services/ApiService';
+import { ChainMastery } from '../services/ChainMastery';
 import CustomColors from '../styles/Colors';
-import { ChainSession, ChainSessionType, ChainSessionTypeMap } from '../types/CHAIN/ChainSession';
-import { ChainStep } from '../types/CHAIN/ChainStep';
-import { ChainData } from '../types/CHAIN/SkillstarChain';
-import { ChainStepStatus, StepAttempt, StepAttemptField } from '../types/CHAIN/StepAttempt';
+import { ChainSession, ChainSessionType, ChainSessionTypeMap } from '../types/chain/ChainSession';
+import { ChainStep } from '../types/chain/ChainStep';
+import { ChainData } from '../types/chain/ChainData';
+import { ChainStepStatus, StepAttempt, StepAttemptField } from '../types/chain/StepAttempt';
 import { DataVerificationControlCallback } from '../types/DataVerificationControlCallback';
 
-console.log('\n=== BaselineAssessmentScreen.tsx ===\n');
-
-type Props = {};
-
-/**
- *
- */
-const BaselineAssessmentScreen: FC<Props> = props => {
+const BaselineAssessmentScreen = (): JSX.Element => {
   /**
    * Set session type: Probe or Training
    */
   const navigation = useNavigation();
   const [sessionReady, setSessionReady] = useState(false);
+  const [chainData, setChainData] = useState<ChainData>();
+  const [chainMastery, setChainMastery] = useState<ChainMastery>();
   const [chainSession, setChainSession] = useState<ChainSession>();
   const [chainSteps, setChainSteps] = useState<ChainStep[]>();
-  const [chainData, setChainData] = useState<ChainData>();
 
   /** START: Lifecycle calls */
   useEffect(() => {
     let isCancelled = false;
 
     const _load = async () => {
-      console.log('BaselineAssessmentScreen > useEffect 1 > _load');
       const contextChainData = await ApiService.contextState('chainData');
       if (!isCancelled && !chainData && contextChainData) {
-        console.log('BaselineAssessmentScreen.tsx > useEffect > _load > Setting chainData.');
         const newChainData = new ChainData(contextChainData);
         setChainData(newChainData);
       }
 
       const contextChainSteps = await ApiService.contextState('chainSteps');
       if (!isCancelled && !chainSteps && contextChainSteps) {
-        console.log('BaselineAssessmentScreen.tsx > useEffect > _load > Setting chainSteps.');
         setChainSteps(contextChainSteps as ChainStep[]);
       }
 
       if (!isCancelled && chainSteps && chainData) {
-        console.log('BaselineAssessmentScreen > useEffect 1 > _load > Setting session...');
-        const stepAttempts: StepAttempt[] = chainSteps.map(chainStep => {
-          return {
-            chain_step_id: chainStep.id,
-            chain_step: chainStep,
-            status: ChainStepStatus.not_complete,
-            completed: false,
-          };
-        });
-
-        const newChainSession: ChainSession = {
-          date: new Date(),
-          completed: false,
-          session_type: ChainSessionType.probe,
-          step_attempts: stepAttempts,
-        };
-
         if (!isCancelled && !chainSession) {
-          setChainSession(newChainSession);
-          setSessionReady(true);
+          const newChainMastery = new ChainMastery(chainSteps, chainData);
+
+          if (newChainMastery && newChainMastery.draftSession && !isCancelled) {
+            setChainMastery(newChainMastery);
+            setChainSession(newChainMastery.draftSession);
+            setSessionReady(true);
+          }
         }
       }
     };
@@ -81,34 +61,33 @@ const BaselineAssessmentScreen: FC<Props> = props => {
     return () => {
       isCancelled = true;
     };
-  });
+  }, []);
   /** END: Lifecycle calls */
 
   const updateChainData: DataVerificationControlCallback = async (
     chainStepId: number,
     fieldName: string,
     fieldValue: StepAttemptField,
-  ) => {
+  ): Promise<void> => {
     if (chainData && chainSession && chainSession.id !== undefined) {
       //  Get the step
-      const newStep: StepAttempt = chainData.getStep(chainSession.id, chainStepId);
+      const newStep: StepAttempt | undefined = chainData.getStep(chainSession.id, chainStepId);
 
-      // Modify the value
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore-next-line
-      newStep[fieldName] = fieldValue;
+      if (newStep !== undefined && newStep.hasOwnProperty && newStep.hasOwnProperty(fieldName)) {
+        // Modify the value
+        // @ts-ignore-next-line
+        newStep[fieldName] = fieldValue;
 
-      //  Set the value of the fieldName for a specific step
-      if (chainData && chainData.id !== undefined) {
-        chainData.updateStep(chainSession.id, chainStepId, newStep);
+        //  Set the value of the fieldName for a specific step
+        if (chainData && chainData.id !== undefined) {
+          chainData.updateStep(chainSession.id, chainStepId, newStep);
+        }
       }
     }
   };
 
-  const setSessionData = async () => {
-    console.log('*** setSessionData ***');
+  const updateSession = async (): Promise<void> => {
     if (chainData && chainSession) {
-      console.log('chainData.id', chainData.id);
       if (!chainData.sessions) {
         chainData.sessions = [];
       }
@@ -127,16 +106,14 @@ const BaselineAssessmentScreen: FC<Props> = props => {
   return (
     <View style={styles.image}>
       <View style={styles.container}>
-        <AppHeader name='Brushing Teeth' />
+        <AppHeader name={'Brushing Teeth'} />
         {sessionReady && chainSession ? (
           <View style={styles.instructionContainer}>
             <Text style={styles.screenHeader}>
-              {(ChainSessionTypeMap[chainSession.session_type as string].value ||
-                'Baseline Assessment') + ' Session'}
+              {(ChainSessionTypeMap[chainSession.session_type as string].value || 'Baseline Assessment') + ' Session'}
             </Text>
             <Text style={styles.instruction}>
-              Please instruct the child to brush their teeth. As they do, please complete this
-              survey for each step.
+              {`Please instruct the child to brush their teeth. As they do, please complete this survey for each step.`}
             </Text>
           </View>
         ) : (
@@ -156,17 +133,15 @@ const BaselineAssessmentScreen: FC<Props> = props => {
             style={styles.nextButton}
             color={CustomColors.uva.orange}
             labelStyle={{
-              fontSize: 16,
+              fontSize: 24,
               fontWeight: '600',
-              color: CustomColors.uva.blue,
+              color: CustomColors.uva.white,
             }}
-            mode='contained'
+            mode={'contained'}
             onPress={() => {
-              setSessionData();
+              updateSession();
             }}
-          >
-            NEXT
-          </Button>
+          >{`NEXT`}</Button>
         </View>
       </View>
     </View>

@@ -1,16 +1,16 @@
-import React, { FC } from 'react';
+import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import CustomColors from '../../styles/Colors';
-import { StepAttempt } from '../../types/CHAIN/StepAttempt';
+import { StepAttempt } from '../../types/chain/StepAttempt';
 import { DataVerificationControlCallback } from '../../types/DataVerificationControlCallback';
 import ListItemSwitch from './ListItemSwitch';
 
-type Props = {
+interface DataVerificationListItemProps {
   stepAttempt: StepAttempt;
   onChange: DataVerificationControlCallback;
-};
+}
 
-export const DataVerificationListItem: FC<Props> = props => {
+export const DataVerificationListItem = (props: DataVerificationListItemProps): JSX.Element => {
   const { stepAttempt, onChange } = props;
   const QUESTION_TYPES = {
     completion: 0,
@@ -21,20 +21,15 @@ export const DataVerificationListItem: FC<Props> = props => {
    */
 
   const stepId = stepAttempt.chain_step_id !== undefined ? stepAttempt.chain_step_id : -1;
-  const instruction = props.stepAttempt.chain_step
-    ? props.stepAttempt.chain_step.instruction
-    : 'LOADING';
+  const instruction = props.stepAttempt.chain_step ? props.stepAttempt.chain_step.instruction : 'LOADING';
 
   return (
     <View style={styles.container}>
-      <Text style={styles.stepTitle}>
-        Step #{stepId + 1}: "{instruction}"
-      </Text>
+      <Text style={styles.stepTitle}>{`Step #${stepId + 1}: "${instruction}"`}</Text>
       <View style={styles.questionContainer}>
-        <Text style={styles.question}>Was the task Completed?</Text>
+        <Text style={styles.question}>{`Was the task Completed?`}</Text>
         <ListItemSwitch
           name={'complete'}
-          instruction={instruction}
           type={QUESTION_TYPES.completion}
           defaultValue={true}
           id={stepId}
@@ -42,10 +37,9 @@ export const DataVerificationListItem: FC<Props> = props => {
         />
       </View>
       <View style={styles.questionContainer}>
-        <Text style={styles.question}>Challenging Behavior?</Text>
+        <Text style={styles.question}>{`Challenging Behavior?`}</Text>
         <ListItemSwitch
           name={'had_challenging_behavior'}
-          instruction={instruction}
           type={QUESTION_TYPES.challBehav}
           defaultValue={false}
           id={stepId}

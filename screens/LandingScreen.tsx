@@ -1,15 +1,14 @@
 import { DEFAULT_USER_EMAIL, DEFAULT_USER_PASSWORD } from '@env';
-import React, { useEffect, useState, FC } from 'react';
+import { useNavigation } from '@react-navigation/native';
+import React, { useEffect, useState } from 'react';
 import { Image, ImageBackground, StyleSheet, View } from 'react-native';
 import * as Animatable from 'react-native-animatable';
 import { Button, Text, TextInput } from 'react-native-paper';
-import { useNavigation } from '@react-navigation/native';
+import { ImageAssets } from '../data/images';
 import { ApiService } from '../services/ApiService';
 import CustomColors from '../styles/Colors';
 
-type Props = {};
-
-const LandingScreen: FC<Props> = props => {
+const LandingScreen = (): JSX.Element => {
   const navigation = useNavigation();
   const [email, setEmail] = useState(DEFAULT_USER_EMAIL);
   const [password, setPassword] = useState(DEFAULT_USER_PASSWORD);
@@ -75,6 +74,7 @@ const LandingScreen: FC<Props> = props => {
   };
 
   const _handleLogin = async () => {
+    console.log('*** _handleLogin ***');
     setErrorMessage('');
 
     try {
@@ -84,39 +84,33 @@ const LandingScreen: FC<Props> = props => {
         navigation.navigate('ChainsHomeScreen');
       }
     } catch (e) {
-      setErrorMessage(
-        'Invalid username or password. Please check your login information and try again.',
-      );
+      setErrorMessage('Invalid username or password. Please check your login information and try again.');
       console.error(e);
     }
   };
 
   return (
-    <ImageBackground
-      source={require('../assets/images/sunrise-muted.jpg')}
-      resizeMode={'cover'}
-      style={styles.image}
-    >
+    <ImageBackground source={ImageAssets.sunrise_muted} resizeMode={'cover'} style={styles.image}>
       <View style={styles.container}>
-        <Animatable.View animation='zoomIn'>
-          <Image style={styles.logo} source={require('../assets/images/logo.png')} />
+        <Animatable.View animation={'zoomIn'}>
+          <Image style={styles.logo} source={ImageAssets.logo} />
         </Animatable.View>
         <TextInput
-          textContentType='emailAddress'
-          autoCompleteType='username'
-          label='Email'
-          mode='outlined'
+          textContentType={'emailAddress'}
+          autoCompleteType={'username'}
+          label={'Email'}
+          mode={'outlined'}
           value={email}
           style={styles.input}
           onChangeText={text => _checkEmail(text)}
           autoFocus={true}
         />
         <TextInput
-          textContentType='password'
-          autoCompleteType='password'
+          textContentType={'password'}
+          autoCompleteType={'password'}
           secureTextEntry={true}
-          label='Password'
-          mode='outlined'
+          label={'Password'}
+          mode={'outlined'}
           value={password}
           style={styles.input}
           onChangeText={text => _checkPassword(text)}
@@ -132,13 +126,13 @@ const LandingScreen: FC<Props> = props => {
         <Button
           style={styles.button}
           color={CustomColors.uva.blue}
-          mode='contained'
+          mode={'contained'}
           disabled={!isValid}
           onPress={() => {
             _handleLogin();
           }}
         >
-          <Text style={styles.btnText}>Log In</Text>
+          <Text style={styles.btnText}>{`Log In`}</Text>
         </Button>
       </View>
     </ImageBackground>

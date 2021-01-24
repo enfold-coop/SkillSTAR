@@ -1,4 +1,3 @@
-
 node_modules/**/*
 .expo/*
 .expo-shared/*
@@ -436,7 +435,6 @@ project.xcworkspace
 web-build/
 xcuserdata
 yarn-error.log
-__snapshots__
 __tests__
 components/__tests__
 /components/__tests__/

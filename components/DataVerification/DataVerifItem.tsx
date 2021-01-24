@@ -1,10 +1,9 @@
 import React, { FC, useEffect, useState } from 'react';
 import { Image, ImageRequireSource, StyleSheet, Text, View } from 'react-native';
-import { ActivityIndicator } from 'react-native-paper';
 import CustomColors from '../../styles/Colors';
 import { MasteryIcon } from '../../styles/MasteryIcon';
-import { ChainStep } from '../../types/CHAIN/ChainStep';
-import { ChainStepPromptLevel, StepAttempt } from '../../types/CHAIN/StepAttempt';
+import { ChainStep } from '../../types/chain/ChainStep';
+import { ChainStepPromptLevel, StepAttempt } from '../../types/chain/StepAttempt';
 import { DataVerificationControlCallback } from '../../types/DataVerificationControlCallback';
 import BehavAccordion from './BehavAccordion';
 import BehavDataVerifSwitch from './BehavDataVerifSwitch';
@@ -22,16 +21,15 @@ const getPromptIcon = (level: string): ImageRequireSource => {
   return icons[level];
 };
 
-type Props = {
+interface DataVerifItemProps {
   stepAttempt: StepAttempt;
   chainSteps: ChainStep[];
-};
+}
 
-const DataVerifItem: FC<Props> = props => {
+const DataVerifItem: FC<DataVerifItemProps> = (props: DataVerifItemProps): JSX.Element => {
   const { stepAttempt, chainSteps } = props;
   const [promptSwitch, setPromptSwitch] = useState(false);
   const [behavSwitch, setBehavSwitch] = useState(false);
-  const [icon, setIcon] = useState();
   const [promptIcon, setPromptIcon] = useState<ImageRequireSource>();
 
   /** Lifecycle calls */
@@ -55,18 +53,10 @@ const DataVerifItem: FC<Props> = props => {
   }, [stepAttempt]);
   /** END: Lifecycle calls */
 
-  const handlePromptSwitch: DataVerificationControlCallback = async (
-    chainStepId,
-    fieldName,
-    fieldValue,
-  ) => {
+  const handlePromptSwitch: DataVerificationControlCallback = async (chainStepId, fieldName, fieldValue) => {
     setPromptSwitch(!promptSwitch);
   };
-  const handleBehavSwitch: DataVerificationControlCallback = async (
-    chainStepId,
-    fieldName,
-    fieldValue,
-  ) => {
+  const handleBehavSwitch: DataVerificationControlCallback = async (chainStepId, fieldName, fieldValue) => {
     setBehavSwitch(!behavSwitch);
   };
 
@@ -77,9 +67,9 @@ const DataVerifItem: FC<Props> = props => {
     stepAttempt.chain_step_id !== undefined ? (
     <View style={styles.container}>
       <View style={styles.defaultFormContainer}>
-        <MasteryIcon chainStepStatus={stepAttempt.status} />
-        <Text style={styles.stepTitle}>"{stepAttempt.chain_step.instruction}"</Text>
-        <Image style={styles.promptLevelImage} source={promptIcon} resizeMode='contain' />
+        <MasteryIcon chainStepStatus={stepAttempt.status} iconSize={40} />
+        <Text style={styles.stepTitle}>{`"${stepAttempt.chain_step.instruction}"`}</Text>
+        <Image style={styles.promptLevelImage} source={promptIcon} resizeMode={'contain'} />
         <View style={styles.switchContainer}>
           <View style={styles.questionContainer}>
             <PromptDataVerifSwitch
@@ -103,7 +93,7 @@ const DataVerifItem: FC<Props> = props => {
       </View>
     </View>
   ) : (
-    <Text>...</Text>
+    <Text>{`...`}</Text>
   );
 };
 

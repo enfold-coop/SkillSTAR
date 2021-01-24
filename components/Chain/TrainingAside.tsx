@@ -1,30 +1,30 @@
-import React, { FC } from 'react';
+import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-import { ChainSessionType } from '../../types/CHAIN/ChainSession';
-import { ChainStepPromptLevel, StepAttempt } from '../../types/CHAIN/StepAttempt';
+import { ChainSessionType } from '../../types/chain/ChainSession';
+import { ChainStepPromptLevel, StepAttempt } from '../../types/chain/StepAttempt';
 
-type Props = {
+interface TrainingAsideProps {
   sessionType?: ChainSessionType;
   stepAttempt?: StepAttempt;
   promptLevel?: ChainStepPromptLevel;
-};
+}
 
-const TrainingAside: FC<Props> = props => {
+const TrainingAside = (props: TrainingAsideProps): JSX.Element => {
   const { sessionType, stepAttempt, promptLevel } = props;
 
   return sessionType && stepAttempt && promptLevel ? (
     <View style={styles.container}>
-      <Text style={styles.headerText}>{sessionType} Session</Text>
+      <Text style={styles.headerText}>{`${sessionType} Session`}</Text>
       <Text style={styles.instructionText}>
-        Focus Step: {stepAttempt.chain_step ? stepAttempt.chain_step.instruction : '...'}
+        {`Focus Step: ${stepAttempt.chain_step ? stepAttempt.chain_step.instruction : '...'}`}
       </Text>
-      <Text style={styles.instructionText}>Prompt Level {promptLevel}</Text>
+      <Text style={styles.instructionText}>{`Prompt Level ${promptLevel}`}</Text>
     </View>
   ) : (
     <View>
-      <Text>sessionType: {!!sessionType ? 'Done' : 'Loading...'}</Text>
-      <Text>stepAttempt: {!!stepAttempt ? 'Done' : 'Loading...'}</Text>
-      <Text>promptLevel: {!!promptLevel ? 'Done' : 'Loading...'}</Text>
+      <Text>{`sessionType: ${sessionType ? 'Done' : 'Loading...'}`}</Text>
+      <Text>{`stepAttempt: ${stepAttempt ? 'Done' : 'Loading...'}`}</Text>
+      <Text>{`promptLevel: ${promptLevel ? 'Done' : 'Loading...'}`}</Text>
     </View>
   );
 };
