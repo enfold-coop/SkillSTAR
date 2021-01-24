@@ -7,7 +7,7 @@
         "web": "expo start --web",
         "eject": "expo eject",
         "test": "jest --coverage",
-        "test:pre-commit": "jest --coverage --updateSnapshot",
+        "test:pre-commit": "CI=true jest --coverage --updateSnapshot",
         "prettier-watch": "onchange \"**/*\" -- prettier --write --ignore-unknown {{changed}}",
         "test:debug": "node --inspect-brk node_modules/jest/bin/jest.js --runInBand",
         "lint": "eslint . --ext .ts,.tsx,.js,.jsx,.json",
