@@ -80,9 +80,7 @@ const PrepareMaterialsScreen = (): JSX.Element => {
                 navigation.navigate('BaselineAssessmentScreen');
               }
             }}
-          >
-            Next
-          </Button>
+          >{`Next`}</Button>
         </Animatable.View>
       </View>
     </ImageBackground>

@@ -27,7 +27,7 @@ export const DataVerificationListItem = (props: DataVerificationListItemProps): 
     <View style={styles.container}>
       <Text style={styles.stepTitle}>{`Step #${stepId + 1}: "${instruction}"`}</Text>
       <View style={styles.questionContainer}>
-        <Text style={styles.question}>Was the task Completed?</Text>
+        <Text style={styles.question}>{`Was the task Completed?`}</Text>
         <ListItemSwitch
           name={'complete'}
           type={QUESTION_TYPES.completion}
@@ -37,7 +37,7 @@ export const DataVerificationListItem = (props: DataVerificationListItemProps): 
         />
       </View>
       <View style={styles.questionContainer}>
-        <Text style={styles.question}>Challenging Behavior?</Text>
+        <Text style={styles.question}>{`Challenging Behavior?`}</Text>
         <ListItemSwitch
           name={'had_challenging_behavior'}
           type={QUESTION_TYPES.challBehav}

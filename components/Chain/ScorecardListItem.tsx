@@ -51,7 +51,7 @@ const ScorecardListItem = (props: ScorecardListItemProps): JSX.Element => {
             setIsPressed(!isPressed);
           }}
         >
-          <Text style={styles.id}>{chainStep.id + 1}. </Text>
+          <Text style={styles.id}>{`${chainStep.id + 1}.`}</Text>
           <Text style={styles.skill}>{chainStep.instruction}</Text>
           <MasteryIcon chainStepStatus={stepAttempt.status} iconSize={40} />
           <MaterialIcons
@@ -87,7 +87,7 @@ const ScorecardListItem = (props: ScorecardListItemProps): JSX.Element => {
     <Animatable.View animation={'fadeIn'} duration={1000}>
       <Card style={styles.container}>
         <View style={styles.dropDownContainer}>
-          <Text style={styles.dropDownLabel}>...</Text>
+          <Text style={styles.dropDownLabel}>{`...`}</Text>
         </View>
       </Card>
     </Animatable.View>

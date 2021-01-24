@@ -94,14 +94,12 @@ const DataVerificationScreen = (): JSX.Element => {
     <View style={styles.container}>
       <AppHeader name={'Brushing Teeth'} />
       <View style={styles.instructionContainer}>
-        <Text style={[scrolling ? styles.smallHeader : styles.screenHeader]}>Probe Session</Text>
+        <Text style={[scrolling ? styles.smallHeader : styles.screenHeader]}>{`Probe Session`}</Text>
         <Animatable.Text
           transition={'fontSize'}
           duration={1000}
           style={[scrolling ? styles.smallInstruction : styles.instruction]}
-        >
-          Please instruct the child to brush their teeth. As they do, please complete this survey for each step.
-        </Animatable.Text>
+        >{`Please instruct the child to brush their teeth. As they do, please complete this survey for each step.`}</Animatable.Text>
       </View>
       <View style={styles.formContainer}>
         <ColumnLabels />
@@ -126,7 +124,7 @@ const DataVerificationScreen = (): JSX.Element => {
 
       {readyToSubmit && (
         <View style={styles.btnContainer}>
-          <Text style={styles.btnContainerText}>Please confirm your selections, then press Submit.</Text>
+          <Text style={styles.btnContainerText}>{`Please confirm your selections, then press Submit.`}</Text>
           <Button
             mode={'contained'}
             color={CustomColors.uva.orange}

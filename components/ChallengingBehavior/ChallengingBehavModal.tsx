@@ -36,38 +36,24 @@ const ChallengingBehavModal = (props: ChallengingBehavModalProps): JSX.Element =
                 props.toggleModal();
               }}
             >
-              <Text>EXIT</Text>
+              <Text>{`EXIT`}</Text>
             </TouchableOpacity>
-            <Text style={styles.headline}>Step {props.attempt.chain_step_id || 0 + 1} Challenging Behavior</Text>
+            <Text style={styles.headline}>{`Step ${props.attempt.chain_step_id || 0 + 1} Challenging Behavior`}</Text>
             <Text style={styles.textInputPrompt} />
             <TextInput label={'Challenging behavior'} mode={'outlined'} style={styles.textInput} />
           </View>
           <View style={styles.questionContainer}>
-            <Text style={styles.questionText}>
-              Some Text for a question?
-              {props.stepComplete}
-            </Text>
+            <Text style={styles.questionText}>{`Some Text for a question? ${props.stepComplete}`}</Text>
             <View style={styles.buttonContainer}>
-              <Button style={styles.button} mode={'contained'}>
-                Yes
-              </Button>
-              <Button style={styles.button} mode={'contained'}>
-                No
-              </Button>
+              <Button style={styles.button} mode={'contained'}>{`Yes`}</Button>
+              <Button style={styles.button} mode={'contained'}>{`No`}</Button>
             </View>
           </View>
           <View style={styles.questionContainer}>
-            <Text style={styles.questionText}>
-              Some Text for a question?
-              {props.stepComplete}
-            </Text>
+            <Text style={styles.questionText}>{`Some Text for a question? ${props.stepComplete}`}</Text>
             <View style={styles.buttonContainer}>
-              <Button style={styles.button} mode={'contained'}>
-                Yes
-              </Button>
-              <Button style={styles.button} mode={'contained'}>
-                No
-              </Button>
+              <Button style={styles.button} mode={'contained'}>{`Yes`}</Button>
+              <Button style={styles.button} mode={'contained'}>{`No`}</Button>
             </View>
           </View>
           <Button
@@ -76,9 +62,7 @@ const ChallengingBehavModal = (props: ChallengingBehavModalProps): JSX.Element =
             onPress={() => {
               console.log('submit');
             }}
-          >
-            Enter
-          </Button>
+          >{`Enter`}</Button>
         </View>
       </View>
     </Modal>

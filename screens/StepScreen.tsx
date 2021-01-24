@@ -163,9 +163,8 @@ const StepScreen = (): JSX.Element => {
         {chainData && session && chainSteps && stepIndex !== undefined ? (
           <View style={styles.progress}>
             <Text style={styles.headline}>
-              Step {chainSteps[stepIndex].id + 1}: {chainSteps[stepIndex].instruction}
+              {`Step ${chainSteps[stepIndex].id + 1}: ${chainSteps[stepIndex].instruction}`}
             </Text>
-
             <View style={styles.progressContainer}>
               <MasteryIconContainer masteryLevel={'focus_step'} />
               <ProgressBar
@@ -210,9 +209,7 @@ const StepScreen = (): JSX.Element => {
             onPress={() => {
               decrIndex();
             }}
-          >
-            Previous Step
-          </Button>
+          >{`Previous Step`}</Button>
           <View style={styles.nextBackSubContainer}>
             <Text style={styles.needAddlPrompt}>{`Needed Add'l Prompting`}</Text>
             <Button
@@ -223,9 +220,7 @@ const StepScreen = (): JSX.Element => {
               onPress={() => {
                 console.log('NEEDING PROMPTING');
               }}
-            >
-              +
-            </Button>
+            >{`+`}</Button>
             <Button
               style={styles.nextButton}
               labelStyle={{ fontSize: 24, paddingVertical: 5 }}
@@ -238,9 +233,7 @@ const StepScreen = (): JSX.Element => {
                   navigation.navigate('RewardsScreens');
                 }
               }}
-            >
-              Step Complete
-            </Button>
+            >{`Step Complete`}</Button>
           </View>
         </View>
       </View>

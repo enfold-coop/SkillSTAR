@@ -16,8 +16,8 @@ const RewardsScreens = (): JSX.Element => {
 				(Give reinforcement and praise.)
 			</Text> */}
       <View style={styles.instructionContainer}>
-        <Text style={styles.congratsMsg}>You brushed your teeth!</Text>
-        <Text style={styles.awesomeText}>Awesome job!</Text>
+        <Text style={styles.congratsMsg}>{`You brushed your teeth!`}</Text>
+        <Text style={styles.awesomeText}>{`Awesome job!`}</Text>
       </View>
       <View style={styles.mainRewardContainer}>
         <Image style={styles.img} source={ImageAssets.reward_star} />
@@ -28,9 +28,7 @@ const RewardsScreens = (): JSX.Element => {
         labelStyle={{ fontSize: 28, paddingVertical: 5 }}
         style={styles.submitBtn}
         onPress={() => navigation.navigate('DataVerificationScreen')}
-      >
-        Back Home
-      </Button>
+      >{`Back Home`}</Button>
     </View>
   );
 };

@@ -48,9 +48,7 @@ const OnSubmitModal = (props: OnSubmitModalProps): JSX.Element => {
                 handleVerification(false);
                 setIsActive(false);
               }}
-            >
-              No
-            </Button>
+            >{`No`}</Button>
             <Button
               style={styles.submitBtn}
               mode={'contained'}
@@ -58,9 +56,7 @@ const OnSubmitModal = (props: OnSubmitModalProps): JSX.Element => {
                 handleVerification(true);
                 console.log('submit');
               }}
-            >
-              Yes
-            </Button>
+            >{`Yes`}</Button>
           </View>
         </View>
       </View>

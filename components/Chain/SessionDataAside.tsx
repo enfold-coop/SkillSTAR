@@ -85,7 +85,7 @@ const SessionDataAside = (props: SessionDataAsideProps): JSX.Element => {
         <View>
           <Card>
             <View style={styles.sessionNumbAndDateContainer}>
-              <Text style={styles.sessionNum}>Session #{sessionNumber}</Text>
+              <Text style={styles.sessionNum}>{`Session #${sessionNumber}`}</Text>
               <Text style={styles.date}>{dateString}</Text>
             </View>
             <View style={styles.taskInfoContainer}>{setAsideContent()}</View>
@@ -105,7 +105,7 @@ const SessionDataAside = (props: SessionDataAsideProps): JSX.Element => {
                 setModalVis(true);
               }}
             >
-              <Text style={styles.graphText}>View your progress</Text>
+              <Text style={styles.graphText}>{`View your progress`}</Text>
             </TouchableOpacity>
           </Card>
         </View>

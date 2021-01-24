@@ -173,7 +173,7 @@ export const SelectParticipant = (props: SelectParticipantProps): ReactElement =
   const key = `select_participant_menu_${menuItems && menuItems.length > 0 ? menuItems.length : 0}`;
 
   const renderLoading = () => {
-    return <Text style={{ marginRight: 100 }}>Loading...</Text>;
+    return <Text style={{ marginRight: 100 }}>{`Loading...`}</Text>;
   };
 
   const renderMenu = () => {

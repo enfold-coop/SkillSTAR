@@ -66,9 +66,7 @@ export default function App(): JSX.Element | null {
             props.navigation.navigate('LandingScreen');
           });
         }}
-      >
-        Logout
-      </Button>
+      >{`Logout`}</Button>
     );
   };
 

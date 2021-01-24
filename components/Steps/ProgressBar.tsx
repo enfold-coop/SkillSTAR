@@ -45,9 +45,7 @@ const ProgressBar = (props: ProgressBarProps): JSX.Element => {
   return (
     <View style={styles.container}>
       <ProgBar style={styles.progressBar} progress={progPercent} color={barColor} />
-      <Text style={styles.progressText}>
-        Step {currentStepIndex + 1} out of {chainSteps.length}
-      </Text>
+      <Text style={styles.progressText}>{`Step ${currentStepIndex + 1} out of ${chainSteps.length}`}</Text>
     </View>
   );
 };

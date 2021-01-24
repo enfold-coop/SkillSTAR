@@ -113,7 +113,7 @@ const BaselineAssessmentScreen = (): JSX.Element => {
               {(ChainSessionTypeMap[chainSession.session_type as string].value || 'Baseline Assessment') + ' Session'}
             </Text>
             <Text style={styles.instruction}>
-              Please instruct the child to brush their teeth. As they do, please complete this survey for each step.
+              {`Please instruct the child to brush their teeth. As they do, please complete this survey for each step.`}
             </Text>
           </View>
         ) : (
@@ -141,9 +141,7 @@ const BaselineAssessmentScreen = (): JSX.Element => {
             onPress={() => {
               updateSession();
             }}
-          >
-            NEXT
-          </Button>
+          >{`NEXT`}</Button>
         </View>
       </View>
     </View>

@@ -22,7 +22,11 @@
     "no-console": 0,
     "no-extra-boolean-cast": "off",
     "no-prototype-builtins": "off",
-    "prettier/prettier": 2
+    "prettier/prettier": 2,
+    "react/jsx-curly-brace-presence": [
+      "error",
+      { "props": "always", "children": "always" }
+    ]
   },
   "settings": {
     "react": {

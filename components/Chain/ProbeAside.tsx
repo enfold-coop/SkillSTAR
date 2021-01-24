@@ -4,7 +4,7 @@ import { StyleSheet, Text, View } from 'react-native';
 const ProbeAside = (): JSX.Element => {
   return (
     <View style={styles.container}>
-      <Text style={styles.headerText}>Probe Session</Text>
+      <Text style={styles.headerText}>{`Probe Session`}</Text>
       <Text style={styles.instructionText}>
         {`Start the probe with a simple instruction, “It’s time to brush your teeth.”`}
       </Text>

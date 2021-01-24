@@ -6,7 +6,7 @@ const NoQuestionnaireScreen = (): JSX.Element => {
   return (
     <View style={styles.container}>
       <AppHeader name={'No SkillSTAR data found for participant'} />
-      <Text>Please visit STAR DRIVE to fill out the profile for the selected participant.</Text>
+      <Text>{`Please visit STAR DRIVE to fill out the profile for the selected participant.`}</Text>
     </View>
   );
 };

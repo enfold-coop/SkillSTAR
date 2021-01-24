@@ -5,11 +5,11 @@ import CustomColors from '../../styles/Colors';
 const ColumnLabels = (): JSX.Element => {
   return (
     <View style={styles.container}>
-      <Text style={[styles.mastery, styles.text]}>Mastery</Text>
-      <Text style={[styles.step, styles.text]}>Step</Text>
-      <Text style={[styles.promptLevel, styles.text]}>Prompt</Text>
-      <Text style={[styles.completed, styles.text]}>Task Completed?</Text>
-      <Text style={[styles.challBehav, styles.text]}>Challenging Behavior?</Text>
+      <Text style={[styles.mastery, styles.text]}>{`Mastery`}</Text>
+      <Text style={[styles.step, styles.text]}>{`Step`}</Text>
+      <Text style={[styles.promptLevel, styles.text]}>{`Prompt`}</Text>
+      <Text style={[styles.completed, styles.text]}>{`Task Completed?`}</Text>
+      <Text style={[styles.challBehav, styles.text]}>{`Challenging Behavior?`}</Text>
     </View>
   );
 };

@@ -14,17 +14,17 @@ const TrainingAside = (props: TrainingAsideProps): JSX.Element => {
 
   return sessionType && stepAttempt && promptLevel ? (
     <View style={styles.container}>
-      <Text style={styles.headerText}>{sessionType} Session</Text>
+      <Text style={styles.headerText}>{`${sessionType} Session`}</Text>
       <Text style={styles.instructionText}>
-        Focus Step: {stepAttempt.chain_step ? stepAttempt.chain_step.instruction : '...'}
+        {`Focus Step: ${stepAttempt.chain_step ? stepAttempt.chain_step.instruction : '...'}`}
       </Text>
-      <Text style={styles.instructionText}>Prompt Level {promptLevel}</Text>
+      <Text style={styles.instructionText}>{`Prompt Level ${promptLevel}`}</Text>
     </View>
   ) : (
     <View>
-      <Text>sessionType: {sessionType ? 'Done' : 'Loading...'}</Text>
-      <Text>stepAttempt: {stepAttempt ? 'Done' : 'Loading...'}</Text>
-      <Text>promptLevel: {promptLevel ? 'Done' : 'Loading...'}</Text>
+      <Text>{`sessionType: ${sessionType ? 'Done' : 'Loading...'}`}</Text>
+      <Text>{`stepAttempt: ${stepAttempt ? 'Done' : 'Loading...'}`}</Text>
+      <Text>{`promptLevel: ${promptLevel ? 'Done' : 'Loading...'}`}</Text>
     </View>
   );
 };

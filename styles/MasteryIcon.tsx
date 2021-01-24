@@ -51,7 +51,7 @@ export function MasteryIcon(props: MasteryIconProps): JSX.Element {
       <SkillStarIcons name={iconMap.icon} size={size} style={styles.icon} color={iconMap.color} />
     </View>
   ) : (
-    <Text>Icon Error</Text>
+    <Text>{`Icon Error`}</Text>
   );
 }
 

@@ -123,9 +123,7 @@ const ProbeScreen = (): JSX.Element => {
             onPress={() => {
               decIndex();
             }}
-          >
-            BACK
-          </Button>
+          >{`BACK`}</Button>
           <Button
             style={styles.nextButton}
             color={CustomColors.uva.blue}
@@ -139,9 +137,7 @@ const ProbeScreen = (): JSX.Element => {
                 navigation.navigate('ProbeScreen');
               }
             }}
-          >
-            NEXT
-          </Button>
+          >{`NEXT`}</Button>
         </View>
         {readyToSubmit && (
           <Button
@@ -150,9 +146,7 @@ const ProbeScreen = (): JSX.Element => {
             onPress={() => {
               navigation.navigate('ChainsHomeScreen');
             }}
-          >
-            Submit
-          </Button>
+          >{`Submit`}</Button>
         )}
       </View>
     </ImageBackground>

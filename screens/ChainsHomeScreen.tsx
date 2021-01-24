@@ -271,7 +271,7 @@ const ChainsHomeScreen = (): JSX.Element => {
                       masteryInfo={_getMasteryInfo(chainData, chainStep.id)}
                     />
                   ) : (
-                    <Text>Error</Text>
+                    <Text>{`Error`}</Text>
                   );
                 })}
               </ScrollView>

@@ -93,7 +93,7 @@ const DataVerifItem: FC<DataVerifItemProps> = (props: DataVerifItemProps): JSX.E
       </View>
     </View>
   ) : (
-    <Text>...</Text>
+    <Text>{`...`}</Text>
   );
 };
 

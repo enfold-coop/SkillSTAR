@@ -132,7 +132,7 @@ const LandingScreen = (): JSX.Element => {
             _handleLogin();
           }}
         >
-          <Text style={styles.btnText}>Log In</Text>
+          <Text style={styles.btnText}>{`Log In`}</Text>
         </Button>
       </View>
     </ImageBackground>

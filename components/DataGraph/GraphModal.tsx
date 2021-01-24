@@ -50,9 +50,7 @@ const GraphModal = (props: GraphModalProps): JSX.Element => {
             setVisible(!vis);
             handleIsVis();
           }}
-        >
-          Close
-        </Button>
+        >{`Close`}</Button>
       </View>
     </Modal>
   );

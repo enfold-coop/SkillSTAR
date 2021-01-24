@@ -51,9 +51,7 @@ const ToggleButtons = (props: ToggleButtonsProps): JSX.Element => {
         onPress={() => {
           toggleBtn('btn1');
         }}
-      >
-        Yes
-      </Button>
+      >{`Yes`}</Button>
       <Button
         color={CustomColors.uva.blue}
         style={btnStyle}
@@ -61,9 +59,7 @@ const ToggleButtons = (props: ToggleButtonsProps): JSX.Element => {
         onPress={() => {
           toggleBtn('btn2');
         }}
-      >
-        No
-      </Button>
+      >{`No`}</Button>
     </View>
   );
 };
