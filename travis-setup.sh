@@ -8,7 +8,10 @@ main() {
   mkdir -p $videos_dir
   for i in {1..14}
   do
-    touch "$videos_dir/toothbrushing_$(printf "%02d" "$i").mp4"
+    local file_name="toothbrushing_$(printf "%02d" "$i").mp4"
+    local file_path="$videos_dir/$file_name"
+    touch $file_path
+    echo "empty video file created at $file_path"
   done
 }
 
