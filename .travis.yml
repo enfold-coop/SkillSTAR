@@ -8,8 +8,8 @@ node_js:
   - 12
 
 before_install:
-  - ls -al
-  - chmod u+x bash ./travis-setup.sh
+  - chmod u+x ./travis-setup.sh
+  - bash ./travis-setup.sh
 
 install:
   - npm install --g expo-cli
