@@ -1,19 +1,18 @@
-import { nanoid } from 'nanoid';
-import React, { FC, useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import * as Animatable from 'react-native-animatable';
-import 'react-native-get-random-values';
 import { RadioButton } from 'react-native-paper';
+import { randomId } from '../../_util/RandomId';
 import CustomColors from '../../styles/Colors';
-import { StepAttempt } from '../../types/CHAIN/StepAttempt';
+import { StepAttempt } from '../../types/chain/StepAttempt';
 import { MOCK_BEHAV_OPTS, MOCK_BEHAV_Q } from './mock_session';
 
-type Props = {
+interface BehavAccordionProps {
   stepAttempt: StepAttempt;
   switched: boolean;
-};
+}
 
-const BehavAccordion: FC<Props> = props => {
+const BehavAccordion = (props: BehavAccordionProps): JSX.Element => {
   const [behavOpts, setBehavOpts] = useState(MOCK_BEHAV_OPTS);
   const [behavQ, setBehavQ] = useState(MOCK_BEHAV_Q);
   const [checked, setChecked] = React.useState(0);
@@ -49,7 +48,7 @@ const BehavAccordion: FC<Props> = props => {
         <View style={[styles.behavOptsContainer]}>
           {behavOpts.map((e, i) => {
             return (
-              <View style={styles.checkboxContainer} key={nanoid()}>
+              <View style={styles.checkboxContainer} key={randomId()}>
                 <View
                   style={{
                     padding: 0,

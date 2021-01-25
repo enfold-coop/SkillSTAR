@@ -1,0 +1,9 @@
+.expo
+.expo-shared
+__mocks__
+__snapshots__
+assets
+coverage
+dist
+node_modules
+web-build

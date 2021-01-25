@@ -1,17 +1,13 @@
-import React, { FC, useState } from 'react';
-import { StyleSheet, Text, View, Image,LogBox } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import AppHeader from '../components/Header/AppHeader';
+import React from 'react';
+import { Image, StyleSheet, Text, View } from 'react-native';
 import { Button } from 'react-native-paper';
+import AppHeader from '../components/Header/AppHeader';
+import { ImageAssets } from '../data/images';
 import CustomColors from '../styles/Colors';
 
-type Props = {};
-
-const RewardsScreens: FC<Props> = props => {
-    LogBox.ignoreAllLogs();
+const RewardsScreens = (): JSX.Element => {
   const navigation = useNavigation();
-  const star = require('../assets/images/reward_screen/reward-star-01.png');
-  // const awesomeJobText = require("../assets/images/reward_screen/awesome-job-text-v3.png");
   return (
     <View style={styles.container}>
       <AppHeader name={'Congrats!'} />
@@ -20,21 +16,19 @@ const RewardsScreens: FC<Props> = props => {
 				(Give reinforcement and praise.)
 			</Text> */}
       <View style={styles.instructionContainer}>
-        <Text style={styles.congratsMsg}>You brushed your teeth!</Text>
-        <Text style={styles.awesomeText}>Awesome job!</Text>
+        <Text style={styles.congratsMsg}>{`You brushed your teeth!`}</Text>
+        <Text style={styles.awesomeText}>{`Awesome job!`}</Text>
       </View>
       <View style={styles.mainRewardContainer}>
-        <Image style={styles.img} source={star} />
+        <Image style={styles.img} source={ImageAssets.reward_star} />
         {/* <Image style={styles.awesomeText} source={star} /> */}
       </View>
       <Button
-        mode='contained'
-        labelStyle={{ fontSize: 28, paddingVertical:5 }}
+        mode={'contained'}
+        labelStyle={{ fontSize: 28, paddingVertical: 5 }}
         style={styles.submitBtn}
         onPress={() => navigation.navigate('DataVerificationScreen')}
-      >Back Home
-        
-      </Button>
+      >{`Back Home`}</Button>
     </View>
   );
 };

@@ -1,23 +1,23 @@
-import React, { FC } from 'react';
+import React from 'react';
 import { Modal, StyleSheet, Text, View } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { Button, TextInput } from 'react-native-paper';
-import { StepAttempt } from '../../types/CHAIN/StepAttempt';
+import { StepAttempt } from '../../types/chain/StepAttempt';
 
-type Props = {
+interface ChallengingBehavModalProps {
   stepComplete: string;
   challengeOccur: string;
   visible: boolean;
   toggleModal: () => void;
   attempt: StepAttempt;
-};
+}
 
-const ChallengingBehavModal: FC<Props> = props => {
-  let { visible } = props;
+const ChallengingBehavModal = (props: ChallengingBehavModalProps): JSX.Element => {
+  const { visible } = props;
 
   return (
     <Modal
-      animationType='slide'
+      animationType={'slide'}
       transparent={true}
       visible={visible}
       onRequestClose={() => {
@@ -36,51 +36,33 @@ const ChallengingBehavModal: FC<Props> = props => {
                 props.toggleModal();
               }}
             >
-              <Text>EXIT</Text>
+              <Text>{`EXIT`}</Text>
             </TouchableOpacity>
-            <Text style={styles.headline}>
-              Step {props.attempt.chain_step_id || 0 + 1} Challenging Behavior
-            </Text>
+            <Text style={styles.headline}>{`Step ${props.attempt.chain_step_id || 0 + 1} Challenging Behavior`}</Text>
             <Text style={styles.textInputPrompt} />
-            <TextInput label='Challenging behavior' mode='outlined' style={styles.textInput} />
+            <TextInput label={'Challenging behavior'} mode={'outlined'} style={styles.textInput} />
           </View>
           <View style={styles.questionContainer}>
-            <Text style={styles.questionText}>
-              Some Text for a question?
-              {props.stepComplete}
-            </Text>
+            <Text style={styles.questionText}>{`Some Text for a question? ${props.stepComplete}`}</Text>
             <View style={styles.buttonContainer}>
-              <Button style={styles.button} mode='contained'>
-                Yes
-              </Button>
-              <Button style={styles.button} mode='contained'>
-                No
-              </Button>
+              <Button style={styles.button} mode={'contained'}>{`Yes`}</Button>
+              <Button style={styles.button} mode={'contained'}>{`No`}</Button>
             </View>
           </View>
           <View style={styles.questionContainer}>
-            <Text style={styles.questionText}>
-              Some Text for a question?
-              {props.stepComplete}
-            </Text>
+            <Text style={styles.questionText}>{`Some Text for a question? ${props.stepComplete}`}</Text>
             <View style={styles.buttonContainer}>
-              <Button style={styles.button} mode='contained'>
-                Yes
-              </Button>
-              <Button style={styles.button} mode='contained'>
-                No
-              </Button>
+              <Button style={styles.button} mode={'contained'}>{`Yes`}</Button>
+              <Button style={styles.button} mode={'contained'}>{`No`}</Button>
             </View>
           </View>
           <Button
             style={styles.submitBtn}
-            mode='contained'
+            mode={'contained'}
             onPress={() => {
               console.log('submit');
             }}
-          >
-            Enter
-          </Button>
+          >{`Enter`}</Button>
         </View>
       </View>
     </Modal>

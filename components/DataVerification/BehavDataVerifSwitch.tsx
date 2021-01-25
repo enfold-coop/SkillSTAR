@@ -1,18 +1,17 @@
-import { useNavigation } from '@react-navigation/native';
-import React, { FC, useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import * as Animatable from 'react-native-animatable';
 import { Switch } from 'react-native-paper';
 import CustomColors from '../../styles/Colors';
 import { DataVerificationControlCallback } from '../../types/DataVerificationControlCallback';
 
-type Props = {
+interface BehavDataVerifSwitchProps {
   name: string;
   chainStepId: number;
   handleSwitch: DataVerificationControlCallback;
-};
+}
 
-const BehavDataVerifSwitch: FC<Props> = props => {
+const BehavDataVerifSwitch = (props: BehavDataVerifSwitchProps): JSX.Element => {
   const { name, chainStepId, handleSwitch } = props;
   const refSwitched = useRef(true);
   const [active, setActive] = useState(false);

@@ -6,17 +6,17 @@ import * as Animatable from 'react-native-animatable';
 import { Card } from 'react-native-paper';
 import CustomColors from '../../styles/Colors';
 import { MasteryIcon } from '../../styles/MasteryIcon';
-import { ChainStep } from '../../types/CHAIN/ChainStep';
-import { MasteryInfo } from '../../types/CHAIN/MasteryLevel';
-import { StepAttempt } from '../../types/CHAIN/StepAttempt';
+import { ChainStep } from '../../types/chain/ChainStep';
+import { MasteryInfo } from '../../types/chain/MasteryLevel';
+import { StepAttempt } from '../../types/chain/StepAttempt';
 
 interface ScorecardListItemProps {
   chainStep: ChainStep;
-  stepAttempt: StepAttempt;
+  stepAttempt?: StepAttempt;
   masteryInfo: MasteryInfo;
 }
 
-const ScorecardListItem = (props: ScorecardListItemProps) => {
+const ScorecardListItem = (props: ScorecardListItemProps): JSX.Element => {
   const { chainStep, stepAttempt, masteryInfo } = props;
 
   const [isPressed, setIsPressed] = useState(false);
@@ -43,7 +43,7 @@ const ScorecardListItem = (props: ScorecardListItemProps) => {
   }, [stepAttempt]);
 
   return stepAttempt && chainStep ? (
-    <Animatable.View animation='fadeIn' duration={500 * chainStep.id}>
+    <Animatable.View animation={'fadeIn'} duration={500 * chainStep.id}>
       <Card style={styles.container}>
         <TouchableOpacity
           style={[styles.touchable]}
@@ -51,13 +51,13 @@ const ScorecardListItem = (props: ScorecardListItemProps) => {
             setIsPressed(!isPressed);
           }}
         >
-          <Text style={styles.id}>{chainStep.id + 1}. </Text>
+          <Text style={styles.id}>{`${chainStep.id + 1}.`}</Text>
           <Text style={styles.skill}>{chainStep.instruction}</Text>
           <MasteryIcon chainStepStatus={stepAttempt.status} iconSize={40} />
           <MaterialIcons
             name={isPressed ? 'expand-less' : 'expand-more'}
             size={24}
-            color='black'
+            color={'black'}
             style={styles.nextIcon}
           />
         </TouchableOpacity>
@@ -65,37 +65,29 @@ const ScorecardListItem = (props: ScorecardListItemProps) => {
           <View style={styles.dropDownContainer}>
             <Text style={styles.dropDownLabel}>
               {`${'\u2022'} Date Introduced: `}
-              <Text style={styles.dropDownItemDate}>
-                {handleDateVals(masteryInfo.dateIntroduced)}
-              </Text>
+              <Text style={styles.dropDownItemDate}>{handleDateVals(masteryInfo.dateIntroduced)}</Text>
             </Text>
             <Text style={styles.dropDownLabel}>
               {`${'\u2022'} Date Mastered: `}
-              <Text style={styles.dropDownItemDate}>
-                {handleDateVals(masteryInfo.dateMastered)}
-              </Text>
+              <Text style={styles.dropDownItemDate}>{handleDateVals(masteryInfo.dateMastered)}</Text>
             </Text>
             <Text style={styles.dropDownLabel}>
               {`${'\u2022'} Date Booster training initiated: `}
-              <Text style={styles.dropDownItemDate}>
-                {handleDateVals(masteryInfo.dateBoosterInitiated)}
-              </Text>
+              <Text style={styles.dropDownItemDate}>{handleDateVals(masteryInfo.dateBoosterInitiated)}</Text>
             </Text>
             <Text style={styles.dropDownLabel}>
               {`${'\u2022'} Date Mastered Booster training: `}
-              <Text style={styles.dropDownItemDate}>
-                {handleDateVals(masteryInfo.dateBoosterMastered)}
-              </Text>
+              <Text style={styles.dropDownItemDate}>{handleDateVals(masteryInfo.dateBoosterMastered)}</Text>
             </Text>
           </View>
         )}
       </Card>
     </Animatable.View>
   ) : (
-    <Animatable.View animation='fadeIn' duration={1000}>
+    <Animatable.View animation={'fadeIn'} duration={1000}>
       <Card style={styles.container}>
         <View style={styles.dropDownContainer}>
-          <Text style={styles.dropDownLabel}>...</Text>
+          <Text style={styles.dropDownLabel}>{`...`}</Text>
         </View>
       </Card>
     </Animatable.View>

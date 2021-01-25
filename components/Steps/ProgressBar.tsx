@@ -1,18 +1,17 @@
-import React, { FC, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { ProgressBar as ProgBar } from 'react-native-paper';
 import CustomColors from '../../styles/Colors';
-import { ChainStep } from '../../types/CHAIN/ChainStep';
+import { ChainStep } from '../../types/chain/ChainStep';
 
-type Props = {
+interface ProgressBarProps {
   masteryLevel: string;
   currentStepIndex: number;
   totalSteps: number;
   chainSteps: ChainStep[];
-};
+}
 
-const ProgressBar: FC<Props> = props => {
-
+const ProgressBar = (props: ProgressBarProps): JSX.Element => {
   const { totalSteps, currentStepIndex, masteryLevel, chainSteps } = props;
 
   const [mastery, setMastery] = useState('focus');
@@ -35,7 +34,7 @@ const ProgressBar: FC<Props> = props => {
   };
 
   useEffect(() => {
-      setProgPercent(progressBarCalculation(totalSteps, currentStepIndex));
+    setProgPercent(progressBarCalculation(totalSteps, currentStepIndex));
   }, [currentStepIndex]);
 
   useEffect(() => {
@@ -45,15 +44,8 @@ const ProgressBar: FC<Props> = props => {
 
   return (
     <View style={styles.container}>
-
-      <ProgBar
-        style={styles.progressBar}
-        progress={progPercent}
-        color={barColor}
-      />
-      <Text style={styles.progressText}>
-        Step {currentStepIndex + 1} out of {chainSteps.length}
-      </Text>
+      <ProgBar style={styles.progressBar} progress={progPercent} color={barColor} />
+      <Text style={styles.progressText}>{`Step ${currentStepIndex + 1} out of ${chainSteps.length}`}</Text>
     </View>
   );
 };

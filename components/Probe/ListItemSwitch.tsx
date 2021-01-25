@@ -1,21 +1,18 @@
-import { useNavigation } from '@react-navigation/native';
-import React, { FC, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { Switch } from 'react-native-paper';
 import CustomColors from '../../styles/Colors';
 import { DataVerificationControlCallback } from '../../types/DataVerificationControlCallback';
 
-type Props = {
+interface ListItemSwitchProps {
   name: string;
-  instruction: string;
   type: number;
   id: number;
   defaultValue: boolean;
   onChange: DataVerificationControlCallback;
-};
+}
 
-const ListItemSwitch: FC<Props> = props => {
-  const navigation = useNavigation();
+const ListItemSwitch = (props: ListItemSwitchProps): JSX.Element => {
   /**
    *
    * use context api, here:
@@ -24,16 +21,9 @@ const ListItemSwitch: FC<Props> = props => {
    *
    */
 
-  const { id, name, instruction, type, defaultValue, onChange } = props;
+  const { id, name, type, defaultValue, onChange } = props;
   const [isSwitchOn, setIsSwitchOn] = useState(defaultValue);
   const [label, setLabel] = useState('No');
-
-  // Checks for question type and switch value.  If results are positive
-  // navigate to ChainsHomeScreen
-  const checkTypeAgainstSwitchVal = () => {
-    if (type === 0 && isSwitchOn === false) navigateToChainsHome();
-    if (type === 1 && isSwitchOn === true) navigateToChainsHome();
-  };
 
   // Sets question type swtich value type
   const setQuestionType = () => {
@@ -44,11 +34,6 @@ const ListItemSwitch: FC<Props> = props => {
     }
   };
 
-  // Navigate to ChainsHome
-  const navigateToChainsHome = () => {
-    navigation.navigate('ChainsHomeScreen');
-  };
-
   // Toogle switch label (yes/no)
   const toggleLabel = () => {
     setLabel(isSwitchOn === false ? 'No' : 'Yes');
@@ -57,7 +42,7 @@ const ListItemSwitch: FC<Props> = props => {
   // callback for setting isSwitchOn value
   const onToggleSwitch = () => {
     setIsSwitchOn(!isSwitchOn);
-    onChange(id, isSwitchOn, name);
+    onChange(id, name, isSwitchOn);
   };
   //
 
@@ -65,10 +50,6 @@ const ListItemSwitch: FC<Props> = props => {
   useEffect(() => {
     setQuestionType();
   }, [type]);
-
-  // useEffect(() => {
-  // 	setIsSwitchOn(false);
-  // }, [instruction]);
 
   useEffect(() => {
     toggleLabel();

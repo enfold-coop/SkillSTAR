@@ -1,26 +1,20 @@
 import { useNavigation } from '@react-navigation/native';
-import React, { FC, useEffect, useState } from 'react';
-import { FlatList, StyleSheet, Text, View, LogBox } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { FlatList, StyleSheet, Text, View } from 'react-native';
 import * as Animatable from 'react-native-animatable';
-import 'react-native-get-random-values';
 import { ActivityIndicator, Button } from 'react-native-paper';
+import { randomId } from '../_util/RandomId';
 import { DataVerifItem } from '../components/DataVerification';
 import ColumnLabels from '../components/DataVerification/ColumnLabels';
 import AppHeader from '../components/Header/AppHeader';
 import { ApiService } from '../services/ApiService';
 import CustomColors from '../styles/Colors';
-import { ChainSession } from '../types/CHAIN/ChainSession';
-import { ChainStep } from '../types/CHAIN/ChainStep';
-import { ChainData } from '../types/CHAIN/SkillstarChain';
-import { StepAttempt } from '../types/CHAIN/StepAttempt';
+import { ChainSession } from '../types/chain/ChainSession';
+import { ChainStep } from '../types/chain/ChainStep';
+import { ChainData } from '../types/chain/ChainData';
+import { StepAttempt } from '../types/chain/StepAttempt';
 
-type Props = {};
-
-/**
- *
- */
-const DataVerificationScreen: FC<Props> = props => {
-    LogBox.ignoreAllLogs();
+const DataVerificationScreen = (): JSX.Element => {
   const navigation = useNavigation();
   const [chainData, setChainData] = useState<ChainData>();
   const [chainSession, setChainSession] = useState<ChainSession>();
@@ -98,17 +92,14 @@ const DataVerificationScreen: FC<Props> = props => {
 
   return (
     <View style={styles.container}>
-      <AppHeader name='Brushing Teeth' />
+      <AppHeader name={'Brushing Teeth'} />
       <View style={styles.instructionContainer}>
-        <Text style={[scrolling ? styles.smallHeader : styles.screenHeader]}>Probe Session</Text>
+        <Text style={[scrolling ? styles.smallHeader : styles.screenHeader]}>{`Probe Session`}</Text>
         <Animatable.Text
-          transition='fontSize'
+          transition={'fontSize'}
           duration={1000}
           style={[scrolling ? styles.smallInstruction : styles.instruction]}
-        >
-          Please instruct the child to brush their teeth. As they do, please complete this survey
-          for each step.
-        </Animatable.Text>
+        >{`Please instruct the child to brush their teeth. As they do, please complete this survey for each step.`}</Animatable.Text>
       </View>
       <View style={styles.formContainer}>
         <ColumnLabels />
@@ -122,7 +113,7 @@ const DataVerificationScreen: FC<Props> = props => {
             renderItem={item => {
               return <DataVerifItem stepAttempt={item.item} chainSteps={chainSteps} />;
             }}
-            keyExtractor={() => `${Math.floor(Math.random() * 10000)}`}
+            keyExtractor={randomId}
           />
         ) : (
           <View>
@@ -133,17 +124,15 @@ const DataVerificationScreen: FC<Props> = props => {
 
       {readyToSubmit && (
         <View style={styles.btnContainer}>
-          <Text style={styles.btnContainerText}>
-            Please confirm your selections, then press Submit.
-          </Text>
+          <Text style={styles.btnContainerText}>{`Please confirm your selections, then press Submit.`}</Text>
           <Button
-            mode='contained'
+            mode={'contained'}
             color={CustomColors.uva.orange}
             labelStyle={{
               fontSize: 28,
-            //   fontWeight: '600',
+              //   fontWeight: '600',
               color: CustomColors.uva.white,
-              paddingVertical:15,
+              paddingVertical: 15,
             }}
             style={styles.nextButton}
             onPress={() => {

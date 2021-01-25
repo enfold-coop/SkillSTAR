@@ -1,13 +1,13 @@
-import React, { FC, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { LayoutRectangle, StyleSheet, View } from 'react-native';
 import Plotly from 'react-native-plotly';
 import CustomColors from '../../styles/Colors';
 
-type Props = {
+interface ChainsHomeGraphProps {
   dimensions?: LayoutRectangle;
-};
+}
 
-const ChainsHomeGraph: FC<Props> = props => {
+const ChainsHomeGraph = (props: ChainsHomeGraphProps): JSX.Element => {
   const { dimensions } = props;
   const [dimens, setDimens] = useState<LayoutRectangle>();
 
@@ -68,12 +68,14 @@ const ChainsHomeGraph: FC<Props> = props => {
     },
   };
 
-  useEffect(() => {});
+  const handleUpdate = () => {
+    // TODO
+  };
 
   return (
     <View style={[styles.container]}>
       <Plotly
-        update={() => {}}
+        update={handleUpdate}
         data={data}
         layout={layout}
         enableFullPlotly={true}

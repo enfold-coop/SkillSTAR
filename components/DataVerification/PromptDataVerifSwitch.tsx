@@ -1,18 +1,17 @@
-import { useNavigation } from '@react-navigation/native';
-import React, { FC, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import * as Animatable from 'react-native-animatable';
 import { Switch } from 'react-native-paper';
 import CustomColors from '../../styles/Colors';
 import { DataVerificationControlCallback } from '../../types/DataVerificationControlCallback';
 
-type Props = {
+interface PromptDataVerifSwitchProps {
   name: string;
   chainStepId: number;
   handleSwitch: DataVerificationControlCallback;
-};
+}
 
-const PromptDataVerifSwitch: FC<Props> = props => {
+const PromptDataVerifSwitch = (props: PromptDataVerifSwitchProps): JSX.Element => {
   const { name, chainStepId, handleSwitch } = props;
   const [active, setActive] = useState(false);
   const [isSwitchOn, setIsSwitchOn] = useState(true);

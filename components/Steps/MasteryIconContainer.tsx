@@ -1,24 +1,23 @@
-import React, { FC, useEffect, useState } from 'react';
-import { Image, StyleSheet, View } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { StyleSheet, View } from 'react-native';
 import { MasteryIcon } from '../../styles/MasteryIcon';
-import { ChainStepStatus, ChainStepStatusMap } from '../../types/CHAIN/StepAttempt';
+import { ChainStepStatus } from '../../types/chain/StepAttempt';
 
-type Props = {
+interface MasteryIconContainerProps {
   masteryLevel: string;
-};
+}
 
-const MasteryIconContainer: FC<Props> = props => {
+const MasteryIconContainer = (props: MasteryIconContainerProps): JSX.Element => {
   const { masteryLevel } = props;
-
   const [level, setMasteryLevel] = useState(ChainStepStatus.not_complete);
 
   const getMasteryLevel = () => {
     if (masteryLevel === 'mastered') {
-        setMasteryLevel(ChainStepStatus.mastered);
+      setMasteryLevel(ChainStepStatus.mastered);
     } else if (masteryLevel === 'focus') {
-        setMasteryLevel(ChainStepStatus.focus);
+      setMasteryLevel(ChainStepStatus.focus);
     } else {
-        setMasteryLevel(ChainStepStatus.not_complete);
+      setMasteryLevel(ChainStepStatus.not_complete);
     }
   };
 
@@ -28,7 +27,7 @@ const MasteryIconContainer: FC<Props> = props => {
 
   return (
     <View style={styles.container}>
-      <MasteryIcon chainStepStatus={level} iconSize={50}/>
+      <MasteryIcon chainStepStatus={level} iconSize={50} />
     </View>
   );
 };
@@ -39,7 +38,7 @@ const styles = StyleSheet.create({
   container: {
     justifyContent: 'center',
     alignContent: 'center',
-    margin:10,
+    margin: 10,
   },
   img: {
     alignSelf: 'center',

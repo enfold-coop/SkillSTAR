@@ -3,11 +3,11 @@ import { API_URL } from '@env';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import NetInfo from '@react-native-community/netinfo';
 import { parse, stringify } from 'telejson';
-import { ChainSession } from '../types/CHAIN/ChainSession';
-import { ChainStep } from '../types/CHAIN/ChainStep';
-import { MasteryInfo } from '../types/CHAIN/MasteryLevel';
-import { ChainData, SkillstarChain } from '../types/CHAIN/SkillstarChain';
-import { StarDriveFlow } from '../types/CHAIN/StarDriveFlow';
+import { ChainSession } from '../types/chain/ChainSession';
+import { ChainStep } from '../types/chain/ChainStep';
+import { MasteryInfo } from '../types/chain/MasteryLevel';
+import { ChainData, SkillstarChain } from '../types/chain/ChainData';
+import { StarDriveFlow } from '../types/chain/StarDriveFlow';
 import { ContextDispatchAction, ContextStateValue } from '../types/Context';
 import { Participant, User } from '../types/User';
 
@@ -27,7 +27,7 @@ export class ApiService {
     apiMethod: () => Promise<T | undefined>,
     callback: React.Dispatch<React.SetStateAction<T | undefined>>,
     isCancelled: boolean,
-  ) {
+  ): Promise<void> {
     const contextValue = await ApiService.contextState(actionType);
     if (!isCancelled && contextValue) {
       callback(contextValue as T);
@@ -79,7 +79,6 @@ export class ApiService {
   }
 
   static async getChainDataForSelectedParticipant(): Promise<ChainData | undefined> {
-    console.log('*** ApiService.getChainDataForSelectedParticipant ***');
     const questionnaireId = await ApiService.getChainQuestionnaireId();
 
     if (questionnaireId !== undefined) {
@@ -88,7 +87,6 @@ export class ApiService {
   }
 
   static async getChainSteps(): Promise<ChainStep[] | undefined> {
-    console.log('*** ApiService.getChainSteps ***');
     // Check if we are online
     const isConnected = ApiService._isConnected();
 
@@ -120,14 +118,11 @@ export class ApiService {
   }
 
   static async getChainQuestionnaireId(): Promise<number | undefined> {
-    console.log('*** getChainQuestionnaireId ***');
-
     // Check for a cached questionnaire ID
     const skillstarChainId = await AsyncStorage.getItem('selected_participant_questionnaire_id');
-    // console.log('cached skillstarChainId', skillstarChainId);
 
     // If it's been cached, just return it.
-    if (skillstarChainId) {
+    if (skillstarChainId !== null) {
       return parseInt(skillstarChainId, 10);
     }
 
@@ -143,10 +138,7 @@ export class ApiService {
     const participant = await ApiService.getSelectedParticipant();
 
     if (participant && participant.hasOwnProperty('id')) {
-      const url = ApiService.endpoints.chainsForParticipant.replace(
-        '<participant_id>',
-        participant.id.toString(),
-      );
+      const url = ApiService.endpoints.chainsForParticipant.replace('<participant_id>', participant.id.toString());
 
       try {
         const headers = await ApiService._getHeaders('GET');
@@ -168,7 +160,6 @@ export class ApiService {
 
           if (questionnaireId !== undefined && questionnaireId !== null) {
             await ApiService._cache('selected_participant_questionnaire_id', questionnaireId);
-            // console.log('questionnaireId from backend', questionnaireId);
             return questionnaireId;
           }
         }
@@ -179,14 +170,11 @@ export class ApiService {
   }
 
   static async getChainData(questionnaireId: number): Promise<ChainData | undefined> {
-    console.log('*** ApiService.getChainData ***');
     const isConnected = await ApiService._isConnected();
 
     // If we're not connected to the internet, return any cached questionnaire data.
     if (!isConnected) {
       const cachedDataJson = await AsyncStorage.getItem('chain_data_' + questionnaireId);
-
-      console.log('cachedDataJson', cachedDataJson);
 
       if (cachedDataJson) {
         const cachedData = new ChainData(parse(cachedDataJson) as SkillstarChain);
@@ -200,13 +188,7 @@ export class ApiService {
 
     // We're connected to the internet. Get the latest from the backend.
     try {
-      const url = ApiService.endpoints.chainSession.replace(
-        '<questionnaire_id>',
-        questionnaireId.toString(),
-      );
-
-    //   console.log('url', url);
-
+      const url = ApiService.endpoints.chainSession.replace('<questionnaire_id>', questionnaireId.toString());
       const headers = await ApiService._getHeaders('GET');
       const response = await fetch(url, headers);
       const dbData = await ApiService._parseResponse(response, 'getChainData', headers.method);
@@ -223,11 +205,8 @@ export class ApiService {
   }
 
   // Add a new chain if none exists. Otherwise updated an existing chain.
-  static async upsertChainData(data: SkillstarChain) {
-    const questionnaireId =
-      data && data.hasOwnProperty('id') ? data.id : await ApiService.getChainQuestionnaireId();
-
-    // console.log('questionnaireId =', questionnaireId);
+  static async upsertChainData(data: SkillstarChain): Promise<SkillstarChain | undefined> {
+    const questionnaireId = data && data.hasOwnProperty('id') ? data.id : await ApiService.getChainQuestionnaireId();
 
     if (questionnaireId !== undefined) {
       // If there's an existing questionnaire, it's an update.
@@ -240,11 +219,9 @@ export class ApiService {
 
   // No questionnaire exists for the participant yet. If we're not online, we'll need to ChainProviderContext the
   // questionnaire data somewhere until we can upload it to the server and get a questionnaire ID for it.
-  static async addChainData(data: SkillstarChain) {
+  static async addChainData(data: SkillstarChain): Promise<SkillstarChain | undefined> {
     const dataHasParticipantId =
-      data.hasOwnProperty('participant_id') &&
-      data.participant_id !== null &&
-      data.participant_id !== undefined;
+      data.hasOwnProperty('participant_id') && data.participant_id !== null && data.participant_id !== undefined;
 
     const participant = await ApiService.getSelectedParticipant();
 
@@ -253,9 +230,7 @@ export class ApiService {
       return;
     }
 
-    const participantId = dataHasParticipantId
-      ? data.participant_id
-      : participant && participant.id;
+    const participantId = dataHasParticipantId ? data.participant_id : participant && participant.id;
 
     // Check to see if we're online
     const isConnected = await ApiService._isConnected();
@@ -292,17 +267,11 @@ export class ApiService {
       }
     } catch (e) {
       console.error(e);
-      return null;
     }
   }
 
-  static async editChainData(data: SkillstarChain, questionnaireId: number) {
-    console.log('*** editChainData ***');
-    const url = ApiService.endpoints.chainSession.replace(
-      '<questionnaire_id>',
-      questionnaireId.toString(),
-    );
-    console.log('url', url);
+  static async editChainData(data: SkillstarChain, questionnaireId: number): Promise<SkillstarChain | undefined> {
+    const url = ApiService.endpoints.chainSession.replace('<questionnaire_id>', questionnaireId.toString());
     try {
       const headers = await ApiService._getHeaders('PUT', data);
       const response = await fetch(url, headers);
@@ -310,11 +279,10 @@ export class ApiService {
       return dbData as SkillstarChain;
     } catch (e) {
       console.error(e);
-      return null;
     }
   }
 
-  static async deleteChainData(data: SkillstarChain, participantId: number) {
+  static async deleteChainData(data: SkillstarChain, participantId: number): Promise<SkillstarChain | undefined> {
     const url = ApiService.endpoints.chain + '/' + participantId;
     try {
       const headers = await ApiService._getHeaders('DELETE', data);
@@ -323,7 +291,6 @@ export class ApiService {
       return dbData as SkillstarChain;
     } catch (e) {
       console.error(e);
-      return null;
     }
   }
 
@@ -356,11 +323,7 @@ export class ApiService {
     try {
       const headers = await ApiService._getHeaders('GET');
       const response = await fetch(ApiService.endpoints.refreshSession, headers);
-      const user: User = await ApiService._parseResponse(
-        response,
-        'refreshSession',
-        headers.method,
-      );
+      const user: User = await ApiService._parseResponse(response, 'refreshSession', headers.method);
 
       if (user) {
         await ApiService._cache('user', user);
@@ -444,7 +407,7 @@ export class ApiService {
         return await ApiService.selectParticipant(dependents[0].id);
       }
     } else {
-      console.error('no user found.');
+      console.log('no user found.');
     }
   }
 
@@ -460,8 +423,6 @@ export class ApiService {
 
       if (user) {
         if (user.token) {
-          console.log(user.token);
-
           await ApiService._cache('user_token', user.token);
         }
 
@@ -483,13 +444,18 @@ export class ApiService {
     await AsyncStorage.clear();
   }
 
-  static async _getHeaders(method: 'GET' | 'POST' | 'PUT' | 'DELETE', data?: any) {
+  static async _getHeaders(method: 'GET' | 'POST' | 'PUT' | 'DELETE', data?: any): Promise<RequestInit> {
     const token = await ApiService._getCached('user_token');
     const headers = {
       Accept: 'application/json',
       'Content-Type': 'application/json',
-      Authorization: `Bearer ${token || 'NO_TOKEN_ERROR'}`,
+      Authorization: '',
     };
+
+    if (token) {
+      headers.Authorization = `Bearer ${token}`;
+    }
+
     if (method === 'GET') {
       return {
         method,
@@ -531,7 +497,7 @@ export class ApiService {
     }
   }
 
-  static async _parseResponse(response: Response, methodName: string, requestMethod: string) {
+  static async _parseResponse(response: Response, methodName: string, requestMethod: string | undefined): Promise<any> {
     if (!response.ok) {
       console.error(response);
       throw new Error(`Error in ${methodName} ${requestMethod} response: ` + response.statusText);

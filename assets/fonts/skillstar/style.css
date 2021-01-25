@@ -1,16 +1,16 @@
 @font-face {
   font-family: 'skillstar';
-  src:  url('fonts/skillstar.eot?3wqm3z');
-  src:  url('fonts/skillstar.eot?3wqm3z#iefix') format('embedded-opentype'),
-    url('fonts/skillstar.ttf?3wqm3z') format('truetype'),
-    url('fonts/skillstar.woff?3wqm3z') format('woff'),
+  src: url('fonts/skillstar.eot?3wqm3z');
+  src: url('fonts/skillstar.eot?3wqm3z#iefix') format('embedded-opentype'),
+    url('fonts/skillstar.ttf?3wqm3z') format('truetype'), url('fonts/skillstar.woff?3wqm3z') format('woff'),
     url('fonts/skillstar.svg?3wqm3z#skillstar') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: block;
 }
 
-[class^="icon-"], [class*=" icon-"] {
+[class^='icon-'],
+[class*=' icon-'] {
   /* use !important to prevent issues with browser extensions that change fonts */
   font-family: 'skillstar' !important;
   speak: never;
@@ -26,17 +26,17 @@
 }
 
 .icon-mastered:before {
-  content: "\e900";
+  content: '\e900';
 }
 .icon-focus_step:before {
-  content: "\e901";
+  content: '\e901';
 }
 .icon-not_started:before {
-  content: "\e902";
+  content: '\e902';
 }
 .icon-attempt_star:before {
-  content: "\e903";
+  content: '\e903';
 }
 .icon-attempt_star_filled:before {
-  content: "\e904";
+  content: '\e904';
 }

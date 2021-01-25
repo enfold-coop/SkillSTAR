@@ -3,11 +3,9 @@ import { useNavigation } from '@react-navigation/native';
 import React, { ReactElement, useEffect, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { Button, Menu } from 'react-native-paper';
-import { chainSteps } from '../../data/chainSteps';
 import { ApiService } from '../../services/ApiService';
 import CustomColors from '../../styles/Colors';
-import { ChainStep } from '../../types/CHAIN/ChainStep';
-import { ChainData } from '../../types/CHAIN/SkillstarChain';
+import { ChainStep } from '../../types/chain/ChainStep';
 import { Participant, User } from '../../types/User';
 
 export interface SelectParticipantProps {
@@ -19,7 +17,6 @@ export const SelectParticipant = (props: SelectParticipantProps): ReactElement =
   const [isVisible, setIsVisible] = useState<boolean>(false);
   const [menuItems, setMenuItems] = useState<ReactElement[]>();
   const [chainSteps, setChainSteps] = useState<ChainStep[]>();
-  const [chainData, setChainData] = useState<ChainData>();
   const [user, setUser] = useState<User>();
   const [selectedParticipant, setSelectedParticipant] = useState<Participant>();
   const [participants, setParticipants] = useState<Participant[]>();
@@ -36,15 +33,11 @@ export const SelectParticipant = (props: SelectParticipantProps): ReactElement =
 
     const _load = async () => {
       if (!isCancelled) {
-        console.log(
-          '*** SelectParticipant.tsx > useEffect > _load > loading selectedParticipant... ***',
-        );
         const dbSelectedParticipant = await ApiService.getSelectedParticipant();
         if (!isCancelled && dbSelectedParticipant && !selectedParticipant && !shouldGoHome) {
           setSelectedParticipant(dbSelectedParticipant);
         }
 
-        console.log('*** SelectParticipant.tsx > useEffect > _load > loading chainData... ***');
         if (!isCancelled) {
           const dbChainData = await ApiService.getChainDataForSelectedParticipant();
 
@@ -79,7 +72,6 @@ export const SelectParticipant = (props: SelectParticipantProps): ReactElement =
     }
 
     return () => {
-      console.log('SelectParticipant > useEffect 1 > unsubscribe');
       isCancelled = true;
     };
   }, [selectedParticipant]);
@@ -94,7 +86,6 @@ export const SelectParticipant = (props: SelectParticipantProps): ReactElement =
       isLoading = true;
 
       if (!user) {
-        console.log('*** SelectParticipant.tsx > useEffect > _load > loading user... ***');
         const contextUser = await ApiService.contextState('user');
         if (!isCancelled && contextUser) {
           setUser(contextUser as User);
@@ -107,7 +98,6 @@ export const SelectParticipant = (props: SelectParticipantProps): ReactElement =
       }
 
       if (!chainSteps) {
-        console.log('*** SelectParticipant.tsx > useEffect > _load > loading chainSteps... ***');
         const contextChainSteps = await ApiService.contextState('chainSteps');
         if (!isCancelled && contextChainSteps) {
           setChainSteps(contextChainSteps as ChainStep[]);
@@ -148,7 +138,6 @@ export const SelectParticipant = (props: SelectParticipantProps): ReactElement =
     }
 
     return () => {
-      console.log('SelectParticipant > useEffect 2 > unsubscribe');
       isCancelled = true;
     };
   }, [user, participants]);
@@ -179,14 +168,12 @@ export const SelectParticipant = (props: SelectParticipantProps): ReactElement =
     }
   };
 
-  const btnLabel = selectedParticipant
-    ? `Participant: ${participantName(selectedParticipant)}`
-    : 'Select Participant';
+  const btnLabel = selectedParticipant ? `Participant: ${participantName(selectedParticipant)}` : 'Select Participant';
 
   const key = `select_participant_menu_${menuItems && menuItems.length > 0 ? menuItems.length : 0}`;
 
   const renderLoading = () => {
-    return <Text style={{ marginRight: 100 }}>Loading...</Text>;
+    return <Text style={{ marginRight: 100 }}>{`Loading...`}</Text>;
   };
 
   const renderMenu = () => {
@@ -199,7 +186,7 @@ export const SelectParticipant = (props: SelectParticipantProps): ReactElement =
           <Button onPress={openMenu} color={CustomColors.uva.orange} style={styles.menuButton}>
             {btnLabel}
             <View style={styles.iconContainer}>
-              <MaterialIcons name='arrow-drop-down' size={24} color={CustomColors.uva.orange} />
+              <MaterialIcons name={'arrow-drop-down'} size={24} color={CustomColors.uva.orange} />
             </View>
           </Button>
         }

@@ -1,27 +1,27 @@
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import CustomColor from '../styles/Colors';
-import { MasteryStatus } from '../types/CHAIN/MasteryLevel';
-import { ChainStepStatus, ChainStepStatusMap } from '../types/CHAIN/StepAttempt';
+import { MasteryStatus } from '../types/chain/MasteryLevel';
+import { ChainStepStatus, ChainStepStatusMap } from '../types/chain/StepAttempt';
 import { SkillStarIcons } from './Icons';
 
 export interface MasteryIconProps {
-  chainStepStatus: ChainStepStatus;
-  iconSize:number;
+  chainStepStatus?: ChainStepStatus;
+  iconSize: number;
 }
 
-export function MasteryIcon(props: MasteryIconProps) {
+export function MasteryIcon(props: MasteryIconProps): JSX.Element {
   const { chainStepStatus, iconSize } = props;
   const [size, setIconSize] = useState(30);
 
-    useEffect(()=>{
-        if(iconSize != undefined){
-            setIconSize(iconSize);
-        }
-    });
+  useEffect(() => {
+    if (iconSize != undefined) {
+      setIconSize(iconSize);
+    }
+  });
 
   const statusMap = ChainStepStatusMap[chainStepStatus as string];
-  
+
   const icons: { [key: string]: MasteryStatus } = {
     not_complete: {
       stepStatus: ChainStepStatus.not_complete,
@@ -51,7 +51,7 @@ export function MasteryIcon(props: MasteryIconProps) {
       <SkillStarIcons name={iconMap.icon} size={size} style={styles.icon} color={iconMap.color} />
     </View>
   ) : (
-    <Text>Icon Error</Text>
+    <Text>{`Icon Error`}</Text>
   );
 }
 
