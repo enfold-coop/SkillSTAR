@@ -119,32 +119,14 @@ const ChainsHomeScreen = (): JSX.Element => {
             setSessionNumber(chainData.sessions.length);
           }
         } else if (chainSteps && chainSteps.length > 0) {
-          console.log('Creating a new session.');
-          const newChainSession: ChainSession = {
-            session_type: ChainSessionType.training,
-            date: new Date(),
-            completed: false,
-            step_attempts: chainSteps.map(s => {
-              return {
-                chain_step_id: s.id,
-                chain_step: s,
-                completed: false,
-                status: ChainStepStatus.not_complete,
-              } as StepAttempt;
-            }),
-          };
-
-          if (!isCancelled) {
-            setChainSession(newChainSession);
+          if (!isCancelled && chainMastery) {
+            setChainSession(chainMastery.draftSession);
+            const dbChainData = await ApiService.upsertChainData(chainMastery.chainData);
+            if (dbChainData && !isCancelled) {
+              setChainData(new ChainData(dbChainData));
+            }
+            setSessionNumber(chainMastery.chainData.sessions.length);
           }
-          const newChainData = new ChainData(chainData);
-          newChainData.sessions.push(newChainSession);
-          const dbChainData = await ApiService.upsertChainData(newChainData);
-
-          if (dbChainData && !isCancelled) {
-            setChainData(new ChainData(dbChainData));
-          }
-          setSessionNumber(1);
         }
       }
     };

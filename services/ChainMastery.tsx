@@ -6,10 +6,10 @@ import {
   NUM_INCOMPLETE_TRAINING_ATTEMPTS_FOR_BOOSTER,
   NUM_PROMPTED_ATTEMPTS_FOR_FOCUS,
 } from '../constants/MasteryAlgorithm';
+import { ChainData } from '../types/chain/ChainData';
 import { ChainSession, ChainSessionType } from '../types/chain/ChainSession';
 import { ChainStep } from '../types/chain/ChainStep';
 import { MasteryInfo, MasteryInfoMap } from '../types/chain/MasteryLevel';
-import { ChainData } from '../types/chain/ChainData';
 import {
   ChainStepPromptLevel,
   ChainStepPromptLevelMap,
@@ -157,7 +157,7 @@ export class ChainMastery {
       return {
         chain_step_id: chainStep.id,
         chain_step: chainStep,
-        status: ChainStepStatus.not_complete,
+        status: ChainStepStatus.not_yet_started,
         session_type: newDraftSession.session_type,
       } as StepAttempt;
     });
@@ -375,7 +375,7 @@ export class ChainMastery {
     m.dateBoosterMastered = this.getDateFor(stepAttempts, m.numAttemptsSince.boosterMastered);
 
     // Set step status
-    m.stepStatus = this.getStepStatus(stepAttempts, m); // TODO
+    m.stepStatus = this.getStepStatus(stepAttempts, m);
 
     return m;
   }
@@ -855,13 +855,25 @@ export class ChainMastery {
    * @param m: MasteryInfo object, populated with milestone dates and numAttemptsSince.
    */
   getStepStatus(stepAttempts: StepAttempt[], m: MasteryInfo): ChainStepStatus {
-    if (
-      // Step has been mastered, and no booster is required OR
-      (m.dateMastered && m.numAttemptsSince.firstMastered >= 0 && !m.dateBoosterInitiated) ||
-      // Step required booster, and it was mastered again
-      (m.dateBoosterMastered && m.numAttemptsSince.boosterMastered >= 0)
-    ) {
+    const needsBooster = this.chainStepNeedsBooster(stepAttempts);
+    const neverAttempted = stepAttempts.every(s => s.status === ChainStepStatus.not_yet_started);
+
+    if (neverAttempted) {
+      return ChainStepStatus.not_yet_started;
+    }
+
+    // Step has been mastered, and no booster is required
+    if (m.dateMastered && !needsBooster) {
       return ChainStepStatus.mastered;
+    }
+
+    // Step required booster, and it was mastered again
+    if (m.dateBoosterMastered && !needsBooster) {
+      return ChainStepStatus.booster_mastered;
+    }
+
+    if ((m.dateBoosterInitiated && !m.dateBoosterMastered) || needsBooster) {
+      return ChainStepStatus.booster_needed;
     }
 
     if (
@@ -874,14 +886,6 @@ export class ChainMastery {
         m.numAttemptsSince.lastCompletedWithoutPrompt >= NUM_PROMPTED_ATTEMPTS_FOR_FOCUS)
     ) {
       return ChainStepStatus.focus;
-    }
-
-    if (m.dateBoosterMastered) {
-      return ChainStepStatus.focus;
-    }
-
-    if (m.dateBoosterInitiated || this.chainStepNeedsBooster(stepAttempts)) {
-      return ChainStepStatus.booster_needed;
     }
 
     return ChainStepStatus.not_complete;

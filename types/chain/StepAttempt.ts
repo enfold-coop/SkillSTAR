@@ -10,6 +10,7 @@ export interface ChallengingBehavior {
 }
 
 export enum ChainStepStatus {
+  'not_yet_started' = 'not_yet_started',
   'not_complete' = 'not_complete',
   'focus' = 'focus',
   'mastered' = 'mastered',
