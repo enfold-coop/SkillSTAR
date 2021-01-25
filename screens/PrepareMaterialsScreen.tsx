@@ -84,7 +84,6 @@ const PrepareMaterialsScreen: FC<Props> = props => {
                 navigation.navigate('StepScreen');
               } else {
                 navigation.navigate('BaselineAssessmentScreen');
-                // navigation.navigate('BaselineAssessmentScreen');
               }
             }}
           >
