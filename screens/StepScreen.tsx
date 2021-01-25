@@ -29,7 +29,6 @@ const StepScreen = (): JSX.Element => {
    */
   useEffect(() => {
     let isCancelled = false;
-
     const _load = async () => {
       if (!isCancelled) {
         if (!chainData) {
@@ -316,6 +315,8 @@ const styles = StyleSheet.create({
   },
   neededPromptingBtn: {
     margin: 15,
+    // fontSize:26,
+    textAlign:"center"
   },
   exitButton: {},
   nextBackBtnsContainer: {
