@@ -1,12 +1,12 @@
-import React from 'react';
 import { API_URL } from '@env';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import NetInfo from '@react-native-community/netinfo';
+import React from 'react';
 import { parse, stringify } from 'telejson';
+import { ChainData, SkillstarChain } from '../types/chain/ChainData';
 import { ChainSession } from '../types/chain/ChainSession';
 import { ChainStep } from '../types/chain/ChainStep';
 import { MasteryInfo } from '../types/chain/MasteryLevel';
-import { ChainData, SkillstarChain } from '../types/chain/ChainData';
 import { StarDriveFlow } from '../types/chain/StarDriveFlow';
 import { ContextDispatchAction, ContextStateValue } from '../types/Context';
 import { Participant, User } from '../types/User';
@@ -206,6 +206,11 @@ export class ApiService {
 
   // Add a new chain if none exists. Otherwise updated an existing chain.
   static async upsertChainData(data: SkillstarChain): Promise<SkillstarChain | undefined> {
+    if (!data) {
+      console.error('ApiService.ts > upsertChainData > No chain data to upsert.');
+      return;
+    }
+
     const questionnaireId = data && data.hasOwnProperty('id') ? data.id : await ApiService.getChainQuestionnaireId();
 
     if (questionnaireId !== undefined) {
@@ -499,8 +504,8 @@ export class ApiService {
 
   static async _parseResponse(response: Response, methodName: string, requestMethod: string | undefined): Promise<any> {
     if (!response.ok) {
-      console.error(response);
-      throw new Error(`Error in ${methodName} ${requestMethod} response: ` + response.statusText);
+      const errorMessage = `Error in ${methodName} ${requestMethod} response: ` + response.statusText;
+      console.error(errorMessage);
     } else {
       return await response.json();
     }

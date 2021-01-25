@@ -5,6 +5,7 @@ import React, { createRef, ReactElement, useEffect, useState } from 'react';
 import { Button, Provider } from 'react-native-paper';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { Loading } from './components/Loading/Loading';
+import { ChainMasteryProvider } from './context/ChainMasteryProvider';
 import {
   BaselineAssessmentScreen,
   ChainsHomeScreen,
@@ -151,7 +152,9 @@ export default function App(): JSX.Element | null {
   return isLoadingComplete ? (
     <SafeAreaProvider>
       <Provider theme={globalTheme}>
-        <Navigation />
+        <ChainMasteryProvider>
+          <Navigation />
+        </ChainMasteryProvider>
       </Provider>
     </SafeAreaProvider>
   ) : (

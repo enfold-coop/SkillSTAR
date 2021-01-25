@@ -16,6 +16,7 @@ import ScorecardListItem from '../components/Chain/ScorecardListItem';
 import SessionDataAside from '../components/Chain/SessionDataAside';
 import AppHeader from '../components/Header/AppHeader';
 import { Loading } from '../components/Loading/Loading';
+import { useChainMasteryDispatch } from '../context/ChainMasteryProvider';
 import { ImageAssets } from '../data/images';
 import { ApiService } from '../services/ApiService';
 import { ChainMastery } from '../services/ChainMastery';
@@ -23,8 +24,6 @@ import CustomColors from '../styles/Colors';
 import { ChainData, SkillstarChain } from '../types/chain/ChainData';
 import { ChainSession, ChainSessionType } from '../types/chain/ChainSession';
 import { ChainStep } from '../types/chain/ChainStep';
-import { MasteryInfo } from '../types/chain/MasteryLevel';
-import { ChainStepStatus } from '../types/chain/StepAttempt';
 import { Participant } from '../types/User';
 
 // Chain Home Screen
@@ -39,6 +38,7 @@ const ChainsHomeScreen = (): JSX.Element => {
   const [draftChainSession, setDraftChainSession] = useState<ChainSession>();
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [chainMastery, setChainMastery] = useState<ChainMastery>();
+  const chainMasteryDispatch = useChainMasteryDispatch();
 
   /** LIFECYCLE METHODS */
   // Runs on load.
@@ -104,32 +104,62 @@ const ChainsHomeScreen = (): JSX.Element => {
   useEffect(() => {
     let isCancelled = false;
     const _load = async () => {
-      if (chainSteps !== undefined && chainData != undefined && !isCancelled) {
+      if (chainSteps && chainSteps.length > 0 && chainData && !isCancelled) {
         const mastery = new ChainMastery(chainSteps, chainData);
         setChainMastery(mastery);
-
-        if (chainData.sessions && chainData.sessions.length > 0) {
-          const lastSession = chainData.sessions[chainData.sessions.length - 1];
-          await ApiService.contextDispatch({
-            type: 'session',
-            payload: lastSession,
-          });
-
-          if (!isCancelled) {
-            setDraftChainSession(lastSession);
-          }
-        } else if (chainSteps && chainSteps.length > 0) {
-          if (!isCancelled && chainMastery) {
-            setDraftChainSession(chainMastery.draftSession);
-            const dbChainData = await ApiService.upsertChainData(chainMastery.chainData);
-            if (dbChainData && !isCancelled) {
-              setChainData(new ChainData(dbChainData));
-            }
-          }
-        }
+        chainMasteryDispatch({ type: 'chainMastery', payload: mastery });
       }
+    };
 
-      if (draftChainSession && draftChainSession.session_type && !isCancelled) {
+    if (!isCancelled) {
+      _load();
+    }
+
+    return () => {
+      isCancelled = true;
+    };
+  }, [chainData]);
+
+  // Runs when chainMastery is updated.
+  useEffect(() => {
+    let isCancelled = false;
+    const _load = async () => {
+      if (!isCancelled && chainMastery && chainMastery.chainData && chainMastery.draftSession) {
+        setDraftChainSession(chainMastery.draftSession);
+
+        await ApiService.contextDispatch({
+          type: 'sessionNumber',
+          payload: chainMastery.chainData.sessions.length,
+        });
+
+        await ApiService.contextDispatch({
+          type: 'session',
+          payload: chainMastery.draftSession,
+        });
+
+        await ApiService.contextDispatch({
+          type: 'chainData',
+          payload: chainMastery.chainData,
+        });
+      }
+    };
+
+    if (!isCancelled) {
+      _load();
+    }
+
+    return () => {
+      isCancelled = true;
+    };
+  }, [chainMastery]);
+
+  // Runs when draft chain session is changed.
+  useEffect(() => {
+    let isCancelled = false;
+
+    const _load = async () => {
+      if (!isCancelled && draftChainSession && draftChainSession.session_type) {
+        console.log('draftChainSession.session_type', draftChainSession.session_type);
         await ApiService.contextDispatch({ type: 'sessionType', payload: draftChainSession.session_type });
 
         if (!isCancelled) {
@@ -144,6 +174,11 @@ const ChainsHomeScreen = (): JSX.Element => {
             setAsideContents(BOOSTER_INSTRUCTIONS);
           }
         }
+      } else {
+        console.log('draftChainSession', draftChainSession);
+        if (draftChainSession) {
+          console.log('draftChainSession.session_type', draftChainSession.session_type);
+        }
       }
     };
 
@@ -154,14 +189,14 @@ const ChainsHomeScreen = (): JSX.Element => {
     return () => {
       isCancelled = true;
     };
-  }, [chainData]);
+  }, [draftChainSession]);
 
   // Runs when participant and/or device orientation is changed.
   useEffect(() => {
     let isCancelled = false;
 
     const _load = async () => {
-      if (participant && (!chainData || (chainData && chainData.id === undefined))) {
+      if (participant) {
         // Check that the current participant has chain data. If not, add it.
         const dbData = await ApiService.getChainDataForSelectedParticipant();
 
@@ -175,7 +210,6 @@ const ChainsHomeScreen = (): JSX.Element => {
             const newDbData = await ApiService.addChainData(newData);
             if (!isCancelled && newDbData) {
               const newChainData = new ChainData(newDbData);
-              //   console.log('newChainData added for participant');
               await ApiService.contextDispatch({ type: 'chainData', payload: newChainData });
             }
           } catch (e) {

@@ -1,7 +1,8 @@
+import { ChainMastery } from '../services/ChainMastery';
+import { ChainData, SkillstarChain } from './chain/ChainData';
 import { ChainSession } from './chain/ChainSession';
 import { ChainStep } from './chain/ChainStep';
 import { MasteryInfo } from './chain/MasteryLevel';
-import { ChainData, SkillstarChain } from './chain/ChainData';
 import { Participant, User } from './User';
 
 export type ContextStateValue =
@@ -19,6 +20,7 @@ export type ContextStateValue =
 
 export type ContextDispatchAction =
   | { type: 'state'; payload: any }
+  | { type: 'chainMastery'; payload: ChainMastery }
   | { type: 'chainSteps'; payload: ChainStep[] }
   | { type: 'sessionType'; payload: string }
   | { type: 'session'; payload: ChainSession }
@@ -33,6 +35,7 @@ export type ContextDispatchAction =
 export type ContextDispatch = (action: ContextDispatchAction) => void;
 
 export type ChainProviderProps = { children: React.ReactNode };
+
 export type ChainProviderState = {
   state?: any;
   dispatch?: any;

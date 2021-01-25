@@ -130,6 +130,7 @@ export class ChainMastery {
    */
   buildNewDraftSession(): ChainSession {
     const newDraftSession: ChainSession = {
+      date: new Date(),
       step_attempts: [],
     };
     let focusChainStepId: number | undefined = undefined;
@@ -159,6 +160,7 @@ export class ChainMastery {
         chain_step: chainStep,
         status: ChainStepStatus.not_yet_started,
         session_type: newDraftSession.session_type,
+        date: new Date(),
       } as StepAttempt;
     });
 
@@ -325,6 +327,13 @@ export class ChainMastery {
    */
   private buildMasteryInfoMap(): MasteryInfoMap {
     const masteryInfoMap: MasteryInfoMap = {};
+    if (this.chainData && this.chainData.sessions && this.chainData.sessions.length === 0) {
+      this.chainSteps.forEach(chainStep => {
+        masteryInfoMap[`${chainStep.id}`] = this.buildMasteryInfoForChainStep(chainStep.id);
+      });
+      return masteryInfoMap;
+    }
+
     this.chainData.sessions.forEach(session => {
       session.step_attempts.forEach(stepAttempt => {
         if (stepAttempt && stepAttempt.chain_step_id !== undefined && stepAttempt.status) {
@@ -434,6 +443,10 @@ export class ChainMastery {
   numSinceLastCompleted(stepAttempts: StepAttempt[]): number {
     let lastCompletedIndex = -1;
 
+    if (!stepAttempts || stepAttempts.length === 0) {
+      return -1;
+    }
+
     stepAttempts.forEach((stepAttempt, i) => {
       if (stepAttempt.completed) {
         lastCompletedIndex = i;
@@ -450,6 +463,10 @@ export class ChainMastery {
    */
   numSinceLastCompletedWithoutChallenge(stepAttempts: StepAttempt[]): number {
     let lastCompletedIndex = -1;
+
+    if (!stepAttempts || stepAttempts.length === 0) {
+      return -1;
+    }
 
     stepAttempts.forEach((stepAttempt, i) => {
       if (stepAttempt.completed && !stepAttempt.had_challenging_behavior) {
@@ -468,6 +485,10 @@ export class ChainMastery {
   numSinceLastCompletedWithoutPrompt(stepAttempts: StepAttempt[]): number {
     let lastCompletedIndex = -1;
 
+    if (!stepAttempts || stepAttempts.length === 0) {
+      return -1;
+    }
+
     stepAttempts.forEach((stepAttempt, i) => {
       if (stepAttempt.completed && !stepAttempt.was_prompted) {
         lastCompletedIndex = i;
@@ -485,6 +506,10 @@ export class ChainMastery {
    */
   numSinceLastProbe(stepAttempts: StepAttempt[]): number {
     let lastProbeIndex = -1;
+
+    if (!stepAttempts || stepAttempts.length === 0) {
+      return -1;
+    }
 
     stepAttempts.forEach((stepAttempt, i) => {
       if (stepAttempt.session_type === ChainSessionType.probe) {

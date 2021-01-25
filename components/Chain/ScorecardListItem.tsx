@@ -18,7 +18,6 @@ interface ScorecardListItemProps {
 
 const ScorecardListItem = (props: ScorecardListItemProps): JSX.Element => {
   const { chainStep, stepAttempt, masteryInfo } = props;
-
   const [isPressed, setIsPressed] = useState(false);
   const [stepData, setStepData] = useState<StepAttempt>();
 

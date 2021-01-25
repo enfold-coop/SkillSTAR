@@ -5,6 +5,7 @@ import { Button } from 'react-native-paper';
 import AppHeader from '../components/Header/AppHeader';
 import { Loading } from '../components/Loading/Loading';
 import DataVerificationList from '../components/Probe/DataVerificationList';
+import { useChainMasteryState } from '../context/ChainMasteryProvider';
 import { ApiService } from '../services/ApiService';
 import { ChainMastery } from '../services/ChainMastery';
 import CustomColors from '../styles/Colors';
@@ -24,32 +25,32 @@ const BaselineAssessmentScreen = (): JSX.Element => {
   const [chainMastery, setChainMastery] = useState<ChainMastery>();
   const [chainSession, setChainSession] = useState<ChainSession>();
   const [chainSteps, setChainSteps] = useState<ChainStep[]>();
+  const chainMasteryState = useChainMasteryState();
 
   /** START: Lifecycle calls */
   useEffect(() => {
     let isCancelled = false;
 
     const _load = async () => {
-      const contextChainData = await ApiService.contextState('chainData');
-      if (!isCancelled && !chainData && contextChainData) {
-        const newChainData = new ChainData(contextChainData);
-        setChainData(newChainData);
-      }
+      // Test: is Chain Mastery context set?
+      const contextChainMastery = chainMasteryState.chainMastery;
 
-      const contextChainSteps = await ApiService.contextState('chainSteps');
-      if (!isCancelled && !chainSteps && contextChainSteps) {
-        setChainSteps(contextChainSteps as ChainStep[]);
-      }
+      if (contextChainMastery && contextChainMastery.chainData) {
+        if (!isCancelled && !chainMastery) {
+          setChainMastery(contextChainMastery);
+        }
 
-      if (!isCancelled && chainSteps && chainData) {
-        if (!isCancelled && !chainSession) {
-          const newChainMastery = new ChainMastery(chainSteps, chainData);
+        if (!isCancelled && !chainData && contextChainMastery.chainData) {
+          setChainData(contextChainMastery.chainData);
+        }
 
-          if (newChainMastery && newChainMastery.draftSession && !isCancelled) {
-            setChainMastery(newChainMastery);
-            setChainSession(newChainMastery.draftSession);
-            setSessionReady(true);
-          }
+        if (!isCancelled && !chainSteps && contextChainMastery.chainSteps) {
+          setChainSteps(contextChainMastery.chainSteps);
+        }
+
+        if (!isCancelled && !chainSession && contextChainMastery.draftSession) {
+          setChainSession(contextChainMastery.draftSession);
+          setSessionReady(true);
         }
       }
     };

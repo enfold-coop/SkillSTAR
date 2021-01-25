@@ -1,6 +1,7 @@
 import React from 'react';
 import renderer from 'react-test-renderer';
 import { wait } from '../_util/testing/wait';
+import { ChainMasteryProvider } from '../context/ChainMasteryProvider';
 import ChainsHomeScreen from './ChainsHomeScreen';
 
 const mockedNavigate = jest.fn();
@@ -21,7 +22,13 @@ describe('ChainsHomeScreen', () => {
   });
 
   it('renders correctly', async () => {
-    const tree = await renderer.create(<ChainsHomeScreen />).toJSON();
+    const tree = await renderer
+      .create(
+        <ChainMasteryProvider>
+          <ChainsHomeScreen />
+        </ChainMasteryProvider>,
+      )
+      .toJSON();
     expect(tree).toMatchSnapshot();
   });
 });
