@@ -23,6 +23,12 @@ export function MasteryIcon(props: MasteryIconProps): JSX.Element {
   const statusMap = ChainStepStatusMap[chainStepStatus as string];
 
   const icons: { [key: string]: MasteryStatus } = {
+    not_yet_started: {
+      stepStatus: ChainStepStatus.not_yet_started,
+      label: 'Not Started',
+      icon: 'not_started',
+      color: CustomColor.uva.gray,
+    },
     not_complete: {
       stepStatus: ChainStepStatus.not_complete,
       label: 'Not Started',
@@ -35,9 +41,21 @@ export function MasteryIcon(props: MasteryIconProps): JSX.Element {
       icon: 'focus_step',
       color: CustomColor.uva.mountain,
     },
+    booster_needed: {
+      stepStatus: ChainStepStatus.booster_needed,
+      label: 'Focus Step',
+      icon: 'focus_step',
+      color: CustomColor.uva.mountain,
+    },
     mastered: {
       stepStatus: ChainStepStatus.mastered,
       label: 'Mastered',
+      icon: 'mastered',
+      color: CustomColor.uva.mountain,
+    },
+    booster_mastered: {
+      stepStatus: ChainStepStatus.booster_mastered,
+      label: 'Booster Mastered',
       icon: 'mastered',
       color: CustomColor.uva.mountain,
     },
@@ -51,7 +69,7 @@ export function MasteryIcon(props: MasteryIconProps): JSX.Element {
       <SkillStarIcons name={iconMap.icon} size={size} style={styles.icon} color={iconMap.color} />
     </View>
   ) : (
-    <Text>{`Icon Error`}</Text>
+    <Text>{`Icon Error: ${key}`}</Text>
   );
 }
 

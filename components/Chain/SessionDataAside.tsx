@@ -69,6 +69,7 @@ const SessionDataAside = (props: SessionDataAsideProps): JSX.Element => {
           sessionType={ChainSessionType.training}
           stepAttempt={session.step_attempts[0]}
           promptLevel={ChainStepPromptLevel.full_physical}
+          asideContent={asideContent}
         />
       );
     } else {

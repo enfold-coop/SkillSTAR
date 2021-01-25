@@ -129,18 +129,20 @@ const ChainsHomeScreen = (): JSX.Element => {
         }
       }
 
-      if (draftChainSession && !isCancelled) {
-        if (draftChainSession.session_type === ChainSessionType.training) {
-          await ApiService.contextDispatch({ type: 'sessionType', payload: 'training' });
-          setBtnText(START_TRAINING_SESSION_BTN);
-          setAsideContents(TRAINING_INSTRUCTIONS);
-        } else if (draftChainSession.session_type === ChainSessionType.probe) {
-          await ApiService.contextDispatch({ type: 'sessionType', payload: 'probe' });
-          setBtnText(START_PROBE_SESSION_BTN);
-          setAsideContents(PROBE_INSTRUCTIONS);
-        } else if (draftChainSession.session_type === ChainSessionType.booster) {
-          setBtnText(START_BOOSTER_SESSION_BTN);
-          setAsideContents(BOOSTER_INSTRUCTIONS);
+      if (draftChainSession && draftChainSession.session_type && !isCancelled) {
+        await ApiService.contextDispatch({ type: 'sessionType', payload: draftChainSession.session_type });
+
+        if (!isCancelled) {
+          if (draftChainSession.session_type === ChainSessionType.training) {
+            setBtnText(START_TRAINING_SESSION_BTN);
+            setAsideContents(TRAINING_INSTRUCTIONS);
+          } else if (draftChainSession.session_type === ChainSessionType.probe) {
+            setBtnText(START_PROBE_SESSION_BTN);
+            setAsideContents(PROBE_INSTRUCTIONS);
+          } else if (draftChainSession.session_type === ChainSessionType.booster) {
+            setBtnText(START_BOOSTER_SESSION_BTN);
+            setAsideContents(BOOSTER_INSTRUCTIONS);
+          }
         }
       }
     };
@@ -200,10 +202,6 @@ const ChainsHomeScreen = (): JSX.Element => {
   const key = chainData ? chainData.participant_id : -1;
   const chainSessionId = draftChainSession && draftChainSession.id !== undefined ? draftChainSession.id : -1;
 
-  function _getMasteryInfo(chainData: ChainData, chainStepId: number) {
-    return { chainStepId: chainStepId, stepStatus: ChainStepStatus.not_complete } as MasteryInfo;
-  }
-
   return (
     <ImageBackground
       key={'chains_home_sreen_' + key}
@@ -219,18 +217,19 @@ const ChainsHomeScreen = (): JSX.Element => {
             setParticipant(selectedParticipant);
           }}
         />
-        {!isLoading && chainSteps && chainData ? (
+        {!isLoading && chainSteps && chainData && chainMastery && chainMastery.draftSession ? (
           <View style={styles.listContainer}>
             <SessionDataAside asideContent={asideContent} />
             {chainSteps && (
               <ScrollView style={styles.list}>
-                {chainSteps.map(chainStep => {
-                  return chainData ? (
+                {chainMastery.draftSession.step_attempts.map(stepAttempt => {
+                  const chainStep = stepAttempt.chain_step || chainSteps.find(s => s.id === stepAttempt.chain_step_id);
+                  return chainMastery && chainStep ? (
                     <ScorecardListItem
-                      key={'scorecard_list_chain_step_' + chainStep.id}
+                      key={'scorecard_list_chain_step_' + stepAttempt.chain_step_id}
                       chainStep={chainStep}
-                      stepAttempt={chainData.getStep(chainSessionId, chainStep.id)}
-                      masteryInfo={_getMasteryInfo(chainData, chainStep.id)}
+                      stepAttempt={stepAttempt}
+                      masteryInfo={chainMastery.masteryInfoMap[stepAttempt.chain_step_id]}
                     />
                   ) : (
                     <Text>{`Error`}</Text>
