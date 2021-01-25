@@ -28,6 +28,7 @@ const SessionDataAside = (props: SessionDataAsideProps): JSX.Element => {
   const [modalVis, setModalVis] = useState(false);
   const [session, setSession] = useState<ChainSession>();
   const [sessionNumber, setSessionNumber] = useState<number>(0);
+  const { asideContent } = props;
 
   useEffect(() => {
     let isCancelled = false;

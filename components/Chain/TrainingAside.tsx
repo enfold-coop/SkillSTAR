@@ -7,14 +7,16 @@ interface TrainingAsideProps {
   sessionType?: ChainSessionType;
   stepAttempt?: StepAttempt;
   promptLevel?: ChainStepPromptLevel;
+  asideContent: string;
 }
 
 const TrainingAside = (props: TrainingAsideProps): JSX.Element => {
-  const { sessionType, stepAttempt, promptLevel } = props;
+  const { sessionType, stepAttempt, promptLevel, asideContent } = props;
 
   return sessionType && stepAttempt && promptLevel ? (
     <View style={styles.container}>
       <Text style={styles.headerText}>{`${sessionType} Session`}</Text>
+      <Text>{asideContent}</Text>
       <Text style={styles.instructionText}>
         {`Focus Step: ${stepAttempt.chain_step ? stepAttempt.chain_step.instruction : '...'}`}
       </Text>
