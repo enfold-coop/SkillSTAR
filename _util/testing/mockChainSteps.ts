@@ -16,7 +16,7 @@ export const mockChainSteps: ChainStep[] = [
   {
     id: 2,
     name: 'toothbrushing_03',
-    instruction: 'Get toothpaste and toothbrush wet',
+    instruction: 'Get toothbrush wet',
     last_updated: new Date('2021-01-01T01:01:01.010101+01:01'),
   },
   {
