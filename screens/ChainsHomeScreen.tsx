@@ -16,15 +16,13 @@ import ScorecardListItem from '../components/Chain/ScorecardListItem';
 import SessionDataAside from '../components/Chain/SessionDataAside';
 import AppHeader from '../components/Header/AppHeader';
 import { Loading } from '../components/Loading/Loading';
-import { useChainMasteryDispatch } from '../context/ChainMasteryProvider';
+import { useChainMasteryDispatch, useChainMasteryState } from '../context/ChainMasteryProvider';
+import { useParticipantState } from '../context/ParticipantProvider';
 import { ImageAssets } from '../data/images';
 import { ApiService } from '../services/ApiService';
-import { ChainMastery } from '../services/ChainMastery';
 import CustomColors from '../styles/Colors';
 import { ChainData, SkillstarChain } from '../types/chain/ChainData';
-import { ChainSession, ChainSessionType } from '../types/chain/ChainSession';
-import { ChainStep } from '../types/chain/ChainStep';
-import { Participant } from '../types/User';
+import { ChainSessionType } from '../types/chain/ChainSession';
 
 // Chain Home Screen
 const ChainsHomeScreen = (): JSX.Element => {
@@ -32,152 +30,41 @@ const ChainsHomeScreen = (): JSX.Element => {
   const [asideContent, setAsideContents] = useState('');
   const [btnText, setBtnText] = useState<string>('');
   const { portrait } = useDeviceOrientation();
-  const [participant, setParticipant] = useState<Participant>();
-  const [chainSteps, setChainSteps] = useState<ChainStep[]>();
-  const [chainData, setChainData] = useState<ChainData>();
-  const [draftChainSession, setDraftChainSession] = useState<ChainSession>();
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [chainMastery, setChainMastery] = useState<ChainMastery>();
+  const participantState = useParticipantState();
+  const chainMasteryState = useChainMasteryState();
   const chainMasteryDispatch = useChainMasteryDispatch();
 
   /** LIFECYCLE METHODS */
-  // Runs on load.
-  useEffect(() => {
-    let isCancelled = false;
-
-    const _load = async () => {
-      if (!isCancelled) {
-        // Load selected participant
-        if (!participant) {
-          await ApiService.load<Participant>(
-            'participant',
-            ApiService.getSelectedParticipant,
-            setParticipant,
-            isCancelled,
-          );
-        }
-      }
-    };
-
-    _load();
-
-    return () => {
-      isCancelled = true;
-    };
-  }, []);
-
-  // Runs when participant is updated.
-  useEffect(() => {
-    let isCancelled = false;
-
-    const _load = async () => {
-      if (!isCancelled) {
-        // Load chain steps
-        if (!chainSteps) {
-          await ApiService.load<ChainStep[]>('chainSteps', ApiService.getChainSteps, setChainSteps, isCancelled);
-        }
-
-        // Load chain data
-        if (!chainData) {
-          await ApiService.load<ChainData>(
-            'chainData',
-            ApiService.getChainDataForSelectedParticipant,
-            setChainData,
-            isCancelled,
-          );
-        }
-      }
-
-      if (!isCancelled) {
-        setIsLoading(false);
-      }
-    };
-
-    _load();
-
-    return () => {
-      isCancelled = true;
-    };
-  }, [participant]);
-
-  // Runs when chainData is updated.
-  useEffect(() => {
-    let isCancelled = false;
-    const _load = async () => {
-      if (chainSteps && chainSteps.length > 0 && chainData && !isCancelled) {
-        const mastery = new ChainMastery(chainSteps, chainData);
-        setChainMastery(mastery);
-        chainMasteryDispatch({ type: 'chainMastery', payload: mastery });
-      }
-    };
-
-    if (!isCancelled) {
-      _load();
-    }
-
-    return () => {
-      isCancelled = true;
-    };
-  }, [chainData]);
-
-  // Runs when chainMastery is updated.
-  useEffect(() => {
-    let isCancelled = false;
-    const _load = async () => {
-      if (!isCancelled && chainMastery && chainMastery.chainData && chainMastery.draftSession) {
-        setDraftChainSession(chainMastery.draftSession);
-
-        await ApiService.contextDispatch({
-          type: 'sessionNumber',
-          payload: chainMastery.chainData.sessions.length,
-        });
-
-        await ApiService.contextDispatch({
-          type: 'session',
-          payload: chainMastery.draftSession,
-        });
-
-        await ApiService.contextDispatch({
-          type: 'chainData',
-          payload: chainMastery.chainData,
-        });
-      }
-    };
-
-    if (!isCancelled) {
-      _load();
-    }
-
-    return () => {
-      isCancelled = true;
-    };
-  }, [chainMastery]);
-
   // Runs when draft chain session is changed.
   useEffect(() => {
     let isCancelled = false;
 
     const _load = async () => {
-      if (!isCancelled && draftChainSession && draftChainSession.session_type) {
-        console.log('draftChainSession.session_type', draftChainSession.session_type);
-        await ApiService.contextDispatch({ type: 'sessionType', payload: draftChainSession.session_type });
+      if (
+        !isCancelled &&
+        chainMasteryState &&
+        chainMasteryState.chainMastery &&
+        chainMasteryState.chainMastery.draftSession &&
+        chainMasteryState.chainMastery.draftSession.session_type
+      ) {
+        console.log(
+          'chainMasteryState.chainMastery.draftSession.session_type',
+          chainMasteryState.chainMastery.draftSession.session_type,
+        );
+        const draftSessionType = chainMasteryState.chainMastery.draftSession.session_type;
 
         if (!isCancelled) {
-          if (draftChainSession.session_type === ChainSessionType.training) {
+          if (draftSessionType === ChainSessionType.training) {
             setBtnText(START_TRAINING_SESSION_BTN);
             setAsideContents(TRAINING_INSTRUCTIONS);
-          } else if (draftChainSession.session_type === ChainSessionType.probe) {
+          } else if (draftSessionType === ChainSessionType.probe) {
             setBtnText(START_PROBE_SESSION_BTN);
             setAsideContents(PROBE_INSTRUCTIONS);
-          } else if (draftChainSession.session_type === ChainSessionType.booster) {
+          } else if (draftSessionType === ChainSessionType.booster) {
             setBtnText(START_BOOSTER_SESSION_BTN);
             setAsideContents(BOOSTER_INSTRUCTIONS);
           }
-        }
-      } else {
-        console.log('draftChainSession', draftChainSession);
-        if (draftChainSession) {
-          console.log('draftChainSession.session_type', draftChainSession.session_type);
         }
       }
     };
@@ -189,20 +76,20 @@ const ChainsHomeScreen = (): JSX.Element => {
     return () => {
       isCancelled = true;
     };
-  }, [draftChainSession]);
+  }, [chainMasteryState.chainMastery]);
 
   // Runs when participant and/or device orientation is changed.
   useEffect(() => {
     let isCancelled = false;
 
     const _load = async () => {
-      if (participant) {
+      if (participantState.participant) {
         // Check that the current participant has chain data. If not, add it.
         const dbData = await ApiService.getChainDataForSelectedParticipant();
 
         if (!dbData || (dbData && dbData.id === undefined)) {
           const newData: SkillstarChain = {
-            participant_id: participant.id,
+            participant_id: participantState.participant.id,
             sessions: [],
           };
 
@@ -226,15 +113,17 @@ const ChainsHomeScreen = (): JSX.Element => {
     return () => {
       isCancelled = true;
     };
-  }, [participant, portrait]);
+  }, [participantState.participant, portrait]);
   /** END LIFECYCLE METHODS */
 
   const navToProbeOrTraining = () => {
     navigation.navigate('PrepareMaterialsScreen');
   };
 
-  const key = chainData ? chainData.participant_id : -1;
-  const chainSessionId = draftChainSession && draftChainSession.id !== undefined ? draftChainSession.id : -1;
+  const key =
+    chainMasteryState && chainMasteryState.chainMastery && chainMasteryState.chainMastery.chainData
+      ? chainMasteryState.chainMastery.chainData.participant_id
+      : -1;
 
   return (
     <ImageBackground
@@ -248,22 +137,30 @@ const ChainsHomeScreen = (): JSX.Element => {
           name={'Chains Home'}
           onParticipantChange={selectedParticipant => {
             setIsLoading(true);
-            setParticipant(selectedParticipant);
           }}
         />
-        {!isLoading && chainSteps && chainData && chainMastery && chainMastery.draftSession ? (
+        {!isLoading &&
+        chainMasteryState &&
+        chainMasteryState.chainMastery &&
+        chainMasteryState.chainMastery.chainSteps &&
+        chainMasteryState.chainMastery.chainData &&
+        chainMasteryState.chainMastery.draftSession ? (
           <View style={styles.listContainer}>
             <SessionDataAside asideContent={asideContent} />
-            {chainSteps && (
+            {chainMasteryState.chainMastery.chainSteps && (
               <ScrollView style={styles.list}>
-                {chainMastery.draftSession.step_attempts.map(stepAttempt => {
-                  const chainStep = stepAttempt.chain_step || chainSteps.find(s => s.id === stepAttempt.chain_step_id);
-                  return chainMastery && chainStep ? (
+                {chainMasteryState.chainMastery.draftSession.step_attempts.map(stepAttempt => {
+                  const chainStep =
+                    stepAttempt.chain_step ||
+                    (chainMasteryState &&
+                      chainMasteryState.chainMastery &&
+                      chainMasteryState.chainMastery.chainSteps.find(s => s.id === stepAttempt.chain_step_id));
+                  return chainMasteryState.chainMastery && chainStep ? (
                     <ScorecardListItem
                       key={'scorecard_list_chain_step_' + stepAttempt.chain_step_id}
                       chainStep={chainStep}
                       stepAttempt={stepAttempt}
-                      masteryInfo={chainMastery.masteryInfoMap[stepAttempt.chain_step_id]}
+                      masteryInfo={chainMasteryState.chainMastery.masteryInfoMap[stepAttempt.chain_step_id]}
                     />
                   ) : (
                     <Text>{`Error`}</Text>

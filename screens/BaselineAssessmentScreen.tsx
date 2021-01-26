@@ -9,10 +9,10 @@ import { useChainMasteryState } from '../context/ChainMasteryProvider';
 import { ApiService } from '../services/ApiService';
 import { ChainMastery } from '../services/ChainMastery';
 import CustomColors from '../styles/Colors';
-import { ChainSession, ChainSessionType, ChainSessionTypeMap } from '../types/chain/ChainSession';
-import { ChainStep } from '../types/chain/ChainStep';
 import { ChainData } from '../types/chain/ChainData';
-import { ChainStepStatus, StepAttempt, StepAttemptField } from '../types/chain/StepAttempt';
+import { ChainSession, ChainSessionTypeMap } from '../types/chain/ChainSession';
+import { ChainStep } from '../types/chain/ChainStep';
+import { StepAttempt, StepAttemptField } from '../types/chain/StepAttempt';
 import { DataVerificationControlCallback } from '../types/DataVerificationControlCallback';
 
 const BaselineAssessmentScreen = (): JSX.Element => {
@@ -20,82 +20,46 @@ const BaselineAssessmentScreen = (): JSX.Element => {
    * Set session type: Probe or Training
    */
   const navigation = useNavigation();
-  const [sessionReady, setSessionReady] = useState(false);
-  const [chainData, setChainData] = useState<ChainData>();
-  const [chainMastery, setChainMastery] = useState<ChainMastery>();
-  const [chainSession, setChainSession] = useState<ChainSession>();
-  const [chainSteps, setChainSteps] = useState<ChainStep[]>();
   const chainMasteryState = useChainMasteryState();
-
-  /** START: Lifecycle calls */
-  useEffect(() => {
-    let isCancelled = false;
-
-    const _load = async () => {
-      // Test: is Chain Mastery context set?
-      const contextChainMastery = chainMasteryState.chainMastery;
-
-      if (contextChainMastery && contextChainMastery.chainData) {
-        if (!isCancelled && !chainMastery) {
-          setChainMastery(contextChainMastery);
-        }
-
-        if (!isCancelled && !chainData && contextChainMastery.chainData) {
-          setChainData(contextChainMastery.chainData);
-        }
-
-        if (!isCancelled && !chainSteps && contextChainMastery.chainSteps) {
-          setChainSteps(contextChainMastery.chainSteps);
-        }
-
-        if (!isCancelled && !chainSession && contextChainMastery.draftSession) {
-          setChainSession(contextChainMastery.draftSession);
-          setSessionReady(true);
-        }
-      }
-    };
-
-    if (!isCancelled) {
-      _load();
-    }
-
-    return () => {
-      isCancelled = true;
-    };
-  }, []);
-  /** END: Lifecycle calls */
 
   const updateChainData: DataVerificationControlCallback = async (
     chainStepId: number,
     fieldName: string,
     fieldValue: StepAttemptField,
   ): Promise<void> => {
-    if (chainData && chainSession && chainSession.id !== undefined) {
+    if (
+      chainMasteryState &&
+      chainMasteryState.chainMastery &&
+      chainMasteryState.chainMastery.chainData &&
+      chainMasteryState.chainMastery.draftSession
+    ) {
       //  Get the step
-      const newStep: StepAttempt | undefined = chainData.getStep(chainSession.id, chainStepId);
-
-      if (newStep !== undefined && newStep.hasOwnProperty && newStep.hasOwnProperty(fieldName)) {
-        // Modify the value
-        // @ts-ignore-next-line
-        newStep[fieldName] = fieldValue;
-
-        //  Set the value of the fieldName for a specific step
-        if (chainData && chainData.id !== undefined) {
-          chainData.updateStep(chainSession.id, chainStepId, newStep);
+      chainMasteryState.chainMastery.draftSession.step_attempts.forEach((stepAttempt, i) => {
+        if (stepAttempt.chain_step_id === chainStepId) {
+          // Set the value of the fieldName for a specific step
+          // @ts-ignore-next-line
+          console.log('old value', chainMasteryState.chainMastery.draftSession.step_attempts[i][fieldName]);
+          // @ts-ignore-next-line
+          chainMasteryState.chainMastery.draftSession.step_attempts[i][fieldName] = fieldValue;
+          // @ts-ignore-next-line
+          console.log('new value', chainMasteryState.chainMastery.draftSession.step_attempts[i][fieldName]);
         }
-      }
+      });
     }
   };
 
   const updateSession = async (): Promise<void> => {
-    if (chainData && chainSession) {
-      if (!chainData.sessions) {
-        chainData.sessions = [];
-      }
+    if (
+      chainMasteryState &&
+      chainMasteryState.chainMastery &&
+      chainMasteryState.chainMastery.chainData &&
+      chainMasteryState.chainMastery.draftSession
+    ) {
+      chainMasteryState.chainMastery.chainData.upsertSession(chainMasteryState.chainMastery.draftSession);
 
-      chainData.sessions.push(chainSession);
+      console.log('chainMasteryState.chainMastery.chainData.id', chainMasteryState.chainMastery.chainData);
 
-      const dbChainData = await ApiService.upsertChainData(chainData);
+      const dbChainData = await ApiService.upsertChainData(chainMasteryState.chainMastery.chainData);
       if (dbChainData) {
         navigation.navigate('ChainsHomeScreen');
       } else {
@@ -104,31 +68,28 @@ const BaselineAssessmentScreen = (): JSX.Element => {
     }
   };
 
-  return (
+  return chainMasteryState &&
+    chainMasteryState.chainMastery &&
+    chainMasteryState.chainMastery.chainData &&
+    chainMasteryState.chainMastery.draftSession ? (
     <View style={styles.image}>
       <View style={styles.container}>
         <AppHeader name={'Brushing Teeth'} />
-        {sessionReady && chainSession ? (
-          <View style={styles.instructionContainer}>
-            <Text style={styles.screenHeader}>
-              {(ChainSessionTypeMap[chainSession.session_type as string].value || 'Baseline Assessment') + ' Session'}
-            </Text>
-            <Text style={styles.instruction}>
-              {`Please instruct the child to brush their teeth. As they do, please complete this survey for each step.`}
-            </Text>
-          </View>
-        ) : (
-          <Loading />
-        )}
-        <View style={styles.formContainer}>
-          {
-            <DataVerificationList
-              stepAttempts={chainSession ? chainSession.step_attempts : []}
-              onChange={updateChainData}
-            />
-          }
+        <View style={styles.instructionContainer}>
+          <Text style={styles.screenHeader}>
+            {(ChainSessionTypeMap[chainMasteryState.chainMastery.draftSession.session_type as string].value ||
+              'Baseline Assessment') + ' Session'}
+          </Text>
+          <Text style={styles.instruction}>
+            {`Please instruct the child to brush their teeth. As they do, please complete this survey for each step.`}
+          </Text>
         </View>
-
+        <View style={styles.formContainer}>
+          <DataVerificationList
+            stepAttempts={chainMasteryState.chainMastery.draftSession.step_attempts}
+            onChange={updateChainData}
+          />
+        </View>
         <View style={styles.nextBackBtnsContainer}>
           <Button
             style={styles.nextButton}
@@ -146,6 +107,8 @@ const BaselineAssessmentScreen = (): JSX.Element => {
         </View>
       </View>
     </View>
+  ) : (
+    <Loading />
   );
 };
 

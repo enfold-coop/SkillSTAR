@@ -64,19 +64,31 @@ const ScorecardListItem = (props: ScorecardListItemProps): JSX.Element => {
           <View style={styles.dropDownContainer}>
             <Text style={styles.dropDownLabel}>
               {`${'\u2022'} Date Introduced: `}
-              <Text style={styles.dropDownItemDate}>{handleDateVals(masteryInfo.dateIntroduced)}</Text>
+              <Text style={styles.dropDownItemDate}>
+                {masteryInfo && masteryInfo.dateIntroduced ? handleDateVals(masteryInfo.dateIntroduced) : 'N/A'}
+              </Text>
             </Text>
             <Text style={styles.dropDownLabel}>
               {`${'\u2022'} Date Mastered: `}
-              <Text style={styles.dropDownItemDate}>{handleDateVals(masteryInfo.dateMastered)}</Text>
+              <Text style={styles.dropDownItemDate}>
+                {masteryInfo && masteryInfo.dateMastered ? handleDateVals(masteryInfo.dateMastered) : 'N/A'}
+              </Text>
             </Text>
             <Text style={styles.dropDownLabel}>
               {`${'\u2022'} Date Booster training initiated: `}
-              <Text style={styles.dropDownItemDate}>{handleDateVals(masteryInfo.dateBoosterInitiated)}</Text>
+              <Text style={styles.dropDownItemDate}>
+                {masteryInfo && masteryInfo.dateBoosterInitiated
+                  ? handleDateVals(masteryInfo.dateBoosterInitiated)
+                  : 'N/A'}
+              </Text>
             </Text>
             <Text style={styles.dropDownLabel}>
               {`${'\u2022'} Date Mastered Booster training: `}
-              <Text style={styles.dropDownItemDate}>{handleDateVals(masteryInfo.dateBoosterMastered)}</Text>
+              <Text style={styles.dropDownItemDate}>
+                {masteryInfo && masteryInfo.dateBoosterMastered
+                  ? handleDateVals(masteryInfo.dateBoosterMastered)
+                  : 'N/A'}
+              </Text>
             </Text>
           </View>
         )}

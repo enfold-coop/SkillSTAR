@@ -25,7 +25,7 @@ const ListItemSwitch = (props: ListItemSwitchProps): JSX.Element => {
   const [isSwitchOn, setIsSwitchOn] = useState(defaultValue);
   const [label, setLabel] = useState('No');
 
-  // Sets question type swtich value type
+  // Sets question type switch value type
   const setQuestionType = () => {
     if (type === 0) {
       setIsSwitchOn(true);

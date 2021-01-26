@@ -3,7 +3,10 @@ import { useNavigation } from '@react-navigation/native';
 import React, { ReactElement, useEffect, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { Button, Menu } from 'react-native-paper';
+import { useChainMasteryDispatch } from '../../context/ChainMasteryProvider';
+import { useParticipantDispatch, useParticipantState } from '../../context/ParticipantProvider';
 import { ApiService } from '../../services/ApiService';
+import { ChainMastery } from '../../services/ChainMastery';
 import CustomColors from '../../styles/Colors';
 import { ChainStep } from '../../types/chain/ChainStep';
 import { Participant, User } from '../../types/User';
@@ -18,12 +21,14 @@ export const SelectParticipant = (props: SelectParticipantProps): ReactElement =
   const [menuItems, setMenuItems] = useState<ReactElement[]>();
   const [chainSteps, setChainSteps] = useState<ChainStep[]>();
   const [user, setUser] = useState<User>();
-  const [selectedParticipant, setSelectedParticipant] = useState<Participant>();
   const [participants, setParticipants] = useState<Participant[]>();
   const [shouldGoHome, setShouldGoHome] = useState<boolean>(false);
   const { onChange } = props;
   const closeMenu = () => setIsVisible(false);
   const openMenu = () => setIsVisible(true);
+  const participantState = useParticipantState();
+  const participantDispatch = useParticipantDispatch();
+  const chainMasteryDispatch = useChainMasteryDispatch();
 
   /** LIFECYCLE METHODS */
 
@@ -33,34 +38,34 @@ export const SelectParticipant = (props: SelectParticipantProps): ReactElement =
 
     const _load = async () => {
       if (!isCancelled) {
-        const dbSelectedParticipant = await ApiService.getSelectedParticipant();
-        if (!isCancelled && dbSelectedParticipant && !selectedParticipant && !shouldGoHome) {
-          setSelectedParticipant(dbSelectedParticipant);
+        // Load chain steps
+        if (!chainSteps) {
+          await ApiService.load<ChainStep[]>('chainSteps', ApiService.getChainSteps, setChainSteps, isCancelled);
         }
 
-        if (!isCancelled) {
+        const dbSelectedParticipant = await ApiService.getSelectedParticipant();
+        if (!isCancelled && dbSelectedParticipant && !participantState.participant && !shouldGoHome) {
+          participantDispatch({ type: 'participant', payload: dbSelectedParticipant });
+        }
+
+        if (!isCancelled && chainSteps) {
+          console.log('SelectParticipant.tsx > Participant changed');
           const dbChainData = await ApiService.getChainDataForSelectedParticipant();
 
-          if (dbChainData && dbChainData.sessions && dbChainData.sessions.length > 0) {
-            if (!isCancelled) {
-              await ApiService.contextDispatch({
-                type: 'session',
-                payload: dbChainData.sessions[dbChainData.sessions.length - 1],
-              });
-            }
+          console.log('dbChainData retrieved?', !!dbChainData);
 
-            if (!isCancelled) {
-              await ApiService.contextDispatch({
-                type: 'sessionNumber',
-                payload: dbChainData.sessions.length,
-              });
-            }
+          if (dbChainData && dbChainData.sessions) {
+            const newChainMastery = new ChainMastery(chainSteps, dbChainData);
+
+            console.log('newChainMastery instantiated?', !!newChainMastery);
+
+            chainMasteryDispatch({ type: 'chainMastery', payload: newChainMastery });
           }
         }
 
         if (!isCancelled && shouldGoHome) {
-          if (selectedParticipant) {
-            onChange(selectedParticipant);
+          if (participantState.participant) {
+            onChange(participantState.participant);
           }
           navigation.navigate('ChainsHomeScreen');
         }
@@ -74,7 +79,7 @@ export const SelectParticipant = (props: SelectParticipantProps): ReactElement =
     return () => {
       isCancelled = true;
     };
-  }, [selectedParticipant]);
+  }, [participantState.participant]);
 
   // Only runs when user or participants list are updated
   useEffect(() => {
@@ -149,7 +154,7 @@ export const SelectParticipant = (props: SelectParticipantProps): ReactElement =
 
     if (newDbParticipant) {
       closeMenu();
-      setSelectedParticipant(newDbParticipant);
+      participantDispatch({ type: 'participant', payload: newDbParticipant });
       setShouldGoHome(true);
     } else {
       closeMenu();
@@ -168,7 +173,9 @@ export const SelectParticipant = (props: SelectParticipantProps): ReactElement =
     }
   };
 
-  const btnLabel = selectedParticipant ? `Participant: ${participantName(selectedParticipant)}` : 'Select Participant';
+  const btnLabel = participantState.participant
+    ? `Participant: ${participantName(participantState.participant)}`
+    : 'Select Participant';
 
   const key = `select_participant_menu_${menuItems && menuItems.length > 0 ? menuItems.length : 0}`;
 

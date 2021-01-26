@@ -208,6 +208,7 @@ export class ChainMastery {
             numTargetLevelsMet = 0;
           }
 
+          // TODO: Session type no longer needs to interrupt the consecutive session calculation.
           // If the last 2 or 3 (depending on session type) attempts were completed at the target prompt level,
           // move on to the next prompt level.
           if (
@@ -258,6 +259,9 @@ export class ChainMastery {
       // The first 3-9 sessions should be probes.
       return true;
     } else {
+      // TODO: Have any training sessions been run at all? Return true. (Allow user to start training optionally.)
+      //  Have there been 4 training sessions in a row? Return true.
+
       // There are at least 4 attempts since the last probe session.
       for (const masteryInfo of Object.values(this.masteryInfoMap)) {
         if (masteryInfo.numAttemptsSince.lastProbe !== -1) {
@@ -584,6 +588,7 @@ export class ChainMastery {
       if (thisAttempt.completed) {
         const isConsecutive = prevAttempt ? prevAttempt.session_type === thisAttempt.session_type : false;
 
+        // TODO: Session type no longer needs to interrupt the consecutive session calculation.
         // Count consecutive session types
         if (this.isProbeStepComplete(thisAttempt)) {
           numConsecutiveCompleteProbes = isConsecutive ? numConsecutiveCompleteProbes + 1 : 1;
@@ -688,6 +693,7 @@ export class ChainMastery {
               numConsecutiveIncompleteTraining = isConsecutive ? numConsecutiveIncompleteTraining + 1 : 1;
             }
 
+            // TODO: Session type no longer needs to interrupt the consecutive session calculation.
             // If the number of consecutive incomplete sessions is at or over the threshold,
             // the next step should be a booster.
             if (
