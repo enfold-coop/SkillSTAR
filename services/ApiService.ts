@@ -22,6 +22,19 @@ export class ApiService {
     chainSteps: `${API_URL}/chain_step`,
   };
 
+  /**
+   * Retrieves the given data from the local context (if populated), the backend
+   * server (if online), or the cache (if available). Casts the returned data as
+   * the given type <T>.
+   *
+   * @type <T>: the expected type that the retrieved data should be returned as
+   * @param actionType: string name of the item to retrieve from local context
+   * @param apiMethod: the backend API method to call, if the context item is empty
+   * @param callback: the context dispatch event to call after getting the data
+   * @param isCancelled: boolean flag sent from the React useEffect hook. Should
+   * be false while the component calling this method is mounted. It should be
+   * set to true when the component is unmounted.
+   */
   static async load<T>(
     actionType: string,
     apiMethod: () => Promise<T | undefined>,
