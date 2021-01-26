@@ -1,13 +1,13 @@
 import date from 'date-and-time';
 import React, { useEffect, useState } from 'react';
 import { LayoutRectangle, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { ActivityIndicator, Card } from 'react-native-paper';
-import { ApiService } from '../../services/ApiService';
+import { Card } from 'react-native-paper';
+import { useChainMasteryState } from '../../context/ChainMasteryProvider';
 import CustomColors from '../../styles/Colors';
-import { ChainSession, ChainSessionType, ChainSessionTypeMap } from '../../types/chain/ChainSession';
-import { ChainStepPromptLevel } from '../../types/chain/StepAttempt';
+import { ChainSessionType } from '../../types/chain/ChainSession';
 import GraphModal from '../DataGraph/GraphModal';
 import { ChainsHomeGraph } from '../DataGraph/index';
+import { Loading } from '../Loading/Loading';
 import { ProbeAside, TrainingAside } from './index';
 
 interface SessionDataAsideProps {
@@ -26,27 +26,23 @@ const SessionDataAside = (props: SessionDataAsideProps): JSX.Element => {
   const [isTraining, setIsTraining] = useState(false);
   const [graphContainerDimens, setGraphContainerDimens] = useState<LayoutRectangle>();
   const [modalVis, setModalVis] = useState(false);
-  const [session, setSession] = useState<ChainSession>();
   const [sessionNumber, setSessionNumber] = useState<number>(0);
   const { asideContent } = props;
+  const chainMasteryState = useChainMasteryState();
 
   useEffect(() => {
     let isCancelled = false;
 
     const _load = async () => {
       if (!isCancelled) {
-        const contextSessionNumber = await ApiService.contextState('sessionNumber');
-        if (!isCancelled && contextSessionNumber !== undefined) {
-          setSessionNumber(contextSessionNumber as number);
-        }
-
-        const contextSession = await ApiService.contextState('session');
-        if (!isCancelled && contextSession) {
-          setSession(contextSession as ChainSession);
-
-          if (!isCancelled && contextSession.session_type === ChainSessionTypeMap.training.key) {
-            setIsTraining(true);
-          }
+        if (
+          !isCancelled &&
+          chainMasteryState.chainMastery &&
+          chainMasteryState.chainMastery.draftSession &&
+          chainMasteryState.chainMastery.draftSession.session_type === ChainSessionType.training
+        ) {
+          setSessionNumber(chainMasteryState.chainMastery.chainData.sessions.length);
+          setIsTraining(true);
         }
       }
     };
@@ -63,12 +59,13 @@ const SessionDataAside = (props: SessionDataAsideProps): JSX.Element => {
   };
 
   const setAsideContent = () => {
-    if (isTraining && session) {
+    if (isTraining && chainMasteryState.chainMastery && chainMasteryState.chainMastery.draftSession) {
+      const stepAttempt = chainMasteryState.chainMastery.draftSession.step_attempts[0];
       return (
         <TrainingAside
-          sessionType={ChainSessionType.training}
-          stepAttempt={session.step_attempts[0]}
-          promptLevel={ChainStepPromptLevel.full_physical}
+          sessionType={stepAttempt.session_type}
+          stepAttempt={stepAttempt}
+          promptLevel={stepAttempt.target_prompt_level}
           asideContent={asideContent}
         />
       );
@@ -77,10 +74,9 @@ const SessionDataAside = (props: SessionDataAsideProps): JSX.Element => {
     }
   };
 
-  const dateString =
-    session && session.date && session.date instanceof Date ? date.format(session.date, 'MM/DD/YYYY') : '...';
-
-  return session ? (
+  return chainMasteryState.chainMastery &&
+    chainMasteryState.chainMastery.draftSession &&
+    chainMasteryState.chainMastery.draftSession.date ? (
     <View style={styles.container}>
       <GraphModal visible={modalVis} handleVis={handleModal} />
       <View>
@@ -88,7 +84,9 @@ const SessionDataAside = (props: SessionDataAsideProps): JSX.Element => {
           <Card>
             <View style={styles.sessionNumbAndDateContainer}>
               <Text style={styles.sessionNum}>{`Session #${sessionNumber}`}</Text>
-              <Text style={styles.date}>{dateString}</Text>
+              <Text style={styles.date}>
+                {date.format(chainMasteryState.chainMastery.draftSession.date, 'MM/DD/YYYY')}
+              </Text>
             </View>
             <View style={styles.taskInfoContainer}>{setAsideContent()}</View>
           </Card>
@@ -114,9 +112,7 @@ const SessionDataAside = (props: SessionDataAsideProps): JSX.Element => {
       </View>
     </View>
   ) : (
-    <View>
-      <ActivityIndicator animating={true} color={CustomColors.uva.mountain} />
-    </View>
+    <Loading />
   );
 };
 

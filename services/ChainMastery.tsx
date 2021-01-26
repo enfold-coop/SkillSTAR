@@ -28,11 +28,12 @@ export class ChainMastery {
   chainSteps: ChainStep[];
   chainData: ChainData;
   masteryInfoMap: MasteryInfoMap;
-  draftSession?: ChainSession;
+  draftSession: ChainSession;
   incompleteCount = 0;
   focusedChainStepIds: number[];
   masteredChainStepIds: number[];
   unmasteredFocusedChainStepIds: number[];
+  draftFocusStepAttempt?: StepAttempt;
 
   /**
    * Initializes all of the above class variables
@@ -236,11 +237,11 @@ export class ChainMastery {
         // If this is a training session and target level hasn't been set yet,
         // set the target prompt level to the target prompt level from the last focus step.
         if (draftFocusStepIndex >= 0) {
-          const draftFocusStepAttempt = newDraftSession.step_attempts[draftFocusStepIndex];
+          this.draftFocusStepAttempt = newDraftSession.step_attempts[draftFocusStepIndex];
           if (
             (newDraftSession.session_type === ChainSessionType.training ||
               newDraftSession.session_type === ChainSessionType.booster) &&
-            !draftFocusStepAttempt.target_prompt_level
+            !this.draftFocusStepAttempt.target_prompt_level
           ) {
             newDraftSession.step_attempts[draftFocusStepIndex].target_prompt_level = lastAttemptLevel;
           }
@@ -258,10 +259,24 @@ export class ChainMastery {
     if (this.chainData.sessions.length < 3) {
       // The first 3-9 sessions should be probes.
       return true;
-    } else {
-      // TODO: Have any training sessions been run at all? Return true. (Allow user to start training optionally.)
-      //  Have there been 4 training sessions in a row? Return true.
+    }
 
+    let noTrainingSessionsEver = true;
+
+    for (const session of this.chainData.sessions) {
+      for (const stepAttempt of session.step_attempts) {
+        if (stepAttempt.session_type === ChainSessionType.training) {
+          noTrainingSessionsEver = false;
+          break;
+        }
+      }
+    }
+
+    if (noTrainingSessionsEver) {
+      // Have NO training sessions ever been run at all? Return true.
+      // TODO: Allow user to start training optionally.
+      return true;
+    } else {
       // There are at least 4 attempts since the last probe session.
       for (const masteryInfo of Object.values(this.masteryInfoMap)) {
         if (masteryInfo.numAttemptsSince.lastProbe !== -1) {

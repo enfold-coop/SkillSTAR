@@ -8,6 +8,7 @@ import { useParticipantDispatch, useParticipantState } from '../../context/Parti
 import { ApiService } from '../../services/ApiService';
 import { ChainMastery } from '../../services/ChainMastery';
 import CustomColors from '../../styles/Colors';
+import { ChainData, SkillstarChain } from '../../types/chain/ChainData';
 import { ChainStep } from '../../types/chain/ChainStep';
 import { Participant, User } from '../../types/User';
 
@@ -55,10 +56,16 @@ export const SelectParticipant = (props: SelectParticipantProps): ReactElement =
           console.log('dbChainData retrieved?', !!dbChainData);
 
           if (dbChainData && dbChainData.sessions) {
-            const newChainMastery = new ChainMastery(chainSteps, dbChainData);
+            console.log('chainSteps.length', chainSteps.length);
+
+            const newChainData = new ChainData(dbChainData);
+            console.log('newChainData instantiated?', !!newChainData);
+
+            const newChainMastery = new ChainMastery(chainSteps, newChainData);
 
             console.log('newChainMastery instantiated?', !!newChainMastery);
 
+            // Update the Chain Mastery Provider
             chainMasteryDispatch({ type: 'chainMastery', payload: newChainMastery });
           }
         }
@@ -154,6 +161,24 @@ export const SelectParticipant = (props: SelectParticipantProps): ReactElement =
 
     if (newDbParticipant) {
       closeMenu();
+
+      // Check that the current participant has chain data. If not, add it.
+      const dbData = await ApiService.getChainDataForSelectedParticipant();
+
+      if (!dbData || (dbData && dbData.id === undefined)) {
+        const newData: SkillstarChain = {
+          participant_id: newDbParticipant.id,
+          sessions: [],
+        };
+
+        try {
+          const newDbData = await ApiService.addChainData(newData);
+        } catch (e) {
+          console.error(e);
+        }
+      }
+
+      // Update the participant in the Participant Provider
       participantDispatch({ type: 'participant', payload: newDbParticipant });
       setShouldGoHome(true);
     } else {

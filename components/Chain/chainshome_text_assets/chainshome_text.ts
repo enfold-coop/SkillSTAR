@@ -4,8 +4,7 @@
 const PROBE_INSTRUCTIONS = `
   Start the probe with a simple instruction "It's time to brush your teeth."
 
-  Do not provide any prompting or supports to the student. If a step is performed incorrectly, out of sequence,
-  or the time limit for completing the step (5s) is exceeded, complete the step for the learner.
+  Do not provide any prompting or supports to the student. If a step is performed incorrectly, out of sequence, or the time limit for completing the step (5s) is exceeded, complete the step for the learner.
 `;
 
 // TODO: Edit this text
