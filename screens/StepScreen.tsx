@@ -213,16 +213,20 @@ const StepScreen = (): JSX.Element => {
             <Text style={styles.needAddlPrompt}>{`Needed Add'l Prompting`}</Text>
             <Button
               style={styles.neededPromptingBtn}
-              labelStyle={{ fontSize: 24, paddingVertical: 5, color: CustomColors.uva.white }}
+              labelStyle={{ fontSize: 28, paddingVertical: 5, color: CustomColors.uva.white }}
               color={CustomColors.uva.orange}
               mode={'contained'}
               onPress={() => {
-                console.log('NEEDING PROMPTING');
+                if (stepIndex !== undefined && chainSteps && stepIndex + 1 <= chainSteps.length - 1) {
+                  incrIndex();
+                } else {
+                  navigation.navigate('RewardsScreens');
+                }
               }}
             >{`+`}</Button>
             <Button
               style={styles.nextButton}
-              labelStyle={{ fontSize: 24, paddingVertical: 5 }}
+              labelStyle={{ fontSize: 24, paddingTop: 5, paddingBottom: 0 }}
               color={CustomColors.uva.blue}
               mode={'contained'}
               onPress={() => {
