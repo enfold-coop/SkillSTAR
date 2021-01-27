@@ -220,7 +220,6 @@ const StepScreen = (): JSX.Element => {
               onPress={() => {
                 if (stepIndex !== undefined && chainSteps && stepIndex + 1 <= chainSteps.length - 1) {
                   incrIndex();
-                //   add 
                 } else {
                   navigation.navigate('RewardsScreens');
                 }
@@ -228,7 +227,7 @@ const StepScreen = (): JSX.Element => {
             >{`+`}</Button>
             <Button
               style={styles.nextButton}
-              labelStyle={{ fontSize: 24, paddingTop: 5, paddingBottom:0 }}
+              labelStyle={{ fontSize: 24, paddingTop: 5, paddingBottom: 0 }}
               color={CustomColors.uva.blue}
               mode={'contained'}
               onPress={() => {
