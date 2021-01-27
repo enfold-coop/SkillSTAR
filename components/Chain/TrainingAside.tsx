@@ -1,31 +1,66 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-import { ChainSessionType } from '../../types/chain/ChainSession';
-import { ChainStepPromptLevel, StepAttempt } from '../../types/chain/StepAttempt';
+import { useChainMasteryState } from '../../context/ChainMasteryProvider';
+import { ChainSessionType, ChainSessionTypeMap } from '../../types/chain/ChainSession';
+import { ChainStep } from '../../types/chain/ChainStep';
+import { ChainStepPromptLevel, ChainStepPromptLevelMap, StepAttempt } from '../../types/chain/StepAttempt';
+import { Loading } from '../Loading/Loading';
+import { TRAINING_INSTRUCTIONS } from './chainshome_text_assets/chainshome_text';
 
-interface TrainingAsideProps {
-  sessionType?: ChainSessionType;
-  stepAttempt?: StepAttempt;
-  promptLevel?: ChainStepPromptLevel;
-}
+// TODO: Aside content...
+//  - Focus step
+//  - Session type
+//  - Target prompt level
+//  - Current chain step mastery level
+//  - Instructions
 
-const TrainingAside = (props: TrainingAsideProps): JSX.Element => {
-  const { sessionType, stepAttempt, promptLevel } = props;
+const TrainingAside = (): JSX.Element => {
+  const chainMasteryState = useChainMasteryState();
 
-  return sessionType && stepAttempt && promptLevel ? (
+  const getHeaderText = (): string => {
+    const stepAttempt = chainMasteryState.chainMastery && chainMasteryState.chainMastery.draftFocusStepAttempt;
+    if (stepAttempt && stepAttempt.session_type) {
+      const typeMap = ChainSessionTypeMap[stepAttempt.session_type as string];
+
+      if (typeMap) {
+        return typeMap.value;
+      }
+    }
+
+    return '';
+  };
+
+  const getFocusStepInstructions = (): string => {
+    const stepAttempt = chainMasteryState.chainMastery && chainMasteryState.chainMastery.draftFocusStepAttempt;
+    if (stepAttempt && stepAttempt.chain_step) {
+      return stepAttempt.chain_step.instruction;
+    }
+
+    return '';
+  };
+
+  const getPromptLevel = (): string => {
+    const stepAttempt = chainMasteryState.chainMastery && chainMasteryState.chainMastery.draftFocusStepAttempt;
+    if (stepAttempt && stepAttempt.target_prompt_level) {
+      const typeMap = ChainStepPromptLevelMap[stepAttempt.target_prompt_level as string];
+
+      if (typeMap) {
+        return typeMap.value;
+      }
+    }
+
+    return '';
+  };
+
+  return chainMasteryState.chainMastery && chainMasteryState.chainMastery.draftFocusStepAttempt ? (
     <View style={styles.container}>
-      <Text style={styles.headerText}>{`${sessionType} Session`}</Text>
-      <Text style={styles.instructionText}>
-        {`Focus Step: ${stepAttempt.chain_step ? stepAttempt.chain_step.instruction : '...'}`}
-      </Text>
-      <Text style={styles.instructionText}>{`Prompt Level ${promptLevel}`}</Text>
+      <Text style={styles.headerText}>{`${getHeaderText()} Session`}</Text>
+      <Text>{TRAINING_INSTRUCTIONS}</Text>
+      <Text style={styles.instructionText}>{`Focus Step: ${getFocusStepInstructions()}`}</Text>
+      <Text style={styles.instructionText}>{`Prompt Level: ${getPromptLevel()}`}</Text>
     </View>
   ) : (
-    <View>
-      <Text>{`sessionType: ${sessionType ? 'Done' : 'Loading...'}`}</Text>
-      <Text>{`stepAttempt: ${stepAttempt ? 'Done' : 'Loading...'}`}</Text>
-      <Text>{`promptLevel: ${promptLevel ? 'Done' : 'Loading...'}`}</Text>
-    </View>
+    <Loading />
   );
 };
 
