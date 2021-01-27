@@ -72,6 +72,21 @@ export class ChainData implements SkillstarChain {
   }
 
   /**
+   * Adds or updates a given session in the chain data sessions array.
+   * @param newSession: Data to update the session with
+   */
+  upsertSession(newSession: ChainSession): void {
+    console.log('*** ChainData.ts > ChainData > upsertSession ***');
+    console.log('this.sessions.length before', this.sessions.length);
+    if (newSession.id !== undefined && newSession.id !== null) {
+      this.updateSession(newSession.id, newSession);
+    } else {
+      this.sessions.push(newSession);
+    }
+    console.log('this.sessions.length after', this.sessions.length);
+  }
+
+  /**
    * Returns a specific step within a specific session
    * @param sessionId
    * @param chainStepId

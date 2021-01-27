@@ -1,12 +1,12 @@
-import React from 'react';
 import { API_URL } from '@env';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import NetInfo from '@react-native-community/netinfo';
+import React from 'react';
 import { parse, stringify } from 'telejson';
+import { ChainData, SkillstarChain } from '../types/chain/ChainData';
 import { ChainSession } from '../types/chain/ChainSession';
 import { ChainStep } from '../types/chain/ChainStep';
 import { MasteryInfo } from '../types/chain/MasteryLevel';
-import { ChainData, SkillstarChain } from '../types/chain/ChainData';
 import { StarDriveFlow } from '../types/chain/StarDriveFlow';
 import { ContextDispatchAction, ContextStateValue } from '../types/Context';
 import { Participant, User } from '../types/User';
@@ -22,6 +22,19 @@ export class ApiService {
     chainSteps: `${API_URL}/chain_step`,
   };
 
+  /**
+   * Retrieves the given data from the local context (if populated), the backend
+   * server (if online), or the cache (if available). Casts the returned data as
+   * the given type <T>.
+   *
+   * @type <T>: the expected type that the retrieved data should be returned as
+   * @param actionType: string name of the item to retrieve from local context
+   * @param apiMethod: the backend API method to call, if the context item is empty
+   * @param callback: the context dispatch event to call after getting the data
+   * @param isCancelled: boolean flag sent from the React useEffect hook. Should
+   * be false while the component calling this method is mounted. It should be
+   * set to true when the component is unmounted.
+   */
   static async load<T>(
     actionType: string,
     apiMethod: () => Promise<T | undefined>,
@@ -206,7 +219,17 @@ export class ApiService {
 
   // Add a new chain if none exists. Otherwise updated an existing chain.
   static async upsertChainData(data: SkillstarChain): Promise<SkillstarChain | undefined> {
+    console.log('data.id', data.id);
+
+    if (!data) {
+      console.error('ApiService.ts > upsertChainData > No chain data to upsert.');
+      return;
+    }
+
     const questionnaireId = data && data.hasOwnProperty('id') ? data.id : await ApiService.getChainQuestionnaireId();
+
+    console.log('questionnaireId', questionnaireId);
+    console.log('data.sessions.length', data.sessions.length);
 
     if (questionnaireId !== undefined) {
       // If there's an existing questionnaire, it's an update.
@@ -499,8 +522,8 @@ export class ApiService {
 
   static async _parseResponse(response: Response, methodName: string, requestMethod: string | undefined): Promise<any> {
     if (!response.ok) {
-      console.error(response);
-      throw new Error(`Error in ${methodName} ${requestMethod} response: ` + response.statusText);
+      const errorMessage = `Error in ${methodName} ${requestMethod} response: ` + response.statusText;
+      console.error(errorMessage);
     } else {
       return await response.json();
     }

@@ -6,10 +6,10 @@ import {
   NUM_INCOMPLETE_TRAINING_ATTEMPTS_FOR_BOOSTER,
   NUM_PROMPTED_ATTEMPTS_FOR_FOCUS,
 } from '../constants/MasteryAlgorithm';
+import { ChainData, SkillstarChain } from '../types/chain/ChainData';
 import { ChainSession, ChainSessionType } from '../types/chain/ChainSession';
 import { ChainStep } from '../types/chain/ChainStep';
 import { MasteryInfo, MasteryInfoMap } from '../types/chain/MasteryLevel';
-import { ChainData } from '../types/chain/ChainData';
 import {
   ChainStepPromptLevel,
   ChainStepPromptLevelMap,
@@ -28,11 +28,12 @@ export class ChainMastery {
   chainSteps: ChainStep[];
   chainData: ChainData;
   masteryInfoMap: MasteryInfoMap;
-  draftSession?: ChainSession;
+  draftSession: ChainSession;
   incompleteCount = 0;
   focusedChainStepIds: number[];
   masteredChainStepIds: number[];
   unmasteredFocusedChainStepIds: number[];
+  draftFocusStepAttempt?: StepAttempt;
 
   /**
    * Initializes all of the above class variables
@@ -115,41 +116,47 @@ export class ChainMastery {
   }
 
   /**
-   * Returns a draft session. This will be a container for the not-yet-completed session that the user
-   * is currently inputting data for. Depending on the state of the instance's chain data and mastery
-   * info, this may be:
+   * Returns a draft session with the given session type. If not provided, this method will decide which session type
+   * to use. Depending on the state of the instance's chain data and mastery info, this may be:
    * - An empty probe session, if the user has no attempted sessions yet
    * - The next session the participant should be attempting, if there is one.
    * - An empty probe session, if there are none left to attempt (???)
    *
+   * This will be a container for the not-yet-completed session that the user is currently inputting data for.
    * A draft session has not been saved to the database yet, so nothing in the session
    * will have IDs or backend-populated nested members (such as chain_step in the step_attempts).
    * The draft session will be stored in AsyncStorage until the user successfully completes
    * the session, submits the data, and connects to the internet.
    *
+   * @param sessionType: Optional parameter to set the session type.
    */
-  buildNewDraftSession(): ChainSession {
+  buildNewDraftSession(sessionType?: ChainSessionType): ChainSession {
     const newDraftSession: ChainSession = {
+      date: new Date(),
       step_attempts: [],
+      session_type: sessionType,
     };
     let focusChainStepId: number | undefined = undefined;
     let boosterChainStepId: number | undefined = undefined;
 
-    // Should the draft session be...
-    // ...a probe session?
-    if (this.newDraftSessionShouldBeProbeSession()) {
-      newDraftSession.session_type = ChainSessionType.probe;
-    }
+    // If no session type is passed in as a parameter, decide what kind of session this should be.
+    if (!sessionType) {
+      // Should the draft session be...
+      // ...a probe session?
+      if (this.newDraftSessionShouldBeProbeSession()) {
+        newDraftSession.session_type = ChainSessionType.probe;
+      }
 
-    // ...a booster?
-    else if ((boosterChainStepId = this.nextBoosterChainStepId) !== undefined) {
-      newDraftSession.session_type = ChainSessionType.booster;
-    }
+      // ...a booster?
+      else if ((boosterChainStepId = this.nextBoosterChainStepId) !== undefined) {
+        newDraftSession.session_type = ChainSessionType.booster;
+      }
 
-    // ...a training session?
-    else {
-      newDraftSession.session_type = ChainSessionType.training;
-      focusChainStepId = this.nextFocusChainStepId;
+      // ...a training session?
+      else {
+        newDraftSession.session_type = ChainSessionType.training;
+        focusChainStepId = this.nextFocusChainStepId;
+      }
     }
 
     // Populate step attempts
@@ -157,8 +164,9 @@ export class ChainMastery {
       return {
         chain_step_id: chainStep.id,
         chain_step: chainStep,
-        status: ChainStepStatus.not_complete,
+        status: ChainStepStatus.not_yet_started,
         session_type: newDraftSession.session_type,
+        date: new Date(),
       } as StepAttempt;
     });
 
@@ -206,6 +214,7 @@ export class ChainMastery {
             numTargetLevelsMet = 0;
           }
 
+          // TODO: Session type no longer needs to interrupt the consecutive session calculation.
           // If the last 2 or 3 (depending on session type) attempts were completed at the target prompt level,
           // move on to the next prompt level.
           if (
@@ -233,11 +242,11 @@ export class ChainMastery {
         // If this is a training session and target level hasn't been set yet,
         // set the target prompt level to the target prompt level from the last focus step.
         if (draftFocusStepIndex >= 0) {
-          const draftFocusStepAttempt = newDraftSession.step_attempts[draftFocusStepIndex];
+          this.draftFocusStepAttempt = newDraftSession.step_attempts[draftFocusStepIndex];
           if (
             (newDraftSession.session_type === ChainSessionType.training ||
               newDraftSession.session_type === ChainSessionType.booster) &&
-            !draftFocusStepAttempt.target_prompt_level
+            !this.draftFocusStepAttempt.target_prompt_level
           ) {
             newDraftSession.step_attempts[draftFocusStepIndex].target_prompt_level = lastAttemptLevel;
           }
@@ -254,6 +263,12 @@ export class ChainMastery {
   newDraftSessionShouldBeProbeSession(): boolean {
     if (this.chainData.sessions.length < 3) {
       // The first 3-9 sessions should be probes.
+      return true;
+    }
+
+    if (!this.hasHadTrainingSession) {
+      // Have NO training sessions ever been run at all? Return true.
+      // TODO: Allow user to start training optionally.
       return true;
     } else {
       // There are at least 4 attempts since the last probe session.
@@ -325,6 +340,13 @@ export class ChainMastery {
    */
   private buildMasteryInfoMap(): MasteryInfoMap {
     const masteryInfoMap: MasteryInfoMap = {};
+    if (this.chainData && this.chainData.sessions && this.chainData.sessions.length === 0) {
+      this.chainSteps.forEach(chainStep => {
+        masteryInfoMap[`${chainStep.id}`] = this.buildMasteryInfoForChainStep(chainStep.id);
+      });
+      return masteryInfoMap;
+    }
+
     this.chainData.sessions.forEach(session => {
       session.step_attempts.forEach(stepAttempt => {
         if (stepAttempt && stepAttempt.chain_step_id !== undefined && stepAttempt.status) {
@@ -375,7 +397,7 @@ export class ChainMastery {
     m.dateBoosterMastered = this.getDateFor(stepAttempts, m.numAttemptsSince.boosterMastered);
 
     // Set step status
-    m.stepStatus = this.getStepStatus(stepAttempts, m); // TODO
+    m.stepStatus = this.getStepStatus(stepAttempts, m);
 
     return m;
   }
@@ -434,6 +456,10 @@ export class ChainMastery {
   numSinceLastCompleted(stepAttempts: StepAttempt[]): number {
     let lastCompletedIndex = -1;
 
+    if (!stepAttempts || stepAttempts.length === 0) {
+      return -1;
+    }
+
     stepAttempts.forEach((stepAttempt, i) => {
       if (stepAttempt.completed) {
         lastCompletedIndex = i;
@@ -450,6 +476,10 @@ export class ChainMastery {
    */
   numSinceLastCompletedWithoutChallenge(stepAttempts: StepAttempt[]): number {
     let lastCompletedIndex = -1;
+
+    if (!stepAttempts || stepAttempts.length === 0) {
+      return -1;
+    }
 
     stepAttempts.forEach((stepAttempt, i) => {
       if (stepAttempt.completed && !stepAttempt.had_challenging_behavior) {
@@ -468,6 +498,10 @@ export class ChainMastery {
   numSinceLastCompletedWithoutPrompt(stepAttempts: StepAttempt[]): number {
     let lastCompletedIndex = -1;
 
+    if (!stepAttempts || stepAttempts.length === 0) {
+      return -1;
+    }
+
     stepAttempts.forEach((stepAttempt, i) => {
       if (stepAttempt.completed && !stepAttempt.was_prompted) {
         lastCompletedIndex = i;
@@ -485,6 +519,10 @@ export class ChainMastery {
    */
   numSinceLastProbe(stepAttempts: StepAttempt[]): number {
     let lastProbeIndex = -1;
+
+    if (!stepAttempts || stepAttempts.length === 0) {
+      return -1;
+    }
 
     stepAttempts.forEach((stepAttempt, i) => {
       if (stepAttempt.session_type === ChainSessionType.probe) {
@@ -559,6 +597,7 @@ export class ChainMastery {
       if (thisAttempt.completed) {
         const isConsecutive = prevAttempt ? prevAttempt.session_type === thisAttempt.session_type : false;
 
+        // TODO: Session type no longer needs to interrupt the consecutive session calculation.
         // Count consecutive session types
         if (this.isProbeStepComplete(thisAttempt)) {
           numConsecutiveCompleteProbes = isConsecutive ? numConsecutiveCompleteProbes + 1 : 1;
@@ -663,6 +702,7 @@ export class ChainMastery {
               numConsecutiveIncompleteTraining = isConsecutive ? numConsecutiveIncompleteTraining + 1 : 1;
             }
 
+            // TODO: Session type no longer needs to interrupt the consecutive session calculation.
             // If the number of consecutive incomplete sessions is at or over the threshold,
             // the next step should be a booster.
             if (
@@ -855,13 +895,25 @@ export class ChainMastery {
    * @param m: MasteryInfo object, populated with milestone dates and numAttemptsSince.
    */
   getStepStatus(stepAttempts: StepAttempt[], m: MasteryInfo): ChainStepStatus {
-    if (
-      // Step has been mastered, and no booster is required OR
-      (m.dateMastered && m.numAttemptsSince.firstMastered >= 0 && !m.dateBoosterInitiated) ||
-      // Step required booster, and it was mastered again
-      (m.dateBoosterMastered && m.numAttemptsSince.boosterMastered >= 0)
-    ) {
+    const needsBooster = this.chainStepNeedsBooster(stepAttempts);
+    const neverAttempted = stepAttempts.every(s => s.status === ChainStepStatus.not_yet_started);
+
+    if (neverAttempted) {
+      return ChainStepStatus.not_yet_started;
+    }
+
+    // Step has been mastered, and no booster is required
+    if (m.dateMastered && !needsBooster) {
       return ChainStepStatus.mastered;
+    }
+
+    // Step required booster, and it was mastered again
+    if (m.dateBoosterMastered && !needsBooster) {
+      return ChainStepStatus.booster_mastered;
+    }
+
+    if ((m.dateBoosterInitiated && !m.dateBoosterMastered) || needsBooster) {
+      return ChainStepStatus.booster_needed;
     }
 
     if (
@@ -874,14 +926,6 @@ export class ChainMastery {
         m.numAttemptsSince.lastCompletedWithoutPrompt >= NUM_PROMPTED_ATTEMPTS_FOR_FOCUS)
     ) {
       return ChainStepStatus.focus;
-    }
-
-    if (m.dateBoosterMastered) {
-      return ChainStepStatus.focus;
-    }
-
-    if (m.dateBoosterInitiated || this.chainStepNeedsBooster(stepAttempts)) {
-      return ChainStepStatus.booster_needed;
     }
 
     return ChainStepStatus.not_complete;
@@ -962,5 +1006,31 @@ export class ChainMastery {
   getUnmasteredFocusedChainStepIds(): number[] {
     // Remove all the mastered chain steps from the focused chain step ids.
     return this.focusedChainStepIds.filter(s => !this.masteredChainStepIds.includes(s));
+  }
+
+  get hasHadTrainingSession(): boolean {
+    for (const session of this.chainData.sessions) {
+      for (const stepAttempt of session.step_attempts) {
+        if (stepAttempt.session_type === ChainSessionType.training) {
+          return true;
+        }
+      }
+    }
+
+    return false;
+  }
+
+  setDraftSessionType(sessionType: ChainSessionType) {
+    this.draftSession = this.buildNewDraftSession(sessionType);
+  }
+
+  updateChainData(skillstarChain: SkillstarChain) {
+    this.chainData = new ChainData(skillstarChain);
+    this.masteryInfoMap = this.buildMasteryInfoMap();
+    this.focusedChainStepIds = this.getFocusedChainStepIds();
+    this.masteredChainStepIds = this.getMasteredChainStepIds();
+    this.unmasteredFocusedChainStepIds = this.getUnmasteredFocusedChainStepIds();
+    this.draftSession = this.buildNewDraftSession();
+    console.log('ChainMastery.tsx > updateChainData > Chain data updated.');
   }
 }
