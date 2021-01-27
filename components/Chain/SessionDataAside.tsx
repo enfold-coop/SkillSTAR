@@ -10,10 +10,6 @@ import { ChainsHomeGraph } from '../DataGraph/index';
 import { Loading } from '../Loading/Loading';
 import { ProbeAside, TrainingAside } from './index';
 
-interface SessionDataAsideProps {
-  asideContent: string;
-}
-
 /**
  * NEEDS:
  * ** Session type: Probe or Training,
@@ -22,59 +18,24 @@ interface SessionDataAsideProps {
  * **
  */
 
-const SessionDataAside = (props: SessionDataAsideProps): JSX.Element => {
-  const [isTraining, setIsTraining] = useState(false);
+const SessionDataAside = (): JSX.Element => {
   const [graphContainerDimens, setGraphContainerDimens] = useState<LayoutRectangle>();
   const [modalVis, setModalVis] = useState(false);
-  const [sessionNumber, setSessionNumber] = useState<number>(0);
-  const { asideContent } = props;
   const chainMasteryState = useChainMasteryState();
+  const [shouldReload, setShouldReload] = useState<boolean>(true);
 
   useEffect(() => {
-    let isCancelled = false;
-
-    const _load = async () => {
-      if (!isCancelled) {
-        if (
-          !isCancelled &&
-          chainMasteryState.chainMastery &&
-          chainMasteryState.chainMastery.draftSession &&
-          chainMasteryState.chainMastery.draftSession.session_type === ChainSessionType.training
-        ) {
-          setSessionNumber(chainMasteryState.chainMastery.chainData.sessions.length);
-          setIsTraining(true);
-        }
-      }
-    };
-
-    _load();
-
-    return () => {
-      isCancelled = true;
-    };
+    console.log('==== SessionDataAside.tsx > useEffect > chainMasteryState updated ====');
+    setShouldReload(true);
+    setShouldReload(false);
   });
 
   const handleModal = () => {
     setModalVis(!modalVis);
   };
 
-  const setAsideContent = () => {
-    if (isTraining && chainMasteryState.chainMastery && chainMasteryState.chainMastery.draftSession) {
-      const stepAttempt = chainMasteryState.chainMastery.draftSession.step_attempts[0];
-      return (
-        <TrainingAside
-          sessionType={stepAttempt.session_type}
-          stepAttempt={stepAttempt}
-          promptLevel={stepAttempt.target_prompt_level}
-          asideContent={asideContent}
-        />
-      );
-    } else {
-      return <ProbeAside />;
-    }
-  };
-
-  return chainMasteryState.chainMastery &&
+  return !shouldReload &&
+    chainMasteryState.chainMastery &&
     chainMasteryState.chainMastery.draftSession &&
     chainMasteryState.chainMastery.draftSession.date ? (
     <View style={styles.container}>
@@ -83,12 +44,19 @@ const SessionDataAside = (props: SessionDataAsideProps): JSX.Element => {
         <View>
           <Card>
             <View style={styles.sessionNumbAndDateContainer}>
-              <Text style={styles.sessionNum}>{`Session #${sessionNumber}`}</Text>
+              <Text style={styles.sessionNum}>{`Session #${chainMasteryState.chainMastery.chainData.sessions.length +
+                1}`}</Text>
               <Text style={styles.date}>
                 {date.format(chainMasteryState.chainMastery.draftSession.date, 'MM/DD/YYYY')}
               </Text>
             </View>
-            <View style={styles.taskInfoContainer}>{setAsideContent()}</View>
+            <View style={styles.taskInfoContainer}>
+              {chainMasteryState.chainMastery.draftSession.session_type === ChainSessionType.training ? (
+                <TrainingAside />
+              ) : (
+                <ProbeAside />
+              )}
+            </View>
           </Card>
         </View>
         <View

@@ -6,7 +6,7 @@ import {
   NUM_INCOMPLETE_TRAINING_ATTEMPTS_FOR_BOOSTER,
   NUM_PROMPTED_ATTEMPTS_FOR_FOCUS,
 } from '../constants/MasteryAlgorithm';
-import { ChainData } from '../types/chain/ChainData';
+import { ChainData, SkillstarChain } from '../types/chain/ChainData';
 import { ChainSession, ChainSessionType } from '../types/chain/ChainSession';
 import { ChainStep } from '../types/chain/ChainStep';
 import { MasteryInfo, MasteryInfoMap } from '../types/chain/MasteryLevel';
@@ -116,42 +116,47 @@ export class ChainMastery {
   }
 
   /**
-   * Returns a draft session. This will be a container for the not-yet-completed session that the user
-   * is currently inputting data for. Depending on the state of the instance's chain data and mastery
-   * info, this may be:
+   * Returns a draft session with the given session type. If not provided, this method will decide which session type
+   * to use. Depending on the state of the instance's chain data and mastery info, this may be:
    * - An empty probe session, if the user has no attempted sessions yet
    * - The next session the participant should be attempting, if there is one.
    * - An empty probe session, if there are none left to attempt (???)
    *
+   * This will be a container for the not-yet-completed session that the user is currently inputting data for.
    * A draft session has not been saved to the database yet, so nothing in the session
    * will have IDs or backend-populated nested members (such as chain_step in the step_attempts).
    * The draft session will be stored in AsyncStorage until the user successfully completes
    * the session, submits the data, and connects to the internet.
    *
+   * @param sessionType: Optional parameter to set the session type.
    */
-  buildNewDraftSession(): ChainSession {
+  buildNewDraftSession(sessionType?: ChainSessionType): ChainSession {
     const newDraftSession: ChainSession = {
       date: new Date(),
       step_attempts: [],
+      session_type: sessionType,
     };
     let focusChainStepId: number | undefined = undefined;
     let boosterChainStepId: number | undefined = undefined;
 
-    // Should the draft session be...
-    // ...a probe session?
-    if (this.newDraftSessionShouldBeProbeSession()) {
-      newDraftSession.session_type = ChainSessionType.probe;
-    }
+    // If no session type is passed in as a parameter, decide what kind of session this should be.
+    if (!sessionType) {
+      // Should the draft session be...
+      // ...a probe session?
+      if (this.newDraftSessionShouldBeProbeSession()) {
+        newDraftSession.session_type = ChainSessionType.probe;
+      }
 
-    // ...a booster?
-    else if ((boosterChainStepId = this.nextBoosterChainStepId) !== undefined) {
-      newDraftSession.session_type = ChainSessionType.booster;
-    }
+      // ...a booster?
+      else if ((boosterChainStepId = this.nextBoosterChainStepId) !== undefined) {
+        newDraftSession.session_type = ChainSessionType.booster;
+      }
 
-    // ...a training session?
-    else {
-      newDraftSession.session_type = ChainSessionType.training;
-      focusChainStepId = this.nextFocusChainStepId;
+      // ...a training session?
+      else {
+        newDraftSession.session_type = ChainSessionType.training;
+        focusChainStepId = this.nextFocusChainStepId;
+      }
     }
 
     // Populate step attempts
@@ -261,18 +266,7 @@ export class ChainMastery {
       return true;
     }
 
-    let noTrainingSessionsEver = true;
-
-    for (const session of this.chainData.sessions) {
-      for (const stepAttempt of session.step_attempts) {
-        if (stepAttempt.session_type === ChainSessionType.training) {
-          noTrainingSessionsEver = false;
-          break;
-        }
-      }
-    }
-
-    if (noTrainingSessionsEver) {
+    if (!this.hasHadTrainingSession) {
       // Have NO training sessions ever been run at all? Return true.
       // TODO: Allow user to start training optionally.
       return true;
@@ -1012,5 +1006,31 @@ export class ChainMastery {
   getUnmasteredFocusedChainStepIds(): number[] {
     // Remove all the mastered chain steps from the focused chain step ids.
     return this.focusedChainStepIds.filter(s => !this.masteredChainStepIds.includes(s));
+  }
+
+  get hasHadTrainingSession(): boolean {
+    for (const session of this.chainData.sessions) {
+      for (const stepAttempt of session.step_attempts) {
+        if (stepAttempt.session_type === ChainSessionType.training) {
+          return true;
+        }
+      }
+    }
+
+    return false;
+  }
+
+  setDraftSessionType(sessionType: ChainSessionType) {
+    this.draftSession = this.buildNewDraftSession(sessionType);
+  }
+
+  updateChainData(skillstarChain: SkillstarChain) {
+    this.chainData = new ChainData(skillstarChain);
+    this.masteryInfoMap = this.buildMasteryInfoMap();
+    this.focusedChainStepIds = this.getFocusedChainStepIds();
+    this.masteredChainStepIds = this.getMasteredChainStepIds();
+    this.unmasteredFocusedChainStepIds = this.getUnmasteredFocusedChainStepIds();
+    this.draftSession = this.buildNewDraftSession();
+    console.log('ChainMastery.tsx > updateChainData > Chain data updated.');
   }
 }

@@ -24,60 +24,103 @@ import { ChainSessionType } from '../types/chain/ChainSession';
 // Chain Home Screen
 const ChainsHomeScreen = (): JSX.Element => {
   const navigation = useNavigation();
-  const [asideContent, setAsideContent] = useState('');
-  const [btnText, setBtnText] = useState<string>('');
   const { portrait } = useDeviceOrientation();
   const chainMasteryState = useChainMasteryState();
+  const [shouldReload, setShouldReload] = useState<boolean>(true);
 
-  /** LIFECYCLE METHODS */
-  // Runs when draft chain session is changed.
   useEffect(() => {
-    let isCancelled = false;
+    console.log('==== ChainsHomeScreen.tsx > useEffect > chainMasteryState updated ====');
+    setShouldReload(true);
 
-    const _load = async () => {
-      if (
-        !isCancelled &&
-        chainMasteryState &&
-        chainMasteryState.chainMastery &&
-        chainMasteryState.chainMastery.draftSession.session_type
-      ) {
-        console.log('*** chainMastery updated ***');
+    console.log('chainMastery loaded:', !!chainMasteryState.chainMastery);
+    console.log('chainData loaded:', !!(chainMasteryState.chainMastery && chainMasteryState.chainMastery.chainData));
+    console.log(
+      'masteryInfoMap loaded:',
+      !!(chainMasteryState.chainMastery && chainMasteryState.chainMastery.masteryInfoMap),
+    );
+    console.log(
+      'draftSession loaded:',
+      !!(chainMasteryState.chainMastery && chainMasteryState.chainMastery.draftSession),
+    );
 
-        const draftSessionType = chainMasteryState.chainMastery.draftSession.session_type;
-        console.log('draftSessionType', draftSessionType);
-
-        if (!isCancelled) {
-          if (draftSessionType === ChainSessionType.training) {
-            setBtnText(START_TRAINING_SESSION_BTN);
-            setAsideContent(TRAINING_INSTRUCTIONS);
-          } else if (draftSessionType === ChainSessionType.probe) {
-            setBtnText(START_PROBE_SESSION_BTN);
-            setAsideContent(PROBE_INSTRUCTIONS);
-          } else if (draftSessionType === ChainSessionType.booster) {
-            setBtnText(START_BOOSTER_SESSION_BTN);
-            setAsideContent(BOOSTER_INSTRUCTIONS);
-          }
-        }
-      }
-    };
-
-    if (!isCancelled) {
-      _load();
-    }
-
-    return () => {
-      isCancelled = true;
-    };
-  }, [chainMasteryState.chainMastery]);
-
-  const navToProbeOrTraining = () => {
-    navigation.navigate('PrepareMaterialsScreen');
-  };
+    setShouldReload(false);
+  });
 
   const key =
     chainMasteryState && chainMasteryState.chainMastery && chainMasteryState.chainMastery.chainData
       ? chainMasteryState.chainMastery.chainData.participant_id
       : -1;
+
+  console.log('key', key);
+
+  const SessionButtons = (): JSX.Element => {
+    if (shouldReload || !chainMasteryState || !chainMasteryState.chainMastery) {
+      return <Loading />;
+    }
+
+    const numSessions = chainMasteryState.chainMastery.chainData.sessions.length;
+    const hasHadTrainingSession = chainMasteryState.chainMastery.hasHadTrainingSession;
+    const numSessionsSinceLastProbe = chainMasteryState.chainMastery.masteryInfoMap[0].numAttemptsSince.lastProbe;
+
+    // Show probe button if one of the following is true:
+    // - there are fewer than 3 past sessions OR
+    // - no training session has ever been attempted OR
+    // - it's been 4 sessions since the last probe
+    const showProbeButton = numSessions < 3 || !hasHadTrainingSession || numSessionsSinceLastProbe >= 4;
+
+    // Show training button if one of the following is true:
+    // - there are more than 3 past sessions, but no training session has ever been attempted OR
+    // - it's been fewer than 4 sessions since the last probe
+    const showTrainingButton =
+      (numSessions >= 3 && !hasHadTrainingSession) || (numSessions >= 3 && numSessionsSinceLastProbe < 4);
+
+    const btnWidth = showTrainingButton && showProbeButton ? '45%' : '90%';
+
+    return !shouldReload ? (
+      <View
+        style={{
+          flexDirection: 'row',
+          justifyContent: 'center',
+          alignContent: 'center',
+        }}
+      >
+        {showProbeButton && (
+          <TouchableOpacity
+            style={{ ...styles.startSessionBtn, width: btnWidth }}
+            onPress={() => {
+              // Set the draft session type to probe and go to Prepare Materials
+              if (chainMasteryState.chainMastery) {
+                chainMasteryState.chainMastery.setDraftSessionType(ChainSessionType.probe);
+                navigation.navigate('PrepareMaterialsScreen');
+              }
+            }}
+          >
+            <Animatable.Text animation={'bounceIn'} duration={2000} style={styles.btnText}>
+              {START_PROBE_SESSION_BTN}
+            </Animatable.Text>
+          </TouchableOpacity>
+        )}
+        {showTrainingButton && (
+          <TouchableOpacity
+            style={{ ...styles.startSessionBtn, width: btnWidth }}
+            onPress={() => {
+              // Set the draft session type to training and go to Prepare Materials
+              if (chainMasteryState.chainMastery) {
+                chainMasteryState.chainMastery.setDraftSessionType(ChainSessionType.training);
+                navigation.navigate('PrepareMaterialsScreen');
+              }
+            }}
+          >
+            <Animatable.Text animation={'bounceIn'} duration={2000} style={styles.btnText}>
+              {START_TRAINING_SESSION_BTN}
+            </Animatable.Text>
+          </TouchableOpacity>
+        )}
+      </View>
+    ) : (
+      <Loading />
+    );
+  };
 
   return (
     <ImageBackground
@@ -95,7 +138,7 @@ const ChainsHomeScreen = (): JSX.Element => {
         />
         {chainMasteryState.chainMastery ? (
           <View style={styles.listContainer}>
-            <SessionDataAside asideContent={asideContent} />
+            <SessionDataAside />
             {chainMasteryState.chainMastery.chainSteps && chainMasteryState.chainMastery.draftSession && (
               <ScrollView style={styles.list}>
                 {chainMasteryState.chainMastery.draftSession.step_attempts.map(stepAttempt => {
@@ -116,15 +159,7 @@ const ChainsHomeScreen = (): JSX.Element => {
         ) : (
           <Loading />
         )}
-        {btnText ? (
-          <TouchableOpacity style={[styles.startSessionBtn, { marginBottom: 0 }]} onPress={navToProbeOrTraining}>
-            <Animatable.Text animation={'bounceIn'} duration={2000} style={styles.btnText}>
-              {btnText}
-            </Animatable.Text>
-          </TouchableOpacity>
-        ) : (
-          <Loading />
-        )}
+        <SessionButtons />
       </View>
     </ImageBackground>
   );
@@ -179,12 +214,13 @@ const styles = StyleSheet.create({
     height: 60,
   },
   startSessionBtn: {
-    width: '90%',
-    alignSelf: 'center',
+    width: '50%',
+    // alignSelf: 'center',
     margin: 10,
     borderRadius: 10,
     paddingVertical: 10,
     backgroundColor: CustomColors.uva.orange,
+    marginBottom: 0,
   },
   btnText: {
     textAlign: 'center',
