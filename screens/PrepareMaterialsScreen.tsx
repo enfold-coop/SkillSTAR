@@ -4,16 +4,16 @@ import { Image, ImageBackground, StyleSheet, View } from 'react-native';
 import * as Animatable from 'react-native-animatable';
 import { Button, Card, Title } from 'react-native-paper';
 import AppHeader from '../components/Header/AppHeader';
+import { useChainMasteryState } from '../context/ChainMasteryProvider';
 import { ImageAssets } from '../data/images';
 import { MaterialsItems } from '../data/prep_materials';
-import { ApiService } from '../services/ApiService';
 import CustomColors from '../styles/Colors';
 import { ChainSessionType } from '../types/chain/ChainSession';
-import { ChainData } from '../types/chain/ChainData';
 
 const PrepareMaterialsScreen = (): JSX.Element => {
   const navigation = useNavigation();
   const [chainSessionType, setChainSessionType] = useState<ChainSessionType>();
+  const chainMasteryState = useChainMasteryState();
 
   /**
    * BEGIN: LIFECYCLE CALLS
@@ -23,22 +23,14 @@ const PrepareMaterialsScreen = (): JSX.Element => {
 
     const _load = async () => {
       if (!isCancelled) {
-        // TODO: Hook this up to the real session
-        // if (!chainSessionType) {
-        //   const contextSession = await ApiService.contextState('session');
-        //   if (!isCancelled && contextSession) {
-        //     setChainSessionType(contextSession.session_type);
-        //   }
-        // }
-
-        // For now, just base the session type on whether the session number is even or odd.
-        if (!chainSessionType) {
-          const contextChainData = await ApiService.contextState('chainData');
-          if (!isCancelled && contextChainData) {
-            const chainData = new ChainData(contextChainData);
-            const isOdd = chainData.sessions.length % 2 === 1;
-            setChainSessionType(isOdd ? ChainSessionType.training : ChainSessionType.probe);
-          }
+        if (
+          !isCancelled &&
+          !chainSessionType &&
+          chainMasteryState.chainMastery &&
+          chainMasteryState.chainMastery.draftSession &&
+          chainMasteryState.chainMastery.draftSession.session_type
+        ) {
+          setChainSessionType(chainMasteryState.chainMastery.draftSession.session_type);
         }
       }
     };
