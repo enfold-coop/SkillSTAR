@@ -124,6 +124,26 @@ export interface StepAttempt {
   target_prompt_level?: ChainStepPromptLevel;
 }
 
+// List of valid field names for the StepAttempt interface, which will keep us
+// from accidentally misspelling the field name when we try to set the field
+// for a specific step attempt.
+export type StepAttemptFieldName =
+  | 'id'
+  | 'last_updated'
+  | 'chain_step_id'
+  | 'chain_step'
+  | 'date'
+  | 'status'
+  | 'completed'
+  | 'was_prompted'
+  | 'prompt_level'
+  | 'had_challenging_behavior'
+  | 'reason_step_incomplete'
+  | 'challenging_behaviors'
+  | 'session_type'
+  | 'was_focus_step'
+  | 'target_prompt_level';
+
 export type StepAttemptField =
   | ChainSessionType
   | ChainStep

@@ -28,7 +28,7 @@ const RewardsScreens = (): JSX.Element => {
         labelStyle={{ fontSize: 28, paddingVertical: 5 }}
         style={styles.submitBtn}
         onPress={() => navigation.navigate('DataVerificationScreen')}
-      >{`Back Home`}</Button>
+      >{`Next`}</Button>
     </View>
   );
 };

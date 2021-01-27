@@ -74,7 +74,7 @@ export const SelectParticipant = (props: SelectParticipantProps): ReactElement =
           if (participantState.participant) {
             onChange(participantState.participant);
           }
-          navigation.navigate('ChainsHomeScreen');
+          navigation.navigate('ChainsHomeScreen', {});
         }
       }
     };

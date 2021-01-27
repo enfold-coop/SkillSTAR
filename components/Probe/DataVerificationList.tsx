@@ -1,26 +1,29 @@
 import React from 'react';
 import { FlatList, StyleSheet, View } from 'react-native';
 import shortid from 'shortid';
-import { StepAttempt } from '../../types/chain/StepAttempt';
+import { useChainMasteryState } from '../../context/ChainMasteryProvider';
 import { DataVerificationControlCallback } from '../../types/DataVerificationControlCallback';
+import { Loading } from '../Loading/Loading';
 import { DataVerificationListItem } from './DataVerificationListItem';
 
 interface DataVerificationListProps {
-  stepAttempts: StepAttempt[];
   onChange: DataVerificationControlCallback;
 }
 
 const DataVerificationList = (props: DataVerificationListProps): JSX.Element => {
-  const { stepAttempts, onChange } = props;
+  const { onChange } = props;
+  const chainMasteryState = useChainMasteryState();
 
-  return (
+  return chainMasteryState.chainMastery ? (
     <View style={styles.container}>
       <FlatList
-        data={stepAttempts}
+        data={chainMasteryState.chainMastery.draftSession.step_attempts}
         renderItem={({ item }) => <DataVerificationListItem stepAttempt={item} onChange={onChange} />}
         keyExtractor={() => shortid()}
       />
     </View>
+  ) : (
+    <Loading />
   );
 };
 

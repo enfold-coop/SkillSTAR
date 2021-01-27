@@ -1,5 +1,5 @@
 import { useNavigation } from '@react-navigation/native';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { Button } from 'react-native-paper';
 import AppHeader from '../components/Header/AppHeader';
@@ -7,12 +7,9 @@ import { Loading } from '../components/Loading/Loading';
 import DataVerificationList from '../components/Probe/DataVerificationList';
 import { useChainMasteryState } from '../context/ChainMasteryProvider';
 import { ApiService } from '../services/ApiService';
-import { ChainMastery } from '../services/ChainMastery';
 import CustomColors from '../styles/Colors';
-import { ChainData } from '../types/chain/ChainData';
-import { ChainSession, ChainSessionTypeMap } from '../types/chain/ChainSession';
-import { ChainStep } from '../types/chain/ChainStep';
-import { StepAttempt, StepAttemptField } from '../types/chain/StepAttempt';
+import { ChainSessionTypeMap } from '../types/chain/ChainSession';
+import { StepAttemptField, StepAttemptFieldName } from '../types/chain/StepAttempt';
 import { DataVerificationControlCallback } from '../types/DataVerificationControlCallback';
 
 const BaselineAssessmentScreen = (): JSX.Element => {
@@ -24,7 +21,7 @@ const BaselineAssessmentScreen = (): JSX.Element => {
 
   const updateChainData: DataVerificationControlCallback = async (
     chainStepId: number,
-    fieldName: string,
+    fieldName: StepAttemptFieldName,
     fieldValue: StepAttemptField,
   ): Promise<void> => {
     if (
@@ -33,18 +30,7 @@ const BaselineAssessmentScreen = (): JSX.Element => {
       chainMasteryState.chainMastery.chainData &&
       chainMasteryState.chainMastery.draftSession
     ) {
-      //  Get the step
-      chainMasteryState.chainMastery.draftSession.step_attempts.forEach((stepAttempt, i) => {
-        if (stepAttempt.chain_step_id === chainStepId) {
-          // Set the value of the fieldName for a specific step
-          // @ts-ignore-next-line
-          console.log('old value', chainMasteryState.chainMastery.draftSession.step_attempts[i][fieldName]);
-          // @ts-ignore-next-line
-          chainMasteryState.chainMastery.draftSession.step_attempts[i][fieldName] = fieldValue;
-          // @ts-ignore-next-line
-          console.log('new value', chainMasteryState.chainMastery.draftSession.step_attempts[i][fieldName]);
-        }
-      });
+      chainMasteryState.chainMastery.updateDraftSessionStep(chainStepId, fieldName, fieldValue);
     }
   };
 
@@ -87,10 +73,7 @@ const BaselineAssessmentScreen = (): JSX.Element => {
           </Text>
         </View>
         <View style={styles.formContainer}>
-          <DataVerificationList
-            stepAttempts={chainMasteryState.chainMastery.draftSession.step_attempts}
-            onChange={updateChainData}
-          />
+          <DataVerificationList onChange={updateChainData} />
         </View>
         <View style={styles.nextBackBtnsContainer}>
           <Button
