@@ -6,23 +6,20 @@ import { ImageBackground, StyleSheet, Text, View } from 'react-native';
 import * as Animatable from 'react-native-animatable';
 import { ActivityIndicator, Button } from 'react-native-paper';
 import AppHeader from '../components/Header/AppHeader';
+import { Loading } from '../components/Loading/Loading';
 import { MasteryIconContainer, ProgressBar, StarsNIconsContainer } from '../components/Steps/index';
+import { useChainMasteryState } from '../context/ChainMasteryProvider';
 import { ImageAssets } from '../data/images';
 import { videos } from '../data/videos';
-import { ApiService } from '../services/ApiService';
 import CustomColors from '../styles/Colors';
-import { ChainSession } from '../types/chain/ChainSession';
 import { ChainStep } from '../types/chain/ChainStep';
-import { ChainData } from '../types/chain/ChainData';
-import { ChainStepPromptLevel, ChainStepStatus, StepAttempt } from '../types/chain/StepAttempt';
 
 const StepScreen = (): JSX.Element => {
   const navigation = useNavigation();
   const [stepIndex, setStepIndex] = useState<number>();
-  const [chainData, setChainData] = useState<ChainData>();
-  const [session, setSession] = useState<ChainSession>();
   const [chainSteps, setChainSteps] = useState<ChainStep[]>();
   const [video, setVideo] = useState<AVPlaybackSource>();
+  const chainMasteryState = useChainMasteryState();
 
   /**
    * BEGIN: LIFECYCLE CALLS
@@ -31,27 +28,10 @@ const StepScreen = (): JSX.Element => {
     let isCancelled = false;
 
     const _load = async () => {
-      if (!isCancelled) {
-        if (!chainData) {
-          const contextChainData = await ApiService.contextState('chainData');
-          if (!isCancelled && contextChainData) {
-            setChainData(contextChainData as ChainData);
-          }
-        }
-
-        if (!session) {
-          const contextSession = await ApiService.contextState('session');
-          if (!isCancelled && contextSession) {
-            setSession(contextSession as ChainSession);
-          }
-        }
-
-        if (!chainSteps) {
-          const contextChainSteps = await ApiService.contextState('chainSteps');
-          if (!isCancelled && contextChainSteps) {
-            setChainSteps(contextChainSteps as ChainStep[]);
-            setStepIndex(0);
-          }
+      if (chainMasteryState.chainMastery) {
+        if (!isCancelled && !chainSteps) {
+          setChainSteps(chainMasteryState.chainMastery.chainSteps);
+          setStepIndex(0);
         }
       }
     };
@@ -62,25 +42,6 @@ const StepScreen = (): JSX.Element => {
       isCancelled = true;
     };
   }, []);
-
-  // Runs when session is updated.
-  useEffect(() => {
-    let isCancelled = false;
-
-    const _load = async () => {
-      if (!isCancelled && session) {
-        if (!session.step_attempts || session.step_attempts.length === 0) {
-          createAttempts();
-        }
-      }
-    };
-
-    _load();
-
-    return () => {
-      isCancelled = true;
-    };
-  }, [session]);
 
   // Runs when stepIndex is updated.
   useEffect(() => {
@@ -117,26 +78,6 @@ const StepScreen = (): JSX.Element => {
     }
   };
 
-  const createAttempts = () => {
-    if (chainData && chainSteps && session) {
-      chainSteps.forEach(chainStep => {
-        const newStepAttempt: StepAttempt = {
-          chain_step_id: chainStep.id,
-          chain_step: chainStep,
-          status: ChainStepStatus.not_complete,
-          prompt_level: ChainStepPromptLevel.full_physical,
-          completed: false,
-        };
-
-        if (session.id !== undefined && stepIndex !== undefined) {
-          chainData.updateStep(session.id, stepIndex, newStepAttempt);
-        }
-      });
-
-      setSession(session);
-    }
-  };
-
   const ReturnVideoComponent = () => {
     return video && stepIndex !== undefined ? (
       <Video
@@ -160,7 +101,7 @@ const StepScreen = (): JSX.Element => {
     <ImageBackground source={ImageAssets.sunrise_muted} resizeMode={'cover'} style={styles.image}>
       <View style={styles.container}>
         <AppHeader name={'Brush Teeth'} />
-        {chainData && session && chainSteps && stepIndex !== undefined ? (
+        {chainSteps && stepIndex !== undefined ? (
           <View style={styles.progress}>
             <Text style={styles.headline}>
               {`Step ${chainSteps[stepIndex].id + 1}: ${chainSteps[stepIndex].instruction}`}
@@ -176,9 +117,7 @@ const StepScreen = (): JSX.Element => {
             </View>
           </View>
         ) : (
-          <View>
-            <ActivityIndicator animating={true} color={CustomColors.uva.mountain} />
-          </View>
+          <Loading />
         )}
         <StarsNIconsContainer />
         <View style={styles.subContainer}>
@@ -227,7 +166,19 @@ const StepScreen = (): JSX.Element => {
               color={CustomColors.uva.blue}
               mode={'contained'}
               onPress={() => {
-                if (stepIndex !== undefined && chainSteps && stepIndex + 1 <= chainSteps.length - 1) {
+                if (!chainSteps || stepIndex === undefined) {
+                  console.error('chainSteps and/or stepIndex not loaded.');
+                  return;
+                }
+
+                const chainStep = chainSteps[stepIndex];
+
+                // Set this step attempt to completed = true
+                if (chainMasteryState.chainMastery) {
+                  chainMasteryState.chainMastery.updateDraftSessionStep(chainStep.id, 'completed', true);
+                }
+
+                if (stepIndex + 1 <= chainSteps.length - 1) {
                   incrIndex();
                 } else {
                   navigation.navigate('RewardsScreens');

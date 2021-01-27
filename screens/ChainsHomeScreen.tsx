@@ -35,7 +35,6 @@ const ChainsHomeScreen = (): JSX.Element => {
     if (!chainMasteryState || !chainMasteryState.chainMastery) {
       return <Loading />;
     }
-
     const showProbeButton = chainMasteryState.chainMastery.canStartProbeSession();
     const showTrainingButton = chainMasteryState.chainMastery.canStartTrainingSession();
     const btnWidth = showTrainingButton && showProbeButton ? '45%' : '90%';

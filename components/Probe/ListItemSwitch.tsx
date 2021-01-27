@@ -2,12 +2,13 @@ import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { Switch } from 'react-native-paper';
 import CustomColors from '../../styles/Colors';
+import { StepAttemptFieldName } from '../../types/chain/StepAttempt';
 import { DataVerificationControlCallback } from '../../types/DataVerificationControlCallback';
 
 interface ListItemSwitchProps {
-  name: string;
+  name: StepAttemptFieldName;
   type: number;
-  id: number;
+  chainStepId: number;
   defaultValue: boolean;
   onChange: DataVerificationControlCallback;
 }
@@ -21,7 +22,7 @@ const ListItemSwitch = (props: ListItemSwitchProps): JSX.Element => {
    *
    */
 
-  const { id, name, type, defaultValue, onChange } = props;
+  const { chainStepId, name, type, defaultValue, onChange } = props;
   const [isSwitchOn, setIsSwitchOn] = useState(defaultValue);
   const [label, setLabel] = useState('No');
 
@@ -41,8 +42,9 @@ const ListItemSwitch = (props: ListItemSwitchProps): JSX.Element => {
 
   // callback for setting isSwitchOn value
   const onToggleSwitch = () => {
-    setIsSwitchOn(!isSwitchOn);
-    onChange(id, name, isSwitchOn);
+    const newValue = !isSwitchOn;
+    setIsSwitchOn(newValue);
+    onChange(chainStepId, name, newValue);
   };
   //
 

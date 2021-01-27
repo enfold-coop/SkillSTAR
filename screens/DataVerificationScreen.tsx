@@ -1,5 +1,5 @@
 import { useNavigation } from '@react-navigation/native';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { FlatList, StyleSheet, Text, View } from 'react-native';
 import * as Animatable from 'react-native-animatable';
 import { ActivityIndicator, Button } from 'react-native-paper';
@@ -7,22 +7,16 @@ import { randomId } from '../_util/RandomId';
 import { DataVerifItem } from '../components/DataVerification';
 import ColumnLabels from '../components/DataVerification/ColumnLabels';
 import AppHeader from '../components/Header/AppHeader';
-import { ApiService } from '../services/ApiService';
+import { Loading } from '../components/Loading/Loading';
+import { useChainMasteryState } from '../context/ChainMasteryProvider';
 import CustomColors from '../styles/Colors';
-import { ChainSession } from '../types/chain/ChainSession';
-import { ChainStep } from '../types/chain/ChainStep';
-import { ChainData } from '../types/chain/ChainData';
-import { StepAttempt } from '../types/chain/StepAttempt';
 
 const DataVerificationScreen = (): JSX.Element => {
   const navigation = useNavigation();
-  const [chainData, setChainData] = useState<ChainData>();
-  const [chainSession, setChainSession] = useState<ChainSession>();
-  const [chainSteps, setChainSteps] = useState<ChainStep[]>();
   const [readyToSubmit, setReadyToSubmit] = useState(false);
   const [confirmSubmit, setConfirmSubmit] = useState(false);
-  const [stepAttempts, setStepAttempts] = useState<StepAttempt[]>();
   const [scrolling, setScrolling] = useState(false);
+  const chainMasteryState = useChainMasteryState();
 
   // Called on 2nd press of Submit button
   const submitAndNavigate = () => {
@@ -35,60 +29,6 @@ const DataVerificationScreen = (): JSX.Element => {
   const postData = () => {
     console.log('POSTING DATA');
   };
-
-  /** START: Lifecycle calls */
-  useEffect(() => {
-    let isCancelled = false;
-
-    const _load = async () => {
-      if (!isCancelled) {
-        if (!chainData) {
-          const contextChainData = await ApiService.contextState('chainData');
-          if (!isCancelled && contextChainData) {
-            setChainData(contextChainData as ChainData);
-          }
-        }
-
-        if (!chainSession) {
-          const contextSession = await ApiService.contextState('session');
-          if (!isCancelled && contextSession) {
-            setChainSession(contextSession as ChainSession);
-          }
-        }
-
-        if (!chainSteps) {
-          const contextChainSteps = await ApiService.contextState('chainSteps');
-          if (!isCancelled && contextChainSteps) {
-            setChainSteps(contextChainSteps as ChainStep[]);
-          }
-        }
-      }
-    };
-
-    _load();
-
-    return () => {
-      isCancelled = true;
-    };
-  }, []);
-
-  // Runs when session is updated.
-  useEffect(() => {
-    let isCancelled = false;
-
-    const _load = async () => {
-      if (!isCancelled && chainSession && !stepAttempts) {
-        setStepAttempts(chainSession.step_attempts);
-      }
-    };
-
-    _load();
-
-    return () => {
-      isCancelled = true;
-    };
-  }, [chainSession]);
-  /** END: Lifecycle calls */
 
   return (
     <View style={styles.container}>
@@ -103,15 +43,19 @@ const DataVerificationScreen = (): JSX.Element => {
       </View>
       <View style={styles.formContainer}>
         <ColumnLabels />
-        {chainSteps && chainData && chainSession && stepAttempts ? (
+        {chainMasteryState.chainMastery ? (
           <FlatList
             onScrollBeginDrag={() => {
               setScrolling(true);
               setReadyToSubmit(true);
             }}
-            data={stepAttempts}
+            data={chainMasteryState.chainMastery.draftSession.step_attempts}
             renderItem={item => {
-              return <DataVerifItem stepAttempt={item.item} chainSteps={chainSteps} />;
+              return chainMasteryState.chainMastery ? (
+                <DataVerifItem stepAttempt={item.item} chainSteps={chainMasteryState.chainMastery.chainSteps} />
+              ) : (
+                <Loading />
+              );
             }}
             keyExtractor={randomId}
           />
