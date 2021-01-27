@@ -9,8 +9,7 @@
         "scheme": "myapp",
         "userInterfaceStyle": "automatic",
         "splash": {
-            "image": "./assets/images/logo-bkgrd.png",
-            "resizeMode": "contain",
+            "image": "./assets/images/splash_screen/splash_screen.png",
             "backgroundColor": "#ffffff"
         },
         "updates": {
