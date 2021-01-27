@@ -5,6 +5,7 @@ import { ImageBackground, ScrollView, StyleSheet, TouchableOpacity, View } from 
 import * as Animatable from 'react-native-animatable';
 import { Text } from 'react-native-paper';
 import {
+  START_BOOSTER_SESSION_BTN,
   START_PROBE_SESSION_BTN,
   START_TRAINING_SESSION_BTN,
 } from '../components/Chain/chainshome_text_assets/chainshome_text';
@@ -35,22 +36,8 @@ const ChainsHomeScreen = (): JSX.Element => {
       return <Loading />;
     }
 
-    const numSessions = chainMasteryState.chainMastery.chainData.sessions.length;
-    const hasHadTrainingSession = chainMasteryState.chainMastery.hasHadTrainingSession;
-    const numSessionsSinceLastProbe = chainMasteryState.chainMastery.masteryInfoMap[0].numAttemptsSince.lastProbe;
-
-    // Show probe button if one of the following is true:
-    // - there are fewer than 3 past sessions OR
-    // - no training session has ever been attempted OR
-    // - it's been 4 sessions since the last probe
-    const showProbeButton = numSessions < 3 || !hasHadTrainingSession || numSessionsSinceLastProbe >= 4;
-
-    // Show training button if one of the following is true:
-    // - there are more than 3 past sessions, but no training session has ever been attempted OR
-    // - it's been fewer than 4 sessions since the last probe
-    const showTrainingButton =
-      (numSessions >= 3 && !hasHadTrainingSession) || (numSessions >= 3 && numSessionsSinceLastProbe < 4);
-
+    const showProbeButton = chainMasteryState.chainMastery.canStartProbeSession();
+    const showTrainingButton = chainMasteryState.chainMastery.canStartTrainingSession();
     const btnWidth = showTrainingButton && showProbeButton ? '45%' : '90%';
 
     return (
@@ -68,7 +55,7 @@ const ChainsHomeScreen = (): JSX.Element => {
               // Set the draft session type to probe and go to Prepare Materials
               if (chainMasteryState.chainMastery) {
                 chainMasteryState.chainMastery.setDraftSessionType(ChainSessionType.probe);
-                navigation.navigate('PrepareMaterialsScreen');
+                navigation.navigate('PrepareMaterialsScreen', {});
               }
             }}
           >
@@ -84,12 +71,14 @@ const ChainsHomeScreen = (): JSX.Element => {
               // Set the draft session type to training and go to Prepare Materials
               if (chainMasteryState.chainMastery) {
                 chainMasteryState.chainMastery.setDraftSessionType(ChainSessionType.training);
-                navigation.navigate('PrepareMaterialsScreen');
+                navigation.navigate('PrepareMaterialsScreen', {});
               }
             }}
           >
             <Animatable.Text animation={'bounceIn'} duration={2000} style={styles.btnText}>
-              {START_TRAINING_SESSION_BTN}
+              {chainMasteryState.chainMastery.draftSession.session_type === ChainSessionType.booster
+                ? START_BOOSTER_SESSION_BTN
+                : START_TRAINING_SESSION_BTN}
             </Animatable.Text>
           </TouchableOpacity>
         )}

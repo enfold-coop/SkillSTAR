@@ -157,6 +157,11 @@ export class ChainMastery {
         newDraftSession.session_type = ChainSessionType.training;
         focusChainStepId = this.nextFocusChainStepId;
       }
+    } else if (sessionType !== ChainSessionType.probe) {
+      // Check if the session type needs to be a booster
+      if ((boosterChainStepId = this.nextBoosterChainStepId) !== undefined) {
+        newDraftSession.session_type = ChainSessionType.booster;
+      }
     }
 
     // Populate step attempts
@@ -1032,5 +1037,31 @@ export class ChainMastery {
     this.unmasteredFocusedChainStepIds = this.getUnmasteredFocusedChainStepIds();
     this.draftSession = this.buildNewDraftSession();
     console.log('ChainMastery.tsx > updateChainData > Chain data updated.');
+  }
+
+  /**
+   * Returns true if one of the following is true:
+   * - there are fewer than 3 past sessions OR
+   * - no training session has ever been attempted OR
+   * - it's been 4 sessions since the last probe
+   */
+  canStartProbeSession(): boolean {
+    const numSessions = this.chainData.sessions.length;
+    const hasHadTrainingSession = this.hasHadTrainingSession;
+    const numSessionsSinceLastProbe = this.masteryInfoMap[0].numAttemptsSince.lastProbe;
+    return numSessions < 3 || !hasHadTrainingSession || numSessionsSinceLastProbe >= 4;
+  }
+
+  /**
+   * Returns true if one of the following is true:
+   * - there are more than 3 past sessions, but no training session has ever been attempted OR
+   * - it's been fewer than 4 sessions since the last probe
+   */
+  canStartTrainingSession(): boolean {
+    const numSessions = this.chainData.sessions.length;
+    const hasHadTrainingSession = this.hasHadTrainingSession;
+    const numSessionsSinceLastProbe = this.masteryInfoMap[0].numAttemptsSince.lastProbe;
+
+    return (numSessions >= 3 && !hasHadTrainingSession) || (numSessions >= 3 && numSessionsSinceLastProbe < 4);
   }
 }
