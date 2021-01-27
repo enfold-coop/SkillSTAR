@@ -1,6 +1,8 @@
 /**
  * for Chainshome "Aside" element
  */
+import { ChainSessionTypeLabels } from '../../../types/chain/ChainSession';
+
 const PROBE_INSTRUCTIONS = `
   Start the probe with a simple instruction "It's time to brush your teeth."
 
@@ -20,9 +22,9 @@ const BOOSTER_INSTRUCTIONS = `
 /**
  * for "Start [...] Session BUTTON"
  */
-const START_PROBE_SESSION_BTN = 'Start Probe Session';
-const START_TRAINING_SESSION_BTN = 'Start Training Session';
-const START_BOOSTER_SESSION_BTN = 'Start Booster Session';
+const START_PROBE_SESSION_BTN = `Start ${ChainSessionTypeLabels.probe} Session`;
+const START_TRAINING_SESSION_BTN = `Start ${ChainSessionTypeLabels.training} Session`;
+const START_BOOSTER_SESSION_BTN = `Start ${ChainSessionTypeLabels.booster} Session`;
 
 export {
   PROBE_INSTRUCTIONS,

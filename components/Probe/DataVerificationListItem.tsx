@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
+import { useChainMasteryState } from '../../context/ChainMasteryProvider';
 import CustomColors from '../../styles/Colors';
 import { StepAttempt } from '../../types/chain/StepAttempt';
 import { DataVerificationControlCallback } from '../../types/DataVerificationControlCallback';
@@ -16,23 +17,44 @@ export const DataVerificationListItem = (props: DataVerificationListItemProps): 
     completion: 0,
     challBehav: 1,
   };
-  /**
-   * use context api, here:
-   */
+  const chainMasteryState = useChainMasteryState();
 
-  const stepId = stepAttempt.chain_step_id !== undefined ? stepAttempt.chain_step_id : -1;
-  const instruction = props.stepAttempt.chain_step ? props.stepAttempt.chain_step.instruction : 'LOADING';
+  // Runs once on mount
+  useEffect(() => {
+    let isCancelled = false;
+
+    // Set step attempt default values
+    if (!isCancelled && chainMasteryState.chainMastery) {
+      console.log('DataVerificationListItem.tsx > useEffect');
+
+      // Find the step in the draft session.
+      chainMasteryState.chainMastery.draftSession.step_attempts.forEach((s, i) => {
+        if (chainMasteryState.chainMastery && s.chain_step_id === stepAttempt.chain_step_id) {
+          // Set its value.
+          chainMasteryState.chainMastery.draftSession.step_attempts[i].completed = true;
+          chainMasteryState.chainMastery.draftSession.step_attempts[i].had_challenging_behavior = false;
+        }
+      });
+    }
+
+    return () => {
+      isCancelled = true;
+    };
+  }, []);
+
+  const chainStepId = stepAttempt.chain_step_id !== undefined ? stepAttempt.chain_step_id : -1;
+  const instruction = stepAttempt.chain_step ? stepAttempt.chain_step.instruction : 'LOADING';
 
   return (
     <View style={styles.container}>
-      <Text style={styles.stepTitle}>{`Step #${stepId + 1}: "${instruction}"`}</Text>
+      <Text style={styles.stepTitle}>{`Step #${chainStepId + 1}: "${instruction}"`}</Text>
       <View style={styles.questionContainer}>
         <Text style={styles.question}>{`Was the task Completed?`}</Text>
         <ListItemSwitch
-          name={'complete'}
+          name={'completed'}
           type={QUESTION_TYPES.completion}
           defaultValue={true}
-          id={stepId}
+          chainStepId={chainStepId}
           onChange={onChange}
         />
       </View>
@@ -42,7 +64,7 @@ export const DataVerificationListItem = (props: DataVerificationListItemProps): 
           name={'had_challenging_behavior'}
           type={QUESTION_TYPES.challBehav}
           defaultValue={false}
-          id={stepId}
+          chainStepId={chainStepId}
           onChange={onChange}
         />
       </View>
