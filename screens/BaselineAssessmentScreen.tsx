@@ -63,7 +63,7 @@ const BaselineAssessmentScreen = (): JSX.Element => {
       if (dbChainData) {
         console.log('dbChainData loaded', !!dbChainData);
         chainMasteryState.chainMastery.updateChainData(dbChainData);
-        navigation.navigate('ChainsHomeScreen');
+        navigation.navigate('ChainsHomeScreen', {});
       } else {
         console.error('Something went wrong with saving the chain data.');
       }

@@ -1,16 +1,12 @@
 import { useDeviceOrientation } from '@react-native-community/hooks';
 import { useNavigation } from '@react-navigation/native';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { ImageBackground, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 import * as Animatable from 'react-native-animatable';
 import { Text } from 'react-native-paper';
 import {
-  BOOSTER_INSTRUCTIONS,
-  PROBE_INSTRUCTIONS,
-  START_BOOSTER_SESSION_BTN,
   START_PROBE_SESSION_BTN,
   START_TRAINING_SESSION_BTN,
-  TRAINING_INSTRUCTIONS,
 } from '../components/Chain/chainshome_text_assets/chainshome_text';
 import ScorecardListItem from '../components/Chain/ScorecardListItem';
 import SessionDataAside from '../components/Chain/SessionDataAside';
@@ -26,25 +22,6 @@ const ChainsHomeScreen = (): JSX.Element => {
   const navigation = useNavigation();
   const { portrait } = useDeviceOrientation();
   const chainMasteryState = useChainMasteryState();
-  const [shouldReload, setShouldReload] = useState<boolean>(true);
-
-  useEffect(() => {
-    console.log('==== ChainsHomeScreen.tsx > useEffect > chainMasteryState updated ====');
-    setShouldReload(true);
-
-    console.log('chainMastery loaded:', !!chainMasteryState.chainMastery);
-    console.log('chainData loaded:', !!(chainMasteryState.chainMastery && chainMasteryState.chainMastery.chainData));
-    console.log(
-      'masteryInfoMap loaded:',
-      !!(chainMasteryState.chainMastery && chainMasteryState.chainMastery.masteryInfoMap),
-    );
-    console.log(
-      'draftSession loaded:',
-      !!(chainMasteryState.chainMastery && chainMasteryState.chainMastery.draftSession),
-    );
-
-    setShouldReload(false);
-  });
 
   const key =
     chainMasteryState && chainMasteryState.chainMastery && chainMasteryState.chainMastery.chainData
@@ -54,7 +31,7 @@ const ChainsHomeScreen = (): JSX.Element => {
   console.log('key', key);
 
   const SessionButtons = (): JSX.Element => {
-    if (shouldReload || !chainMasteryState || !chainMasteryState.chainMastery) {
+    if (!chainMasteryState || !chainMasteryState.chainMastery) {
       return <Loading />;
     }
 
@@ -76,7 +53,7 @@ const ChainsHomeScreen = (): JSX.Element => {
 
     const btnWidth = showTrainingButton && showProbeButton ? '45%' : '90%';
 
-    return !shouldReload ? (
+    return (
       <View
         style={{
           flexDirection: 'row',
@@ -117,8 +94,6 @@ const ChainsHomeScreen = (): JSX.Element => {
           </TouchableOpacity>
         )}
       </View>
-    ) : (
-      <Loading />
     );
   };
 

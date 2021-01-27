@@ -1,5 +1,5 @@
 import date from 'date-and-time';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { LayoutRectangle, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { Card } from 'react-native-paper';
 import { useChainMasteryState } from '../../context/ChainMasteryProvider';
@@ -22,20 +22,12 @@ const SessionDataAside = (): JSX.Element => {
   const [graphContainerDimens, setGraphContainerDimens] = useState<LayoutRectangle>();
   const [modalVis, setModalVis] = useState(false);
   const chainMasteryState = useChainMasteryState();
-  const [shouldReload, setShouldReload] = useState<boolean>(true);
-
-  useEffect(() => {
-    console.log('==== SessionDataAside.tsx > useEffect > chainMasteryState updated ====');
-    setShouldReload(true);
-    setShouldReload(false);
-  });
 
   const handleModal = () => {
     setModalVis(!modalVis);
   };
 
-  return !shouldReload &&
-    chainMasteryState.chainMastery &&
+  return chainMasteryState.chainMastery &&
     chainMasteryState.chainMastery.draftSession &&
     chainMasteryState.chainMastery.draftSession.date ? (
     <View style={styles.container}>
