@@ -21,20 +21,16 @@ const DataVerificationScreen = (): JSX.Element => {
   // Called on 2nd press of Submit button
   const submitAndNavigate = () => {
     setConfirmSubmit(false);
-    postData();
     navigation.navigate('ChainsHomeScreen');
-  };
-
-  // Post state data to API
-  const postData = () => {
-    console.log('POSTING DATA');
   };
 
   return (
     <View style={styles.container}>
       <AppHeader name={'Brushing Teeth'} />
       <View style={styles.instructionContainer}>
-        <Text style={[scrolling ? styles.smallHeader : styles.screenHeader]}>{`Probe Session`}</Text>
+        <Text
+          style={[scrolling ? styles.smallHeader : styles.screenHeader]}
+        >{`Probe Session`}</Text>
         <Animatable.Text
           transition={'fontSize'}
           duration={1000}
@@ -52,7 +48,10 @@ const DataVerificationScreen = (): JSX.Element => {
             data={chainMasteryState.chainMastery.draftSession.step_attempts}
             renderItem={item => {
               return chainMasteryState.chainMastery ? (
-                <DataVerifItem stepAttempt={item.item} chainSteps={chainMasteryState.chainMastery.chainSteps} />
+                <DataVerifItem
+                  stepAttempt={item.item}
+                  chainSteps={chainMasteryState.chainMastery.chainSteps}
+                />
               ) : (
                 <Loading />
               );
@@ -68,13 +67,14 @@ const DataVerificationScreen = (): JSX.Element => {
 
       {readyToSubmit && (
         <View style={styles.btnContainer}>
-          <Text style={styles.btnContainerText}>{`Please confirm your selections, then press Submit.`}</Text>
+          <Text
+            style={styles.btnContainerText}
+          >{`Please confirm your selections, then press Submit.`}</Text>
           <Button
             mode={'contained'}
             color={CustomColors.uva.orange}
             labelStyle={{
               fontSize: 28,
-              //   fontWeight: '600',
               color: CustomColors.uva.white,
               paddingVertical: 15,
             }}
@@ -82,12 +82,10 @@ const DataVerificationScreen = (): JSX.Element => {
             onPress={() => {
               if (confirmSubmit) {
                 submitAndNavigate();
-              } else {
-                setConfirmSubmit(true);
               }
             }}
           >
-            {confirmSubmit ? 'Confirm and Submit' : 'Confirm and Submit'}
+            {'Confirm and Submit'}
           </Button>
         </View>
       )}
