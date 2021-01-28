@@ -1,15 +1,13 @@
-import React, { FC, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Image, ImageRequireSource, StyleSheet, Text, View } from 'react-native';
 import { useChainMasteryState } from '../../context/ChainMasteryProvider';
 import CustomColors from '../../styles/Colors';
 import { MasteryIcon } from '../../styles/MasteryIcon';
-import { ChainStep } from '../../types/chain/ChainStep';
 import { ChainStepPromptLevel, StepAttempt } from '../../types/chain/StepAttempt';
 import { DataVerificationControlCallback } from '../../types/DataVerificationControlCallback';
+import { ListItemSwitch } from '../Probe';
 import BehavAccordion from './BehavAccordion';
-import BehavDataVerifSwitch from './BehavDataVerifSwitch';
 import PromptAccordion from './PromptAccordion';
-import PromptDataVerifSwitch from './PromptDataVerifSwitch';
 
 const getPromptIcon = (level: string): ImageRequireSource => {
   const icons: { [key: string]: ImageRequireSource } = {
@@ -28,8 +26,8 @@ interface DataVerifItemProps {
 
 const DataVerifItem = (props: DataVerifItemProps): JSX.Element => {
   const { chainStepId } = props;
-  const [promptSwitch, setPromptSwitch] = useState(false);
-  const [behavSwitch, setBehavSwitch] = useState(false);
+  const [completed, setCompleted] = useState<boolean>(true);
+  const [hadChallengingBehavior, setHadChallengingBehavior] = useState<boolean>(false);
   const [promptIcon, setPromptIcon] = useState<ImageRequireSource>();
   const [stepAttempt, setStepAttempt] = useState<StepAttempt>();
   const chainMasteryState = useChainMasteryState();
@@ -43,6 +41,14 @@ const DataVerifItem = (props: DataVerifItemProps): JSX.Element => {
       if (!isCancelled && !stepAttempt && chainMasteryState.chainMastery) {
         const stateStepAttempt = chainMasteryState.chainMastery.getDraftSessionStep(chainStepId);
         setStepAttempt(stateStepAttempt);
+
+        if (stateStepAttempt.completed !== undefined) {
+          setCompleted(stateStepAttempt.completed);
+        }
+
+        if (stateStepAttempt.had_challenging_behavior !== undefined) {
+          setHadChallengingBehavior(stateStepAttempt.had_challenging_behavior);
+        }
       }
 
       if (!isCancelled && stepAttempt && !promptIcon) {
@@ -60,11 +66,18 @@ const DataVerifItem = (props: DataVerifItemProps): JSX.Element => {
   }, [stepAttempt]);
   /** END: Lifecycle calls */
 
-  const handlePromptSwitch: DataVerificationControlCallback = async (chainStepId, fieldName, fieldValue) => {
-    setPromptSwitch(!promptSwitch);
-  };
-  const handleBehavSwitch: DataVerificationControlCallback = async (chainStepId, fieldName, fieldValue) => {
-    setBehavSwitch(!behavSwitch);
+  const handleSwitch: DataVerificationControlCallback = async (chainStepId, fieldName, fieldValue) => {
+    console.log(`${fieldName} = ${fieldValue}`);
+    if (fieldName === 'completed') {
+      setCompleted(fieldValue as boolean);
+    } else if (fieldName === 'had_challenging_behavior') {
+      setHadChallengingBehavior(fieldValue as boolean);
+    }
+
+    // Update draft session data
+    if (chainMasteryState.chainMastery) {
+      chainMasteryState.chainMastery.updateDraftSessionStep(chainStepId, fieldName, fieldValue);
+    }
   };
 
   return chainMasteryState.chainMastery &&
@@ -79,24 +92,26 @@ const DataVerifItem = (props: DataVerifItemProps): JSX.Element => {
         <Image style={styles.promptLevelImage} source={promptIcon} resizeMode={'contain'} />
         <View style={styles.switchContainer}>
           <View style={styles.questionContainer}>
-            <PromptDataVerifSwitch
-              fieldName={'prompt_level'}
+            <ListItemSwitch
+              fieldName={'completed'}
+              defaultValue={completed}
+              onChange={handleSwitch}
               chainStepId={stepAttempt.chain_step_id}
-              handleSwitch={handlePromptSwitch}
             />
           </View>
           <View style={styles.questionContainer}>
-            <BehavDataVerifSwitch
-              name={'had_challenging_behavior'}
+            <ListItemSwitch
+              fieldName={'had_challenging_behavior'}
+              defaultValue={hadChallengingBehavior}
+              onChange={handleSwitch}
               chainStepId={stepAttempt.chain_step_id}
-              handleSwitch={handleBehavSwitch}
             />
           </View>
         </View>
       </View>
       <View style={styles.accordionContainer}>
-        <PromptAccordion switched={promptSwitch} stepAttempt={stepAttempt} />
-        <BehavAccordion switched={behavSwitch} stepAttempt={stepAttempt} />
+        <PromptAccordion completed={completed} chainStepId={stepAttempt.chain_step_id} />
+        <BehavAccordion hadChallengingBehavior={hadChallengingBehavior} chainStepId={stepAttempt.chain_step_id} />
       </View>
     </View>
   ) : (

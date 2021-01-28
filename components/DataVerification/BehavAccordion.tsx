@@ -4,21 +4,19 @@ import * as Animatable from 'react-native-animatable';
 import { RadioButton } from 'react-native-paper';
 import { randomId } from '../../_util/RandomId';
 import CustomColors from '../../styles/Colors';
-import { StepAttempt } from '../../types/chain/StepAttempt';
-import { MOCK_BEHAV_OPTS, MOCK_BEHAV_Q } from './mock_session';
+import { StepIncompleteReasonMap } from '../../types/chain/StepAttempt';
+import { MOCK_BEHAV_Q } from './mock_session';
 
 interface BehavAccordionProps {
-  stepAttempt: StepAttempt;
-  switched: boolean;
+  chainStepId: number;
+  hadChallengingBehavior: boolean;
 }
 
 const BehavAccordion = (props: BehavAccordionProps): JSX.Element => {
-  const [behavOpts, setBehavOpts] = useState(MOCK_BEHAV_OPTS);
-  const [behavQ, setBehavQ] = useState(MOCK_BEHAV_Q);
   const [checked, setChecked] = React.useState(0);
   const [expanded, setExpanded] = useState(false);
   const refSwitched = useRef(true);
-  const { switched } = props;
+  const { hadChallengingBehavior } = props;
 
   /**
    * BEGIN: Lifecycle methods
@@ -27,9 +25,9 @@ const BehavAccordion = (props: BehavAccordionProps): JSX.Element => {
     if (refSwitched.current) {
       refSwitched.current = false;
     } else {
-      setExpanded(switched);
+      setExpanded(hadChallengingBehavior);
     }
-  }, [switched]);
+  }, [hadChallengingBehavior]);
   /**
    * END: Lifecycle methods
    */
@@ -44,9 +42,9 @@ const BehavAccordion = (props: BehavAccordionProps): JSX.Element => {
   return (
     <Animatable.View style={[styles.container, { display: expanded ? 'flex' : 'none' }]}>
       <View style={styles.behavSubContainer}>
-        <Text style={styles.question}>{behavQ}</Text>
+        <Text style={styles.question}>{`What was the primary reason for failing to complete the task?`}</Text>
         <View style={[styles.behavOptsContainer]}>
-          {behavOpts.map((e, i) => {
+          {Object.values(StepIncompleteReasonMap).map((e, i) => {
             return (
               <View style={styles.checkboxContainer} key={randomId()}>
                 <View
@@ -60,12 +58,12 @@ const BehavAccordion = (props: BehavAccordionProps): JSX.Element => {
                 >
                   <RadioButton
                     color={CustomColors.uva.orange}
-                    value={e}
+                    value={e.key}
                     status={checked === i ? 'checked' : 'unchecked'}
                     onPress={() => setChecked(i)}
                   />
                 </View>
-                <Text style={styles.radioBtnText}>{e}</Text>
+                <Text style={styles.radioBtnText}>{e.value}</Text>
               </View>
             );
           })}
