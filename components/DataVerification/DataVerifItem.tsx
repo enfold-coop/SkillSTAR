@@ -33,28 +33,45 @@ const DataVerifItem = (props: DataVerifItemProps): JSX.Element => {
   const chainMasteryState = useChainMasteryState();
 
   /** Lifecycle calls */
-  // Runs when session is updated.
+  // Runs when chainStepId or chainMastery is updated.
   useEffect(() => {
     let isCancelled = false;
 
     const _load = async () => {
-      if (!isCancelled && !stepAttempt && chainMasteryState.chainMastery) {
+      if (!isCancelled && chainMasteryState.chainMastery) {
         const stateStepAttempt = chainMasteryState.chainMastery.getDraftSessionStep(chainStepId);
+
+        console.log('DataVerifItem.tsx > useEffect > chainMasteryState.chainMastery updated.');
+        console.log('step attempt loaded:', !!stateStepAttempt);
         setStepAttempt(stateStepAttempt);
-
-        if (stateStepAttempt.completed !== undefined) {
-          setCompleted(stateStepAttempt.completed);
-        }
-
-        if (stateStepAttempt.had_challenging_behavior !== undefined) {
-          setHadChallengingBehavior(stateStepAttempt.had_challenging_behavior);
-        }
       }
+    };
 
+    _load();
+
+    return () => {
+      isCancelled = true;
+    };
+  }, [chainStepId, chainMasteryState.chainMastery && chainMasteryState.chainMastery.draftSession]);
+
+  // Runs when step attempt is updated.
+  useEffect(() => {
+    let isCancelled = false;
+
+    const _load = async () => {
       if (!isCancelled && stepAttempt && !promptIcon) {
         const promptLevel = stepAttempt.prompt_level || ChainStepPromptLevel.full_physical;
         const _promptLevelIcon = getPromptIcon(promptLevel as string);
         setPromptIcon(_promptLevelIcon);
+
+        setCompleted(
+          stepAttempt.completed !== undefined && stepAttempt.completed !== null ? stepAttempt.completed : true,
+        );
+        setHadChallengingBehavior(
+          stepAttempt.had_challenging_behavior !== undefined && stepAttempt.had_challenging_behavior !== null
+            ? stepAttempt.had_challenging_behavior
+            : true,
+        );
       }
     };
 

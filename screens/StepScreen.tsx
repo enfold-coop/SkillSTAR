@@ -125,6 +125,9 @@ const StepScreen = (): JSX.Element => {
   const onNeededPrompting = () => {
     if (chainStep && chainMasteryState.chainMastery) {
       chainMasteryState.chainMastery.updateDraftSessionStep(chainStep.id, 'was_prompted', true);
+
+      // TODO: Verify that we should navigate to next step here?
+      chainMasteryState.chainMastery.updateDraftSessionStep(chainStep.id, 'completed', false);
     }
 
     nextStep();
