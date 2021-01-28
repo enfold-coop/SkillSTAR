@@ -271,7 +271,7 @@ const styles = StyleSheet.create({
   neededPromptingBtn: {
     margin: 15,
     // fontSize:26,
-    textAlign:"center"
+    textAlign: 'center',
   },
   exitButton: {},
   nextBackBtnsContainer: {
