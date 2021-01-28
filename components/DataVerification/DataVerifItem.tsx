@@ -1,14 +1,13 @@
-import React, { FC, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Image, ImageRequireSource, StyleSheet, Text, View } from 'react-native';
+import { useChainMasteryState } from '../../context/ChainMasteryProvider';
 import CustomColors from '../../styles/Colors';
 import { MasteryIcon } from '../../styles/MasteryIcon';
-import { ChainStep } from '../../types/chain/ChainStep';
 import { ChainStepPromptLevel, StepAttempt } from '../../types/chain/StepAttempt';
 import { DataVerificationControlCallback } from '../../types/DataVerificationControlCallback';
+import { ListItemSwitch } from '../Probe';
 import BehavAccordion from './BehavAccordion';
-import BehavDataVerifSwitch from './BehavDataVerifSwitch';
 import PromptAccordion from './PromptAccordion';
-import PromptDataVerifSwitch from './PromptDataVerifSwitch';
 
 const getPromptIcon = (level: string): ImageRequireSource => {
   const icons: { [key: string]: ImageRequireSource } = {
@@ -22,18 +21,40 @@ const getPromptIcon = (level: string): ImageRequireSource => {
 };
 
 interface DataVerifItemProps {
-  stepAttempt: StepAttempt;
-  chainSteps: ChainStep[];
+  chainStepId: number;
 }
 
-const DataVerifItem: FC<DataVerifItemProps> = (props: DataVerifItemProps): JSX.Element => {
-  const { stepAttempt, chainSteps } = props;
-  const [promptSwitch, setPromptSwitch] = useState(false);
-  const [behavSwitch, setBehavSwitch] = useState(false);
+const DataVerifItem = (props: DataVerifItemProps): JSX.Element => {
+  const { chainStepId } = props;
+  const [completed, setCompleted] = useState<boolean>(true);
+  const [hadChallengingBehavior, setHadChallengingBehavior] = useState<boolean>(false);
   const [promptIcon, setPromptIcon] = useState<ImageRequireSource>();
+  const [stepAttempt, setStepAttempt] = useState<StepAttempt>();
+  const chainMasteryState = useChainMasteryState();
 
   /** Lifecycle calls */
-  // Runs when session is updated.
+  // Runs when chainStepId or chainMastery is updated.
+  useEffect(() => {
+    let isCancelled = false;
+
+    const _load = async () => {
+      if (!isCancelled && chainMasteryState.chainMastery) {
+        const stateStepAttempt = chainMasteryState.chainMastery.getDraftSessionStep(chainStepId);
+
+        console.log('DataVerifItem.tsx > useEffect > chainMasteryState.chainMastery updated.');
+        console.log('step attempt loaded:', !!stateStepAttempt);
+        setStepAttempt(stateStepAttempt);
+      }
+    };
+
+    _load();
+
+    return () => {
+      isCancelled = true;
+    };
+  }, [chainStepId, chainMasteryState.chainMastery && chainMasteryState.chainMastery.draftSession]);
+
+  // Runs when step attempt is updated.
   useEffect(() => {
     let isCancelled = false;
 
@@ -42,6 +63,15 @@ const DataVerifItem: FC<DataVerifItemProps> = (props: DataVerifItemProps): JSX.E
         const promptLevel = stepAttempt.prompt_level || ChainStepPromptLevel.full_physical;
         const _promptLevelIcon = getPromptIcon(promptLevel as string);
         setPromptIcon(_promptLevelIcon);
+
+        setCompleted(
+          stepAttempt.completed !== undefined && stepAttempt.completed !== null ? stepAttempt.completed : true,
+        );
+        setHadChallengingBehavior(
+          stepAttempt.had_challenging_behavior !== undefined && stepAttempt.had_challenging_behavior !== null
+            ? stepAttempt.had_challenging_behavior
+            : true,
+        );
       }
     };
 
@@ -53,15 +83,22 @@ const DataVerifItem: FC<DataVerifItemProps> = (props: DataVerifItemProps): JSX.E
   }, [stepAttempt]);
   /** END: Lifecycle calls */
 
-  const handlePromptSwitch: DataVerificationControlCallback = async (chainStepId, fieldName, fieldValue) => {
-    setPromptSwitch(!promptSwitch);
-  };
-  const handleBehavSwitch: DataVerificationControlCallback = async (chainStepId, fieldName, fieldValue) => {
-    setBehavSwitch(!behavSwitch);
+  const handleSwitch: DataVerificationControlCallback = async (chainStepId, fieldName, fieldValue) => {
+    console.log(`${fieldName} = ${fieldValue}`);
+    if (fieldName === 'completed') {
+      setCompleted(fieldValue as boolean);
+    } else if (fieldName === 'had_challenging_behavior') {
+      setHadChallengingBehavior(fieldValue as boolean);
+    }
+
+    // Update draft session data
+    if (chainMasteryState.chainMastery) {
+      chainMasteryState.chainMastery.updateDraftSessionStep(chainStepId, fieldName, fieldValue);
+    }
   };
 
-  return promptIcon &&
-    chainSteps &&
+  return chainMasteryState.chainMastery &&
+    promptIcon &&
     stepAttempt &&
     stepAttempt.chain_step &&
     stepAttempt.chain_step_id !== undefined ? (
@@ -72,24 +109,26 @@ const DataVerifItem: FC<DataVerifItemProps> = (props: DataVerifItemProps): JSX.E
         <Image style={styles.promptLevelImage} source={promptIcon} resizeMode={'contain'} />
         <View style={styles.switchContainer}>
           <View style={styles.questionContainer}>
-            <PromptDataVerifSwitch
-              name={'prompt_level'}
-              chainStepId={stepAttempt.chain_step_id !== undefined ? stepAttempt.chain_step_id : -1}
-              handleSwitch={handlePromptSwitch}
+            <ListItemSwitch
+              fieldName={'completed'}
+              defaultValue={completed}
+              onChange={handleSwitch}
+              chainStepId={stepAttempt.chain_step_id}
             />
           </View>
           <View style={styles.questionContainer}>
-            <BehavDataVerifSwitch
-              name={'had_challenging_behavior'}
+            <ListItemSwitch
+              fieldName={'had_challenging_behavior'}
+              defaultValue={hadChallengingBehavior}
+              onChange={handleSwitch}
               chainStepId={stepAttempt.chain_step_id}
-              handleSwitch={handleBehavSwitch}
             />
           </View>
         </View>
       </View>
       <View style={styles.accordionContainer}>
-        <PromptAccordion switched={promptSwitch} stepAttempt={stepAttempt} />
-        <BehavAccordion switched={behavSwitch} stepAttempt={stepAttempt} />
+        <PromptAccordion completed={completed} chainStepId={stepAttempt.chain_step_id} />
+        <BehavAccordion hadChallengingBehavior={hadChallengingBehavior} chainStepId={stepAttempt.chain_step_id} />
       </View>
     </View>
   ) : (

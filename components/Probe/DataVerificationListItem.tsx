@@ -13,10 +13,6 @@ interface DataVerificationListItemProps {
 
 export const DataVerificationListItem = (props: DataVerificationListItemProps): JSX.Element => {
   const { stepAttempt, onChange } = props;
-  const QUESTION_TYPES = {
-    completion: 0,
-    challBehav: 1,
-  };
   const chainMasteryState = useChainMasteryState();
 
   // Runs once on mount
@@ -50,19 +46,12 @@ export const DataVerificationListItem = (props: DataVerificationListItemProps): 
       <Text style={styles.stepTitle}>{`Step #${chainStepId + 1}: "${instruction}"`}</Text>
       <View style={styles.questionContainer}>
         <Text style={styles.question}>{`Was the task Completed?`}</Text>
-        <ListItemSwitch
-          name={'completed'}
-          type={QUESTION_TYPES.completion}
-          defaultValue={true}
-          chainStepId={chainStepId}
-          onChange={onChange}
-        />
+        <ListItemSwitch fieldName={'completed'} defaultValue={true} chainStepId={chainStepId} onChange={onChange} />
       </View>
       <View style={styles.questionContainer}>
         <Text style={styles.question}>{`Challenging Behavior?`}</Text>
         <ListItemSwitch
-          name={'had_challenging_behavior'}
-          type={QUESTION_TYPES.challBehav}
+          fieldName={'had_challenging_behavior'}
           defaultValue={false}
           chainStepId={chainStepId}
           onChange={onChange}
