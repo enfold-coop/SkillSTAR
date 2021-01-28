@@ -4,42 +4,38 @@ import * as Animatable from 'react-native-animatable';
 import { RadioButton } from 'react-native-paper';
 import { randomId } from '../../_util/RandomId';
 import CustomColors from '../../styles/Colors';
-import { StepAttempt } from '../../types/chain/StepAttempt';
-import { MOCK_PROMP_Q, MOCK_PROMPT_OPTS } from './mock_session';
+import { ChainStepPromptLevelMap } from '../../types/chain/StepAttempt';
 
 interface PromptAccordionProps {
-  stepAttempt: StepAttempt;
-  switched: boolean;
+  chainStepId: number;
+  completed: boolean;
 }
 
 const PromptAccordion = (props: PromptAccordionProps): JSX.Element => {
-  const { switched } = props;
+  const { chainStepId, completed } = props;
   const [checked, setChecked] = React.useState(0);
   const [expanded, setExpanded] = useState(false);
-  const [promptOpts, setpromptOpts] = useState(MOCK_PROMPT_OPTS);
-  const [promptQ, setpromptQ] = useState(MOCK_PROMP_Q);
 
   /**
    * BEGIN: Lifecycle methods
    */
   useEffect(() => {
-    setExpanded(switched);
-  }, [switched]);
+    console.log('PromptAccordion.tsx > useEffect > chainStepId', chainStepId);
+    setExpanded(!completed);
+  }, [completed]);
   /**
    * END: Lifecycle methods
    */
 
-  /**
-   * SET DATA:
-   * - setBehavValue([behav index "checked"])
-   */
+  // TODO: SET DATA:
+  //  - setBehavValue([behav index "checked"])
 
   return (
-    <Animatable.View style={[styles.container, { display: switched ? 'flex' : 'none' }]}>
+    <Animatable.View style={[styles.container, { display: expanded ? 'flex' : 'none' }]}>
       <View style={styles.promptSubContainer}>
-        <Text style={styles.question}>{promptQ}</Text>
+        <Text style={styles.question}>{`What prompt did you use to complete the step?`}</Text>
         <View style={[styles.promptOptsContainer]}>
-          {promptOpts.map((e, i) => {
+          {Object.values(ChainStepPromptLevelMap).map((e, i) => {
             return (
               <View style={styles.checkboxContainer} key={randomId()}>
                 <View
@@ -54,12 +50,12 @@ const PromptAccordion = (props: PromptAccordionProps): JSX.Element => {
                 >
                   <RadioButton
                     color={CustomColors.uva.orange}
-                    value={e + 'YOYOYOYOYOYO'}
+                    value={e.key}
                     status={checked === i ? 'checked' : 'unchecked'}
                     onPress={() => setChecked(i)}
                   />
                 </View>
-                <Text style={styles.radioBtnText}>{e}</Text>
+                <Text style={styles.radioBtnText}>{e.value}</Text>
               </View>
             );
           })}

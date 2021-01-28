@@ -6,8 +6,7 @@ import { StepAttemptFieldName } from '../../types/chain/StepAttempt';
 import { DataVerificationControlCallback } from '../../types/DataVerificationControlCallback';
 
 interface ListItemSwitchProps {
-  name: StepAttemptFieldName;
-  type: number;
+  fieldName: StepAttemptFieldName;
   chainStepId: number;
   defaultValue: boolean;
   onChange: DataVerificationControlCallback;
@@ -22,41 +21,29 @@ const ListItemSwitch = (props: ListItemSwitchProps): JSX.Element => {
    *
    */
 
-  const { chainStepId, name, type, defaultValue, onChange } = props;
-  const [isSwitchOn, setIsSwitchOn] = useState(defaultValue);
+  const { chainStepId, fieldName, defaultValue, onChange } = props;
+  const [isSwitchOn, setIsSwitchOn] = useState<boolean>(defaultValue);
   const [label, setLabel] = useState('No');
 
-  // Sets question type switch value type
-  const setQuestionType = () => {
-    if (type === 0) {
-      setIsSwitchOn(true);
-    } else if (type === 1) {
-      setIsSwitchOn(false);
-    }
-  };
+  /** START: Lifecycle calls */
+  // Runs once on mount
+  useEffect(() => {
+    setIsSwitchOn(defaultValue);
+    updateLabel(defaultValue);
+  }, []);
+  /** END: Lifecycle calls */
 
-  // Toogle switch label (yes/no)
-  const toggleLabel = () => {
-    setLabel(isSwitchOn === false ? 'No' : 'Yes');
+  const updateLabel = (newValue: boolean) => {
+    setLabel(newValue ? 'Yes' : 'No');
   };
 
   // callback for setting isSwitchOn value
   const onToggleSwitch = () => {
     const newValue = !isSwitchOn;
     setIsSwitchOn(newValue);
-    onChange(chainStepId, name, newValue);
+    updateLabel(newValue);
+    onChange(chainStepId, fieldName, newValue);
   };
-  //
-
-  /** START: Lifecycle calls */
-  useEffect(() => {
-    setQuestionType();
-  }, [type]);
-
-  useEffect(() => {
-    toggleLabel();
-  }, [isSwitchOn]);
-  /** END: Lifecycle calls */
 
   return (
     <View style={styles.container}>

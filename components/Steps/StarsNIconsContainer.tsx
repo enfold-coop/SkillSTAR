@@ -3,12 +3,17 @@ import { StyleSheet, View } from 'react-native';
 import ChallengingBehavBtn from './ChallengingBehavBtn';
 import StepAttemptStars from './StepAttemptStars';
 
-const StarsNIconsContainer = (): JSX.Element => {
+interface StarsNIconsContainerProps {
+  chainStepId: number;
+}
+
+const StarsNIconsContainer = (props: StarsNIconsContainerProps): JSX.Element => {
+  const { chainStepId } = props;
   return (
     <View style={styles.container}>
       <View style={styles.subContainer}>
         <StepAttemptStars promptType={'FP'} attemptsWPromptType={[true, true, false]} />
-        <ChallengingBehavBtn />
+        <ChallengingBehavBtn chainStepId={chainStepId} />
       </View>
     </View>
   );

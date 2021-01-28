@@ -5,7 +5,7 @@ import { ChainStep } from './ChainStep';
 export interface ChallengingBehavior {
   id?: number;
   last_updated?: Date;
-  chain_session_step_id: number;
+  chain_session_step_id?: number;
   time: Date;
 }
 
