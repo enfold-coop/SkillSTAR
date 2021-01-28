@@ -149,8 +149,8 @@ export type StepAttemptField =
   | ChainStep
   | ChainStepPromptLevel
   | ChainStepStatus
-  | ChallengingBehaviorSeverity
   | ChallengingBehavior[]
   | Date
+  | StepIncompleteReason
   | boolean
   | number;
