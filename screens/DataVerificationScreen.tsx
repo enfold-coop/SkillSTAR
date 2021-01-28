@@ -1,45 +1,57 @@
 import { useNavigation } from '@react-navigation/native';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { FlatList, StyleSheet, Text, View } from 'react-native';
 import * as Animatable from 'react-native-animatable';
-import { ActivityIndicator, Button } from 'react-native-paper';
+import { Button } from 'react-native-paper';
 import { randomId } from '../_util/RandomId';
 import { DataVerifItem } from '../components/DataVerification';
 import ColumnLabels from '../components/DataVerification/ColumnLabels';
 import AppHeader from '../components/Header/AppHeader';
 import { Loading } from '../components/Loading/Loading';
 import { useChainMasteryState } from '../context/ChainMasteryProvider';
+import { ApiService } from '../services/ApiService';
 import CustomColors from '../styles/Colors';
+import { ChainSessionTypeLabels, ChainSessionTypeMap } from '../types/chain/ChainSession';
 
 const DataVerificationScreen = (): JSX.Element => {
   const navigation = useNavigation();
-  const [readyToSubmit, setReadyToSubmit] = useState(false);
-  const [confirmSubmit, setConfirmSubmit] = useState(false);
   const [scrolling, setScrolling] = useState(false);
+  const [sessionTypeLabel, setSessionTypeLabel] = useState<ChainSessionTypeLabels>();
   const chainMasteryState = useChainMasteryState();
 
-  // Called on 2nd press of Submit button
-  const submitAndNavigate = () => {
-    setConfirmSubmit(false);
-    postData();
-    navigation.navigate('ChainsHomeScreen');
-  };
+  useEffect(() => {
+    if (chainMasteryState.chainMastery) {
+      const sessionType = chainMasteryState.chainMastery.draftSession.session_type;
+      setSessionTypeLabel(ChainSessionTypeMap[sessionType as string].value as ChainSessionTypeLabels);
+    }
+  }, [chainMasteryState.chainMastery]);
 
   // Post state data to API
-  const postData = () => {
+  const postData = async () => {
     console.log('POSTING DATA');
+    if (chainMasteryState.chainMastery) {
+      const draftSession = chainMasteryState.chainMastery.draftSession;
+      const chainData = chainMasteryState.chainMastery.chainData;
+      chainData.sessions.push(draftSession);
+      const dbChainData = await ApiService.upsertChainData(chainData);
+
+      if (dbChainData) {
+        chainMasteryState.chainMastery.updateChainData(dbChainData);
+        navigation.navigate('ChainsHomeScreen', {});
+      }
+    }
   };
 
-  return (
+  return chainMasteryState.chainMastery ? (
     <View style={styles.container}>
       <AppHeader name={'Brushing Teeth'} />
       <View style={styles.instructionContainer}>
-        <Text style={[scrolling ? styles.smallHeader : styles.screenHeader]}>{`Probe Session`}</Text>
+        <Text style={[scrolling ? styles.smallHeader : styles.screenHeader]}>{`${sessionTypeLabel} Session`}</Text>
         <Animatable.Text
           transition={'fontSize'}
           duration={1000}
           style={[scrolling ? styles.smallInstruction : styles.instruction]}
-        >{`Please instruct the child to brush their teeth. As they do, please complete this survey for each step.`}</Animatable.Text>
+        >{`Please review the following data.  If you see something that is incorrect, you may change by selecting an alternative option.`}</Animatable.Text>
       </View>
       <View style={styles.formContainer}>
         <ColumnLabels />
@@ -47,51 +59,38 @@ const DataVerificationScreen = (): JSX.Element => {
           <FlatList
             onScrollBeginDrag={() => {
               setScrolling(true);
-              setReadyToSubmit(true);
             }}
             data={chainMasteryState.chainMastery.draftSession.step_attempts}
             renderItem={item => {
-              return chainMasteryState.chainMastery ? (
-                <DataVerifItem stepAttempt={item.item} chainSteps={chainMasteryState.chainMastery.chainSteps} />
-              ) : (
-                <Loading />
-              );
+              return <DataVerifItem chainStepId={item.item.chain_step_id} />;
             }}
             keyExtractor={randomId}
           />
         ) : (
-          <View>
-            <ActivityIndicator animating={true} color={CustomColors.uva.mountain} />
-          </View>
+          <Loading />
         )}
       </View>
 
-      {readyToSubmit && (
-        <View style={styles.btnContainer}>
-          <Text style={styles.btnContainerText}>{`Please confirm your selections, then press Submit.`}</Text>
-          <Button
-            mode={'contained'}
-            color={CustomColors.uva.orange}
-            labelStyle={{
-              fontSize: 28,
-              //   fontWeight: '600',
-              color: CustomColors.uva.white,
-              paddingVertical: 15,
-            }}
-            style={styles.nextButton}
-            onPress={() => {
-              if (confirmSubmit) {
-                submitAndNavigate();
-              } else {
-                setConfirmSubmit(true);
-              }
-            }}
-          >
-            {confirmSubmit ? 'Confirm and Submit' : 'Confirm and Submit'}
-          </Button>
-        </View>
-      )}
+      <View style={styles.btnContainer}>
+        <Text style={styles.btnContainerText}>{`Please confirm your selections, then press Submit.`}</Text>
+        <Button
+          mode={'contained'}
+          color={CustomColors.uva.orange}
+          labelStyle={{
+            fontSize: 28,
+            //   fontWeight: '600',
+            color: CustomColors.uva.white,
+            paddingVertical: 15,
+          }}
+          style={styles.nextButton}
+          onPress={postData}
+        >
+          {'Confirm and Submit'}
+        </Button>
+      </View>
     </View>
+  ) : (
+    <Loading />
   );
 };
 

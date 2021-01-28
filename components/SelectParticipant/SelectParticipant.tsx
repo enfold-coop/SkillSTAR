@@ -65,6 +65,8 @@ export const SelectParticipant = (props: SelectParticipantProps): ReactElement =
 
             console.log('newChainMastery instantiated?', !!newChainMastery);
 
+            console.log('last session:', dbChainData.lastSession);
+
             // Update the Chain Mastery Provider
             chainMasteryDispatch({ type: 'chainMastery', payload: newChainMastery });
           }
