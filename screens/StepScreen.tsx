@@ -13,11 +13,14 @@ import { ImageAssets } from '../data/images';
 import { videos } from '../data/videos';
 import CustomColors from '../styles/Colors';
 import { ChainStep } from '../types/chain/ChainStep';
+import { StepAttempt } from '../types/chain/StepAttempt';
 
 const StepScreen = (): JSX.Element => {
   const navigation = useNavigation();
   const [stepIndex, setStepIndex] = useState<number>();
   const [chainSteps, setChainSteps] = useState<ChainStep[]>();
+  const [chainStep, setChainStep] = useState<ChainStep>();
+  const [stepAttempt, setStepAttempt] = useState<StepAttempt>();
   const [video, setVideo] = useState<AVPlaybackSource>();
   const chainMasteryState = useChainMasteryState();
 
@@ -32,6 +35,8 @@ const StepScreen = (): JSX.Element => {
         if (!isCancelled && !chainSteps) {
           setChainSteps(chainMasteryState.chainMastery.chainSteps);
           setStepIndex(0);
+          setChainStep(chainMasteryState.chainMastery.chainSteps[0]);
+          setStepAttempt(chainMasteryState.chainMastery.draftSession.step_attempts[0]);
         }
       }
     };
@@ -64,17 +69,12 @@ const StepScreen = (): JSX.Element => {
    * END: LIFECYCLE CALLS
    */
 
-  const incrIndex = () => {
-    if (stepIndex !== undefined) {
+  const goToStep = (i: number) => {
+    if (chainMasteryState.chainMastery) {
       setVideo(undefined);
-      setStepIndex(stepIndex + 1);
-    }
-  };
-
-  const decrIndex = () => {
-    if (stepIndex !== undefined && stepIndex > 0) {
-      setVideo(undefined);
-      setStepIndex(stepIndex - 1);
+      setStepIndex(i);
+      setChainStep(chainMasteryState.chainMastery.chainSteps[i]);
+      setStepAttempt(chainMasteryState.chainMastery.draftSession.step_attempts[i]);
     }
   };
 
@@ -97,29 +97,65 @@ const StepScreen = (): JSX.Element => {
     );
   };
 
-  return (
+  const prevStep = () => {
+    if (!chainSteps || stepIndex === undefined) {
+      console.error('chainSteps and/or stepIndex not loaded.');
+      return;
+    }
+
+    if (stepIndex > 0) {
+      goToStep(stepIndex - 1);
+    }
+  };
+
+  const nextStep = () => {
+    if (!chainSteps || stepIndex === undefined) {
+      console.error('chainSteps and/or stepIndex not loaded.');
+      return;
+    }
+
+    if (stepIndex + 1 <= chainSteps.length - 1) {
+      goToStep(stepIndex + 1);
+    } else {
+      navigation.navigate('RewardsScreens');
+    }
+  };
+
+  // Set was_prompted to true for current step attempt
+  const onNeededPrompting = () => {
+    if (chainStep && chainMasteryState.chainMastery) {
+      chainMasteryState.chainMastery.updateDraftSessionStep(chainStep.id, 'was_prompted', true);
+    }
+
+    nextStep();
+  };
+
+  // Set completed to true for this step attempt
+  const onStepComplete = () => {
+    if (chainStep && chainMasteryState.chainMastery) {
+      chainMasteryState.chainMastery.updateDraftSessionStep(chainStep.id, 'completed', true);
+    }
+
+    nextStep();
+  };
+
+  return chainSteps && chainStep && stepIndex !== undefined ? (
     <ImageBackground source={ImageAssets.sunrise_muted} resizeMode={'cover'} style={styles.image}>
       <View style={styles.container}>
         <AppHeader name={'Brush Teeth'} />
-        {chainSteps && stepIndex !== undefined ? (
-          <View style={styles.progress}>
-            <Text style={styles.headline}>
-              {`Step ${chainSteps[stepIndex].id + 1}: ${chainSteps[stepIndex].instruction}`}
-            </Text>
-            <View style={styles.progressContainer}>
-              <MasteryIconContainer masteryLevel={'focus_step'} />
-              <ProgressBar
-                currentStepIndex={stepIndex}
-                totalSteps={chainSteps.length}
-                masteryLevel={'focus'}
-                chainSteps={chainSteps}
-              />
-            </View>
+        <View style={styles.progress}>
+          <Text style={styles.headline}>{`Step ${chainStep.id + 1}: ${chainStep.instruction}`}</Text>
+          <View style={styles.progressContainer}>
+            <MasteryIconContainer masteryLevel={'focus_step'} />
+            <ProgressBar
+              currentStepIndex={stepIndex}
+              totalSteps={chainSteps.length}
+              masteryLevel={'focus'}
+              chainSteps={chainSteps}
+            />
           </View>
-        ) : (
-          <Loading />
-        )}
-        <StarsNIconsContainer />
+        </View>
+        <StarsNIconsContainer chainStepId={chainStep.id} />
         <View style={styles.subContainer}>
           <Animatable.View style={styles.subVideoContainer} duration={2000} animation={'fadeIn'}>
             {<ReturnVideoComponent />}
@@ -145,9 +181,7 @@ const StepScreen = (): JSX.Element => {
             disabled={!stepIndex}
             color={CustomColors.uva.blue}
             mode={'outlined'}
-            onPress={() => {
-              decrIndex();
-            }}
+            onPress={prevStep}
           >{`Previous Step`}</Button>
           <View style={styles.nextBackSubContainer}>
             <Text style={styles.needAddlPrompt}>{`Needed Add'l Prompting`}</Text>
@@ -156,43 +190,21 @@ const StepScreen = (): JSX.Element => {
               labelStyle={{ fontSize: 28, paddingVertical: 5, color: CustomColors.uva.white }}
               color={CustomColors.uva.orange}
               mode={'contained'}
-              onPress={() => {
-                if (stepIndex !== undefined && chainSteps && stepIndex + 1 <= chainSteps.length - 1) {
-                  incrIndex();
-                } else {
-                  navigation.navigate('RewardsScreens');
-                }
-              }}
+              onPress={onNeededPrompting}
             >{`+`}</Button>
             <Button
               style={styles.nextButton}
               labelStyle={{ fontSize: 24, paddingTop: 5, paddingBottom: 0 }}
               color={CustomColors.uva.blue}
               mode={'contained'}
-              onPress={() => {
-                if (!chainSteps || stepIndex === undefined) {
-                  console.error('chainSteps and/or stepIndex not loaded.');
-                  return;
-                }
-
-                const chainStep = chainSteps[stepIndex];
-
-                // Set this step attempt to completed = true
-                if (chainMasteryState.chainMastery) {
-                  chainMasteryState.chainMastery.updateDraftSessionStep(chainStep.id, 'completed', true);
-                }
-
-                if (stepIndex + 1 <= chainSteps.length - 1) {
-                  incrIndex();
-                } else {
-                  navigation.navigate('RewardsScreens');
-                }
-              }}
+              onPress={onStepComplete}
             >{`Step Complete`}</Button>
           </View>
         </View>
       </View>
     </ImageBackground>
+  ) : (
+    <Loading />
   );
 };
 

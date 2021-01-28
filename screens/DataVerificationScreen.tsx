@@ -52,7 +52,7 @@ const DataVerificationScreen = (): JSX.Element => {
             data={chainMasteryState.chainMastery.draftSession.step_attempts}
             renderItem={item => {
               return chainMasteryState.chainMastery ? (
-                <DataVerifItem stepAttempt={item.item} chainSteps={chainMasteryState.chainMastery.chainSteps} />
+                <DataVerifItem chainStepId={item.item.chain_step_id} />
               ) : (
                 <Loading />
               );
@@ -60,9 +60,7 @@ const DataVerificationScreen = (): JSX.Element => {
             keyExtractor={randomId}
           />
         ) : (
-          <View>
-            <ActivityIndicator animating={true} color={CustomColors.uva.mountain} />
-          </View>
+          <Loading />
         )}
       </View>
 

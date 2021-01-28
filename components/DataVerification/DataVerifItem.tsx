@@ -1,5 +1,6 @@
 import React, { FC, useEffect, useState } from 'react';
 import { Image, ImageRequireSource, StyleSheet, Text, View } from 'react-native';
+import { useChainMasteryState } from '../../context/ChainMasteryProvider';
 import CustomColors from '../../styles/Colors';
 import { MasteryIcon } from '../../styles/MasteryIcon';
 import { ChainStep } from '../../types/chain/ChainStep';
@@ -22,15 +23,16 @@ const getPromptIcon = (level: string): ImageRequireSource => {
 };
 
 interface DataVerifItemProps {
-  stepAttempt: StepAttempt;
-  chainSteps: ChainStep[];
+  chainStepId: number;
 }
 
-const DataVerifItem: FC<DataVerifItemProps> = (props: DataVerifItemProps): JSX.Element => {
-  const { stepAttempt, chainSteps } = props;
+const DataVerifItem = (props: DataVerifItemProps): JSX.Element => {
+  const { chainStepId } = props;
   const [promptSwitch, setPromptSwitch] = useState(false);
   const [behavSwitch, setBehavSwitch] = useState(false);
   const [promptIcon, setPromptIcon] = useState<ImageRequireSource>();
+  const [stepAttempt, setStepAttempt] = useState<StepAttempt>();
+  const chainMasteryState = useChainMasteryState();
 
   /** Lifecycle calls */
   // Runs when session is updated.
@@ -38,6 +40,11 @@ const DataVerifItem: FC<DataVerifItemProps> = (props: DataVerifItemProps): JSX.E
     let isCancelled = false;
 
     const _load = async () => {
+      if (!isCancelled && !stepAttempt && chainMasteryState.chainMastery) {
+        const stateStepAttempt = chainMasteryState.chainMastery.getDraftSessionStep(chainStepId);
+        setStepAttempt(stateStepAttempt);
+      }
+
       if (!isCancelled && stepAttempt && !promptIcon) {
         const promptLevel = stepAttempt.prompt_level || ChainStepPromptLevel.full_physical;
         const _promptLevelIcon = getPromptIcon(promptLevel as string);
@@ -60,8 +67,8 @@ const DataVerifItem: FC<DataVerifItemProps> = (props: DataVerifItemProps): JSX.E
     setBehavSwitch(!behavSwitch);
   };
 
-  return promptIcon &&
-    chainSteps &&
+  return chainMasteryState.chainMastery &&
+    promptIcon &&
     stepAttempt &&
     stepAttempt.chain_step &&
     stepAttempt.chain_step_id !== undefined ? (
@@ -73,8 +80,8 @@ const DataVerifItem: FC<DataVerifItemProps> = (props: DataVerifItemProps): JSX.E
         <View style={styles.switchContainer}>
           <View style={styles.questionContainer}>
             <PromptDataVerifSwitch
-              name={'prompt_level'}
-              chainStepId={stepAttempt.chain_step_id !== undefined ? stepAttempt.chain_step_id : -1}
+              fieldName={'prompt_level'}
+              chainStepId={stepAttempt.chain_step_id}
               handleSwitch={handlePromptSwitch}
             />
           </View>

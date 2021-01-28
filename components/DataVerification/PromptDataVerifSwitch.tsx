@@ -3,22 +3,23 @@ import { StyleSheet, Text, View } from 'react-native';
 import * as Animatable from 'react-native-animatable';
 import { Switch } from 'react-native-paper';
 import CustomColors from '../../styles/Colors';
+import { StepAttemptFieldName } from '../../types/chain/StepAttempt';
 import { DataVerificationControlCallback } from '../../types/DataVerificationControlCallback';
 
 interface PromptDataVerifSwitchProps {
-  name: string;
+  fieldName: StepAttemptFieldName;
   chainStepId: number;
   handleSwitch: DataVerificationControlCallback;
 }
 
 const PromptDataVerifSwitch = (props: PromptDataVerifSwitchProps): JSX.Element => {
-  const { name, chainStepId, handleSwitch } = props;
+  const { fieldName, chainStepId, handleSwitch } = props;
   const [active, setActive] = useState(false);
   const [isSwitchOn, setIsSwitchOn] = useState(true);
   const [label, setLabel] = useState('No');
 
   const handleSwitchVal = (fieldValue: boolean) => {
-    return handleSwitch(chainStepId, name, fieldValue);
+    return handleSwitch(chainStepId, fieldName, fieldValue);
   };
 
   // Toogle switch label (yes/no)

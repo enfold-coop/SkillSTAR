@@ -1011,6 +1011,16 @@ export class ChainMastery {
     });
   }
 
+  getDraftSessionStep(chainStepId: number): StepAttempt {
+    const draftStep = this.draftSession.step_attempts.find(s => s.chain_step_id === chainStepId);
+
+    if (!draftStep) {
+      throw new Error(`No step attempt found in draft session matching chain step ID: ${chainStepId}`);
+    }
+
+    return draftStep;
+  }
+
   /**
    * Creates an index of steps, the status for each, and the milestone dates for that step, if applicable.
    */
