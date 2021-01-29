@@ -4,7 +4,7 @@ import { MasteryIcon } from '../../styles/MasteryIcon';
 import { ChainStepStatus } from '../../types/chain/StepAttempt';
 
 interface MasteryIconContainerProps {
-  masteryLevel: string;
+  masteryLevel: ChainStepStatus | undefined;
 }
 
 const MasteryIconContainer = (props: MasteryIconContainerProps): JSX.Element => {

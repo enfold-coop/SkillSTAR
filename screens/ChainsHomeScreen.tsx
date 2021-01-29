@@ -29,8 +29,6 @@ const ChainsHomeScreen = (): JSX.Element => {
       ? chainMasteryState.chainMastery.chainData.participant_id
       : -1;
 
-  console.log('key', key);
-
   const SessionButtons = (): JSX.Element => {
     if (!chainMasteryState || !chainMasteryState.chainMastery) {
       return <Loading />;
@@ -95,8 +93,8 @@ const ChainsHomeScreen = (): JSX.Element => {
       <View style={portrait ? styles.container : styles.landscapeContainer}>
         <AppHeader
           name={'Chains Home'}
-          onParticipantChange={selectedParticipant => {
-            console.log('Do we need this anymore?');
+          onParticipantChange={(selectedParticipant) => {
+            // TODO: Do we need this anymore?
           }}
         />
         {chainMasteryState.chainMastery ? (
@@ -104,7 +102,7 @@ const ChainsHomeScreen = (): JSX.Element => {
             <SessionDataAside />
             {chainMasteryState.chainMastery.chainSteps && chainMasteryState.chainMastery.draftSession && (
               <ScrollView style={styles.list}>
-                {chainMasteryState.chainMastery.draftSession.step_attempts.map(stepAttempt => {
+                {chainMasteryState.chainMastery.draftSession.step_attempts.map((stepAttempt) => {
                   return chainMasteryState.chainMastery && stepAttempt.chain_step ? (
                     <ScorecardListItem
                       key={'scorecard_list_chain_step_' + stepAttempt.chain_step_id}

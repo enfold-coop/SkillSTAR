@@ -21,8 +21,6 @@ export const DataVerificationListItem = (props: DataVerificationListItemProps): 
 
     // Set step attempt default values
     if (!isCancelled && chainMasteryState.chainMastery) {
-      console.log('DataVerificationListItem.tsx > useEffect');
-
       // Find the step in the draft session.
       chainMasteryState.chainMastery.draftSession.step_attempts.forEach((s, i) => {
         if (chainMasteryState.chainMastery && s.chain_step_id === stepAttempt.chain_step_id) {

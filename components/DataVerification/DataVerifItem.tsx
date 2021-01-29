@@ -40,9 +40,6 @@ const DataVerifItem = (props: DataVerifItemProps): JSX.Element => {
     const _load = async () => {
       if (!isCancelled && chainMasteryState.chainMastery) {
         const stateStepAttempt = chainMasteryState.chainMastery.getDraftSessionStep(chainStepId);
-
-        console.log('DataVerifItem.tsx > useEffect > chainMasteryState.chainMastery updated.');
-        console.log('step attempt loaded:', !!stateStepAttempt);
         setStepAttempt(stateStepAttempt);
       }
     };
@@ -63,10 +60,6 @@ const DataVerifItem = (props: DataVerifItemProps): JSX.Element => {
         const promptLevel = stepAttempt.prompt_level || ChainStepPromptLevel.full_physical;
         const _promptLevelIcon = getPromptIcon(promptLevel as string);
         setPromptIcon(_promptLevelIcon);
-
-        console.log('stepAttempt.completed', stepAttempt.completed);
-        console.log('stepAttempt.had_challenging_behavior', stepAttempt.had_challenging_behavior);
-
         setCompleted(
           stepAttempt.completed !== undefined && stepAttempt.completed !== null ? stepAttempt.completed : true,
         );
@@ -87,7 +80,6 @@ const DataVerifItem = (props: DataVerifItemProps): JSX.Element => {
   /** END: Lifecycle calls */
 
   const handleSwitch: DataVerificationControlCallback = async (chainStepId, fieldName, fieldValue) => {
-    console.log(`${fieldName} = ${fieldValue}`);
     if (fieldName === 'completed') {
       setCompleted(fieldValue as boolean);
     } else if (fieldName === 'had_challenging_behavior') {
