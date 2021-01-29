@@ -53,19 +53,19 @@ export const SelectParticipant = (props: SelectParticipantProps): ReactElement =
           console.log('SelectParticipant.tsx > Participant changed');
           const dbChainData = await ApiService.getChainDataForSelectedParticipant();
 
-          console.log('dbChainData retrieved?', !!dbChainData);
+          //   console.log('dbChainData retrieved?', !!dbChainData);
 
           if (dbChainData && dbChainData.sessions) {
-            console.log('chainSteps.length', chainSteps.length);
+            // console.log('chainSteps.length', chainSteps.length);
 
             const newChainData = new ChainData(dbChainData);
-            console.log('newChainData instantiated?', !!newChainData);
+            // console.log('newChainData instantiated?', !!newChainData);
 
             const newChainMastery = new ChainMastery(chainSteps, newChainData);
 
-            console.log('newChainMastery instantiated?', !!newChainMastery);
+            // console.log('newChainMastery instantiated?', !!newChainMastery);
 
-            console.log('last session:', dbChainData.lastSession);
+            // console.log('last session:', dbChainData.lastSession);
 
             // Update the Chain Mastery Provider
             chainMasteryDispatch({ type: 'chainMastery', payload: newChainMastery });
