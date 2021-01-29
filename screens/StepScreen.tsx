@@ -90,7 +90,7 @@ const StepScreen = (): JSX.Element => {
         resizeMode={'cover'}
         isLooping={false}
         useNativeControls={false}
-        shouldPlay={true}
+        shouldPlay={isPLaying}
         style={styles.video}
       />
     ) : (
@@ -150,9 +150,7 @@ const StepScreen = (): JSX.Element => {
       <View style={styles.container}>
         <AppHeader name={'Brush Teeth'} />
         <View style={styles.progress}>
-          <Text style={styles.headline}>{`Step ${chainStep.id + 1}: ${
-            chainStep.instruction
-          }`}</Text>
+          <Text style={styles.headline}>{`Step ${chainStep.id + 1}: ${chainStep.instruction}`}</Text>
           <View style={styles.progressContainer}>
             <MasteryIconContainer masteryLevel={'focus_step'} />
             <ProgressBar
@@ -180,7 +178,7 @@ const StepScreen = (): JSX.Element => {
               <TouchableOpacity onPress={() => setIsPlaying(!isPLaying)}>
                 {isPLaying ? (
                   <MaterialCommunityIcons
-                    name='pause-circle-outline'
+                    name={'pause-circle-outline'}
                     size={200}
                     style={{
                       color: 'rgba(255,255,255,0.6)',
@@ -188,7 +186,7 @@ const StepScreen = (): JSX.Element => {
                   />
                 ) : (
                   <MaterialCommunityIcons
-                    name='play-circle-outline'
+                    name={'play-circle-outline'}
                     size={200}
                     style={{
                       color: 'rgba(255,255,255,0.6)',
