@@ -21,9 +21,12 @@ const ScorecardListItem = (props: ScorecardListItemProps): JSX.Element => {
   const [isPressed, setIsPressed] = useState(false);
   const [stepData, setStepData] = useState<StepAttempt>();
 
-  const handleDateVals = (d?: Date): string => {
+  const handleDateVals = (d?: Date | string): string => {
     if (d && d instanceof Date) {
       return date.format(d, 'MM/DD/YYYY');
+    } else if (typeof d === 'string') {
+      console.log('date is a string');
+      return date.format(new Date(d), 'MM/DD/YYYY');
     } else {
       return 'N/A';
     }

@@ -9,12 +9,12 @@ type Material = {
 export const MaterialsItems: Material[] = [
   {
     id: 0,
-    title: 'Tooth brush',
+    title: 'Toothbrush',
     image: require('../assets/images/prep_materials_icon/toothbrush.png'),
   },
   {
     id: 1,
-    title: 'Tooth paste',
+    title: 'Toothpaste',
     image: require('../assets/images/prep_materials_icon/toothpaste.png'),
   },
   {
@@ -29,7 +29,7 @@ export const MaterialsItems: Material[] = [
   },
   {
     id: 4,
-    title: 'Cabinet',
+    title: 'Countertop',
     image: require('../assets/images/prep_materials_icon/medicine.png'),
   },
 ];

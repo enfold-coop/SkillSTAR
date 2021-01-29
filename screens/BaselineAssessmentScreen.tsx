@@ -2,6 +2,7 @@ import { useNavigation } from '@react-navigation/native';
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { Button } from 'react-native-paper';
+import { PROBE_INSTRUCTIONS } from '../components/Chain/chainshome_text_assets/chainshome_text';
 import AppHeader from '../components/Header/AppHeader';
 import { Loading } from '../components/Loading/Loading';
 import DataVerificationList from '../components/Probe/DataVerificationList';
@@ -68,9 +69,7 @@ const BaselineAssessmentScreen = (): JSX.Element => {
             {(ChainSessionTypeMap[chainMasteryState.chainMastery.draftSession.session_type as string].value ||
               'Baseline Assessment') + ' Session'}
           </Text>
-          <Text style={styles.instruction}>
-            {`Please instruct the child to brush their teeth. As they do, please complete this survey for each step.`}
-          </Text>
+          <Text style={styles.instruction}>{PROBE_INSTRUCTIONS}</Text>
         </View>
         <View style={styles.formContainer}>
           <DataVerificationList onChange={updateChainData} />
@@ -127,14 +126,14 @@ const styles = StyleSheet.create({
     fontSize: 22,
   },
   formContainer: {
-    height: '75%',
+    height: '65%',
     paddingBottom: 10,
   },
   nextBackBtnsContainer: {
     marginTop: 10,
     flexDirection: 'row',
     justifyContent: 'center',
-    marginBottom: 100,
+    marginBottom: 400,
   },
   nextButton: {
     width: '90%',

@@ -43,13 +43,13 @@ export const DataVerificationListItem = (props: DataVerificationListItemProps): 
 
   return (
     <View style={styles.container}>
-      <Text style={styles.stepTitle}>{`Step #${chainStepId + 1}: "${instruction}"`}</Text>
+      <Text style={styles.stepTitle}>{`Step ${chainStepId + 1}: ${instruction}`}</Text>
       <View style={styles.questionContainer}>
-        <Text style={styles.question}>{`Was the task Completed?`}</Text>
+        <Text style={styles.question}>{`Was this step completed independently?`}</Text>
         <ListItemSwitch fieldName={'completed'} defaultValue={true} chainStepId={chainStepId} onChange={onChange} />
       </View>
       <View style={styles.questionContainer}>
-        <Text style={styles.question}>{`Challenging Behavior?`}</Text>
+        <Text style={styles.question}>{`Did challenging behavior occur?`}</Text>
         <ListItemSwitch
           fieldName={'had_challenging_behavior'}
           defaultValue={false}
@@ -85,14 +85,14 @@ const styles = StyleSheet.create({
   },
   question: {
     fontSize: 24,
-    fontWeight: '400',
-    width: 300,
+    fontWeight: 'normal',
+    width: 500,
     alignSelf: 'center',
     color: '#000',
   },
   stepTitle: {
     fontSize: 24,
-    fontWeight: '600',
+    fontWeight: 'bold',
     paddingBottom: 10,
   },
   btnContainer: {

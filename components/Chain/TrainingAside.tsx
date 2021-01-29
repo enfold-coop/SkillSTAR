@@ -52,12 +52,16 @@ const TrainingAside = (): JSX.Element => {
     return '';
   };
 
-  return chainMasteryState.chainMastery && chainMasteryState.chainMastery.draftFocusStepAttempt ? (
+  return chainMasteryState.chainMastery ? (
     <View style={styles.container}>
       <Text style={styles.headerText}>{`${getHeaderText()} Session`}</Text>
       <Text>{TRAINING_INSTRUCTIONS}</Text>
-      <Text style={styles.instructionText}>{`Focus Step: ${getFocusStepInstructions()}`}</Text>
-      <Text style={styles.instructionText}>{`Prompt Level: ${getPromptLevel()}`}</Text>
+      {chainMasteryState.chainMastery.draftFocusStepAttempt && (
+        <View>
+          <Text style={styles.instructionText}>{`Focus Step: ${getFocusStepInstructions()}`}</Text>
+          <Text style={styles.instructionText}>{`Prompt Level: ${getPromptLevel()}`}</Text>
+        </View>
+      )}
     </View>
   ) : (
     <Loading />

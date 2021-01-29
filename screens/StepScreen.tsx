@@ -86,7 +86,8 @@ const StepScreen = (): JSX.Element => {
         isMuted={true}
         resizeMode={'cover'}
         isLooping={false}
-        useNativeControls={true}
+        useNativeControls={false}
+        shouldPlay={true}
         style={styles.video}
       />
     ) : (
