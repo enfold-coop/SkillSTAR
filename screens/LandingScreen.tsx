@@ -4,6 +4,8 @@ import React, { useEffect, useState } from 'react';
 import { Image, ImageBackground, StyleSheet, View } from 'react-native';
 import * as Animatable from 'react-native-animatable';
 import { Button, Text, TextInput } from 'react-native-paper';
+import { useParticipantDispatch } from '../context/ParticipantProvider';
+import { useUserDispatch } from '../context/UserProvider';
 import { ImageAssets } from '../data/images';
 import { ApiService } from '../services/ApiService';
 import CustomColors from '../styles/Colors';
@@ -14,6 +16,8 @@ const LandingScreen = (): JSX.Element => {
   const [password, setPassword] = useState(DEFAULT_USER_PASSWORD);
   const [isValid, setIsValid] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string>('');
+  const userDispatch = useUserDispatch();
+  const participantDispatch = useParticipantDispatch();
 
   /** LIFECYCLE METHODS */
   useEffect(() => {
@@ -25,14 +29,14 @@ const LandingScreen = (): JSX.Element => {
       const user = await ApiService.getUser();
 
       if (user) {
-        await ApiService.contextDispatch({ type: 'user', payload: user });
+        await userDispatch({ type: 'user', payload: user });
 
         // Get cached participant, or participant from STAR DRIVE if none cached.
         const selectedParticipant = await ApiService.getSelectedParticipant();
 
         if (selectedParticipant) {
           // When the participant is returned, go to the ChainsHomeScreen.
-          await ApiService.contextDispatch({ type: 'participant', payload: selectedParticipant });
+          await participantDispatch({ type: 'participant', payload: selectedParticipant });
           navigation.navigate('ChainsHomeScreen');
         } else {
           // TODO: There is a cached user, but the user account has no participants.
@@ -79,7 +83,7 @@ const LandingScreen = (): JSX.Element => {
     try {
       const user = await ApiService.login(email, password);
       if (user) {
-        await ApiService.contextDispatch({ type: 'user', payload: user });
+        userDispatch({ type: 'user', payload: user });
         navigation.navigate('ChainsHomeScreen');
       }
     } catch (e) {

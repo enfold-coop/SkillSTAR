@@ -4,13 +4,14 @@ import React, { ReactElement, useEffect, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { Button, Menu } from 'react-native-paper';
 import { useChainMasteryDispatch } from '../../context/ChainMasteryProvider';
-import { useParticipantDispatch, useParticipantState } from '../../context/ParticipantProvider';
+import { useParticipantContext } from '../../context/ParticipantProvider';
+import { useUserContext } from '../../context/UserProvider';
 import { ApiService } from '../../services/ApiService';
 import { ChainMastery } from '../../services/ChainMastery';
 import CustomColors from '../../styles/Colors';
 import { ChainData, SkillstarChain } from '../../types/chain/ChainData';
 import { ChainStep } from '../../types/chain/ChainStep';
-import { Participant, User } from '../../types/User';
+import { Participant } from '../../types/User';
 
 export interface SelectParticipantProps {
   onChange: (participant: Participant) => void;
@@ -21,14 +22,13 @@ export const SelectParticipant = (props: SelectParticipantProps): ReactElement =
   const [isVisible, setIsVisible] = useState<boolean>(false);
   const [menuItems, setMenuItems] = useState<ReactElement[]>();
   const [chainSteps, setChainSteps] = useState<ChainStep[]>();
-  const [user, setUser] = useState<User>();
   const [participants, setParticipants] = useState<Participant[]>();
   const [shouldGoHome, setShouldGoHome] = useState<boolean>(false);
   const { onChange } = props;
   const closeMenu = () => setIsVisible(false);
   const openMenu = () => setIsVisible(true);
-  const participantState = useParticipantState();
-  const participantDispatch = useParticipantDispatch();
+  const [userState, userDispatch] = useUserContext();
+  const [participantState, participantDispatch] = useParticipantContext();
   const chainMasteryDispatch = useChainMasteryDispatch();
 
   /** LIFECYCLE METHODS */
@@ -101,14 +101,15 @@ export const SelectParticipant = (props: SelectParticipantProps): ReactElement =
     const _load = async () => {
       isLoading = true;
 
-      if (!user) {
-        const contextUser = await ApiService.contextState('user');
-        if (!isCancelled && contextUser) {
-          setUser(contextUser as User);
-        } else {
+      if (!userState.user) {
+        const contextUser = userState.user;
+        if (!isCancelled && !contextUser) {
           const dbUser = await ApiService.getUser();
           if (!isCancelled && dbUser) {
-            setUser(dbUser as User);
+            userDispatch({ type: 'user', payload: dbUser });
+          } else {
+            // User session has expired. Log out.
+            await ApiService.logout();
           }
         }
       }
@@ -125,9 +126,9 @@ export const SelectParticipant = (props: SelectParticipantProps): ReactElement =
         }
       }
 
-      if (user && user.participants && user.participants.length > 1) {
+      if (userState.user && userState.user.participants && userState.user.participants.length > 1) {
         if (!participants && !isCancelled) {
-          setParticipants(user.participants.filter((p) => p.relationship === 'dependent'));
+          setParticipants(userState.user.participants.filter((p) => p.relationship === 'dependent'));
         }
       }
     };
@@ -156,7 +157,7 @@ export const SelectParticipant = (props: SelectParticipantProps): ReactElement =
     return () => {
       isCancelled = true;
     };
-  }, [user, participants]);
+  }, [userState.user, participants]);
 
   /** END LIFECYCLE METHODS */
 
