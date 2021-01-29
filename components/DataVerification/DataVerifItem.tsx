@@ -64,13 +64,16 @@ const DataVerifItem = (props: DataVerifItemProps): JSX.Element => {
         const _promptLevelIcon = getPromptIcon(promptLevel as string);
         setPromptIcon(_promptLevelIcon);
 
+        console.log('stepAttempt.completed', stepAttempt.completed);
+        console.log('stepAttempt.had_challenging_behavior', stepAttempt.had_challenging_behavior);
+
         setCompleted(
           stepAttempt.completed !== undefined && stepAttempt.completed !== null ? stepAttempt.completed : true,
         );
         setHadChallengingBehavior(
           stepAttempt.had_challenging_behavior !== undefined && stepAttempt.had_challenging_behavior !== null
             ? stepAttempt.had_challenging_behavior
-            : true,
+            : false,
         );
       }
     };
@@ -128,7 +131,11 @@ const DataVerifItem = (props: DataVerifItemProps): JSX.Element => {
       </View>
       <View style={styles.accordionContainer}>
         <PromptAccordion completed={completed} chainStepId={stepAttempt.chain_step_id} />
-        <BehavAccordion hadChallengingBehavior={hadChallengingBehavior} chainStepId={stepAttempt.chain_step_id} />
+        <BehavAccordion
+          completed={completed}
+          hadChallengingBehavior={hadChallengingBehavior}
+          chainStepId={stepAttempt.chain_step_id}
+        />
       </View>
     </View>
   ) : (

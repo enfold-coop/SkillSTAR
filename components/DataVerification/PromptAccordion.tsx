@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import * as Animatable from 'react-native-animatable';
 import { RadioButton } from 'react-native-paper';
 import { randomId } from '../../_util/RandomId';
+import { useChainMasteryState } from '../../context/ChainMasteryProvider';
 import CustomColors from '../../styles/Colors';
-import { ChainStepPromptLevelMap } from '../../types/chain/StepAttempt';
+import { ChainStepPromptLevel, ChainStepPromptLevelMap } from '../../types/chain/StepAttempt';
 
 interface PromptAccordionProps {
   chainStepId: number;
@@ -14,21 +15,37 @@ interface PromptAccordionProps {
 const PromptAccordion = (props: PromptAccordionProps): JSX.Element => {
   const { chainStepId, completed } = props;
   const [checked, setChecked] = React.useState(0);
+  const refSwitched = useRef(true);
   const [expanded, setExpanded] = useState(false);
+  const chainMasteryState = useChainMasteryState();
 
   /**
    * BEGIN: Lifecycle methods
    */
   useEffect(() => {
-    console.log('PromptAccordion.tsx > useEffect > chainStepId', chainStepId);
-    setExpanded(!completed);
+    if (refSwitched.current) {
+      refSwitched.current = false;
+    } else {
+      setExpanded(!completed);
+    }
   }, [completed]);
   /**
    * END: Lifecycle methods
    */
 
-  // TODO: SET DATA:
-  //  - setBehavValue([behav index "checked"])
+  // Store change in draft session
+  const handleChange = (radioButtonIndex: number) => {
+    setChecked(radioButtonIndex);
+    const enumMap = Object.values(ChainStepPromptLevelMap)[radioButtonIndex];
+
+    if (chainMasteryState.chainMastery && chainStepId !== undefined) {
+      chainMasteryState.chainMastery.updateDraftSessionStep(
+        chainStepId,
+        'prompt_level',
+        enumMap.key as ChainStepPromptLevel,
+      );
+    }
+  };
 
   return (
     <Animatable.View style={[styles.container, { display: expanded ? 'flex' : 'none' }]}>
@@ -52,7 +69,7 @@ const PromptAccordion = (props: PromptAccordionProps): JSX.Element => {
                     color={CustomColors.uva.orange}
                     value={e.key}
                     status={checked === i ? 'checked' : 'unchecked'}
-                    onPress={() => setChecked(i)}
+                    onPress={() => handleChange(i)}
                   />
                 </View>
                 <Text style={styles.radioBtnText}>{e.value}</Text>

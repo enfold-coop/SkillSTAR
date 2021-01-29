@@ -130,6 +130,13 @@ export class ChainData implements SkillstarChain {
         // Make sure all the dates are actually dates
         .map(s => {
           s.date = s.date ? new Date(s.date) : new Date();
+
+          // Convert all step attempt dates to strings
+          s.step_attempts = s.step_attempts.map(sa => {
+            sa.date = sa.date ? new Date(sa.date) : new Date();
+            sa.last_updated = sa.last_updated ? new Date(sa.last_updated) : new Date();
+            return sa;
+          });
           return s;
         })
         .sort((a, b) => {
