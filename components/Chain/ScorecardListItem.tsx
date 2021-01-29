@@ -25,11 +25,10 @@ const ScorecardListItem = (props: ScorecardListItemProps): JSX.Element => {
     if (d && d instanceof Date) {
       return date.format(d, 'MM/DD/YYYY');
     } else if (typeof d === 'string') {
-      console.log('date is a string');
-      return date.format(new Date(d), 'MM/DD/YYYY');
-    } else {
-      return 'N/A';
+      console.error('date is a string');
     }
+
+    return 'N/A';
   };
 
   useEffect(() => {

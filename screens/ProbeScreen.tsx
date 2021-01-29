@@ -27,23 +27,19 @@ const ProbeScreen = (): JSX.Element => {
     let isCancelled = false;
 
     const _load = async () => {
-      console.log('ProbeScreen > useEffect 1 > _load');
       const contextChainData = await ApiService.contextState('chainData');
       if (!isCancelled && !chainData && contextChainData) {
-        console.log('ProbeScreen.tsx > useEffect > _load > Setting chainData.');
         const newChainData = new ChainData(contextChainData);
         setChainData(newChainData);
       }
 
       const contextChainSteps = await ApiService.contextState('chainSteps');
       if (!isCancelled && !chainSteps && contextChainSteps) {
-        console.log('ProbeScreen.tsx > useEffect 1 > _load > Setting chainSteps.');
         setChainSteps(contextChainSteps as ChainStep[]);
       }
 
       if (!isCancelled && chainSteps && chainData) {
-        console.log('ProbeScreen > useEffect 1 > _load > Setting session...');
-        const stepAttempts: StepAttempt[] = chainSteps.map(chainStep => {
+        const stepAttempts: StepAttempt[] = chainSteps.map((chainStep) => {
           return {
             chain_step_id: chainStep.id,
             chain_step: chainStep,

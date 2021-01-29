@@ -44,11 +44,8 @@ const BaselineAssessmentScreen = (): JSX.Element => {
     ) {
       chainMasteryState.chainMastery.chainData.upsertSession(chainMasteryState.chainMastery.draftSession);
 
-      console.log('chainMasteryState.chainMastery.chainData.id', chainMasteryState.chainMastery.chainData.id);
-
       const dbChainData = await ApiService.upsertChainData(chainMasteryState.chainMastery.chainData);
       if (dbChainData) {
-        console.log('dbChainData loaded', !!dbChainData);
         chainMasteryState.chainMastery.updateChainData(dbChainData);
         navigation.navigate('ChainsHomeScreen', {});
       } else {

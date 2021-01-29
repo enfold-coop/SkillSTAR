@@ -50,33 +50,15 @@ export const SelectParticipant = (props: SelectParticipantProps): ReactElement =
         }
 
         if (!isCancelled && chainSteps) {
-          console.log('SelectParticipant.tsx > Participant changed');
           const dbChainData = await ApiService.getChainDataForSelectedParticipant();
 
-          //   console.log('dbChainData retrieved?', !!dbChainData);
-
           if (dbChainData && dbChainData.sessions) {
-            // console.log('chainSteps.length', chainSteps.length);
-
             const newChainData = new ChainData(dbChainData);
-            // console.log('newChainData instantiated?', !!newChainData);
-
             const newChainMastery = new ChainMastery(chainSteps, newChainData);
-
-            // console.log('newChainMastery instantiated?', !!newChainMastery);
-
-            // console.log('last session:', dbChainData.lastSession);
 
             // Update the Chain Mastery Provider
             chainMasteryDispatch({ type: 'chainMastery', payload: newChainMastery });
           }
-        }
-
-        if (!isCancelled && shouldGoHome) {
-          if (participantState.participant) {
-            onChange(participantState.participant);
-          }
-          navigation.navigate('ChainsHomeScreen', {});
         }
       }
     };
@@ -89,6 +71,26 @@ export const SelectParticipant = (props: SelectParticipantProps): ReactElement =
       isCancelled = true;
     };
   }, [participantState.participant]);
+
+  // Only runs when shouldGoHome is changed.
+  useEffect(() => {
+    let isCancelled = false;
+
+    const _load = async () => {
+      if (!isCancelled && shouldGoHome && participantState.participant) {
+        onChange(participantState.participant);
+        navigation.navigate('ChainsHomeScreen', {});
+      }
+    };
+
+    if (!isCancelled) {
+      _load();
+    }
+
+    return () => {
+      isCancelled = true;
+    };
+  }, [shouldGoHome]);
 
   // Only runs when user or participants list are updated
   useEffect(() => {
@@ -125,7 +127,7 @@ export const SelectParticipant = (props: SelectParticipantProps): ReactElement =
 
       if (user && user.participants && user.participants.length > 1) {
         if (!participants && !isCancelled) {
-          setParticipants(user.participants.filter(p => p.relationship === 'dependent'));
+          setParticipants(user.participants.filter((p) => p.relationship === 'dependent'));
         }
       }
     };

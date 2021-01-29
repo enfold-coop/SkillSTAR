@@ -61,7 +61,7 @@ const DataVerificationScreen = (): JSX.Element => {
               setScrolling(true);
             }}
             data={chainMasteryState.chainMastery.draftSession.step_attempts}
-            renderItem={item => {
+            renderItem={(item) => {
               return <DataVerifItem chainStepId={item.item.chain_step_id} />;
             }}
             keyExtractor={randomId}
