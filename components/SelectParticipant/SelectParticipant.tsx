@@ -127,7 +127,7 @@ export const SelectParticipant = (props: SelectParticipantProps): ReactElement =
 
       if (user && user.participants && user.participants.length > 1) {
         if (!participants && !isCancelled) {
-          setParticipants(user.participants.filter(p => p.relationship === 'dependent'));
+          setParticipants(user.participants.filter((p) => p.relationship === 'dependent'));
         }
       }
     };

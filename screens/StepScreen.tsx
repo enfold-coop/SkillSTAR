@@ -1,8 +1,9 @@
 import { useNavigation } from '@react-navigation/native';
 import { Video } from 'expo-av';
+import VideoPlayer from 'expo-video-player';
 import { AVPlaybackSource } from 'expo-av/build/AV';
 import React, { useEffect, useState } from 'react';
-import { ImageBackground, StyleSheet, Text, View, Modal } from 'react-native';
+import { ImageBackground, StyleSheet, Text, View, Modal, Dimensions } from 'react-native';
 import * as Animatable from 'react-native-animatable';
 import { ActivityIndicator, Button } from 'react-native-paper';
 import AppHeader from '../components/Header/AppHeader';
@@ -58,6 +59,7 @@ const StepScreen = (): JSX.Element => {
       if (!isCancelled && stepIndex !== undefined) {
         // Solves issue of videos not start play at beginning
         setVideo(videos[`step_${stepIndex + 1}`]);
+        setIsPlaying(false);
       }
     };
 
@@ -82,16 +84,16 @@ const StepScreen = (): JSX.Element => {
 
   const ReturnVideoComponent = () => {
     return video && stepIndex !== undefined ? (
-      <Video
-        source={video}
-        rate={1.0}
-        volume={1.0}
-        isMuted={true}
-        resizeMode={'cover'}
-        isLooping={false}
-        useNativeControls={false}
-        shouldPlay={isPLaying}
-        style={styles.video}
+      <VideoPlayer
+        videoProps={{
+          shouldPlay: false,
+          resizeMode: Video.RESIZE_MODE_CONTAIN,
+          source: video,
+        }}
+        inFullscreen={false}
+        videoBackground={'transparent'}
+        sliderColor={'#f0f'}
+        height={Dimensions.get('screen').height / 2.5}
       />
     ) : (
       <View style={styles.loadingContainer}>
@@ -168,39 +170,9 @@ const StepScreen = (): JSX.Element => {
         </View>
         <StarsNIconsContainer chainStepId={chainStep.id} />
         <View style={styles.subContainer}>
-          <Animatable.View style={styles.subVideoContainer} duration={2000} animation={'fadeIn'}>
-            {<ReturnVideoComponent />}
-            <View
-              style={{
-                position: 'absolute',
-                marginTop: 20,
-                width: '100%',
-                height: '100%',
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}
-            >
-              <TouchableOpacity onPress={() => setIsPlaying(!isPLaying)}>
-                {isPLaying ? (
-                  <MaterialCommunityIcons
-                    name={'pause-circle-outline'}
-                    size={200}
-                    style={{
-                      color: 'rgba(255,255,255,0.6)',
-                    }}
-                  />
-                ) : (
-                  <MaterialCommunityIcons
-                    name={'play-circle-outline'}
-                    size={200}
-                    style={{
-                      color: 'rgba(255,255,255,0.6)',
-                    }}
-                  />
-                )}
-              </TouchableOpacity>
-            </View>
-          </Animatable.View>
+          <View style={[styles.subVideoContainer]}>
+            <ReturnVideoComponent />
+          </View>
         </View>
         <View style={styles.bottomContainer}>
           {/* <Button
@@ -283,7 +255,8 @@ const styles = StyleSheet.create({
     height: 100,
   },
   subContainer: {
-    flexDirection: 'column',
+    flexDirection: 'row',
+    justifyContent: 'center',
   },
   challengingBehavior: {
     flexDirection: 'row',
@@ -301,10 +274,7 @@ const styles = StyleSheet.create({
     height: 400,
     flexDirection: 'row',
     justifyContent: 'center',
-  },
-  video: {
-    height: 400,
-    width: '100%',
+    alignContent: 'flex-start',
   },
   progressBar: {
     width: 200,
@@ -324,7 +294,6 @@ const styles = StyleSheet.create({
   },
   neededPromptingBtn: {
     margin: 15,
-    // fontSize:26,
     textAlign: 'center',
   },
   exitButton: {},
@@ -332,7 +301,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignContent: 'center',
-    // backgroundColor:"#f0f"
   },
   nextBackSubContainer: {
     flexDirection: 'row',

@@ -101,7 +101,7 @@ const LandingScreen = (): JSX.Element => {
           mode={'outlined'}
           value={email}
           style={styles.input}
-          onChangeText={text => _checkEmail(text)}
+          onChangeText={(text) => _checkEmail(text)}
           autoFocus={true}
         />
         <TextInput
@@ -112,7 +112,7 @@ const LandingScreen = (): JSX.Element => {
           mode={'outlined'}
           value={password}
           style={styles.input}
-          onChangeText={text => _checkPassword(text)}
+          onChangeText={(text) => _checkPassword(text)}
         />
         <View
           style={{

@@ -365,14 +365,14 @@ export class ApiService {
       await AsyncStorage.removeItem('selected_participant');
 
       if (user.participants && user.participants.length > 0) {
-        const dependents = user.participants.filter(p => p.relationship === 'dependent');
+        const dependents = user.participants.filter((p) => p.relationship === 'dependent');
 
         // If there are no dependents yet, return undefined.
         if (!dependents || dependents.length === 0) {
           return;
         }
 
-        const participant = dependents.find(d => d.id === participantId) as Participant;
+        const participant = dependents.find((d) => d.id === participantId) as Participant;
 
         if (participant) {
           await ApiService._cache('selected_participant', participant);
@@ -395,7 +395,7 @@ export class ApiService {
 
     if (user) {
       if (user.participants && user.participants.length > 0) {
-        const dependents = user.participants.filter(p => p.relationship === 'dependent');
+        const dependents = user.participants.filter((p) => p.relationship === 'dependent');
 
         // If there are no dependents yet, return undefined.
         if (!dependents || dependents.length === 0) {
@@ -410,7 +410,7 @@ export class ApiService {
           const cachedParticipant = parse(cachedParticipantJson) as Participant;
 
           if (cachedParticipant && cachedParticipant.hasOwnProperty('id')) {
-            const updatedParticipant = dependents.find(p => p.id === cachedParticipant.id);
+            const updatedParticipant = dependents.find((p) => p.id === cachedParticipant.id);
 
             // Update the cached participant with what's in the user object.
             if (updatedParticipant) {
