@@ -3,12 +3,13 @@ import { StyleSheet, Text, View } from 'react-native';
 import * as Animatable from 'react-native-animatable';
 import { RadioButton } from 'react-native-paper';
 import { randomId } from '../../_util/RandomId';
+import { useChainMasteryState } from '../../context/ChainMasteryProvider';
 import CustomColors from '../../styles/Colors';
-import { StepIncompleteReasonMap } from '../../types/chain/StepAttempt';
-import { MOCK_BEHAV_Q } from './mock_session';
+import { StepIncompleteReason, StepIncompleteReasonMap } from '../../types/chain/StepAttempt';
 
 interface BehavAccordionProps {
   chainStepId: number;
+  completed: boolean;
   hadChallengingBehavior: boolean;
 }
 
@@ -16,7 +17,8 @@ const BehavAccordion = (props: BehavAccordionProps): JSX.Element => {
   const [checked, setChecked] = React.useState(0);
   const [expanded, setExpanded] = useState(false);
   const refSwitched = useRef(true);
-  const { hadChallengingBehavior } = props;
+  const { chainStepId, completed, hadChallengingBehavior } = props;
+  const chainMasteryState = useChainMasteryState();
 
   /**
    * BEGIN: Lifecycle methods
@@ -25,19 +27,26 @@ const BehavAccordion = (props: BehavAccordionProps): JSX.Element => {
     if (refSwitched.current) {
       refSwitched.current = false;
     } else {
-      setExpanded(hadChallengingBehavior);
+      setExpanded(!completed && hadChallengingBehavior);
     }
-  }, [hadChallengingBehavior]);
+  }, [completed, hadChallengingBehavior]);
   /**
    * END: Lifecycle methods
    */
 
-  /**
-   *
-   * SET DATA:
-   * - setBehavValue([behav index "checked"])
-   *
-   */
+  // Store change in draft session
+  const handleChange = (radioButtonIndex: number) => {
+    setChecked(radioButtonIndex);
+    const enumMap = Object.values(StepIncompleteReasonMap)[radioButtonIndex];
+
+    if (chainMasteryState.chainMastery && chainStepId !== undefined) {
+      chainMasteryState.chainMastery.updateDraftSessionStep(
+        chainStepId,
+        'reason_step_incomplete',
+        enumMap.key as StepIncompleteReason,
+      );
+    }
+  };
 
   return (
     <Animatable.View style={[styles.container, { display: expanded ? 'flex' : 'none' }]}>
@@ -60,7 +69,7 @@ const BehavAccordion = (props: BehavAccordionProps): JSX.Element => {
                     color={CustomColors.uva.orange}
                     value={e.key}
                     status={checked === i ? 'checked' : 'unchecked'}
-                    onPress={() => setChecked(i)}
+                    onPress={() => handleChange(i)}
                   />
                 </View>
                 <Text style={styles.radioBtnText}>{e.value}</Text>
