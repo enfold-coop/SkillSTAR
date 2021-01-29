@@ -29,7 +29,6 @@ const StepScreen = (): JSX.Element => {
    */
   useEffect(() => {
     let isCancelled = false;
-
     const _load = async () => {
       if (chainMasteryState.chainMastery) {
         if (!isCancelled && !chainSteps) {
@@ -150,7 +149,12 @@ const StepScreen = (): JSX.Element => {
         <View style={styles.progress}>
           <Text style={styles.headline}>{`Step ${chainStep.id + 1}: ${chainStep.instruction}`}</Text>
           <View style={styles.progressContainer}>
-            <MasteryIconContainer masteryLevel={'focus_step'} />
+            <MasteryIconContainer
+              masteryLevel={
+                chainMasteryState.chainMastery &&
+                chainMasteryState.chainMastery.draftSession.step_attempts[stepIndex].status
+              }
+            />
             <ProgressBar
               currentStepIndex={stepIndex}
               totalSteps={chainSteps.length}
@@ -287,6 +291,8 @@ const styles = StyleSheet.create({
   },
   neededPromptingBtn: {
     margin: 15,
+    // fontSize:26,
+    textAlign: 'center',
   },
   exitButton: {},
   nextBackBtnsContainer: {
