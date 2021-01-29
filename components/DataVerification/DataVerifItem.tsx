@@ -49,7 +49,7 @@ const DataVerifItem = (props: DataVerifItemProps): JSX.Element => {
     return () => {
       isCancelled = true;
     };
-  }, [chainStepId, chainMasteryState.chainMastery && chainMasteryState.chainMastery.draftSession]);
+  }, [chainStepId, chainMasteryState.chainMastery?.draftSession]);
 
   // Runs when step attempt is updated.
   useEffect(() => {
