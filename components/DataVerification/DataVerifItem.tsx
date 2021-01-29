@@ -122,12 +122,14 @@ const DataVerifItem = (props: DataVerifItemProps): JSX.Element => {
         </View>
       </View>
       <View style={styles.accordionContainer}>
-        <PromptAccordion completed={completed} chainStepId={stepAttempt.chain_step_id} />
-        <BehavAccordion
-          completed={completed}
-          hadChallengingBehavior={hadChallengingBehavior}
-          chainStepId={stepAttempt.chain_step_id}
-        />
+        {!completed && <PromptAccordion chainStepId={stepAttempt.chain_step_id} completed={completed} />}
+        {!completed && hadChallengingBehavior && (
+          <BehavAccordion
+            chainStepId={stepAttempt.chain_step_id}
+            completed={completed}
+            hadChallengingBehavior={hadChallengingBehavior}
+          />
+        )}
       </View>
     </View>
   ) : (
