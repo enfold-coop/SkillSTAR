@@ -8,15 +8,14 @@ import * as Animatable from 'react-native-animatable';
 import { ActivityIndicator, Button } from 'react-native-paper';
 import AppHeader from '../components/Header/AppHeader';
 import { Loading } from '../components/Loading/Loading';
-import { MasteryIconContainer, ProgressBar, StarsNIconsContainer } from '../components/Steps/index';
+import { ProgressBar, StarsNIconsContainer } from '../components/Steps/index';
 import { useChainMasteryState } from '../context/ChainMasteryProvider';
 import { ImageAssets } from '../data/images';
 import { videos } from '../data/videos';
 import CustomColors from '../styles/Colors';
 import { ChainStep } from '../types/chain/ChainStep';
 import { StepAttempt } from '../types/chain/StepAttempt';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { TouchableOpacity } from 'react-native-gesture-handler';
+import { MasteryIcon } from '../styles/MasteryIcon';
 
 const StepScreen = (): JSX.Element => {
   const navigation = useNavigation();
@@ -27,15 +26,18 @@ const StepScreen = (): JSX.Element => {
   const [video, setVideo] = useState<AVPlaybackSource>();
   const chainMasteryState = useChainMasteryState();
   const [isPLaying, setIsPlaying] = useState(false);
+  console.log('====================================');
+  console.log(chainMasteryState.chainMastery?.draftSession);
+  console.log('====================================');
 
   /**
    * BEGIN: LIFECYCLE CALLS
    */
   useEffect(() => {
-    let isCancelled = false;
+    // let isCancelled = false;
     const _load = async () => {
       if (chainMasteryState.chainMastery) {
-        if (!isCancelled && !chainSteps) {
+        if (!chainSteps) {
           setChainSteps(chainMasteryState.chainMastery.chainSteps);
           setStepIndex(0);
           setChainStep(chainMasteryState.chainMastery.chainSteps[0]);
@@ -47,7 +49,7 @@ const StepScreen = (): JSX.Element => {
     _load();
 
     return () => {
-      isCancelled = true;
+      //   isCancelled = true;
     };
   }, []);
 
@@ -154,12 +156,13 @@ const StepScreen = (): JSX.Element => {
         <View style={styles.progress}>
           <Text style={styles.headline}>{`Step ${chainStep.id + 1}: ${chainStep.instruction}`}</Text>
           <View style={styles.progressContainer}>
-            <MasteryIconContainer
+            {/* <MasteryIconContainer
               masteryLevel={
                 chainMasteryState.chainMastery &&
                 chainMasteryState.chainMastery.draftSession.step_attempts[stepIndex].status
               }
-            />
+            /> */}
+            <MasteryIcon chainStepStatus={stepAttempt?.status} iconSize={50} />
             <ProgressBar
               currentStepIndex={stepIndex}
               totalSteps={chainSteps.length}
