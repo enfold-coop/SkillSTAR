@@ -220,7 +220,7 @@ export class ChainMastery {
     }
 
     // Populate step attempts
-    newDraftSession.step_attempts = this.chainSteps.map((chainStep) => {
+    newDraftSession.step_attempts = this.chainSteps.map(chainStep => {
       return {
         chain_step_id: chainStep.id,
         chain_step: chainStep,
@@ -256,9 +256,7 @@ export class ChainMastery {
       // Determine the target prompt level for the draft session focus step.
       if (focusChainStepId) {
         // Get all the step attempts across all sessions for the focus step.
-        const draftFocusStepIndex = newDraftSession.step_attempts.findIndex(
-          (s) => s.chain_step_id === focusChainStepId,
-        );
+        const draftFocusStepIndex = newDraftSession.step_attempts.findIndex(s => s.chain_step_id === focusChainStepId);
         const focusStepPastAttempts = this.chainData.getAllStepAttemptsForChainStep(focusChainStepId);
         let numTargetLevelsMet = 0;
         let lastAttemptLevel: ChainStepPromptLevel | undefined = undefined;
@@ -350,7 +348,7 @@ export class ChainMastery {
    * @param promptLvl: the previous prompt level
    */
   getNextPromptLevel(promptLvl: ChainStepPromptLevel): ChainStepPromptLevelMapItem {
-    const currentIndex = this.promptHierarchy.findIndex((e) => e.key === promptLvl);
+    const currentIndex = this.promptHierarchy.findIndex(e => e.key === promptLvl);
     const nextIndex = currentIndex > 1 ? currentIndex - 1 : 0; // 0 if prompt level is already 0 (none/independent)
     return this.promptHierarchy[nextIndex];
   }
@@ -413,7 +411,7 @@ export class ChainMastery {
   numSinceFirstCompleted(stepAttempts: StepAttempt[]): number {
     let n = -1;
     let completedOnce = false;
-    stepAttempts.forEach((stepAttempt) => {
+    stepAttempts.forEach(stepAttempt => {
       if (stepAttempt.completed) {
         completedOnce = true;
       }
@@ -521,7 +519,7 @@ export class ChainMastery {
     const firstMasteredStep = this.stepFirstMastered(stepAttempts);
 
     if (firstMasteredStep !== undefined) {
-      const stepIndex = stepAttempts.findIndex((s) => s === firstMasteredStep);
+      const stepIndex = stepAttempts.findIndex(s => s === firstMasteredStep);
       return stepAttempts.length - (stepIndex + 1);
     } else {
       return -1;
@@ -824,7 +822,7 @@ export class ChainMastery {
     const boosterStep = this.getBoosterStep(stepAttempts);
 
     if (boosterStep && boosterStep.id) {
-      const boosterStepIndex = stepAttempts.findIndex((s) => s.id === boosterStep.id);
+      const boosterStepIndex = stepAttempts.findIndex(s => s.id === boosterStep.id);
       if (boosterStepIndex !== -1) {
         return stepAttempts.length - (boosterStepIndex + 1);
       }
@@ -842,7 +840,7 @@ export class ChainMastery {
     const boosterStep = this.getBoosterStep(stepAttempts);
 
     if (boosterStep && boosterStep.id) {
-      const boosterStepIndex = stepAttempts.findIndex((s) => s.id === boosterStep.id);
+      const boosterStepIndex = stepAttempts.findIndex(s => s.id === boosterStep.id);
       if (boosterStepIndex !== -1) {
         return stepAttempts.length - (boosterStepIndex + 1);
       }
@@ -874,7 +872,7 @@ export class ChainMastery {
    */
   getStepStatus(stepAttempts: StepAttempt[], m: MasteryInfo): ChainStepStatus {
     const needsBooster = this.chainStepNeedsBooster(stepAttempts);
-    const neverAttempted = stepAttempts.every((s) => s.status === ChainStepStatus.not_yet_started);
+    const neverAttempted = stepAttempts.every(s => s.status === ChainStepStatus.not_yet_started);
 
     if (neverAttempted) {
       return ChainStepStatus.not_yet_started;
@@ -935,8 +933,8 @@ export class ChainMastery {
    * yet) or been re-mastered after a booster.
    */
   getMasteredChainStepIds(): number[] {
-    const masteredSteps = this.chainSteps.filter((chainStep) => this.chainStepHasBeenMastered(chainStep.id));
-    return masteredSteps.map((s) => s.id);
+    const masteredSteps = this.chainSteps.filter(chainStep => this.chainStepHasBeenMastered(chainStep.id));
+    return masteredSteps.map(s => s.id);
   }
 
   /**
@@ -959,7 +957,7 @@ export class ChainMastery {
    */
   getUnmasteredFocusedChainStepIds(): number[] {
     // Remove all the mastered chain steps from the focused chain step ids.
-    return this.focusedChainStepIds.filter((s) => !this.masteredChainStepIds.includes(s));
+    return this.focusedChainStepIds.filter(s => !this.masteredChainStepIds.includes(s));
   }
 
   setDraftSessionType(sessionType: ChainSessionType) {
@@ -1013,7 +1011,7 @@ export class ChainMastery {
   }
 
   getDraftSessionStep(chainStepId: number): StepAttempt {
-    const draftStep = this.draftSession.step_attempts.find((s) => s.chain_step_id === chainStepId);
+    const draftStep = this.draftSession.step_attempts.find(s => s.chain_step_id === chainStepId);
 
     if (!draftStep) {
       throw new Error(`No step attempt found in draft session matching chain step ID: ${chainStepId}`);
@@ -1028,14 +1026,14 @@ export class ChainMastery {
   private buildMasteryInfoMap(): MasteryInfoMap {
     const masteryInfoMap: MasteryInfoMap = {};
     if (this.chainData && this.chainData.sessions && this.chainData.sessions.length === 0) {
-      this.chainSteps.forEach((chainStep) => {
+      this.chainSteps.forEach(chainStep => {
         masteryInfoMap[`${chainStep.id}`] = this.buildMasteryInfoForChainStep(chainStep.id);
       });
       return masteryInfoMap;
     }
 
-    this.chainData.sessions.forEach((session) => {
-      session.step_attempts.forEach((stepAttempt) => {
+    this.chainData.sessions.forEach(session => {
+      session.step_attempts.forEach(stepAttempt => {
         if (stepAttempt && stepAttempt.chain_step_id !== undefined && stepAttempt.status) {
           masteryInfoMap[`${stepAttempt.chain_step_id}`] = this.buildMasteryInfoForChainStep(stepAttempt.chain_step_id);
         }

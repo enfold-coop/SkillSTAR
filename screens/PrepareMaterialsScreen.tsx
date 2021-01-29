@@ -45,7 +45,7 @@ const PrepareMaterialsScreen = (): JSX.Element => {
    * END: LIFECYCLE CALLS
    */
 
-  const materialsList = MaterialsItems.map((m) => (
+  const materialsList = MaterialsItems.map(m => (
     <Card style={styles.listItem} key={'materials_list_item_' + m.id}>
       <Animatable.View animation={'fadeIn'} style={styles.listItem}>
         <Image style={styles.itemIcon} source={m.image} />

@@ -101,8 +101,8 @@ export class ChainData implements SkillstarChain {
    */
   getAllStepAttemptsForChainStep(chainStepId: number): StepAttempt[] {
     const stepAttempts: StepAttempt[] = [];
-    this.sessions.forEach((session) => {
-      session.step_attempts.forEach((stepAttempt) => {
+    this.sessions.forEach(session => {
+      session.step_attempts.forEach(stepAttempt => {
         if (stepAttempt.chain_step_id === chainStepId) {
           stepAttempts.push(stepAttempt);
         }
@@ -120,11 +120,11 @@ export class ChainData implements SkillstarChain {
     return (
       skillstarChain.sessions
         // Make sure all the dates are actually dates
-        .map((s) => {
+        .map(s => {
           s.date = s.date ? new Date(s.date) : new Date();
 
           // Convert all step attempt dates to strings
-          s.step_attempts = s.step_attempts.map((sa) => {
+          s.step_attempts = s.step_attempts.map(sa => {
             sa.date = sa.date ? new Date(sa.date) : new Date();
             sa.last_updated = sa.last_updated ? new Date(sa.last_updated) : new Date();
             return sa;

@@ -93,7 +93,7 @@ const ChainsHomeScreen = (): JSX.Element => {
       <View style={portrait ? styles.container : styles.landscapeContainer}>
         <AppHeader
           name={'Chains Home'}
-          onParticipantChange={(selectedParticipant) => {
+          onParticipantChange={selectedParticipant => {
             // TODO: Do we need this anymore?
           }}
         />
@@ -102,7 +102,7 @@ const ChainsHomeScreen = (): JSX.Element => {
             <SessionDataAside />
             {chainMasteryState.chainMastery.chainSteps && chainMasteryState.chainMastery.draftSession && (
               <ScrollView style={styles.list}>
-                {chainMasteryState.chainMastery.draftSession.step_attempts.map((stepAttempt) => {
+                {chainMasteryState.chainMastery.draftSession.step_attempts.map(stepAttempt => {
                   return chainMasteryState.chainMastery && stepAttempt.chain_step ? (
                     <ScorecardListItem
                       key={'scorecard_list_chain_step_' + stepAttempt.chain_step_id}

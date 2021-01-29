@@ -35,8 +35,8 @@ describe('ChainMastery', () => {
     expect(stepAttempts).toBeTruthy();
     expect(draftSession && draftSession.date).toBeTruthy();
     expect(stepAttempts && stepAttempts.length).toEqual(mockChainSteps.length);
-    expect(stepAttempts && stepAttempts.every((s) => s.status === ChainStepStatus.not_yet_started)).toBeTruthy();
-    expect(stepAttempts && stepAttempts.every((s) => !!s.date)).toBeTruthy();
+    expect(stepAttempts && stepAttempts.every(s => s.status === ChainStepStatus.not_yet_started)).toBeTruthy();
+    expect(stepAttempts && stepAttempts.every(s => !!s.date)).toBeTruthy();
   });
 
   it('should get step status', () => {

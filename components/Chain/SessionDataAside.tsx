@@ -36,9 +36,8 @@ const SessionDataAside = (): JSX.Element => {
         <View>
           <Card>
             <View style={styles.sessionNumbAndDateContainer}>
-              <Text style={styles.sessionNum}>{`Session #${
-                chainMasteryState.chainMastery.chainData.sessions.length + 1
-              }`}</Text>
+              <Text style={styles.sessionNum}>{`Session #${chainMasteryState.chainMastery.chainData.sessions.length +
+                1}`}</Text>
               <Text style={styles.date}>
                 {date.format(chainMasteryState.chainMastery.draftSession.date, 'MM/DD/YYYY')}
               </Text>
@@ -54,7 +53,7 @@ const SessionDataAside = (): JSX.Element => {
         </View>
         <View
           style={styles.graphIconContainer}
-          onLayout={(e) => {
+          onLayout={e => {
             const dimensions = e.nativeEvent.layout;
             setGraphContainerDimens(dimensions);
           }}

@@ -7,7 +7,7 @@ export const checkMasteryInfo = (chainMastery: ChainMastery) => {
   expect(chainMastery.chainSteps.length).toBeGreaterThan(0);
   expect(chainMastery.chainData).toBeTruthy();
   expect(chainMastery.masteryInfoMap).toBeTruthy();
-  mockChainSteps.forEach((chainStep) => {
+  mockChainSteps.forEach(chainStep => {
     const masteryInfo = chainMastery.masteryInfoMap[chainStep.id];
     expect(masteryInfo).toBeTruthy();
 

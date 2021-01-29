@@ -39,7 +39,7 @@ const ProbeScreen = (): JSX.Element => {
       }
 
       if (!isCancelled && chainSteps && chainData) {
-        const stepAttempts: StepAttempt[] = chainSteps.map((chainStep) => {
+        const stepAttempts: StepAttempt[] = chainSteps.map(chainStep => {
           return {
             chain_step_id: chainStep.id,
             chain_step: chainStep,

@@ -32,7 +32,7 @@ const GraphModal = (props: GraphModalProps): JSX.Element => {
     >
       <View
         style={styles.graphContainer}
-        onLayout={(e) => {
+        onLayout={e => {
           setGraphDimens(e.nativeEvent.layout);
         }}
       >

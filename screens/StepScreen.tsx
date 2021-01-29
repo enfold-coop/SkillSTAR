@@ -150,9 +150,7 @@ const StepScreen = (): JSX.Element => {
       <View style={styles.container}>
         <AppHeader name={'Brush Teeth'} />
         <View style={styles.progress}>
-          <Text style={styles.headline}>{`Step ${chainStep.id + 1}: ${
-            chainStep.instruction
-          }`}</Text>
+          <Text style={styles.headline}>{`Step ${chainStep.id + 1}: ${chainStep.instruction}`}</Text>
           <View style={styles.progressContainer}>
             <MasteryIconContainer
               masteryLevel={
