@@ -42,10 +42,6 @@ export class ChainData implements SkillstarChain {
    * @param newStep: Data to update the step with
    */
   updateStep(sessionId: number, chainStepId: number, newStep: StepAttempt): void {
-    console.log('ChainData.ts > ChainData > updateStep ***');
-    console.log('sessionId', sessionId);
-    console.log('chainStepId', chainStepId);
-    console.log('newStep', newStep);
     this.sessions.forEach((session, i) => {
       if (session.id === sessionId) {
         session.step_attempts.forEach((stepAttempt, j) => {
@@ -63,7 +59,6 @@ export class ChainData implements SkillstarChain {
    * @param newSession: Data to update the session with
    */
   updateSession(sessionId: number, newSession: ChainSession): void {
-    console.log('ChainData.ts > ChainData > updateSession ***');
     this.sessions.forEach((session, i) => {
       if (session.id === sessionId) {
         this.sessions[i] = newSession;
@@ -76,14 +71,11 @@ export class ChainData implements SkillstarChain {
    * @param newSession: Data to update the session with
    */
   upsertSession(newSession: ChainSession): void {
-    console.log('*** ChainData.ts > ChainData > upsertSession ***');
-    console.log('this.sessions.length before', this.sessions.length);
     if (newSession.id !== undefined && newSession.id !== null) {
       this.updateSession(newSession.id, newSession);
     } else {
       this.sessions.push(newSession);
     }
-    console.log('this.sessions.length after', this.sessions.length);
   }
 
   /**
@@ -109,8 +101,8 @@ export class ChainData implements SkillstarChain {
    */
   getAllStepAttemptsForChainStep(chainStepId: number): StepAttempt[] {
     const stepAttempts: StepAttempt[] = [];
-    this.sessions.forEach(session => {
-      session.step_attempts.forEach(stepAttempt => {
+    this.sessions.forEach((session) => {
+      session.step_attempts.forEach((stepAttempt) => {
         if (stepAttempt.chain_step_id === chainStepId) {
           stepAttempts.push(stepAttempt);
         }
@@ -128,11 +120,11 @@ export class ChainData implements SkillstarChain {
     return (
       skillstarChain.sessions
         // Make sure all the dates are actually dates
-        .map(s => {
+        .map((s) => {
           s.date = s.date ? new Date(s.date) : new Date();
 
           // Convert all step attempt dates to strings
-          s.step_attempts = s.step_attempts.map(sa => {
+          s.step_attempts = s.step_attempts.map((sa) => {
             sa.date = sa.date ? new Date(sa.date) : new Date();
             sa.last_updated = sa.last_updated ? new Date(sa.last_updated) : new Date();
             return sa;

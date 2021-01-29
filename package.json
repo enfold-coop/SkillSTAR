@@ -17,8 +17,8 @@
     },
     "husky": {
         "hooks": {
-            "pre-commit": "npm run prettier-format && npm run lint",
-            "pre-push": "npm run prettier-format && npm run lint && npm run test:pre-push"
+            "pre-commit": "npm run prettier-format && npm run lint-and-fix",
+            "pre-push": "npm run prettier-format && npm run lint-and-fix && npm run test:pre-push"
         }
     },
     "jest": {
@@ -96,7 +96,7 @@
         "jest": "^26.6.3",
         "jest-expo": "^39.0.0",
         "jest-fetch-mock": "^3.0.3",
-        "prettier": "1.17.0",
+        "prettier": "^2.2.1",
         "react-test-renderer": "^16.14.0",
         "sonar-scanner": "^3.1.0",
         "typescript": "^4.1.3"

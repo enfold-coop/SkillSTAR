@@ -23,10 +23,6 @@ const GraphModal = (props: GraphModalProps): JSX.Element => {
     setVisible(visible);
   }, [visible]);
 
-  useEffect(() => {
-    // console.log("????");
-  });
-
   return (
     <Modal
       visible={vis}
@@ -36,7 +32,7 @@ const GraphModal = (props: GraphModalProps): JSX.Element => {
     >
       <View
         style={styles.graphContainer}
-        onLayout={e => {
+        onLayout={(e) => {
           setGraphDimens(e.nativeEvent.layout);
         }}
       >
