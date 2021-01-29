@@ -2,7 +2,7 @@ import { useNavigation } from '@react-navigation/native';
 import { Video } from 'expo-av';
 import { AVPlaybackSource } from 'expo-av/build/AV';
 import React, { useEffect, useState } from 'react';
-import { ImageBackground, StyleSheet, Text, View } from 'react-native';
+import { ImageBackground, StyleSheet, Text, View, Modal } from 'react-native';
 import * as Animatable from 'react-native-animatable';
 import { ActivityIndicator, Button } from 'react-native-paper';
 import AppHeader from '../components/Header/AppHeader';
@@ -14,6 +14,8 @@ import { videos } from '../data/videos';
 import CustomColors from '../styles/Colors';
 import { ChainStep } from '../types/chain/ChainStep';
 import { StepAttempt } from '../types/chain/StepAttempt';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 
 const StepScreen = (): JSX.Element => {
   const navigation = useNavigation();
@@ -23,6 +25,7 @@ const StepScreen = (): JSX.Element => {
   const [stepAttempt, setStepAttempt] = useState<StepAttempt>();
   const [video, setVideo] = useState<AVPlaybackSource>();
   const chainMasteryState = useChainMasteryState();
+  const [isPLaying, setIsPlaying] = useState(false);
 
   /**
    * BEGIN: LIFECYCLE CALLS
@@ -147,7 +150,9 @@ const StepScreen = (): JSX.Element => {
       <View style={styles.container}>
         <AppHeader name={'Brush Teeth'} />
         <View style={styles.progress}>
-          <Text style={styles.headline}>{`Step ${chainStep.id + 1}: ${chainStep.instruction}`}</Text>
+          <Text style={styles.headline}>{`Step ${chainStep.id + 1}: ${
+            chainStep.instruction
+          }`}</Text>
           <View style={styles.progressContainer}>
             <MasteryIconContainer masteryLevel={'focus_step'} />
             <ProgressBar
@@ -162,6 +167,36 @@ const StepScreen = (): JSX.Element => {
         <View style={styles.subContainer}>
           <Animatable.View style={styles.subVideoContainer} duration={2000} animation={'fadeIn'}>
             {<ReturnVideoComponent />}
+            <View
+              style={{
+                position: 'absolute',
+                marginTop: 20,
+                width: '100%',
+                height: '100%',
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}
+            >
+              <TouchableOpacity onPress={() => setIsPlaying(!isPLaying)}>
+                {isPLaying ? (
+                  <MaterialCommunityIcons
+                    name='pause-circle-outline'
+                    size={200}
+                    style={{
+                      color: 'rgba(255,255,255,0.6)',
+                    }}
+                  />
+                ) : (
+                  <MaterialCommunityIcons
+                    name='play-circle-outline'
+                    size={200}
+                    style={{
+                      color: 'rgba(255,255,255,0.6)',
+                    }}
+                  />
+                )}
+              </TouchableOpacity>
+            </View>
           </Animatable.View>
         </View>
         <View style={styles.bottomContainer}>
@@ -287,7 +322,7 @@ const styles = StyleSheet.create({
   neededPromptingBtn: {
     margin: 15,
     // fontSize:26,
-    textAlign:"center"
+    textAlign: 'center',
   },
   exitButton: {},
   nextBackBtnsContainer: {
