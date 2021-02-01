@@ -16,5 +16,12 @@ export const mockChainQuestionnaire: SkillstarChain = {
   time_on_task_ms: 276853,
 
   // Purposefully make these out of order.
-  sessions: [mockSession5, mockSession0, mockSession2, mockSession1, mockSession4, mockSession3],
+  sessions: [
+    mockSession5, // training
+    mockSession0, // probe
+    mockSession2, // probe
+    mockSession1, // probe
+    mockSession4, // training
+    mockSession3, // training
+  ],
 };
