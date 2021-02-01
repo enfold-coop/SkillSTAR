@@ -42,10 +42,14 @@ const BaselineAssessmentScreen = (): JSX.Element => {
       chainMasteryState.chainMastery.chainData &&
       chainMasteryState.chainMastery.draftSession
     ) {
+      chainMasteryState.chainMastery.draftSession.completed = true;
       chainMasteryState.chainMastery.chainData.upsertSession(chainMasteryState.chainMastery.draftSession);
 
       const dbChainData = await ApiService.upsertChainData(chainMasteryState.chainMastery.chainData);
       if (dbChainData) {
+        dbChainData.sessions.forEach((s) => {
+          console.log('session completed:', s.completed);
+        });
         chainMasteryState.chainMastery.updateChainData(dbChainData);
         navigation.navigate('ChainsHomeScreen', {});
       } else {

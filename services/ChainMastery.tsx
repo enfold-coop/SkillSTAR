@@ -187,6 +187,7 @@ export class ChainMastery {
   buildNewDraftSession(sessionType?: ChainSessionType): ChainSession {
     const newDraftSession: ChainSession = {
       date: new Date(),
+      completed: false,
       step_attempts: [],
       session_type: sessionType,
     };

@@ -32,6 +32,7 @@ const DataVerificationScreen = (): JSX.Element => {
     if (chainMasteryState.chainMastery) {
       const draftSession = chainMasteryState.chainMastery.draftSession;
       const chainData = chainMasteryState.chainMastery.chainData;
+      draftSession.completed = true;
       chainData.sessions.push(draftSession);
       const dbChainData = await ApiService.upsertChainData(chainData);
 

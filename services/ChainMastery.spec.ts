@@ -17,6 +17,7 @@ describe('ChainMastery', () => {
 
   it('should populate the mastery info object and draft session for returning users', () => {
     checkMasteryInfo(chainMastery);
+    expect(chainMastery.chainData.sessions.every((s) => s.completed === true)).toEqual(true);
   });
 
   it('should populate the mastery info object and draft session for new users', () => {

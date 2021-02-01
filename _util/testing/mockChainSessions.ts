@@ -7,7 +7,7 @@ export const mockSession0: ChainSession = {
   last_updated: new Date('2021-01-01T15:43:16.083844+00:00'),
   time_on_task_ms: 0,
   date: new Date('2021-01-01T05:00:00'),
-  completed: false,
+  completed: true,
   session_type: ChainSessionType.probe,
   step_attempts: [
     {
@@ -312,7 +312,7 @@ export const mockSession1: ChainSession = {
   last_updated: new Date('2021-01-02T15:43:16.083844+00:00'),
   time_on_task_ms: 0,
   date: new Date('2021-01-02T05:00:00'),
-  completed: false,
+  completed: true,
   session_type: ChainSessionType.probe,
   step_attempts: [
     {
@@ -645,7 +645,7 @@ export const mockSession2: ChainSession = {
   last_updated: new Date('2021-01-03T15:43:16.083844+00:00'),
   time_on_task_ms: 0,
   date: new Date('2021-01-03T05:00:00'),
-  completed: false,
+  completed: true,
   session_type: ChainSessionType.probe,
   step_attempts: [
     {
@@ -978,7 +978,7 @@ export const mockSession3: ChainSession = {
   last_updated: new Date('2021-01-04T15:43:16.083844+00:00'),
   time_on_task_ms: 0,
   date: new Date('2021-01-04T05:00:00'),
-  completed: false,
+  completed: true,
   session_type: ChainSessionType.training,
   step_attempts: [
     {
@@ -1311,7 +1311,7 @@ export const mockSession4: ChainSession = {
   last_updated: new Date('2021-01-05T15:43:16.083844+00:00'),
   time_on_task_ms: 0,
   date: new Date('2021-01-05T05:00:00'),
-  completed: false,
+  completed: true,
   session_type: ChainSessionType.training,
   step_attempts: [
     {
@@ -1644,7 +1644,7 @@ export const mockSession5: ChainSession = {
   last_updated: new Date('2021-01-06T15:43:16.083844+00:00'),
   time_on_task_ms: 0,
   date: new Date('2021-01-06T05:00:00'),
-  completed: false,
+  completed: true,
   session_type: ChainSessionType.training,
   step_attempts: [
     {
@@ -1977,7 +1977,7 @@ export const mockSession6: ChainSession = {
   last_updated: new Date('2021-01-07T15:43:16.083844+00:00'),
   time_on_task_ms: 0,
   date: new Date('2021-01-07T05:00:00'),
-  completed: false,
+  completed: true,
   session_type: ChainSessionType.training,
   step_attempts: [
     {
