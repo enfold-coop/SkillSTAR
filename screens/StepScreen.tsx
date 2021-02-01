@@ -85,9 +85,10 @@ const StepScreen = (): JSX.Element => {
     return video && stepIndex !== undefined ? (
       <VideoPlayer
         videoProps={{
-          shouldPlay: false,
-          resizeMode: Video.RESIZE_MODE_CONTAIN,
+          shouldPlay: true,
+          resizeMode: Video.RESIZE_MODE_STRETCH,
           source: video,
+          volume: 0.0,
         }}
         inFullscreen={false}
         videoBackground={'transparent'}
@@ -272,7 +273,7 @@ const styles = StyleSheet.create({
   },
   itemName: {},
   subVideoContainer: {
-    padding: 10,
+    padding: 0,
     height: 400,
     flexDirection: 'row',
     justifyContent: 'center',
