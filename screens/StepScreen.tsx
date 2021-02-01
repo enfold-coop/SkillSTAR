@@ -26,9 +26,6 @@ const StepScreen = (): JSX.Element => {
   const [video, setVideo] = useState<AVPlaybackSource>();
   const chainMasteryState = useChainMasteryState();
   const [isPLaying, setIsPlaying] = useState(false);
-  console.log('====================================');
-  console.log(chainMasteryState.chainMastery?.draftSession);
-  console.log('====================================');
 
   /**
    * BEGIN: LIFECYCLE CALLS
@@ -94,7 +91,9 @@ const StepScreen = (): JSX.Element => {
         }}
         inFullscreen={false}
         videoBackground={'transparent'}
-        sliderColor={'#f0f'}
+        disableSlider={true}
+        sliderColor={'#fff'}
+        showFullscreenButton={false}
         height={Dimensions.get('screen').height / 2.5}
       />
     ) : (
