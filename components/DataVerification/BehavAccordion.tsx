@@ -15,7 +15,6 @@ interface BehavAccordionProps {
 
 const BehavAccordion = (props: BehavAccordionProps): JSX.Element => {
   const [checked, setChecked] = React.useState(0);
-  const [expanded, setExpanded] = useState(false);
   const refSwitched = useRef(true);
   const { chainStepId, completed, hadChallengingBehavior } = props;
   const chainMasteryState = useChainMasteryState();
@@ -23,12 +22,25 @@ const BehavAccordion = (props: BehavAccordionProps): JSX.Element => {
   /**
    * BEGIN: Lifecycle methods
    */
+  // Runs when completed or hadChallengingBehavior are changed
   useEffect(() => {
-    if (refSwitched.current) {
-      refSwitched.current = false;
-    } else {
-      setExpanded(!completed && hadChallengingBehavior);
+    let isCancelled = false;
+
+    const _load = async () => {
+      if (!isCancelled && completed !== undefined && hadChallengingBehavior !== undefined) {
+        if (refSwitched.current) {
+          refSwitched.current = false;
+        }
+      }
+    };
+
+    if (!isCancelled) {
+      _load();
     }
+
+    return () => {
+      isCancelled = true;
+    };
   }, [completed, hadChallengingBehavior]);
   /**
    * END: Lifecycle methods
@@ -49,10 +61,10 @@ const BehavAccordion = (props: BehavAccordionProps): JSX.Element => {
   };
 
   return (
-    <Animatable.View style={[styles.container, { display: expanded ? 'flex' : 'none' }]}>
+    <Animatable.View style={styles.container}>
       <View style={styles.behavSubContainer}>
         <Text style={styles.question}>{`What was the primary reason for failing to complete the task?`}</Text>
-        <View style={[styles.behavOptsContainer]}>
+        <View style={styles.behavOptsContainer}>
           {Object.values(StepIncompleteReasonMap).map((e, i) => {
             return (
               <View style={styles.checkboxContainer} key={randomId()}>

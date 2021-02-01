@@ -13,21 +13,34 @@ interface PromptAccordionProps {
 }
 
 const PromptAccordion = (props: PromptAccordionProps): JSX.Element => {
-  const { chainStepId, completed } = props;
+  const { chainStepId } = props;
   const [checked, setChecked] = React.useState(0);
   const refSwitched = useRef(true);
-  const [expanded, setExpanded] = useState(false);
   const chainMasteryState = useChainMasteryState();
+  const { completed } = props;
 
   /**
    * BEGIN: Lifecycle methods
    */
+  // Runs when completed is changed
   useEffect(() => {
-    if (refSwitched.current) {
-      refSwitched.current = false;
-    } else {
-      setExpanded(!completed);
+    let isCancelled = false;
+
+    const _load = async () => {
+      if (!isCancelled && completed !== undefined) {
+        if (refSwitched.current) {
+          refSwitched.current = false;
+        }
+      }
+    };
+
+    if (!isCancelled) {
+      _load();
     }
+
+    return () => {
+      isCancelled = true;
+    };
   }, [completed]);
   /**
    * END: Lifecycle methods
@@ -48,10 +61,10 @@ const PromptAccordion = (props: PromptAccordionProps): JSX.Element => {
   };
 
   return (
-    <Animatable.View style={[styles.container, { display: expanded ? 'flex' : 'none' }]}>
+    <Animatable.View style={styles.container}>
       <View style={styles.promptSubContainer}>
         <Text style={styles.question}>{`What prompt did you use to complete the step?`}</Text>
-        <View style={[styles.promptOptsContainer]}>
+        <View style={styles.promptOptsContainer}>
           {Object.values(ChainStepPromptLevelMap).map((e, i) => {
             return (
               <View style={styles.checkboxContainer} key={randomId()}>
