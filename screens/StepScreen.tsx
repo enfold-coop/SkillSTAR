@@ -150,10 +150,7 @@ const StepScreen = (): JSX.Element => {
           <Text style={styles.headline}>{`Step ${chainStep.id + 1}: ${chainStep.instruction}`}</Text>
           <View style={styles.progressContainer}>
             <MasteryIconContainer
-              masteryLevel={
-                chainMasteryState.chainMastery &&
-                chainMasteryState.chainMastery.draftSession.step_attempts[stepIndex].status
-              }
+              masteryLevel={chainMasteryState.chainMastery?.draftSession.step_attempts[stepIndex].status}
             />
             <ProgressBar
               currentStepIndex={stepIndex}

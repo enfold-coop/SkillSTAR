@@ -18,7 +18,7 @@ const TrainingAside = (): JSX.Element => {
   const chainMasteryState = useChainMasteryState();
 
   const getHeaderText = (): string => {
-    const stepAttempt = chainMasteryState.chainMastery && chainMasteryState.chainMastery.draftFocusStepAttempt;
+    const stepAttempt = chainMasteryState.chainMastery?.draftFocusStepAttempt;
     if (stepAttempt && stepAttempt.session_type) {
       const typeMap = ChainSessionTypeMap[stepAttempt.session_type as string];
 
@@ -31,7 +31,7 @@ const TrainingAside = (): JSX.Element => {
   };
 
   const getFocusStepInstructions = (): string => {
-    const stepAttempt = chainMasteryState.chainMastery && chainMasteryState.chainMastery.draftFocusStepAttempt;
+    const stepAttempt = chainMasteryState.chainMastery?.draftFocusStepAttempt;
     if (stepAttempt && stepAttempt.chain_step) {
       return stepAttempt.chain_step.instruction;
     }
@@ -40,7 +40,7 @@ const TrainingAside = (): JSX.Element => {
   };
 
   const getPromptLevel = (): string => {
-    const stepAttempt = chainMasteryState.chainMastery && chainMasteryState.chainMastery.draftFocusStepAttempt;
+    const stepAttempt = chainMasteryState.chainMastery?.draftFocusStepAttempt;
     if (stepAttempt && stepAttempt.target_prompt_level) {
       const typeMap = ChainStepPromptLevelMap[stepAttempt.target_prompt_level as string];
 

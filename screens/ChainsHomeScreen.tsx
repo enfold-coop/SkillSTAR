@@ -25,7 +25,7 @@ const ChainsHomeScreen = (): JSX.Element => {
   const chainMasteryState = useChainMasteryState();
 
   const key =
-    chainMasteryState && chainMasteryState.chainMastery && chainMasteryState.chainMastery.chainData
+    chainMasteryState && chainMasteryState.chainMastery?.chainData
       ? chainMasteryState.chainMastery.chainData.participant_id
       : -1;
 
