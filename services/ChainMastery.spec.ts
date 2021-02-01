@@ -2,7 +2,8 @@ import { checkMasteryInfo } from '../_util/testing/chainTestUtils';
 import { mockChainQuestionnaire } from '../_util/testing/mockChainQuestionnaire';
 import { mockChainSteps } from '../_util/testing/mockChainSteps';
 import { ChainData } from '../types/chain/ChainData';
-import { ChainStepStatus } from '../types/chain/StepAttempt';
+import { ChainSessionType } from '../types/chain/ChainSession';
+import { ChainStepPromptLevel, ChainStepPromptLevelMap, ChainStepStatus } from '../types/chain/StepAttempt';
 import { ChainMastery } from './ChainMastery';
 
 describe('ChainMastery', () => {
@@ -16,6 +17,7 @@ describe('ChainMastery', () => {
 
   it('should populate the mastery info object and draft session for returning users', () => {
     checkMasteryInfo(chainMastery);
+    expect(chainMastery.chainData.sessions.every((s) => s.completed === true)).toEqual(true);
   });
 
   it('should populate the mastery info object and draft session for new users', () => {
@@ -44,6 +46,19 @@ describe('ChainMastery', () => {
     const chainStepId = mockChainSteps[0].id;
     const stepAttempts = chainData.getAllStepAttemptsForChainStep(mockChainSteps[0].id);
     const masteryInfo = chainMastery.masteryInfoMap[chainStepId];
+    expect(chainMastery.draftSession.session_type).toEqual(ChainSessionType.training);
+    expect(chainMastery.draftSession.step_attempts[0].target_prompt_level).toEqual(ChainStepPromptLevel.full_physical);
     expect(chainMastery.getStepStatus(stepAttempts, masteryInfo)).toEqual(ChainStepStatus.focus);
+  });
+
+  it('should get next prompt level', () => {
+    expect(chainMastery.getNextPromptLevel(ChainStepPromptLevel.full_physical)).toEqual(
+      ChainStepPromptLevelMap['partial_physical'],
+    );
+    expect(chainMastery.getNextPromptLevel(ChainStepPromptLevel.partial_physical)).toEqual(
+      ChainStepPromptLevelMap['shadow'],
+    );
+    expect(chainMastery.getNextPromptLevel(ChainStepPromptLevel.shadow)).toEqual(ChainStepPromptLevelMap['none']);
+    expect(chainMastery.getNextPromptLevel(ChainStepPromptLevel.none)).toEqual(ChainStepPromptLevelMap['none']);
   });
 });

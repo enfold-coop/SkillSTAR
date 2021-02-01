@@ -29,4 +29,5 @@ export const checkMasteryInfo = (chainMastery: ChainMastery) => {
   expect(chainMastery.unmasteredFocusedChainStepIds).toBeTruthy();
   expect(chainMastery.unmasteredFocusedChainStepIds).toBeInstanceOf(Array);
   expect(chainMastery.draftSession).toBeTruthy();
+  expect(chainMastery.draftSession.completed).toEqual(false);
 };
