@@ -30,23 +30,23 @@ const StepScreen = (): JSX.Element => {
   /**
    * BEGIN: LIFECYCLE CALLS
    */
+  // Runs once on first load.
   useEffect(() => {
-    // let isCancelled = false;
+    let isCancelled = false;
+
     const _load = async () => {
-      if (chainMasteryState.chainMastery) {
-        if (!chainSteps) {
-          setChainSteps(chainMasteryState.chainMastery.chainSteps);
-          setStepIndex(0);
-          setChainStep(chainMasteryState.chainMastery.chainSteps[0]);
-          setStepAttempt(chainMasteryState.chainMastery.draftSession.step_attempts[0]);
-        }
+      if (chainMasteryState.chainMastery && !isCancelled && !chainSteps) {
+        setChainSteps(chainMasteryState.chainMastery.chainSteps);
+        setStepIndex(0);
+        setChainStep(chainMasteryState.chainMastery.chainSteps[0]);
+        setStepAttempt(chainMasteryState.chainMastery.draftSession.step_attempts[0]);
       }
     };
 
     _load();
 
     return () => {
-      //   isCancelled = true;
+      isCancelled = true;
     };
   }, []);
 
@@ -75,9 +75,9 @@ const StepScreen = (): JSX.Element => {
   const goToStep = (i: number) => {
     if (chainMasteryState.chainMastery) {
       setVideo(undefined);
-      setStepIndex(i);
       setChainStep(chainMasteryState.chainMastery.chainSteps[i]);
       setStepAttempt(chainMasteryState.chainMastery.draftSession.step_attempts[i]);
+      setStepIndex(i);
     }
   };
 
