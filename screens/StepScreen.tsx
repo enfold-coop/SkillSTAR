@@ -1,19 +1,21 @@
 import { useNavigation } from '@react-navigation/native';
 import { Video } from 'expo-av';
+import VideoPlayer from 'expo-video-player';
 import { AVPlaybackSource } from 'expo-av/build/AV';
 import React, { useEffect, useState } from 'react';
-import { ImageBackground, StyleSheet, Text, View } from 'react-native';
+import { ImageBackground, StyleSheet, Text, View, Modal, Dimensions } from 'react-native';
 import * as Animatable from 'react-native-animatable';
 import { ActivityIndicator, Button } from 'react-native-paper';
 import AppHeader from '../components/Header/AppHeader';
 import { Loading } from '../components/Loading/Loading';
-import { MasteryIconContainer, ProgressBar, StarsNIconsContainer } from '../components/Steps/index';
+import { ProgressBar, StarsNIconsContainer } from '../components/Steps/index';
 import { useChainMasteryState } from '../context/ChainMasteryProvider';
 import { ImageAssets } from '../data/images';
 import { videos } from '../data/videos';
 import CustomColors from '../styles/Colors';
 import { ChainStep } from '../types/chain/ChainStep';
 import { StepAttempt } from '../types/chain/StepAttempt';
+import { MasteryIcon } from '../styles/MasteryIcon';
 
 const StepScreen = (): JSX.Element => {
   const navigation = useNavigation();
@@ -23,20 +25,21 @@ const StepScreen = (): JSX.Element => {
   const [stepAttempt, setStepAttempt] = useState<StepAttempt>();
   const [video, setVideo] = useState<AVPlaybackSource>();
   const chainMasteryState = useChainMasteryState();
+  const [isPLaying, setIsPlaying] = useState(false);
 
   /**
    * BEGIN: LIFECYCLE CALLS
    */
+  // Runs once on first load.
   useEffect(() => {
     let isCancelled = false;
+
     const _load = async () => {
-      if (chainMasteryState.chainMastery) {
-        if (!isCancelled && !chainSteps) {
-          setChainSteps(chainMasteryState.chainMastery.chainSteps);
-          setStepIndex(0);
-          setChainStep(chainMasteryState.chainMastery.chainSteps[0]);
-          setStepAttempt(chainMasteryState.chainMastery.draftSession.step_attempts[0]);
-        }
+      if (chainMasteryState.chainMastery && !isCancelled && !chainSteps) {
+        setChainSteps(chainMasteryState.chainMastery.chainSteps);
+        setStepIndex(0);
+        setChainStep(chainMasteryState.chainMastery.chainSteps[0]);
+        setStepAttempt(chainMasteryState.chainMastery.draftSession.step_attempts[0]);
       }
     };
 
@@ -55,6 +58,7 @@ const StepScreen = (): JSX.Element => {
       if (!isCancelled && stepIndex !== undefined) {
         // Solves issue of videos not start play at beginning
         setVideo(videos[`step_${stepIndex + 1}`]);
+        setIsPlaying(false);
       }
     };
 
@@ -71,24 +75,27 @@ const StepScreen = (): JSX.Element => {
   const goToStep = (i: number) => {
     if (chainMasteryState.chainMastery) {
       setVideo(undefined);
-      setStepIndex(i);
       setChainStep(chainMasteryState.chainMastery.chainSteps[i]);
       setStepAttempt(chainMasteryState.chainMastery.draftSession.step_attempts[i]);
+      setStepIndex(i);
     }
   };
 
   const ReturnVideoComponent = () => {
     return video && stepIndex !== undefined ? (
-      <Video
-        source={video}
-        rate={1.0}
-        volume={1.0}
-        isMuted={true}
-        resizeMode={'cover'}
-        isLooping={false}
-        useNativeControls={false}
-        shouldPlay={true}
-        style={styles.video}
+      <VideoPlayer
+        videoProps={{
+          shouldPlay: true,
+          resizeMode: Video.RESIZE_MODE_STRETCH,
+          source: video,
+          volume: 0.0,
+        }}
+        inFullscreen={false}
+        videoBackground={'transparent'}
+        disableSlider={true}
+        sliderColor={'#fff'}
+        showFullscreenButton={false}
+        height={Dimensions.get('screen').height / 2.5}
       />
     ) : (
       <View style={styles.loadingContainer}>
@@ -149,9 +156,7 @@ const StepScreen = (): JSX.Element => {
         <View style={styles.progress}>
           <Text style={styles.headline}>{`Step ${chainStep.id + 1}: ${chainStep.instruction}`}</Text>
           <View style={styles.progressContainer}>
-            <MasteryIconContainer
-              masteryLevel={chainMasteryState.chainMastery?.draftSession.step_attempts[stepIndex].status}
-            />
+            <MasteryIcon chainStepStatus={stepAttempt?.status} iconSize={50} />
             <ProgressBar
               currentStepIndex={stepIndex}
               totalSteps={chainSteps.length}
@@ -162,9 +167,9 @@ const StepScreen = (): JSX.Element => {
         </View>
         <StarsNIconsContainer chainStepId={chainStep.id} />
         <View style={styles.subContainer}>
-          <Animatable.View style={styles.subVideoContainer} duration={2000} animation={'fadeIn'}>
-            {<ReturnVideoComponent />}
-          </Animatable.View>
+          <View style={[styles.subVideoContainer]}>
+            <ReturnVideoComponent />
+          </View>
         </View>
         <View style={styles.bottomContainer}>
           {/* <Button
@@ -247,7 +252,8 @@ const styles = StyleSheet.create({
     height: 100,
   },
   subContainer: {
-    flexDirection: 'column',
+    flexDirection: 'row',
+    justifyContent: 'center',
   },
   challengingBehavior: {
     flexDirection: 'row',
@@ -261,14 +267,11 @@ const styles = StyleSheet.create({
   },
   itemName: {},
   subVideoContainer: {
-    padding: 10,
-    height: 400,
+    padding: 0,
+    // height: 400,
     flexDirection: 'row',
     justifyContent: 'center',
-  },
-  video: {
-    height: 400,
-    width: '100%',
+    alignContent: 'flex-start',
   },
   progressBar: {
     width: 200,
@@ -288,7 +291,6 @@ const styles = StyleSheet.create({
   },
   neededPromptingBtn: {
     margin: 15,
-    // fontSize:26,
     textAlign: 'center',
   },
   exitButton: {},
@@ -296,7 +298,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignContent: 'center',
-    // backgroundColor:"#f0f"
   },
   nextBackSubContainer: {
     flexDirection: 'row',
