@@ -268,7 +268,7 @@ const styles = StyleSheet.create({
   itemName: {},
   subVideoContainer: {
     padding: 0,
-    height: 400,
+    // height: 400,
     flexDirection: 'row',
     justifyContent: 'center',
     alignContent: 'flex-start',
