@@ -75,6 +75,6 @@ export function MasteryIcon(props: MasteryIconProps): JSX.Element {
 
 const styles = StyleSheet.create({
   icon: {
-    paddingLeft: 5,
+    padding: 5,
   },
 });

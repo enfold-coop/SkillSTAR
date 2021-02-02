@@ -238,8 +238,9 @@ const styles = StyleSheet.create({
   },
   progressContainer: {
     flexDirection: 'row',
-    justifyContent: 'center',
+    justifyContent: 'space-around',
     alignContent: 'center',
+    padding: 5,
   },
   instructionContainer: {
     flexDirection: 'row',
