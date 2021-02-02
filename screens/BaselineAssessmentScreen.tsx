@@ -122,7 +122,7 @@ const styles = StyleSheet.create({
   instruction: {
     paddingLeft: 10,
     paddingRight: 10,
-    fontSize: 22,
+    fontSize: 16,
   },
   formContainer: {
     height: '65%',

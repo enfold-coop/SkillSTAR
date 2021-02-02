@@ -2,7 +2,7 @@ import { MaterialIcons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import React, { ReactElement, useEffect, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-import { Button, Menu } from 'react-native-paper';
+import { Button, Divider, Menu } from 'react-native-paper';
 import { useChainMasteryDispatch } from '../../context/ChainMasteryProvider';
 import { useParticipantContext } from '../../context/ParticipantProvider';
 import { useUserContext } from '../../context/UserProvider';
@@ -139,12 +139,10 @@ export const SelectParticipant = (props: SelectParticipantProps): ReactElement =
         if (!isCancelled && participants && participants.length > 0) {
           const items = participants.map((p: Participant) => {
             return (
-              <Menu.Item
-                onPress={() => selectParticipant(p)}
-                title={participantName(p)}
-                key={'participant_' + p.id}
-                style={styles.menuItem}
-              />
+              <View key={'participant_' + p.id}>
+                <Menu.Item onPress={() => selectParticipant(p)} title={participantName(p)} style={styles.menuItem} />
+                <Divider />
+              </View>
             );
           });
           if (!isCancelled) {
@@ -216,16 +214,16 @@ export const SelectParticipant = (props: SelectParticipantProps): ReactElement =
   const renderMenu = () => {
     return (
       <Menu
-        contentStyle={styles.menuContent}
+        contentStyle={menuItems?.length ? menuContent(menuItems?.length).menu : menuContent(1).menu}
         visible={isVisible}
         onDismiss={closeMenu}
         anchor={
-          <Button onPress={openMenu} color={CustomColors.uva.orange} style={styles.menuButton}>
-            {btnLabel}
-            <View style={styles.iconContainer}>
-              <MaterialIcons name={'arrow-drop-down'} size={24} color={CustomColors.uva.orange} />
-            </View>
-          </Button>
+          <View style={styles.anchorBtn}>
+            <Button onPress={openMenu} color={CustomColors.uva.orange}>
+              {btnLabel}
+              <MaterialIcons name={'arrow-drop-down'} size={40} color={CustomColors.uva.orange} />
+            </Button>
+          </View>
         }
       >
         {menuItems}
@@ -241,37 +239,30 @@ export const SelectParticipant = (props: SelectParticipantProps): ReactElement =
 };
 
 const styles = StyleSheet.create({
-  iconContainer: {
-    paddingTop: 8,
-  },
   menuContainer: {
     flex: 1,
-    flexDirection: 'column',
-    justifyContent: 'center',
-    alignItems: 'flex-end',
-    margin: -16,
-    height: 60,
-    padding: 0,
-  },
-  menuButton: {
-    flex: 1,
-    flexDirection: 'column',
-    justifyContent: 'center',
-    alignContent: 'center',
-  },
-  menuContent: {
-    flex: 1,
-    flexDirection: 'column',
+    flexDirection: 'row',
     justifyContent: 'flex-end',
-    alignContent: 'flex-end',
-    padding: 10,
+  },
+  anchorBtn: {
+    width: '100%',
+    alignSelf: 'flex-end',
   },
   menuItem: {
-    flexDirection: 'column',
-    justifyContent: 'center',
-    alignContent: 'center',
-    flex: 1,
-    height: 50,
-    padding: 10,
+    margin: 1,
+    marginHorizontal: 5,
+    backgroundColor: CustomColors.uva.white,
   },
 });
+
+const menuContent = (items: number) => {
+  return StyleSheet.create({
+    menu: {
+      padding: 5,
+      backgroundColor: 'rgba(255,255,255,0.5)',
+      top: 160,
+      height: 55 * items,
+      width: 277,
+    },
+  });
+};

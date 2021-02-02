@@ -24,10 +24,6 @@ const ChainsHomeScreen = (): JSX.Element => {
   const { portrait } = useDeviceOrientation();
   const chainMasteryState = useChainMasteryState();
 
-  console.log('====================================');
-  console.log(chainMasteryState.chainMastery?.chainData.lastSession);
-  console.log('====================================');
-
   const key =
     chainMasteryState && chainMasteryState.chainMastery?.chainData
       ? chainMasteryState.chainMastery.chainData.participant_id
