@@ -6,7 +6,7 @@ import { PROBE_INSTRUCTIONS } from '../components/Chain/chainshome_text_assets/c
 import AppHeader from '../components/Header/AppHeader';
 import { Loading } from '../components/Loading/Loading';
 import DataVerificationList from '../components/Probe/DataVerificationList';
-import { useChainMasteryState } from '../context/ChainMasteryProvider';
+import { useChainMasteryContext } from '../context/ChainMasteryProvider';
 import { ApiService } from '../services/ApiService';
 import CustomColors from '../styles/Colors';
 import { ChainSessionTypeMap } from '../types/chain/ChainSession';
@@ -18,7 +18,7 @@ const BaselineAssessmentScreen = (): JSX.Element => {
    * Set session type: Probe or Training
    */
   const navigation = useNavigation();
-  const chainMasteryState = useChainMasteryState();
+  const [chainMasteryState, chainMasteryDispatch] = useChainMasteryContext();
 
   const updateChainData: DataVerificationControlCallback = async (
     chainStepId: number,
@@ -47,10 +47,8 @@ const BaselineAssessmentScreen = (): JSX.Element => {
 
       const dbChainData = await ApiService.upsertChainData(chainMasteryState.chainMastery.chainData);
       if (dbChainData) {
-        dbChainData.sessions.forEach((s) => {
-          console.log('session completed:', s.completed);
-        });
         chainMasteryState.chainMastery.updateChainData(dbChainData);
+        chainMasteryDispatch({ type: 'chainMastery', payload: chainMasteryState.chainMastery });
         navigation.navigate('ChainsHomeScreen', {});
       } else {
         console.error('Something went wrong with saving the chain data.');
