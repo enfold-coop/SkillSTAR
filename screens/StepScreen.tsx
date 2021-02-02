@@ -27,6 +27,8 @@ const StepScreen = (): JSX.Element => {
   const chainMasteryState = useChainMasteryState();
   const [isPLaying, setIsPlaying] = useState(false);
 
+  console.log(chainMasteryState.chainMastery?.currentSession.session_type);
+
   /**
    * BEGIN: LIFECYCLE CALLS
    */

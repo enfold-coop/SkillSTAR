@@ -61,4 +61,8 @@ describe('ChainMastery', () => {
     expect(chainMastery.getNextPromptLevel(ChainStepPromptLevel.shadow)).toEqual(ChainStepPromptLevelMap['none']);
     expect(chainMastery.getNextPromptLevel(ChainStepPromptLevel.none)).toEqual(ChainStepPromptLevelMap['none']);
   });
+
+  it('should show Training session upon completing Probe session', () => {
+    //
+  });
 });

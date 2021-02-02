@@ -976,6 +976,7 @@ export class ChainMastery {
   }
 
   setDraftSessionType(sessionType: ChainSessionType) {
+    console.log(sessionType);
     this.draftSession = this.buildNewDraftSession(sessionType);
   }
 

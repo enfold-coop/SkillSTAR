@@ -8,7 +8,7 @@ import { DataVerifItem } from '../components/DataVerification';
 import ColumnLabels from '../components/DataVerification/ColumnLabels';
 import AppHeader from '../components/Header/AppHeader';
 import { Loading } from '../components/Loading/Loading';
-import { useChainMasteryState } from '../context/ChainMasteryProvider';
+import { useChainMasteryContext } from '../context/ChainMasteryProvider';
 import { ApiService } from '../services/ApiService';
 import CustomColors from '../styles/Colors';
 import { ChainSessionTypeLabels, ChainSessionTypeMap } from '../types/chain/ChainSession';
@@ -17,7 +17,7 @@ const DataVerificationScreen = (): JSX.Element => {
   const navigation = useNavigation();
   const [scrolling, setScrolling] = useState(false);
   const [sessionTypeLabel, setSessionTypeLabel] = useState<ChainSessionTypeLabels>();
-  const chainMasteryState = useChainMasteryState();
+  const [chainMasteryState, chainMasteryDispatch] = useChainMasteryContext();
 
   useEffect(() => {
     if (chainMasteryState.chainMastery) {
@@ -38,6 +38,7 @@ const DataVerificationScreen = (): JSX.Element => {
 
       if (dbChainData) {
         chainMasteryState.chainMastery.updateChainData(dbChainData);
+        chainMasteryDispatch({ type: 'chainMastery', payload: chainMasteryState.chainMastery });
         navigation.navigate('ChainsHomeScreen', {});
       }
     }
