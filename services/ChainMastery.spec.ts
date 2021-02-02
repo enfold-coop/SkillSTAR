@@ -1,8 +1,9 @@
+import { deepClone } from '../_util/deepClone';
 import { checkMasteryInfo } from '../_util/testing/chainTestUtils';
 import { mockChainQuestionnaire } from '../_util/testing/mockChainQuestionnaire';
 import { mockChainSteps } from '../_util/testing/mockChainSteps';
 import { ChainData } from '../types/chain/ChainData';
-import { ChainSessionType } from '../types/chain/ChainSession';
+import { ChainSession, ChainSessionType } from '../types/chain/ChainSession';
 import { ChainStepPromptLevel, ChainStepPromptLevelMap, ChainStepStatus } from '../types/chain/StepAttempt';
 import { ChainMastery } from './ChainMastery';
 
@@ -64,5 +65,38 @@ describe('ChainMastery', () => {
 
   it('should show Training session upon completing Probe session', () => {
     //
+  });
+
+  it('should save draft session', () => {
+    // Create a draft session of type booster.
+    const newMockChainData = chainData.clone();
+    const newMockSession = deepClone<ChainSession>(chainMastery.draftSession);
+    const numSessionsBefore = newMockChainData.sessions.length;
+
+    newMockSession.session_type = ChainSessionType.booster;
+    expect(newMockSession.session_type).toEqual(ChainSessionType.booster);
+
+    newMockChainData.sessions.push(newMockSession);
+    expect(newMockChainData.sessions).toHaveLength(numSessionsBefore + 1);
+
+    // The original should be unmodified
+    const origLastSession = chainData.lastSession;
+    expect(origLastSession).toBeTruthy();
+    expect(origLastSession.session_type).toEqual(ChainSessionType.training);
+    expect(chainData.sessions).toHaveLength(numSessionsBefore);
+
+    // The clone should be modified
+    const lastSession = newMockChainData.lastSession;
+    expect(lastSession).toBeTruthy();
+    expect(lastSession.session_type).toEqual(ChainSessionType.booster);
+
+    // Last session before saving the draft session should be a training session
+    expect(chainMastery.currentSession.session_type).toEqual(ChainSessionType.training);
+
+    // Save the modified chain data with the draft session.
+    chainMastery.updateChainData(newMockChainData);
+
+    // Last session type after saving should be booster.
+    expect(chainMastery.currentSession.session_type).toEqual(ChainSessionType.booster);
   });
 });
