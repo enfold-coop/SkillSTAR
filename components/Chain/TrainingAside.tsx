@@ -3,7 +3,11 @@ import { StyleSheet, Text, View } from 'react-native';
 import { useChainMasteryState } from '../../context/ChainMasteryProvider';
 import { ChainSessionType, ChainSessionTypeMap } from '../../types/chain/ChainSession';
 import { ChainStep } from '../../types/chain/ChainStep';
-import { ChainStepPromptLevel, ChainStepPromptLevelMap, StepAttempt } from '../../types/chain/StepAttempt';
+import {
+  ChainStepPromptLevel,
+  ChainStepPromptLevelMap,
+  StepAttempt,
+} from '../../types/chain/StepAttempt';
 import { Loading } from '../Loading/Loading';
 import { TRAINING_INSTRUCTIONS } from './chainshome_text_assets/chainshome_text';
 
@@ -55,11 +59,12 @@ const TrainingAside = (): JSX.Element => {
   return chainMasteryState.chainMastery ? (
     <View style={styles.container}>
       <Text style={styles.headerText}>{`${getHeaderText()} Session`}</Text>
-      <Text>{TRAINING_INSTRUCTIONS}</Text>
       {chainMasteryState.chainMastery.draftFocusStepAttempt && (
         <View>
           <Text style={styles.instructionText}>{`Focus Step: ${getFocusStepInstructions()}`}</Text>
           <Text style={styles.instructionText}>{`Prompt Level: ${getPromptLevel()}`}</Text>
+          {/* Get mastery of step prompt-level */}
+          {/* <Text style={styles.instructionText}>{`Mastery of Prompt Level: ${()}`}</Text> */}
         </View>
       )}
     </View>
