@@ -260,7 +260,7 @@ const menuContent = (items: number) => {
     menu: {
       padding: 5,
       backgroundColor: 'rgba(255,255,255,0.5)',
-      top: 160,
+      top: '10%',
       height: 55 * items,
       width: 277,
     },
