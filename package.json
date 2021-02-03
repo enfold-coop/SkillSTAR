@@ -69,7 +69,6 @@
         "react-native-vector-icons": "^7.1.0",
         "react-native-web": "~0.13.12",
         "react-native-webview": "11.0.0",
-        "rfdc": "^1.2.0",
         "shortid": "^2.2.16",
         "telejson": "^5.1.0",
         "ts-jest": "^26.4.1"
