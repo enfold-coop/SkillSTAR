@@ -90,13 +90,9 @@ exports[`ChainsHomeScreen renders correctly 1`] = `
         <View
           style={
             Object {
-              "alignItems": "flex-end",
               "flex": 1,
-              "flexDirection": "column",
-              "height": 60,
-              "justifyContent": "center",
-              "margin": -16,
-              "padding": 0,
+              "flexDirection": "row",
+              "justifyContent": "flex-end",
             }
           }
         >
