@@ -3,11 +3,7 @@ import { StyleSheet, Text, View } from 'react-native';
 import { useChainMasteryState } from '../../context/ChainMasteryProvider';
 import { ChainSessionType, ChainSessionTypeMap } from '../../types/chain/ChainSession';
 import { ChainStep } from '../../types/chain/ChainStep';
-import {
-  ChainStepPromptLevel,
-  ChainStepPromptLevelMap,
-  StepAttempt,
-} from '../../types/chain/StepAttempt';
+import { ChainStepPromptLevel, ChainStepPromptLevelMap, StepAttempt } from '../../types/chain/StepAttempt';
 import { Loading } from '../Loading/Loading';
 import { TRAINING_INSTRUCTIONS } from './chainshome_text_assets/chainshome_text';
 
