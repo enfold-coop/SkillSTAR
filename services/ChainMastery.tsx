@@ -35,6 +35,7 @@ export class ChainMastery {
   masteredChainStepIds: number[];
   unmasteredFocusedChainStepIds: number[];
   draftFocusStepAttempt?: StepAttempt;
+  totalCompletedFocusStepAttempts: StepAttempt[] = [];
 
   /**
    * Initializes all of the above class variables
@@ -310,7 +311,6 @@ export class ChainMastery {
         }
       }
     }
-
     return newDraftSession;
   }
 

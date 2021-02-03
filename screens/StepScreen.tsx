@@ -40,9 +40,6 @@ const StepScreen = (): JSX.Element => {
         setStepIndex(0);
         setChainStep(chainMasteryState.chainMastery.chainSteps[0]);
         setStepAttempt(chainMasteryState.chainMastery.draftSession.step_attempts[0]);
-        console.log('====================================');
-        console.log(chainMasteryState.chainMastery.draftFocusStepAttempt);
-        console.log('====================================');
       }
     };
 
