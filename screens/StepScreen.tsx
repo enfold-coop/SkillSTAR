@@ -40,6 +40,9 @@ const StepScreen = (): JSX.Element => {
         setStepIndex(0);
         setChainStep(chainMasteryState.chainMastery.chainSteps[0]);
         setStepAttempt(chainMasteryState.chainMastery.draftSession.step_attempts[0]);
+        console.log('====================================');
+        console.log(chainMasteryState.chainMastery.draftFocusStepAttempt);
+        console.log('====================================');
       }
     };
 
@@ -154,7 +157,9 @@ const StepScreen = (): JSX.Element => {
       <View style={styles.container}>
         <AppHeader name={'Brush Teeth'} />
         <View style={styles.progress}>
-          <Text style={styles.headline}>{`Step ${chainStep.id + 1}: ${chainStep.instruction}`}</Text>
+          <Text style={styles.headline}>{`Step ${chainStep.id + 1}: ${
+            chainStep.instruction
+          }`}</Text>
           <View style={styles.progressContainer}>
             <MasteryIcon chainStepStatus={stepAttempt?.status} iconSize={50} />
             <ProgressBar

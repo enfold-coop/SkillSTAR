@@ -240,12 +240,12 @@ export class ChainMastery {
       newDraftSession.step_attempts.forEach((stepAttempt, i) => {
         // Mark which chain step should be the focus step.
         if (focusChainStepId !== undefined) {
-          newDraftSession.step_attempts[i].was_focus_step = stepAttempt.chain_step_id === focusChainStepId;
-
+          newDraftSession.step_attempts[i].was_focus_step =
+            stepAttempt.chain_step_id === focusChainStepId;
           if (focusChainStepId === stepAttempt.chain_step_id) {
-            // TODO: Set the status AFTER the step has been attempted??
-            //  newDraftSession.step_attempts[i].status = ChainStepStatus.focus;
+            newDraftSession.step_attempts[i].status = ChainStepStatus.focus;
             draftFocusStepIndex = i;
+            stepAttempt.status = ChainStepStatus.focus;
           }
         }
 
@@ -263,7 +263,9 @@ export class ChainMastery {
         const masteryInfo = this.masteryInfoMap[focusChainStepId];
         const numTargetLevelsMet = masteryInfo.numAttemptsSince.lastFailed;
 
-        const focusStepPastAttempts = this.chainData.getAllStepAttemptsForChainStep(focusChainStepId);
+        const focusStepPastAttempts = this.chainData.getAllStepAttemptsForChainStep(
+          focusChainStepId,
+        );
         let lastAttemptLevel: ChainStepPromptLevel | undefined = ChainStepPromptLevel.full_physical;
         let lastAttemptSessionType: ChainSessionType | undefined = undefined;
 
@@ -288,7 +290,8 @@ export class ChainMastery {
 
         // If target prompt level for the probe session is still undefined, set it to full physical.
         if (newDraftSession.step_attempts[draftFocusStepIndex].target_prompt_level === undefined) {
-          newDraftSession.step_attempts[draftFocusStepIndex].target_prompt_level = ChainStepPromptLevel.full_physical;
+          newDraftSession.step_attempts[draftFocusStepIndex].target_prompt_level =
+            ChainStepPromptLevel.full_physical;
         }
 
         // If this is a training session and target level hasn't been set yet,
@@ -300,7 +303,9 @@ export class ChainMastery {
               newDraftSession.session_type === ChainSessionType.booster) &&
             !this.draftFocusStepAttempt.target_prompt_level
           ) {
-            newDraftSession.step_attempts[draftFocusStepIndex].target_prompt_level = lastAttemptLevel;
+            newDraftSession.step_attempts[
+              draftFocusStepIndex
+            ].target_prompt_level = lastAttemptLevel;
           }
         }
       }
@@ -352,7 +357,9 @@ export class ChainMastery {
    * @param chainData : all of participant's session history data
    */
   determineStepAttemptPromptLevel(): void {
-    const prevPromptLevel = this.previousFocusStep ? this.previousFocusStep.prompt_level : undefined;
+    const prevPromptLevel = this.previousFocusStep
+      ? this.previousFocusStep.prompt_level
+      : undefined;
 
     if (prevPromptLevel && this.previousFocusStep && this.previousFocusStep.completed) {
       this.setCurrPromptLevel(this.getNextPromptLevel(prevPromptLevel).key);
@@ -586,7 +593,9 @@ export class ChainMastery {
 
     for (const thisAttempt of stepAttempts) {
       if (thisAttempt.completed) {
-        const isConsecutive = prevAttempt ? prevAttempt.session_type === thisAttempt.session_type : false;
+        const isConsecutive = prevAttempt
+          ? prevAttempt.session_type === thisAttempt.session_type
+          : false;
 
         // TODO: Session type no longer needs to interrupt the consecutive session calculation.
         // Count consecutive session types
@@ -623,8 +632,14 @@ export class ChainMastery {
    */
   stepIsComplete(stepAttempt: StepAttempt): boolean {
     if (stepAttempt.session_type === ChainSessionType.probe) {
-      return !(stepAttempt.was_prompted || (stepAttempt.had_challenging_behavior && !stepAttempt.completed));
-    } else if (stepAttempt.session_type === ChainSessionType.training && stepAttempt.was_focus_step) {
+      return !(
+        stepAttempt.was_prompted ||
+        (stepAttempt.had_challenging_behavior && !stepAttempt.completed)
+      );
+    } else if (
+      stepAttempt.session_type === ChainSessionType.training &&
+      stepAttempt.was_focus_step
+    ) {
       return (
         stepAttempt.status === ChainStepStatus.mastered &&
         !stepAttempt.was_prompted &&
@@ -686,11 +701,15 @@ export class ChainMastery {
 
             // Count consecutive session types
             if (stepAttempt.session_type === ChainSessionType.probe) {
-              numConsecutiveIncompleteProbes = isConsecutive ? numConsecutiveIncompleteProbes + 1 : 1;
+              numConsecutiveIncompleteProbes = isConsecutive
+                ? numConsecutiveIncompleteProbes + 1
+                : 1;
               numConsecutiveIncompleteTraining = 0;
             } else if (stepAttempt.session_type === ChainSessionType.training) {
               numConsecutiveIncompleteProbes = 0;
-              numConsecutiveIncompleteTraining = isConsecutive ? numConsecutiveIncompleteTraining + 1 : 1;
+              numConsecutiveIncompleteTraining = isConsecutive
+                ? numConsecutiveIncompleteTraining + 1
+                : 1;
             }
 
             // TODO: Session type no longer needs to interrupt the consecutive session calculation.
@@ -741,7 +760,9 @@ export class ChainMastery {
           numConsecutiveIncompleteTraining = 0;
         } else if (stepAttempt.session_type === ChainSessionType.training) {
           numConsecutiveIncompleteProbes = 0;
-          numConsecutiveIncompleteTraining = isConsecutive ? numConsecutiveIncompleteTraining + 1 : 1;
+          numConsecutiveIncompleteTraining = isConsecutive
+            ? numConsecutiveIncompleteTraining + 1
+            : 1;
         }
 
         // If the number of consecutive incomplete sessions is at or over the threshold,
@@ -932,7 +953,8 @@ export class ChainMastery {
       session.step_attempts &&
       session.step_attempts.length > 0 &&
       session.session_type &&
-      (session.session_type === ChainSessionType.training || session.session_type === ChainSessionType.booster)
+      (session.session_type === ChainSessionType.training ||
+        session.session_type === ChainSessionType.booster)
     ) {
       for (const stepAttempt of session.step_attempts) {
         if (stepAttempt.was_focus_step) {
@@ -948,7 +970,9 @@ export class ChainMastery {
    * yet) or been re-mastered after a booster.
    */
   getMasteredChainStepIds(): number[] {
-    const masteredSteps = this.chainSteps.filter((chainStep) => this.chainStepHasBeenMastered(chainStep.id));
+    const masteredSteps = this.chainSteps.filter((chainStep) =>
+      this.chainStepHasBeenMastered(chainStep.id),
+    );
     return masteredSteps.map((s) => s.id);
   }
 
@@ -1011,10 +1035,17 @@ export class ChainMastery {
     const hasHadTrainingSession = this.hasHadTrainingSession;
     const numSessionsSinceLastProbe = this.masteryInfoMap[0].numAttemptsSince.lastProbe;
 
-    return (numSessions >= 3 && !hasHadTrainingSession) || (numSessions >= 3 && numSessionsSinceLastProbe < 4);
+    return (
+      (numSessions >= 3 && !hasHadTrainingSession) ||
+      (numSessions >= 3 && numSessionsSinceLastProbe < 4)
+    );
   }
 
-  updateDraftSessionStep(chainStepId: number, fieldName: StepAttemptFieldName, fieldValue: StepAttemptField) {
+  updateDraftSessionStep(
+    chainStepId: number,
+    fieldName: StepAttemptFieldName,
+    fieldValue: StepAttemptField,
+  ) {
     //  Get the step
     this.draftSession.step_attempts.forEach((stepAttempt, i) => {
       if (stepAttempt.chain_step_id === chainStepId) {
@@ -1029,7 +1060,9 @@ export class ChainMastery {
     const draftStep = this.draftSession.step_attempts.find((s) => s.chain_step_id === chainStepId);
 
     if (!draftStep) {
-      throw new Error(`No step attempt found in draft session matching chain step ID: ${chainStepId}`);
+      throw new Error(
+        `No step attempt found in draft session matching chain step ID: ${chainStepId}`,
+      );
     }
 
     return draftStep;
@@ -1050,7 +1083,9 @@ export class ChainMastery {
     this.chainData.sessions.forEach((session) => {
       session.step_attempts.forEach((stepAttempt) => {
         if (stepAttempt && stepAttempt.chain_step_id !== undefined && stepAttempt.status) {
-          masteryInfoMap[`${stepAttempt.chain_step_id}`] = this.buildMasteryInfoForChainStep(stepAttempt.chain_step_id);
+          masteryInfoMap[`${stepAttempt.chain_step_id}`] = this.buildMasteryInfoForChainStep(
+            stepAttempt.chain_step_id,
+          );
         }
       });
     });
