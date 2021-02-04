@@ -141,7 +141,13 @@ export const SelectParticipant = (props: SelectParticipantProps): ReactElement =
           const items = participants.map((p: Participant) => {
             return (
               <View key={'participant_' + p.id}>
-                <Menu.Item onPress={() => selectParticipant(p)} title={participantName(p)} style={[styles.menuItem]} />
+                <Menu.Item
+                  onPress={() => {
+                    selectParticipant(p);
+                  }}
+                  title={participantName(p)}
+                  style={[styles.menuItem]}
+                />
               </View>
             );
           });
@@ -230,7 +236,11 @@ export const SelectParticipant = (props: SelectParticipantProps): ReactElement =
   const renderMenu = () => {
     return (
       <Menu
-        contentStyle={menuItems?.length ? menuContent(menuItems?.length).menu : menuContent(1).menu}
+        contentStyle={{
+          top: 30,
+          backgroundColor: 'rgba(255, 240, 230, 0.9)',
+          paddingHorizontal: 20,
+        }}
         visible={isVisible}
         onDismiss={closeMenu}
         anchor={
@@ -298,7 +308,7 @@ const menuContent = (items: number) => {
       justifyContent: 'center',
       alignContent: 'center',
       padding: 10,
-      backgroundColor: 'rgba(255, 240, 230, 0.9)',
+      //   backgroundColor: 'rgba(255, 240, 230, 0.9)',
       //   backgroundColor: CustomColors.uva.sky,
       top: 60,
       height: 55 * items + 30,
