@@ -8,16 +8,17 @@ import { DataVerifItem } from '../components/DataVerification';
 import ColumnLabels from '../components/DataVerification/ColumnLabels';
 import AppHeader from '../components/Header/AppHeader';
 import { Loading } from '../components/Loading/Loading';
-import { useChainMasteryState } from '../context/ChainMasteryProvider';
+import { useChainMasteryContext } from '../context/ChainMasteryProvider';
 import { ApiService } from '../services/ApiService';
 import CustomColors from '../styles/Colors';
 import { ChainSessionTypeLabels, ChainSessionTypeMap } from '../types/chain/ChainSession';
 
 const DataVerificationScreen = (): JSX.Element => {
   const navigation = useNavigation();
-  const [scrolling, setScrolling] = useState(false);
+  const [scrolling, setScrolling] = useState<boolean>(false);
+  const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
   const [sessionTypeLabel, setSessionTypeLabel] = useState<ChainSessionTypeLabels>();
-  const chainMasteryState = useChainMasteryState();
+  const [chainMasteryState, chainMasteryDispatch] = useChainMasteryContext();
 
   useEffect(() => {
     if (chainMasteryState.chainMastery) {
@@ -30,6 +31,7 @@ const DataVerificationScreen = (): JSX.Element => {
   const postData = async () => {
     console.log('POSTING DATA');
     if (chainMasteryState.chainMastery) {
+      setIsSubmitted(true);
       const draftSession = chainMasteryState.chainMastery.draftSession;
       const chainData = chainMasteryState.chainMastery.chainData;
       draftSession.completed = true;
@@ -38,6 +40,7 @@ const DataVerificationScreen = (): JSX.Element => {
 
       if (dbChainData) {
         chainMasteryState.chainMastery.updateChainData(dbChainData);
+        chainMasteryDispatch({ type: 'chainMastery', payload: chainMasteryState.chainMastery });
         navigation.navigate('ChainsHomeScreen', {});
       }
     }
@@ -48,11 +51,9 @@ const DataVerificationScreen = (): JSX.Element => {
       <AppHeader name={'Brushing Teeth'} />
       <View style={styles.instructionContainer}>
         <Text style={[scrolling ? styles.smallHeader : styles.screenHeader]}>{`${sessionTypeLabel} Session`}</Text>
-        <Animatable.Text
-          transition={'fontSize'}
-          duration={1000}
+        <Text
           style={[scrolling ? styles.smallInstruction : styles.instruction]}
-        >{`Please review the following data.  If you see something that is incorrect, you may change by selecting an alternative option.`}</Animatable.Text>
+        >{`Please review the following data.  If you see something that is incorrect, you may change by selecting an alternative option.`}</Text>
       </View>
       <View style={styles.formContainer}>
         <ColumnLabels />
@@ -78,15 +79,14 @@ const DataVerificationScreen = (): JSX.Element => {
           mode={'contained'}
           color={CustomColors.uva.orange}
           labelStyle={{
-            fontSize: 28,
-            //   fontWeight: '600',
+            fontSize: 24,
             color: CustomColors.uva.white,
-            paddingVertical: 15,
+            paddingVertical: 5,
           }}
           style={styles.nextButton}
           onPress={postData}
         >
-          {'Confirm and Submit'}
+          {!isSubmitted ? 'Confirm and Submit' : 'Thanks'}
         </Button>
       </View>
     </View>
@@ -145,7 +145,10 @@ const styles = StyleSheet.create({
   },
   formItemContainer: {},
   formItemLabel: {},
-  btnContainer: {},
+  btnContainer: {
+    flexDirection: 'column',
+    justifyContent: 'space-between',
+  },
   formItemButton: {},
   nextBackBtnsContainer: {
     flexDirection: 'row',
@@ -155,7 +158,6 @@ const styles = StyleSheet.create({
     marginTop: 100,
   },
   btnContainerText: {
-    display: 'none',
     fontSize: 18,
     textAlign: 'center',
     padding: 10,

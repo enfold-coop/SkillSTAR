@@ -25,7 +25,7 @@ const StepScreen = (): JSX.Element => {
   const [stepAttempt, setStepAttempt] = useState<StepAttempt>();
   const [video, setVideo] = useState<AVPlaybackSource>();
   const chainMasteryState = useChainMasteryState();
-  const [isPLaying, setIsPlaying] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(false);
 
   /**
    * BEGIN: LIFECYCLE CALLS
@@ -132,8 +132,6 @@ const StepScreen = (): JSX.Element => {
   const onNeededPrompting = () => {
     if (chainStep && chainMasteryState.chainMastery) {
       chainMasteryState.chainMastery.updateDraftSessionStep(chainStep.id, 'was_prompted', true);
-
-      // TODO: Verify that we should navigate to next step here?
       chainMasteryState.chainMastery.updateDraftSessionStep(chainStep.id, 'completed', false);
     }
 
@@ -236,8 +234,9 @@ const styles = StyleSheet.create({
   },
   progressContainer: {
     flexDirection: 'row',
-    justifyContent: 'center',
+    justifyContent: 'space-around',
     alignContent: 'center',
+    padding: 5,
   },
   instructionContainer: {
     flexDirection: 'row',

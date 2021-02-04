@@ -1,3 +1,4 @@
+import { deepClone } from '../../_util/deepClone';
 import { ChainSession } from './ChainSession';
 import { StepAttempt } from './StepAttempt';
 
@@ -109,6 +110,11 @@ export class ChainData implements SkillstarChain {
       });
     });
     return stepAttempts;
+  }
+
+  clone(): ChainData {
+    const clonedObject = deepClone<ChainData>(this);
+    return new ChainData(clonedObject);
   }
 
   /**
