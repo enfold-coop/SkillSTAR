@@ -26,6 +26,7 @@ const StepScreen = (): JSX.Element => {
   const [video, setVideo] = useState<AVPlaybackSource>();
   const chainMasteryState = useChainMasteryState();
   const [isPLaying, setIsPlaying] = useState(false);
+  const [pastFocusStepAttempts, setPastFocusStepAttempts] = useState<StepAttempt[]>();
 
   /**
    * BEGIN: LIFECYCLE CALLS
@@ -39,6 +40,9 @@ const StepScreen = (): JSX.Element => {
         setChainSteps(chainMasteryState.chainMastery.chainSteps);
         setStepIndex(0);
         setChainStep(chainMasteryState.chainMastery.chainSteps[0]);
+        if (chainMasteryState.chainMastery.focusStepPastAttempts) {
+          setPastFocusStepAttempts(chainMasteryState.chainMastery.focusStepPastAttempts);
+        }
         setStepAttempt(chainMasteryState.chainMastery.draftSession.step_attempts[0]);
       }
     };
@@ -154,9 +158,7 @@ const StepScreen = (): JSX.Element => {
       <View style={styles.container}>
         <AppHeader name={'Brush Teeth'} />
         <View style={styles.progress}>
-          <Text style={styles.headline}>{`Step ${chainStep.id + 1}: ${
-            chainStep.instruction
-          }`}</Text>
+          <Text style={styles.headline}>{`Step ${chainStep.id + 1}: ${chainStep.instruction}`}</Text>
           <View style={styles.progressContainer}>
             <MasteryIcon chainStepStatus={stepAttempt?.status} iconSize={50} />
             <ProgressBar
@@ -167,7 +169,7 @@ const StepScreen = (): JSX.Element => {
             />
           </View>
         </View>
-        <StarsNIconsContainer chainStepId={chainStep.id} />
+        <StarsNIconsContainer chainStepId={chainStep.id} prevFocusStepAttempts={pastFocusStepAttempts} />
         <View style={styles.subContainer}>
           <View style={[styles.subVideoContainer]}>
             <ReturnVideoComponent />
