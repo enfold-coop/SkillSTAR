@@ -3,6 +3,7 @@ import {
   NUM_COMPLETE_ATTEMPTS_FOR_MASTERY,
   NUM_INCOMPLETE_PROBE_ATTEMPTS_FOR_BOOSTER,
   NUM_INCOMPLETE_TRAINING_ATTEMPTS_FOR_BOOSTER,
+  NUM_MIN_PROBE_SESSIONS,
   NUM_PROMPTED_ATTEMPTS_FOR_FOCUS,
 } from '../constants/MasteryAlgorithm';
 import { ChainData, SkillstarChain } from '../types/chain/ChainData';
@@ -318,22 +319,21 @@ export class ChainMastery {
    * Returns true if the next new draft session should be a probe session
    */
   newDraftSessionShouldBeProbeSession(): boolean {
-    if (this.chainData.sessions.length < 3) {
+    if (this.chainData.sessions.length < NUM_MIN_PROBE_SESSIONS) {
       // The first 3-9 sessions should be probes.
       return true;
     }
 
-    if (!this.hasHadTrainingSession) {
-      // Have NO training sessions ever been run at all? Return true.
-      // TODO: Allow user to start training optionally.
-      return true;
-    } else {
-      // There are at least 4 attempts since the last probe session.
-      for (const masteryInfo of Object.values(this.masteryInfoMap)) {
-        if (masteryInfo.numAttemptsSince.lastProbe !== -1) {
-          return masteryInfo.numAttemptsSince.lastProbe >= 4;
-        }
+    // There are at least 4 attempts since the last probe session.
+    for (const masteryInfo of Object.values(this.masteryInfoMap)) {
+      if (masteryInfo.numAttemptsSince.lastProbe !== -1) {
+        return masteryInfo.numAttemptsSince.lastProbe >= 4;
       }
+    }
+
+    if (!this.hasHadTrainingSession) {
+      // Have NO training sessions ever been run at all? Return false.
+      return false;
     }
 
     // No probe sessions have ever been attempted. The next one should be a probe.
