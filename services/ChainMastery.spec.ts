@@ -63,10 +63,6 @@ describe('ChainMastery', () => {
     expect(chainMastery.getNextPromptLevel(ChainStepPromptLevel.none)).toEqual(ChainStepPromptLevelMap['none']);
   });
 
-  it('should show Training session upon completing Probe session', () => {
-    //
-  });
-
   it('should save draft session', () => {
     // Create a draft session of type booster.
     const newMockChainData = chainData.clone();
@@ -99,4 +95,33 @@ describe('ChainMastery', () => {
     // Last session type after saving should be booster.
     expect(chainMastery.currentSession.session_type).toEqual(ChainSessionType.booster);
   });
+
+  it('should populate date mastered if more than 3 probe attempts are successful', () => {
+    // The date mastered for the first chain step should not be populated yet.
+    expect(chainMastery.masteryInfoMap[0].dateMastered).toBeFalsy();
+
+    // Mark all probe and training sessions for first chain step as complete,
+    // with no prompting or challenging behavior.
+    const newMockChainData = chainData.clone();
+    newMockChainData.sessions.forEach((s, i) => {
+      s.step_attempts[0].completed = true;
+      s.step_attempts[0].was_prompted = false;
+      s.step_attempts[0].had_challenging_behavior = false;
+
+      if (s.session_type === ChainSessionType.training) {
+        s.step_attempts[0].was_focus_step = true;
+        s.step_attempts[0].status = ChainStepStatus.focus;
+        s.step_attempts[0].challenging_behaviors = [];
+        s.step_attempts[0].prompt_level = ChainStepPromptLevel.none;
+      }
+    });
+
+    // Save the modified chain data.
+    chainMastery.updateChainData(newMockChainData);
+
+    // The date mastered for the first chain step should now be populated.
+    expect(chainMastery.masteryInfoMap[0].dateMastered).toBeTruthy();
+  });
+
+  test.todo('should show Training session upon completing Probe session');
 });
