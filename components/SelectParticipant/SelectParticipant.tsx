@@ -138,13 +138,29 @@ export const SelectParticipant = (props: SelectParticipantProps): ReactElement =
       _load().then(() => {
         isLoading = false;
         if (!isCancelled && participants && participants.length > 0) {
-          const items = participants.map((p: Participant) => {
-            return (
-              <View key={'participant_' + p.id}>
-                <Menu.Item onPress={() => selectParticipant(p)} title={participantName(p)} style={styles.menuItem} />
-                <Divider />
-              </View>
-            );
+          const items = participants.map((p: Participant, i: number) => {
+            if (i === participants.length - 1) {
+              return (
+                <View key={'participant_' + p.id}>
+                  <Menu.Item
+                    onPress={() => selectParticipant(p)}
+                    title={participantName(p)}
+                    style={[styles.menuItem]}
+                  />
+                </View>
+              );
+            } else {
+              return (
+                <View key={'participant_' + p.id}>
+                  <Menu.Item
+                    onPress={() => selectParticipant(p)}
+                    title={participantName(p)}
+                    style={[styles.menuItem]}
+                  />
+                  <Divider />
+                </View>
+              );
+            }
           });
           if (!isCancelled) {
             setMenuItems(items);
@@ -208,13 +224,24 @@ export const SelectParticipant = (props: SelectParticipantProps): ReactElement =
       {participantName(participantState.participant)}
     </Text>
   ) : (
-    <Text>{'Select Participant'}</Text>
+    <Text style={{ color: CustomColors.uva.orange, fontWeight: '500' }}>{'Select Participant'}</Text>
   );
 
   const key = `select_participant_menu_${menuItems && menuItems.length > 0 ? menuItems.length : 0}`;
 
   const renderLoading = () => {
-    return <Text style={{ marginRight: 100 }}>{`Loading...`}</Text>;
+    return (
+      <Text
+        style={{
+          width: 400,
+          alignSelf: 'center',
+          textAlign: 'center',
+          fontSize: 20,
+          color: CustomColors.uva.orange,
+          fontWeight: '500',
+        }}
+      >{`Loading...`}</Text>
+    );
   };
 
   const renderMenu = () => {
@@ -257,6 +284,7 @@ export const SelectParticipant = (props: SelectParticipantProps): ReactElement =
 const styles = StyleSheet.create({
   menuContainer: {
     flex: 1,
+    height: 60,
     flexDirection: 'row',
     justifyContent: 'flex-end',
     alignContent: 'center',
@@ -270,9 +298,9 @@ const styles = StyleSheet.create({
     // backgroundColor: '#f0f',
   },
   menuItem: {
-    margin: 1,
-    marginHorizontal: 5,
     backgroundColor: CustomColors.uva.white,
+    marginVertical: 5,
+    paddingHorizontal: 10,
   },
   btnText: {
     color: CustomColors.uva.orange,
@@ -287,10 +315,13 @@ const styles = StyleSheet.create({
 const menuContent = (items: number) => {
   return StyleSheet.create({
     menu: {
-      padding: 5,
-      backgroundColor: 'rgba(255,255,255,0.5)',
-      top: '10%',
-      height: 55 * items,
+      justifyContent: 'center',
+      alignContent: 'center',
+      padding: 10,
+      backgroundColor: 'rgba(255, 240, 230, 0.9)',
+      //   backgroundColor: CustomColors.uva.sky,
+      top: 60,
+      height: 55 * items + 20,
       width: 277,
     },
   });
