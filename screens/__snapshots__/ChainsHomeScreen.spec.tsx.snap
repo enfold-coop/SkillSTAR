@@ -100,7 +100,12 @@ exports[`ChainsHomeScreen renders correctly 1`] = `
           <Text
             style={
               Object {
-                "marginRight": 100,
+                "alignSelf": "center",
+                "color": "#E57200",
+                "fontSize": 20,
+                "fontWeight": "500",
+                "textAlign": "center",
+                "width": 400,
               }
             }
           >
