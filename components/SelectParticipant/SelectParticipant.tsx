@@ -2,6 +2,7 @@ import { MaterialIcons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import React, { ReactElement, useEffect, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 import { Button, Divider, Menu } from 'react-native-paper';
 import { useChainMasteryDispatch } from '../../context/ChainMasteryProvider';
 import { useParticipantContext } from '../../context/ParticipantProvider';
@@ -201,9 +202,14 @@ export const SelectParticipant = (props: SelectParticipantProps): ReactElement =
     }
   };
 
-  const btnLabel = participantState.participant
-    ? `Participant: ${participantName(participantState.participant)}`
-    : 'Select Participant';
+  const btnLabel = participantState.participant ? (
+    <Text>
+      <Text style={{ color: CustomColors.uva.orange, fontWeight: '500' }}>{'Participant: '}</Text>
+      {participantName(participantState.participant)}
+    </Text>
+  ) : (
+    <Text>{'Select Participant'}</Text>
+  );
 
   const key = `select_participant_menu_${menuItems && menuItems.length > 0 ? menuItems.length : 0}`;
 
@@ -218,12 +224,22 @@ export const SelectParticipant = (props: SelectParticipantProps): ReactElement =
         visible={isVisible}
         onDismiss={closeMenu}
         anchor={
-          <View style={styles.anchorBtn}>
-            <Button onPress={openMenu} color={CustomColors.uva.orange}>
-              {btnLabel}
-              <MaterialIcons name={'arrow-drop-down'} size={40} color={CustomColors.uva.orange} />
-            </Button>
-          </View>
+          <TouchableOpacity
+            style={[
+              styles.anchorBtn,
+              {
+                borderRadius: 10,
+                borderWidth: 1,
+                borderBottomWidth: 2,
+                borderLeftWidth: 2,
+                borderColor: CustomColors.uva.grayMedium,
+              },
+            ]}
+            onPress={openMenu}
+          >
+            <Text style={styles.btnText}>{btnLabel}</Text>
+            <MaterialIcons name={'arrow-drop-down'} size={50} color={CustomColors.uva.orange} style={styles.icon} />
+          </TouchableOpacity>
         }
       >
         {menuItems}
@@ -243,15 +259,28 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
     justifyContent: 'flex-end',
+    alignContent: 'center',
   },
   anchorBtn: {
-    width: '100%',
-    alignSelf: 'flex-end',
+    // width: 300,
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+    alignContent: 'center',
+    // backgroundColor: '#f0f',
   },
   menuItem: {
     margin: 1,
     marginHorizontal: 5,
     backgroundColor: CustomColors.uva.white,
+  },
+  btnText: {
+    color: CustomColors.uva.orange,
+    fontSize: 20,
+    paddingHorizontal: 10,
+  },
+  icon: {
+    height: 50,
   },
 });
 
