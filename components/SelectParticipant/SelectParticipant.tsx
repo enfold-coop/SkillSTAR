@@ -138,29 +138,12 @@ export const SelectParticipant = (props: SelectParticipantProps): ReactElement =
       _load().then(() => {
         isLoading = false;
         if (!isCancelled && participants && participants.length > 0) {
-          const items = participants.map((p: Participant, i: number) => {
-            if (i === participants.length - 1) {
-              return (
-                <View key={'participant_' + p.id}>
-                  <Menu.Item
-                    onPress={() => selectParticipant(p)}
-                    title={participantName(p)}
-                    style={[styles.menuItem]}
-                  />
-                </View>
-              );
-            } else {
-              return (
-                <View key={'participant_' + p.id}>
-                  <Menu.Item
-                    onPress={() => selectParticipant(p)}
-                    title={participantName(p)}
-                    style={[styles.menuItem]}
-                  />
-                  <Divider />
-                </View>
-              );
-            }
+          const items = participants.map((p: Participant) => {
+            return (
+              <View key={'participant_' + p.id}>
+                <Menu.Item onPress={() => selectParticipant(p)} title={participantName(p)} style={[styles.menuItem]} />
+              </View>
+            );
           });
           if (!isCancelled) {
             setMenuItems(items);
@@ -284,18 +267,15 @@ export const SelectParticipant = (props: SelectParticipantProps): ReactElement =
 const styles = StyleSheet.create({
   menuContainer: {
     flex: 1,
-    height: 60,
     flexDirection: 'row',
     justifyContent: 'flex-end',
     alignContent: 'center',
   },
   anchorBtn: {
-    // width: 300,
     flexDirection: 'row',
     justifyContent: 'flex-end',
     alignItems: 'center',
     alignContent: 'center',
-    // backgroundColor: '#f0f',
   },
   menuItem: {
     backgroundColor: CustomColors.uva.white,
@@ -321,7 +301,7 @@ const menuContent = (items: number) => {
       backgroundColor: 'rgba(255, 240, 230, 0.9)',
       //   backgroundColor: CustomColors.uva.sky,
       top: 60,
-      height: 55 * items + 20,
+      height: 55 * items + 30,
       width: 277,
     },
   });
