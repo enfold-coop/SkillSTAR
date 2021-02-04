@@ -155,9 +155,9 @@ describe('ChainMastery', () => {
 
     // Save the modified chain data.
     chainMastery.updateChainData(newMockChainData);
-    chainMastery.setDraftSessionType(ChainSessionType.training);
 
     // The date mastered for the first chain step should now be populated.
+    expect(chainMastery.draftSession.session_type).toEqual(ChainSessionType.training);
     expect(chainMastery.draftSession.step_attempts[0].was_focus_step).toBeTruthy();
   });
 
