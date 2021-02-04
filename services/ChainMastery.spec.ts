@@ -17,7 +17,7 @@ describe('ChainMastery', () => {
   });
 
   it('should populate the mastery info object and draft session for returning users', () => {
-    checkMasteryInfo(chainMastery);
+    checkMasteryInfo(chainMastery, 0, 0);
     expect(chainMastery.chainData.sessions.every((s) => s.completed === true)).toEqual(true);
   });
 
@@ -28,7 +28,7 @@ describe('ChainMastery', () => {
       sessions: [],
     });
     chainMastery = new ChainMastery(mockChainSteps, chainData);
-    checkMasteryInfo(chainMastery);
+    checkMasteryInfo(chainMastery, -1, -1);
   });
 
   it('should set default step attempt status to Not Started', () => {

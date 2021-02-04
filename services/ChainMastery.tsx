@@ -483,6 +483,49 @@ export class ChainMastery {
   }
 
   /**
+   * Given a list of step attempts, returns the number of attempts since the focus step
+   * last failed
+   * @param stepAttempts
+   */
+  numSinceFocusStepLastFailed(stepAttempts: StepAttempt[]): number {
+    let numConsecutiveComplete = -1;
+
+    if (!stepAttempts || stepAttempts.length === 0) {
+      return -1;
+    }
+
+    let prevAttempt: StepAttempt;
+
+    stepAttempts.forEach((thisAttempt, i) => {
+      const isConsecutive =
+        prevAttempt &&
+        prevAttempt.was_focus_step &&
+        prevAttempt.target_prompt_level === thisAttempt.target_prompt_level;
+
+      // Count consecutive successful attempts.
+      // Increment count if this attempt is...
+      // - successful,
+      // - a focus step, and
+      // - consecutive with previous.
+      if (this.stepIsComplete(thisAttempt) && thisAttempt.was_focus_step && isConsecutive) {
+        numConsecutiveComplete++;
+      }
+
+      // Reset the number of successful attempts to 0 if...
+      // - unsuccessful,
+      // - not a focus step, or
+      // - not consecutive with previous.
+      else {
+        numConsecutiveComplete = 0;
+      }
+
+      prevAttempt = thisAttempt;
+    });
+
+    return numConsecutiveComplete;
+  }
+
+  /**
    * Given a list of step attempts, returns the number of attempts since the last probe session.
    * If no probe sessions have ever been completed, returns -1.
    *
@@ -1083,6 +1126,7 @@ export class ChainMastery {
         lastCompletedWithoutChallenge: this.numSinceLastCompletedWithoutChallenge(stepAttempts),
         lastCompletedWithoutPrompt: this.numSinceLastCompletedWithoutPrompt(stepAttempts),
         lastFailed: this.numSinceLastFailed(stepAttempts),
+        lastFailedWithFocus: this.numSinceFocusStepLastFailed(stepAttempts),
         lastProbe: this.numSinceLastProbe(stepAttempts),
         firstMastered: this.numSinceFirstMastered(stepAttempts),
         boosterInitiated: this.numSinceBoosterInitiated(stepAttempts),
