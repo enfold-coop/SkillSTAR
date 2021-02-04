@@ -104,15 +104,26 @@ describe('ChainMastery', () => {
     // with no prompting or challenging behavior.
     const newMockChainData = chainData.clone();
     newMockChainData.sessions.forEach((s, i) => {
-      s.step_attempts[0].completed = true;
-      s.step_attempts[0].was_prompted = false;
-      s.step_attempts[0].had_challenging_behavior = false;
+      const stepAttempt = s.step_attempts[0];
+      stepAttempt.completed = true;
+      stepAttempt.had_challenging_behavior = false;
 
       if (s.session_type === ChainSessionType.training) {
-        s.step_attempts[0].was_focus_step = true;
-        s.step_attempts[0].status = ChainStepStatus.focus;
-        s.step_attempts[0].challenging_behaviors = [];
-        s.step_attempts[0].prompt_level = ChainStepPromptLevel.none;
+        stepAttempt.was_prompted = false;
+        stepAttempt.was_focus_step = true;
+        stepAttempt.status = ChainStepStatus.focus;
+        stepAttempt.challenging_behaviors = [];
+        stepAttempt.prompt_level = ChainStepPromptLevel.none;
+        stepAttempt.target_prompt_level = ChainStepPromptLevel.full_physical;
+      }
+
+      if (s.session_type === ChainSessionType.probe) {
+        stepAttempt.was_prompted = undefined;
+        stepAttempt.was_focus_step = undefined;
+        stepAttempt.status = ChainStepStatus.not_yet_started;
+        stepAttempt.challenging_behaviors = [];
+        stepAttempt.prompt_level = undefined;
+        stepAttempt.target_prompt_level = undefined;
       }
     });
 
@@ -121,6 +132,33 @@ describe('ChainMastery', () => {
 
     // The date mastered for the first chain step should now be populated.
     expect(chainMastery.masteryInfoMap[0].dateMastered).toBeTruthy();
+  });
+
+  it('should set step to focus if probes are incomplete', () => {
+    // Mark all sessions as probes, all steps incomplete with challenging behavior.
+    const newMockChainData = chainData.clone();
+    newMockChainData.sessions.forEach((s) => {
+      s.session_type = ChainSessionType.probe;
+
+      s.step_attempts.forEach((stepAttempt) => {
+        stepAttempt.session_type = ChainSessionType.probe;
+        stepAttempt.completed = false;
+        stepAttempt.had_challenging_behavior = true;
+        stepAttempt.was_prompted = undefined;
+        stepAttempt.was_focus_step = undefined;
+        stepAttempt.status = ChainStepStatus.not_yet_started;
+        stepAttempt.challenging_behaviors = [];
+        stepAttempt.prompt_level = undefined;
+        stepAttempt.target_prompt_level = undefined;
+      });
+    });
+
+    // Save the modified chain data.
+    chainMastery.updateChainData(newMockChainData);
+    chainMastery.setDraftSessionType(ChainSessionType.training);
+
+    // The date mastered for the first chain step should now be populated.
+    expect(chainMastery.draftSession.step_attempts[0].was_focus_step).toBeTruthy();
   });
 
   test.todo('should show Training session upon completing Probe session');

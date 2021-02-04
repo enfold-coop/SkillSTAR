@@ -212,10 +212,15 @@ export class ChainMastery {
         newDraftSession.session_type = ChainSessionType.training;
         focusChainStepId = this.nextFocusChainStepId;
       }
-    } else if (sessionType !== ChainSessionType.probe) {
-      // Check if the session type needs to be a booster
-      if ((boosterChainStepId = this.nextBoosterChainStepId) !== undefined) {
-        newDraftSession.session_type = ChainSessionType.booster;
+    } else {
+      if (sessionType !== ChainSessionType.probe) {
+        // Check if the session type needs to be a booster
+        if ((boosterChainStepId = this.nextBoosterChainStepId) !== undefined) {
+          newDraftSession.session_type = ChainSessionType.booster;
+        } else {
+          // It's a training session. Figure out which step we need to focus on.
+          focusChainStepId = this.nextFocusChainStepId;
+        }
       }
     }
 
@@ -524,9 +529,9 @@ export class ChainMastery {
    */
   isProbeStepComplete(stepAttempt: StepAttempt): boolean {
     return !!(
-      stepAttempt.completed &&
       stepAttempt.session_type === ChainSessionType.probe &&
-      stepAttempt.prompt_level === ChainStepPromptLevel.none
+      stepAttempt.completed &&
+      !stepAttempt.had_challenging_behavior
     );
   }
 
@@ -575,10 +580,8 @@ export class ChainMastery {
     let numConsecutiveComplete = 0;
 
     for (const thisAttempt of stepAttempts) {
-      if (thisAttempt.completed) {
-        if (this.isProbeStepComplete(thisAttempt) || this.isFocusStepMastered(thisAttempt)) {
-          numConsecutiveComplete++;
-        }
+      if (this.isProbeStepComplete(thisAttempt) || this.isFocusStepMastered(thisAttempt)) {
+        numConsecutiveComplete++;
       } else {
         numConsecutiveComplete = 0;
       }
@@ -956,7 +959,6 @@ export class ChainMastery {
    * @param sessionType
    */
   setDraftSessionType(sessionType: ChainSessionType) {
-    console.log(sessionType);
     this.draftSession = this.buildNewDraftSession(sessionType);
   }
 
