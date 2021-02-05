@@ -44,11 +44,6 @@ const StepScreen = (): JSX.Element => {
         setChainStepId(chainMasteryState.chainMastery.draftSession.step_attempts[0].chain_step_id);
         const tempId = chainMasteryState.chainMastery.draftSession.step_attempts[0].chain_step_id;
         setStepAttempt(chainMasteryState.chainMastery.draftSession.step_attempts[0]);
-
-        chainMasteryState.chainMastery?.draftSession.step_attempts.forEach((e) => {
-          console.log(e.target_prompt_level);
-        });
-
         getPrevCompletedFocusSteps(tempId);
       }
     };
@@ -83,19 +78,19 @@ const StepScreen = (): JSX.Element => {
   /**
    * END: LIFECYCLE CALLS
    */
-  //   chainMasteryState.chainMastery?.chainData.sessions[i].step_attempts[j].prompt_level === chainMasteryState.chainMastery?.chainData
 
   const getPrevCompletedFocusSteps = (id: number) => {
     if (chainMasteryState.chainMastery?.chainData.sessions) {
-      //   console.log(chainMasteryState.chainMastery.draftSession);
-
       const focusCompleted = [];
       for (let i = 0; i < chainMasteryState.chainMastery?.chainData.sessions.length; i++) {
         for (let j = 0; j < chainMasteryState.chainMastery?.chainData.sessions[i].step_attempts.length; j++) {
           if (chainMasteryState.chainMastery?.chainData.sessions[i].step_attempts[j].chain_step_id === id) {
             if (
               chainMasteryState.chainMastery?.chainData.sessions[i].step_attempts[j].status === ChainStepStatus.focus &&
-              chainMasteryState.chainMastery?.chainData.sessions[i].step_attempts[j].completed
+              chainMasteryState.chainMastery?.chainData.sessions[i].step_attempts[j].completed &&
+              chainMasteryState.chainMastery.draftSession.step_attempts.find(
+                (e) => e.target_prompt_level === chainMasteryState.chainMastery?.previousFocusStep?.prompt_level,
+              )
             ) {
               focusCompleted.push(true);
             } else {
