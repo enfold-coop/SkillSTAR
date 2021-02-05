@@ -44,6 +44,7 @@ const StepScreen = (): JSX.Element => {
         setChainStepId(chainMasteryState.chainMastery.draftSession.step_attempts[0].chain_step_id);
         const tempId = chainMasteryState.chainMastery.draftSession.step_attempts[0].chain_step_id;
         setStepAttempt(chainMasteryState.chainMastery.draftSession.step_attempts[0]);
+
         getPrevCompletedFocusSteps(tempId);
       }
     };
@@ -78,9 +79,12 @@ const StepScreen = (): JSX.Element => {
   /**
    * END: LIFECYCLE CALLS
    */
+  //   chainMasteryState.chainMastery?.chainData.sessions[i].step_attempts[j].prompt_level === chainMasteryState.chainMastery?.chainData
 
   const getPrevCompletedFocusSteps = (id: number) => {
     if (chainMasteryState.chainMastery?.chainData.sessions) {
+      console.log(chainMasteryState.chainMastery.draftSession);
+
       const focusCompleted = [];
       for (let i = 0; i < chainMasteryState.chainMastery?.chainData.sessions.length; i++) {
         for (let j = 0; j < chainMasteryState.chainMastery?.chainData.sessions[i].step_attempts.length; j++) {

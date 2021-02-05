@@ -11,7 +11,6 @@ interface StarsNIconsContainerProps {
 
 const StarsNIconsContainer = (props: StarsNIconsContainerProps): JSX.Element => {
   const { chainStepId, prevFocusStepAttempts } = props;
-  console.log(prevFocusStepAttempts);
 
   return (
     <View style={styles.container}>

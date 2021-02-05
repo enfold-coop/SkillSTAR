@@ -282,7 +282,6 @@ export class ChainMastery {
 
         let lastAttemptLevel: ChainStepPromptLevel | undefined = ChainStepPromptLevel.full_physical;
         let lastAttemptSessionType: ChainSessionType | undefined = undefined;
-
         // Look at the most recent attempts.
         for (const pastAttempt of focusStepPastAttempts.reverse()) {
           // If the last 2 or 3 (depending on session type) attempts were completed at the target prompt level,
@@ -292,6 +291,7 @@ export class ChainMastery {
           }
           if (numTargetLevelsMet > NUM_COMPLETE_ATTEMPTS_FOR_MASTERY) {
             // Set the target prompt level for the focus step in the draft session
+
             if (lastAttemptLevel) {
               const nextLevel = lastAttemptLevel
                 ? this.getNextPromptLevel(lastAttemptLevel).key
