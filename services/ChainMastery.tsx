@@ -62,12 +62,30 @@ export class ChainMastery {
   }
 
   /**
-   * Returns array of prior focus step completion
+   * Returns array of booleans indicating prior focus step completion
    */
-
-  get previousFocusStepAttempts(): StepAttempt[] {
-    this.chainData.sessions;
-    return;
+  getPreviousFocusStepAttempts(id: number): boolean[] {
+    const focusCompleted: boolean[] = [];
+    if (this.chainData.sessions) {
+      for (let i = 0; i < this.chainData.sessions.length; i++) {
+        for (let j = 0; j < this.chainData.sessions[i].step_attempts.length; j++) {
+          if (this.chainData.sessions[i].step_attempts[j].chain_step_id === id) {
+            if (
+              this.chainData.sessions[i].step_attempts[j].status === ChainStepStatus.focus &&
+              this.chainData.sessions[i].step_attempts[j].completed &&
+              this.draftSession.step_attempts.find(
+                (e) => e.target_prompt_level === this.previousFocusStep?.prompt_level,
+              )
+            ) {
+              focusCompleted.push(true);
+            } else {
+              focusCompleted.push(false);
+            }
+          }
+        }
+      }
+    }
+    return focusCompleted;
   }
 
   /**

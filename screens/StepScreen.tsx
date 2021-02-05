@@ -80,26 +80,8 @@ const StepScreen = (): JSX.Element => {
    */
 
   const getPrevCompletedFocusSteps = (id: number) => {
-    if (chainMasteryState.chainMastery?.chainData.sessions) {
-      const focusCompleted = [];
-      for (let i = 0; i < chainMasteryState.chainMastery?.chainData.sessions.length; i++) {
-        for (let j = 0; j < chainMasteryState.chainMastery?.chainData.sessions[i].step_attempts.length; j++) {
-          if (chainMasteryState.chainMastery?.chainData.sessions[i].step_attempts[j].chain_step_id === id) {
-            if (
-              chainMasteryState.chainMastery?.chainData.sessions[i].step_attempts[j].status === ChainStepStatus.focus &&
-              chainMasteryState.chainMastery?.chainData.sessions[i].step_attempts[j].completed &&
-              chainMasteryState.chainMastery.draftSession.step_attempts.find(
-                (e) => e.target_prompt_level === chainMasteryState.chainMastery?.previousFocusStep?.prompt_level,
-              )
-            ) {
-              focusCompleted.push(true);
-            } else {
-              focusCompleted.push(false);
-            }
-            setPastFocusStepAttempts(focusCompleted);
-          }
-        }
-      }
+    if (chainMasteryState.chainMastery) {
+      setPastFocusStepAttempts(chainMasteryState.chainMastery?.getPreviousFocusStepAttempts(id));
     }
   };
 
