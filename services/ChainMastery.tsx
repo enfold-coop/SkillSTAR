@@ -237,10 +237,12 @@ export class ChainMastery {
 
     // Populate step attempts
     newDraftSession.step_attempts = this.chainSteps.map((chainStep) => {
+      const masteryInfo = this.masteryInfoMap[chainStep.id];
+      const stepStatus = masteryInfo ? masteryInfo.stepStatus : ChainStepStatus.not_yet_started;
       return {
         chain_step_id: chainStep.id,
         chain_step: chainStep,
-        status: ChainStepStatus.not_yet_started,
+        status: stepStatus,
         session_type: newDraftSession.session_type,
         date: new Date(),
       } as StepAttempt;
@@ -844,23 +846,22 @@ export class ChainMastery {
   }
 
   /**
-   * Given a chain step ID, returns true if the next attempt for that chain step needs to be the focus step.
-   * Otherwise, returns false.
+   * Given a mastery info for a chain step, returns true if the next attempt for that
+   * chain step needs to be the focus step. Otherwise, returns false.
    *
    * @param stepAttempts
    */
-  //   chainStepNeedsFocus(chainStepId: number): boolean {
-  //     // Check for already-mastered (no booster needed yet) and booster-mastered steps
-  //     const masteredChainStepIds = this.getMasteredChainStepIds();
-  //     const wasMastered = masteredChainStepIds.includes(chainStepId);
 
-  //     if (wasMastered) {
-  //       // It's been mastered already, and no booster is needed. Return false.
-  //       return false;
-  //     }
-
-  //     return this.nextFocusChainStepId === chainStepId;
-  //   }
+  chainStepNeedsFocus(m: MasteryInfo): boolean {
+    return !!(
+      m.dateIntroduced && // Step has been introduced AND
+      !m.dateMastered && // ...but has not been mastered yet AND
+      // Challenging behavior occurred more than 3 attempts in a row OR
+      (m.numAttemptsSince.lastCompletedWithoutChallenge >= NUM_CHALLENGING_ATTEMPTS_FOR_FOCUS ||
+        // Prompting was required more than 3 attempts in a row
+        m.numAttemptsSince.lastCompletedWithoutPrompt >= NUM_PROMPTED_ATTEMPTS_FOR_FOCUS)
+    );
+  }
 
   /**
    * Given a list of step attempts, returns the number of attempts after
@@ -941,15 +942,7 @@ export class ChainMastery {
       return ChainStepStatus.booster_needed;
     }
 
-    if (
-      // Step has been introduced, but not mastered yet AND
-      m.dateIntroduced &&
-      !m.dateMastered &&
-      // Challenging behavior occurred more than 3 attempts in a row OR
-      (m.numAttemptsSince.lastCompletedWithoutChallenge >= NUM_CHALLENGING_ATTEMPTS_FOR_FOCUS ||
-        // Prompting was required more than 3 attempts in a row
-        m.numAttemptsSince.lastCompletedWithoutPrompt >= NUM_PROMPTED_ATTEMPTS_FOR_FOCUS)
-    ) {
+    if (this.chainStepNeedsFocus(m)) {
       return ChainStepStatus.focus;
     }
 
@@ -992,7 +985,7 @@ export class ChainMastery {
    * @param chain_step_id
    */
   chainStepHasBeenMastered(chain_step_id: number): boolean {
-    const m = this.masteryInfoMap[`${chain_step_id}`];
+    const m = this.masteryInfoMap[chain_step_id];
     return !!(
       m &&
       ((m.dateMastered && !m.dateBoosterInitiated && !m.dateBoosterMastered) ||
