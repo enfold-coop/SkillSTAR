@@ -17,7 +17,7 @@ const StepAttemptStars = (props: StepAttemptStarsProps): JSX.Element => {
       <View style={styles.starContainer}>
         <Text style={styles.promptTypeText}>{props.promptType + ':'}</Text>
         {attemptsWPromptType &&
-          attemptsWPromptType.map((e, i) => {
+          attemptsWPromptType?.slice(0, 3).map((e, i) => {
             if (e) {
               return <AntDesign name={'star'} size={40} color={CustomColors.uva.orange} style={styles.star} key={i} />;
             } else {
