@@ -1,7 +1,7 @@
 import { ChainMastery } from '../../services/ChainMastery';
 import { mockChainSteps } from './mockChainSteps';
 
-export const checkMasteryInfo = (chainMastery: ChainMastery) => {
+export const checkMasteryInfo = (chainMastery: ChainMastery, numLastFailed = -1, numLastFailedWithFocus = -1) => {
   expect(chainMastery).toBeTruthy();
   expect(chainMastery.chainSteps).toBeTruthy();
   expect(chainMastery.chainSteps.length).toBeGreaterThan(0);
@@ -21,6 +21,8 @@ export const checkMasteryInfo = (chainMastery: ChainMastery) => {
     expect(numAttemptsSince.firstMastered).toBeTruthy();
     expect(numAttemptsSince.boosterInitiated).toBeTruthy();
     expect(numAttemptsSince.boosterMastered).toBeTruthy();
+    expect(numAttemptsSince.lastFailedWithFocus).toEqual(numLastFailedWithFocus);
+    expect(numAttemptsSince.lastFailed).toEqual(numLastFailed);
   });
   expect(chainMastery.masteredChainStepIds).toBeTruthy();
   expect(chainMastery.masteredChainStepIds).toBeInstanceOf(Array);

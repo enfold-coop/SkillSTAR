@@ -2,7 +2,8 @@ import { MaterialIcons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import React, { ReactElement, useEffect, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-import { Button, Menu } from 'react-native-paper';
+import { TouchableOpacity } from 'react-native-gesture-handler';
+import { Button, Divider, Menu } from 'react-native-paper';
 import { useChainMasteryDispatch } from '../../context/ChainMasteryProvider';
 import { useParticipantContext } from '../../context/ParticipantProvider';
 import { useUserContext } from '../../context/UserProvider';
@@ -139,12 +140,10 @@ export const SelectParticipant = (props: SelectParticipantProps): ReactElement =
         if (!isCancelled && participants && participants.length > 0) {
           const items = participants.map((p: Participant) => {
             return (
-              <Menu.Item
-                onPress={() => selectParticipant(p)}
-                title={participantName(p)}
-                key={'participant_' + p.id}
-                style={styles.menuItem}
-              />
+              <View key={'participant_' + p.id}>
+                <Menu.Item onPress={() => selectParticipant(p)} title={participantName(p)} style={styles.menuItem} />
+                <Divider />
+              </View>
             );
           });
           if (!isCancelled) {
@@ -203,9 +202,14 @@ export const SelectParticipant = (props: SelectParticipantProps): ReactElement =
     }
   };
 
-  const btnLabel = participantState.participant
-    ? `Participant: ${participantName(participantState.participant)}`
-    : 'Select Participant';
+  const btnLabel = participantState.participant ? (
+    <Text>
+      <Text style={{ color: CustomColors.uva.orange, fontWeight: '500' }}>{'Participant: '}</Text>
+      {participantName(participantState.participant)}
+    </Text>
+  ) : (
+    <Text>{'Select Participant'}</Text>
+  );
 
   const key = `select_participant_menu_${menuItems && menuItems.length > 0 ? menuItems.length : 0}`;
 
@@ -216,16 +220,26 @@ export const SelectParticipant = (props: SelectParticipantProps): ReactElement =
   const renderMenu = () => {
     return (
       <Menu
-        contentStyle={styles.menuContent}
+        contentStyle={menuItems?.length ? menuContent(menuItems?.length).menu : menuContent(1).menu}
         visible={isVisible}
         onDismiss={closeMenu}
         anchor={
-          <Button onPress={openMenu} color={CustomColors.uva.orange} style={styles.menuButton}>
-            {btnLabel}
-            <View style={styles.iconContainer}>
-              <MaterialIcons name={'arrow-drop-down'} size={24} color={CustomColors.uva.orange} />
-            </View>
-          </Button>
+          <TouchableOpacity
+            style={[
+              styles.anchorBtn,
+              {
+                borderRadius: 10,
+                borderWidth: 1,
+                borderBottomWidth: 2,
+                borderLeftWidth: 2,
+                borderColor: CustomColors.uva.grayMedium,
+              },
+            ]}
+            onPress={openMenu}
+          >
+            <Text style={styles.btnText}>{btnLabel}</Text>
+            <MaterialIcons name={'arrow-drop-down'} size={50} color={CustomColors.uva.orange} style={styles.icon} />
+          </TouchableOpacity>
         }
       >
         {menuItems}
@@ -241,37 +255,43 @@ export const SelectParticipant = (props: SelectParticipantProps): ReactElement =
 };
 
 const styles = StyleSheet.create({
-  iconContainer: {
-    paddingTop: 8,
-  },
   menuContainer: {
     flex: 1,
-    flexDirection: 'column',
-    justifyContent: 'center',
-    alignItems: 'flex-end',
-    margin: -16,
-    height: 60,
-    padding: 0,
-  },
-  menuButton: {
-    flex: 1,
-    flexDirection: 'column',
-    justifyContent: 'center',
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
     alignContent: 'center',
   },
-  menuContent: {
-    flex: 1,
-    flexDirection: 'column',
+  anchorBtn: {
+    // width: 300,
+    flexDirection: 'row',
     justifyContent: 'flex-end',
-    alignContent: 'flex-end',
-    padding: 10,
+    alignItems: 'center',
+    alignContent: 'center',
+    // backgroundColor: '#f0f',
   },
   menuItem: {
-    flexDirection: 'column',
-    justifyContent: 'center',
-    alignContent: 'center',
-    flex: 1,
+    margin: 1,
+    marginHorizontal: 5,
+    backgroundColor: CustomColors.uva.white,
+  },
+  btnText: {
+    color: CustomColors.uva.orange,
+    fontSize: 20,
+    paddingHorizontal: 10,
+  },
+  icon: {
     height: 50,
-    padding: 10,
   },
 });
+
+const menuContent = (items: number) => {
+  return StyleSheet.create({
+    menu: {
+      padding: 5,
+      backgroundColor: 'rgba(255,255,255,0.5)',
+      top: '10%',
+      height: 55 * items,
+      width: 277,
+    },
+  });
+};

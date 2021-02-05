@@ -14,7 +14,7 @@ import { ImageAssets } from '../data/images';
 import { videos } from '../data/videos';
 import CustomColors from '../styles/Colors';
 import { ChainStep } from '../types/chain/ChainStep';
-import { StepAttempt } from '../types/chain/StepAttempt';
+import { ChainStepStatus, StepAttempt } from '../types/chain/StepAttempt';
 import { MasteryIcon } from '../styles/MasteryIcon';
 
 const StepScreen = (): JSX.Element => {
@@ -26,7 +26,8 @@ const StepScreen = (): JSX.Element => {
   const [video, setVideo] = useState<AVPlaybackSource>();
   const chainMasteryState = useChainMasteryState();
   const [isPLaying, setIsPlaying] = useState(false);
-  const [pastFocusStepAttempts, setPastFocusStepAttempts] = useState<StepAttempt[]>();
+  const [pastFocusStepAttempts, setPastFocusStepAttempts] = useState<boolean[]>();
+  const [chainStepId, setChainStepId] = useState<number>();
 
   /**
    * BEGIN: LIFECYCLE CALLS
@@ -40,10 +41,10 @@ const StepScreen = (): JSX.Element => {
         setChainSteps(chainMasteryState.chainMastery.chainSteps);
         setStepIndex(0);
         setChainStep(chainMasteryState.chainMastery.chainSteps[0]);
-        if (chainMasteryState.chainMastery.focusStepPastAttempts) {
-          setPastFocusStepAttempts(chainMasteryState.chainMastery.focusStepPastAttempts);
-        }
+        setChainStepId(chainMasteryState.chainMastery.draftSession.step_attempts[0].chain_step_id);
+        const tempId = chainMasteryState.chainMastery.draftSession.step_attempts[0].chain_step_id;
         setStepAttempt(chainMasteryState.chainMastery.draftSession.step_attempts[0]);
+        getPrevCompletedFocusSteps(tempId);
       }
     };
 
@@ -63,6 +64,8 @@ const StepScreen = (): JSX.Element => {
         // Solves issue of videos not start play at beginning
         setVideo(videos[`step_${stepIndex + 1}`]);
         setIsPlaying(false);
+        setChainStepId(stepIndex);
+        getPrevCompletedFocusSteps(stepIndex);
       }
     };
 
@@ -75,6 +78,27 @@ const StepScreen = (): JSX.Element => {
   /**
    * END: LIFECYCLE CALLS
    */
+
+  const getPrevCompletedFocusSteps = (id: number) => {
+    if (chainMasteryState.chainMastery?.chainData.sessions) {
+      const focusCompleted = [];
+      for (let i = 0; i < chainMasteryState.chainMastery?.chainData.sessions.length; i++) {
+        for (let j = 0; j < chainMasteryState.chainMastery?.chainData.sessions[i].step_attempts.length; j++) {
+          if (chainMasteryState.chainMastery?.chainData.sessions[i].step_attempts[j].chain_step_id === id) {
+            if (
+              chainMasteryState.chainMastery?.chainData.sessions[i].step_attempts[j].status === ChainStepStatus.focus &&
+              chainMasteryState.chainMastery?.chainData.sessions[i].step_attempts[j].completed
+            ) {
+              focusCompleted.push(true);
+            } else {
+              focusCompleted.push(false);
+            }
+            setPastFocusStepAttempts(focusCompleted);
+          }
+        }
+      }
+    }
+  };
 
   const goToStep = (i: number) => {
     if (chainMasteryState.chainMastery) {
@@ -136,8 +160,6 @@ const StepScreen = (): JSX.Element => {
   const onNeededPrompting = () => {
     if (chainStep && chainMasteryState.chainMastery) {
       chainMasteryState.chainMastery.updateDraftSessionStep(chainStep.id, 'was_prompted', true);
-
-      // TODO: Verify that we should navigate to next step here?
       chainMasteryState.chainMastery.updateDraftSessionStep(chainStep.id, 'completed', false);
     }
 
@@ -240,8 +262,9 @@ const styles = StyleSheet.create({
   },
   progressContainer: {
     flexDirection: 'row',
-    justifyContent: 'center',
+    justifyContent: 'space-around',
     alignContent: 'center',
+    padding: 5,
   },
   instructionContainer: {
     flexDirection: 'row',

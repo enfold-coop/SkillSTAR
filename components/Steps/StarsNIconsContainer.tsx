@@ -6,11 +6,13 @@ import StepAttemptStars from './StepAttemptStars';
 
 interface StarsNIconsContainerProps {
   chainStepId: number;
-  prevFocusStepAttempts: StepAttempt[] | undefined;
+  prevFocusStepAttempts: boolean[] | undefined;
 }
 
 const StarsNIconsContainer = (props: StarsNIconsContainerProps): JSX.Element => {
   const { chainStepId, prevFocusStepAttempts } = props;
+  console.log(prevFocusStepAttempts);
+
   return (
     <View style={styles.container}>
       <View style={styles.subContainer}>

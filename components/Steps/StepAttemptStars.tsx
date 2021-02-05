@@ -6,14 +6,11 @@ import { StepAttempt } from '../../types/chain/StepAttempt';
 
 interface StepAttemptStarsProps {
   promptType: string;
-  attemptsWPromptType: StepAttempt[] | undefined;
+  attemptsWPromptType: boolean[] | undefined;
 }
 
 const StepAttemptStars = (props: StepAttemptStarsProps): JSX.Element => {
   const { attemptsWPromptType } = props;
-  //   console.log('====================================');
-  //   console.log(attemptsWPromptType);
-  //   console.log('====================================');
   return (
     <View style={styles.container}>
       <View style={styles.subContainer} />
@@ -21,7 +18,7 @@ const StepAttemptStars = (props: StepAttemptStarsProps): JSX.Element => {
         <Text style={styles.promptTypeText}>{props.promptType + ':'}</Text>
         {attemptsWPromptType &&
           attemptsWPromptType.map((e, i) => {
-            if (e.completed) {
+            if (e) {
               return <AntDesign name={'star'} size={40} color={CustomColors.uva.orange} style={styles.star} key={i} />;
             } else {
               return <AntDesign name={'staro'} size={40} color={CustomColors.uva.orange} style={styles.star} key={i} />;
