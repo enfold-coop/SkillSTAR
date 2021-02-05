@@ -20,6 +20,7 @@ const DataVerificationList = (props: DataVerificationListProps): JSX.Element => 
         data={chainMasteryState.chainMastery.draftSession.step_attempts}
         renderItem={({ item }) => <DataVerificationListItem stepAttempt={item} onChange={onChange} />}
         keyExtractor={() => shortid()}
+        maxToRenderPerBatch={chainMasteryState.chainMastery.chainSteps.length}
       />
     </View>
   ) : (
