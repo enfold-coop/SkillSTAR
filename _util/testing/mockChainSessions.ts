@@ -993,7 +993,7 @@ export const mockSession3: ChainSession = {
       was_prompted: true,
       prompt_level: ChainStepPromptLevel.full_physical,
       had_challenging_behavior: true,
-      was_focus_step: false,
+      was_focus_step: true,
       target_prompt_level: ChainStepPromptLevel.full_physical,
       challenging_behaviors: [
         {
@@ -1326,7 +1326,7 @@ export const mockSession4: ChainSession = {
       was_prompted: true,
       prompt_level: ChainStepPromptLevel.full_physical,
       had_challenging_behavior: true,
-      was_focus_step: false,
+      was_focus_step: true,
       target_prompt_level: ChainStepPromptLevel.full_physical,
       challenging_behaviors: [
         {
@@ -1659,7 +1659,7 @@ export const mockSession5: ChainSession = {
       was_prompted: true,
       prompt_level: ChainStepPromptLevel.full_physical,
       had_challenging_behavior: true,
-      was_focus_step: false,
+      was_focus_step: true,
       target_prompt_level: ChainStepPromptLevel.full_physical,
       challenging_behaviors: [
         {

@@ -161,5 +161,33 @@ describe('ChainMastery', () => {
     expect(chainMastery.draftSession.step_attempts[0].was_focus_step).toBeTruthy();
   });
 
+  it('should get the current non-draft session focus step', () => {
+    // Mark all steps as not focus step.
+    const chainDataWithoutFocus = chainData.clone();
+    chainDataWithoutFocus.sessions.forEach((s) => {
+      s.step_attempts.forEach((stepAttempt) => {
+        stepAttempt.was_focus_step = false;
+      });
+    });
+
+    // Save the modified chain data.
+    chainMastery.updateChainData(chainDataWithoutFocus);
+    expect(chainMastery.currentFocusStep).toBeUndefined();
+    expect(chainMastery.previousFocusStep).toBeUndefined();
+
+    // Mark first step as focus step.
+    const chainDataWithFocus = chainData.clone();
+    chainDataWithFocus.sessions.forEach((s) => {
+      if (s.session_type === ChainSessionType.training) {
+        s.step_attempts[0].was_focus_step = true;
+      }
+    });
+
+    // Save the modified chain data.
+    chainMastery.updateChainData(chainDataWithFocus);
+    expect(chainMastery.currentFocusStep).toBeTruthy();
+    expect(chainMastery.previousFocusStep).toBeTruthy();
+  });
+
   test.todo('should show Training session upon completing Probe session');
 });
