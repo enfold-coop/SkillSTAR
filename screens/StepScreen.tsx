@@ -14,7 +14,7 @@ import { ImageAssets } from '../data/images';
 import { videos } from '../data/videos';
 import CustomColors from '../styles/Colors';
 import { ChainStep } from '../types/chain/ChainStep';
-import { ChainStepStatus, StepAttempt } from '../types/chain/StepAttempt';
+import { ChainStepPromptLevel, ChainStepStatus, StepAttempt } from '../types/chain/StepAttempt';
 import { MasteryIcon } from '../styles/MasteryIcon';
 
 const StepScreen = (): JSX.Element => {
@@ -44,6 +44,10 @@ const StepScreen = (): JSX.Element => {
         setChainStepId(chainMasteryState.chainMastery.draftSession.step_attempts[0].chain_step_id);
         const tempId = chainMasteryState.chainMastery.draftSession.step_attempts[0].chain_step_id;
         setStepAttempt(chainMasteryState.chainMastery.draftSession.step_attempts[0]);
+
+        chainMasteryState.chainMastery?.draftSession.step_attempts.forEach((e) => {
+          console.log(e.target_prompt_level);
+        });
 
         getPrevCompletedFocusSteps(tempId);
       }
@@ -83,7 +87,7 @@ const StepScreen = (): JSX.Element => {
 
   const getPrevCompletedFocusSteps = (id: number) => {
     if (chainMasteryState.chainMastery?.chainData.sessions) {
-      console.log(chainMasteryState.chainMastery.draftSession);
+      //   console.log(chainMasteryState.chainMastery.draftSession);
 
       const focusCompleted = [];
       for (let i = 0; i < chainMasteryState.chainMastery?.chainData.sessions.length; i++) {
