@@ -29,9 +29,8 @@ describe('ChainMastery', () => {
     });
     chainMastery = new ChainMastery(mockChainSteps, chainData);
     checkMasteryInfo(chainMastery, -1, -1);
-  });
 
-  it('should set default step attempt status to Not Started', () => {
+    // Step attempt status should be Not Started
     const draftSession = chainMastery.draftSession;
     const stepAttempts = draftSession && draftSession.step_attempts;
     expect(draftSession).toBeTruthy();
@@ -146,7 +145,7 @@ describe('ChainMastery', () => {
         stepAttempt.had_challenging_behavior = true;
         stepAttempt.was_prompted = undefined;
         stepAttempt.was_focus_step = undefined;
-        stepAttempt.status = ChainStepStatus.not_yet_started;
+        stepAttempt.status = ChainStepStatus.not_complete;
         stepAttempt.challenging_behaviors = [];
         stepAttempt.prompt_level = undefined;
         stepAttempt.target_prompt_level = undefined;
@@ -156,9 +155,11 @@ describe('ChainMastery', () => {
     // Save the modified chain data.
     chainMastery.updateChainData(newMockChainData);
 
-    // The date mastered for the first chain step should now be populated.
+    // The first chain step should now be marked as the focus step.
+    expect(chainMastery.nextFocusChainStepId).toEqual(0);
     expect(chainMastery.draftSession.session_type).toEqual(ChainSessionType.training);
     expect(chainMastery.draftSession.step_attempts[0].was_focus_step).toBeTruthy();
+    expect(chainMastery.masteryInfoMap[0].stepStatus).toEqual(ChainStepStatus.focus);
   });
 
   it('should get the current non-draft session focus step', () => {
