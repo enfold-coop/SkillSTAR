@@ -1,6 +1,5 @@
 import { deepClone } from '../_util/deepClone';
 import { checkMasteryInfo } from '../_util/testing/chainTestUtils';
-import { mockChainDataAllProbesSuccessful } from '../_util/testing/mockChainDataAllProbesSuccessful';
 import { mockChainQuestionnaire } from '../_util/testing/mockChainQuestionnaire';
 import { mockChainSteps } from '../_util/testing/mockChainSteps';
 import { ChainData } from '../types/chain/ChainData';
@@ -103,7 +102,7 @@ describe('ChainMastery', () => {
     // Mark all probe and training sessions for first chain step as complete,
     // with no prompting or challenging behavior.
     const newMockChainData = chainData.clone();
-    newMockChainData.sessions.forEach((s, i) => {
+    newMockChainData.sessions.forEach((s) => {
       const stepAttempt = s.step_attempts[0];
       stepAttempt.completed = true;
       stepAttempt.had_challenging_behavior = false;
@@ -135,16 +134,19 @@ describe('ChainMastery', () => {
   });
 
   it('should set step to focus if probes are incomplete', () => {
-    // Mark all sessions as probes, all steps incomplete with challenging behavior.
+    // Mark all sessions as probes:
+    // - Even steps incomplete with challenging behavior.
+    // - Odd steps complete with no challenging behavior.
     const newMockChainData = chainData.clone();
     newMockChainData.sessions.forEach((s) => {
       s.session_type = ChainSessionType.probe;
 
-      s.step_attempts.forEach((stepAttempt) => {
+      s.step_attempts.forEach((stepAttempt, i) => {
+        const isComplete = i % 2 !== 0;
         stepAttempt.session_type = ChainSessionType.probe;
-        stepAttempt.completed = false;
-        stepAttempt.had_challenging_behavior = true;
-        stepAttempt.was_prompted = undefined;
+        stepAttempt.completed = isComplete;
+        stepAttempt.had_challenging_behavior = !isComplete;
+        stepAttempt.was_prompted = !isComplete;
         stepAttempt.was_focus_step = undefined;
         stepAttempt.status = ChainStepStatus.not_complete;
         stepAttempt.challenging_behaviors = [];
@@ -157,6 +159,8 @@ describe('ChainMastery', () => {
     chainMastery.updateChainData(newMockChainData);
 
     // The first chain step should now be marked as the focus step.
+    expect(chainMastery.unmasteredChainStepIds).toEqual([0, 2, 4, 6, 8, 10, 12]);
+    expect(chainMastery.masteredChainStepIds).toEqual([1, 3, 5, 7, 9, 11, 13]);
     expect(chainMastery.nextFocusChainStepId).toEqual(0);
     expect(chainMastery.draftSession.session_type).toEqual(ChainSessionType.training);
     expect(chainMastery.draftSession.step_attempts[0].was_focus_step).toBeTruthy();
@@ -164,7 +168,7 @@ describe('ChainMastery', () => {
   });
 
   it('should have no focus step if all steps are mastered', () => {
-    // Mark all sessions as probes, all steps incomplete with challenging behavior.
+    // Mark all sessions as probes, all steps complete with no prompting or challenging behavior.
     const newMockChainData = chainMastery.chainData.clone();
 
     newMockChainData.sessions.forEach((s, i) => {
@@ -174,7 +178,7 @@ describe('ChainMastery', () => {
         stepAttempt.session_type = ChainSessionType.probe;
         stepAttempt.completed = true;
         stepAttempt.had_challenging_behavior = false;
-        stepAttempt.was_prompted = undefined;
+        stepAttempt.was_prompted = false;
         stepAttempt.was_focus_step = undefined;
         stepAttempt.challenging_behaviors = [];
         stepAttempt.prompt_level = undefined;

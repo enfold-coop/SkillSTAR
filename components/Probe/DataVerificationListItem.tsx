@@ -26,6 +26,7 @@ export const DataVerificationListItem = (props: DataVerificationListItemProps): 
         if (chainMasteryState.chainMastery && s.chain_step_id === stepAttempt.chain_step_id) {
           // Set its value.
           chainMasteryState.chainMastery.draftSession.step_attempts[i].completed = true;
+          chainMasteryState.chainMastery.draftSession.step_attempts[i].was_prompted = false;
           chainMasteryState.chainMastery.draftSession.step_attempts[i].had_challenging_behavior = false;
         }
       });

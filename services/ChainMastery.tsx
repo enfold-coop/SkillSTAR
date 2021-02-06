@@ -33,6 +33,7 @@ export class ChainMastery {
   draftSession: ChainSession;
   incompleteCount = 0;
   focusedChainStepIds: number[];
+  unmasteredChainStepIds: number[];
   masteredChainStepIds: number[];
   unmasteredFocusedChainStepIds: number[];
   draftFocusStepAttempt?: StepAttempt;
@@ -48,6 +49,7 @@ export class ChainMastery {
     this.chainData = new ChainData(chainData);
     this.masteryInfoMap = this.buildMasteryInfoMap();
     this.focusedChainStepIds = this.getFocusedChainStepIds();
+    this.unmasteredChainStepIds = this.getUnmasteredChainStepIds();
     this.masteredChainStepIds = this.getMasteredChainStepIds();
     this.unmasteredFocusedChainStepIds = this.getUnmasteredFocusedChainStepIds();
     this.draftSession = this.buildNewDraftSession();
@@ -85,25 +87,12 @@ export class ChainMastery {
    * Returns the chain step ID that should be focused on next, or undefined if all steps have been mastered.
    */
   get nextFocusChainStepId(): number | undefined {
-    if (this.prevFocusStepChainStepId !== undefined) {
-      return this.prevFocusStepChainStepId;
+    // Find the smallest unmastered chain step ID.
+    if (this.unmasteredChainStepIds.length > 0) {
+      return this.unmasteredChainStepIds[0];
     }
 
-    // There isn't a current unmastered focus step. Find the biggest chain step ID that has been mastered and increment it.
-    if (this.masteredChainStepIds.length > 0) {
-      const biggestId = this.masteredChainStepIds[this.masteredChainStepIds.length - 1];
-      const focusStepId = biggestId + 1;
-
-      if (focusStepId < this.chainSteps.length) {
-        return focusStepId;
-      } else {
-        // All steps have been mastered.
-        return undefined;
-      }
-    } else {
-      // No steps have been mastered yet. The first step should be focused.
-      return this.chainSteps[0].id;
-    }
+    console.log('All chain steps have been mastered!');
   }
 
   /**
@@ -225,6 +214,8 @@ export class ChainMastery {
       }
     }
 
+    console.log('focusChainStepId', focusChainStepId);
+
     // Populate step attempts
     newDraftSession.step_attempts = this.chainSteps.map((chainStep) => {
       const masteryInfo = this.masteryInfoMap[chainStep.id];
@@ -272,7 +263,6 @@ export class ChainMastery {
 
         const focusStepPastAttempts = this.chainData.getAllStepAttemptsForChainStep(focusChainStepId);
         let lastAttemptLevel: ChainStepPromptLevel | undefined = ChainStepPromptLevel.full_physical;
-        let lastAttemptSessionType: ChainSessionType | undefined = undefined;
 
         // Look at the most recent attempts.
         for (const pastAttempt of focusStepPastAttempts.reverse()) {
@@ -290,7 +280,6 @@ export class ChainMastery {
           }
 
           lastAttemptLevel = pastAttempt.target_prompt_level;
-          lastAttemptSessionType = pastAttempt.session_type;
         }
 
         // If target prompt level for the probe session is still undefined, set it to full physical.
@@ -492,7 +481,7 @@ export class ChainMastery {
 
     let prevAttempt: StepAttempt;
 
-    stepAttempts.forEach((thisAttempt, i) => {
+    stepAttempts.forEach((thisAttempt) => {
       const isConsecutive =
         prevAttempt &&
         prevAttempt.was_focus_step &&
@@ -570,7 +559,7 @@ export class ChainMastery {
     return !!(
       stepAttempt.session_type === ChainSessionType.probe &&
       stepAttempt.completed &&
-      !stepAttempt.had_challenging_behavior
+      !stepAttempt.was_prompted
     );
   }
 
@@ -641,20 +630,19 @@ export class ChainMastery {
    */
   stepIsComplete(stepAttempt: StepAttempt): boolean {
     if (stepAttempt.session_type === ChainSessionType.probe) {
-      return !(stepAttempt.was_prompted || (stepAttempt.had_challenging_behavior && !stepAttempt.completed));
-    } else if (stepAttempt.session_type === ChainSessionType.training && stepAttempt.was_focus_step) {
-      return (
-        stepAttempt.status === ChainStepStatus.mastered &&
-        !stepAttempt.was_prompted &&
-        stepAttempt.prompt_level === stepAttempt.target_prompt_level
+      return !!(stepAttempt.completed && !stepAttempt.was_prompted);
+    } else if (
+      (stepAttempt.session_type === ChainSessionType.training ||
+        stepAttempt.session_type === ChainSessionType.booster) &&
+      stepAttempt.was_focus_step
+    ) {
+      return !!(
+        stepAttempt.completed &&
+        (!stepAttempt.was_prompted ||
+          this.promptLevelIsBetterThanTarget(stepAttempt.prompt_level, stepAttempt.target_prompt_level))
       );
     } else {
-      return !!(
-        stepAttempt.status === ChainStepStatus.mastered &&
-        !stepAttempt.was_prompted &&
-        !stepAttempt.had_challenging_behavior &&
-        stepAttempt.completed
-      );
+      return !!(!stepAttempt.was_prompted && !stepAttempt.had_challenging_behavior && stepAttempt.completed);
     }
   }
 
@@ -671,9 +659,7 @@ export class ChainMastery {
    */
   getBoosterStep(stepAttempts: StepAttempt[]): StepAttempt | undefined {
     let masteredOnce = false;
-    let numConsecutiveIncompleteProbes = -1;
-    let numConsecutiveIncompleteTraining = -1;
-    let lastSessionType: ChainSessionType | undefined = undefined;
+    let numConsecutiveIncomplete = 0;
     let needsBooster = false;
 
     // Skip if there are fewer than 3 attempts, or the step has never been mastered.
@@ -700,32 +686,22 @@ export class ChainMastery {
         } else {
           // Post-mastery attempt where step was not completed.
           if (!this.stepIsComplete(stepAttempt)) {
-            const isConsecutive = lastSessionType === stepAttempt.session_type;
+            numConsecutiveIncomplete++;
 
-            // Count consecutive session types
-            if (stepAttempt.session_type === ChainSessionType.probe) {
-              numConsecutiveIncompleteProbes = isConsecutive ? numConsecutiveIncompleteProbes + 1 : 1;
-              numConsecutiveIncompleteTraining = 0;
-            } else if (stepAttempt.session_type === ChainSessionType.training) {
-              numConsecutiveIncompleteProbes = 0;
-              numConsecutiveIncompleteTraining = isConsecutive ? numConsecutiveIncompleteTraining + 1 : 1;
-            }
-
-            // TODO: Session type no longer needs to interrupt the consecutive session calculation.
             // If the number of consecutive incomplete sessions is at or over the threshold,
             // the next step should be a booster.
             if (
-              numConsecutiveIncompleteProbes > NUM_INCOMPLETE_PROBE_ATTEMPTS_FOR_BOOSTER ||
-              numConsecutiveIncompleteTraining > NUM_INCOMPLETE_TRAINING_ATTEMPTS_FOR_BOOSTER
+              numConsecutiveIncomplete > NUM_INCOMPLETE_PROBE_ATTEMPTS_FOR_BOOSTER ||
+              numConsecutiveIncomplete > NUM_INCOMPLETE_TRAINING_ATTEMPTS_FOR_BOOSTER
             ) {
               // The step after this one will be the first booster step.
               needsBooster = true;
             }
+          } else {
+            numConsecutiveIncomplete = 0;
           }
         }
       }
-
-      lastSessionType = stepAttempt.session_type;
     }
   }
 
@@ -737,9 +713,7 @@ export class ChainMastery {
    *
    */
   chainStepNeedsBooster(stepAttempts: StepAttempt[]): boolean {
-    let numConsecutiveIncompleteProbes = -1;
-    let numConsecutiveIncompleteTraining = -1;
-    let lastSessionType: ChainSessionType | undefined = undefined;
+    let numConsecutiveIncomplete = 0;
 
     // Skip if there are fewer than 3 attempts, or the step has never been mastered.
     if (stepAttempts.length < 3 || !this.stepFirstMastered(stepAttempts)) {
@@ -749,33 +723,22 @@ export class ChainMastery {
     // Only need to look at the last 3 sessions, in reverse date order.
     const lastFewSessions = stepAttempts.slice(-3).reverse();
     for (const stepAttempt of lastFewSessions) {
-      if (!this.stepIsComplete(stepAttempt)) {
+      if (this.stepIsComplete(stepAttempt)) {
+        numConsecutiveIncomplete = 0;
+      } else {
         // Post-mastery attempt where step was not completed.
-        const isConsecutive = lastSessionType === stepAttempt.session_type;
-
-        // Count consecutive session types
-        if (stepAttempt.session_type === ChainSessionType.probe) {
-          numConsecutiveIncompleteProbes = isConsecutive ? numConsecutiveIncompleteProbes + 1 : 1;
-          numConsecutiveIncompleteTraining = 0;
-        } else if (stepAttempt.session_type === ChainSessionType.training) {
-          numConsecutiveIncompleteProbes = 0;
-          numConsecutiveIncompleteTraining = isConsecutive ? numConsecutiveIncompleteTraining + 1 : 1;
-        }
-
-        // If the number of consecutive incomplete sessions is at or over the threshold,
-        // the next step should be a booster.
-        if (
-          numConsecutiveIncompleteProbes > NUM_INCOMPLETE_PROBE_ATTEMPTS_FOR_BOOSTER ||
-          numConsecutiveIncompleteTraining > NUM_INCOMPLETE_TRAINING_ATTEMPTS_FOR_BOOSTER
-        ) {
-          return true;
-        }
+        numConsecutiveIncomplete++;
       }
-
-      lastSessionType = stepAttempt.session_type;
     }
 
-    return false;
+    console.log('numConsecutiveIncomplete', numConsecutiveIncomplete);
+
+    // If the number of consecutive incomplete sessions is at or over the threshold,
+    // the next step should be a booster.
+    return (
+      numConsecutiveIncomplete >= NUM_INCOMPLETE_PROBE_ATTEMPTS_FOR_BOOSTER ||
+      numConsecutiveIncomplete >= NUM_INCOMPLETE_TRAINING_ATTEMPTS_FOR_BOOSTER
+    );
   }
 
   /**
@@ -903,6 +866,8 @@ export class ChainMastery {
    */
   getStepStatus(stepAttempts: StepAttempt[], m: MasteryInfo): ChainStepStatus {
     const needsBooster = this.chainStepNeedsBooster(stepAttempts);
+    console.log(`${m.chainStepId} = ${needsBooster}`);
+
     const neverAttempted = stepAttempts.every((s) => s.status === ChainStepStatus.not_yet_started);
 
     if (neverAttempted) {
@@ -961,6 +926,14 @@ export class ChainMastery {
   }
 
   /**
+   * Returns a sorted, deduped list of IDs of chain steps that have not been mastered yet or that need a booster.
+   */
+  getUnmasteredChainStepIds(): number[] {
+    const masteredSteps = this.chainSteps.filter((chainStep) => !this.chainStepHasBeenMastered(chainStep.id));
+    return masteredSteps.map((s) => s.id);
+  }
+
+  /**
    * Returns true if the given chain step has already been mastered (no booster needed yet) or been re-mastered
    * after a booster.
    * @param chain_step_id
@@ -968,11 +941,13 @@ export class ChainMastery {
   chainStepHasBeenMastered(chain_step_id: number): boolean {
     const m = this.masteryInfoMap[chain_step_id];
 
-    return !!(
-      m &&
-      ((m.dateMastered && !m.dateBoosterInitiated && !m.dateBoosterMastered) ||
-        (m.dateMastered && m.dateBoosterInitiated && m.dateBoosterMastered))
-    );
+    if (m) {
+      const hasMasteredWithNoBooster = !!(m.dateMastered && !m.dateBoosterInitiated && !m.dateBoosterMastered);
+      const hasMasteredBooster = !!(m.dateMastered && m.dateBoosterInitiated && m.dateBoosterMastered);
+      return hasMasteredWithNoBooster || hasMasteredBooster;
+    }
+
+    return false;
   }
 
   /**
@@ -988,7 +963,7 @@ export class ChainMastery {
    * Builds a new draft session with the given session type.
    * @param sessionType
    */
-  setDraftSessionType(sessionType: ChainSessionType) {
+  setDraftSessionType(sessionType: ChainSessionType): void {
     this.draftSession = this.buildNewDraftSession(sessionType);
   }
 
@@ -997,10 +972,11 @@ export class ChainMastery {
    * updates the instance mastery info map, and draft session with the new data.
    * @param skillstarChain
    */
-  updateChainData(skillstarChain: SkillstarChain) {
+  updateChainData(skillstarChain: SkillstarChain): void {
     this.chainData = new ChainData(skillstarChain);
     this.masteryInfoMap = this.buildMasteryInfoMap();
     this.focusedChainStepIds = this.getFocusedChainStepIds();
+    this.unmasteredChainStepIds = this.getUnmasteredChainStepIds();
     this.masteredChainStepIds = this.getMasteredChainStepIds();
     this.unmasteredFocusedChainStepIds = this.getUnmasteredFocusedChainStepIds();
     this.draftSession = this.buildNewDraftSession();
@@ -1039,7 +1015,7 @@ export class ChainMastery {
    * @param fieldName
    * @param fieldValue
    */
-  updateDraftSessionStep(chainStepId: number, fieldName: StepAttemptFieldName, fieldValue: StepAttemptField) {
+  updateDraftSessionStep(chainStepId: number, fieldName: StepAttemptFieldName, fieldValue: StepAttemptField): void {
     //  Get the step
     this.draftSession.step_attempts.forEach((stepAttempt, i) => {
       if (stepAttempt.chain_step_id === chainStepId) {
@@ -1144,7 +1120,7 @@ export class ChainMastery {
   promptLevelIsBetterThanTarget(
     actualPromptLevel: ChainStepPromptLevel | undefined,
     targetPromptLevel: ChainStepPromptLevel | undefined,
-  ) {
+  ): boolean {
     const actualPromptLevelIndex = this.promptHierarchy.findIndex((p) => p.key === actualPromptLevel);
     const targetPromptLevelIndex = this.promptHierarchy.findIndex((p) => p.key === targetPromptLevel);
 

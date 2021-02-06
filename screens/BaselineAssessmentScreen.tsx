@@ -32,6 +32,10 @@ const BaselineAssessmentScreen = (): JSX.Element => {
       chainMasteryState.chainMastery.draftSession
     ) {
       chainMasteryState.chainMastery.updateDraftSessionStep(chainStepId, fieldName, fieldValue);
+
+      if (fieldName === 'completed') {
+        chainMasteryState.chainMastery.updateDraftSessionStep(chainStepId, 'was_prompted', !fieldValue);
+      }
     }
   };
 
