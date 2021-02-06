@@ -1,5 +1,6 @@
 import { deepClone } from '../_util/deepClone';
 import { checkMasteryInfo } from '../_util/testing/chainTestUtils';
+import { mockChainDataAllProbesSuccessful } from '../_util/testing/mockChainDataAllProbesSuccessful';
 import { mockChainQuestionnaire } from '../_util/testing/mockChainQuestionnaire';
 import { mockChainSteps } from '../_util/testing/mockChainSteps';
 import { ChainData } from '../types/chain/ChainData';
@@ -160,6 +161,46 @@ describe('ChainMastery', () => {
     expect(chainMastery.draftSession.session_type).toEqual(ChainSessionType.training);
     expect(chainMastery.draftSession.step_attempts[0].was_focus_step).toBeTruthy();
     expect(chainMastery.masteryInfoMap[0].stepStatus).toEqual(ChainStepStatus.focus);
+  });
+
+  it('should have no focus step if all steps are mastered', () => {
+    // Mark all sessions as probes, all steps incomplete with challenging behavior.
+    const newMockChainData = chainMastery.chainData.clone();
+
+    newMockChainData.sessions.forEach((s, i) => {
+      s.session_type = ChainSessionType.probe;
+
+      s.step_attempts.forEach((stepAttempt) => {
+        stepAttempt.session_type = ChainSessionType.probe;
+        stepAttempt.completed = true;
+        stepAttempt.had_challenging_behavior = false;
+        stepAttempt.was_prompted = undefined;
+        stepAttempt.was_focus_step = undefined;
+        stepAttempt.challenging_behaviors = [];
+        stepAttempt.prompt_level = undefined;
+        stepAttempt.target_prompt_level = undefined;
+
+        // Should be the mastery info step status at the time the draft session was created?
+        if (i < 5) {
+          stepAttempt.status = ChainStepStatus.not_yet_started;
+        } else {
+          stepAttempt.status = ChainStepStatus.mastered;
+        }
+      });
+    });
+
+    // Save the modified chain data.
+    chainMastery.updateChainData(newMockChainData);
+
+    // The first chain step should now be marked as the focus step.
+    expect(chainMastery.nextFocusChainStepId).toBeUndefined();
+    expect(chainMastery.draftSession.session_type).toEqual(ChainSessionType.training);
+    for (const chainStep of mockChainSteps) {
+      const draftStepAttempt = chainMastery.draftSession.step_attempts[chainStep.id];
+      expect(chainMastery.masteryInfoMap[chainStep.id].stepStatus).toEqual(ChainStepStatus.mastered);
+      expect(draftStepAttempt.status).toEqual(ChainStepStatus.mastered);
+      expect(draftStepAttempt.was_focus_step).toBeFalsy();
+    }
   });
 
   it('should get the current non-draft session focus step', () => {

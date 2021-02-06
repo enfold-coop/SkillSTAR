@@ -382,19 +382,14 @@ export class ChainMastery {
    * @param stepAttempts
    */
   numSinceFirstCompleted(stepAttempts: StepAttempt[]): number {
-    let n = -1;
-    let completedOnce = false;
-    stepAttempts.forEach((stepAttempt) => {
-      if (stepAttempt.completed) {
-        completedOnce = true;
+    const numSteps = stepAttempts.length;
+    for (let i = 0; i < numSteps; i++) {
+      if (stepAttempts[i].completed) {
+        return numSteps - (i + 1);
       }
+    }
 
-      if (completedOnce) {
-        n++;
-      }
-    });
-
-    return n;
+    return -1;
   }
 
   /**
@@ -972,6 +967,7 @@ export class ChainMastery {
    */
   chainStepHasBeenMastered(chain_step_id: number): boolean {
     const m = this.masteryInfoMap[chain_step_id];
+
     return !!(
       m &&
       ((m.dateMastered && !m.dateBoosterInitiated && !m.dateBoosterMastered) ||
