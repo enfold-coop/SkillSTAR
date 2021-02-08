@@ -731,8 +731,6 @@ export class ChainMastery {
       }
     }
 
-    console.log('numConsecutiveIncomplete', numConsecutiveIncomplete);
-
     // If the number of consecutive incomplete sessions is at or over the threshold,
     // the next step should be a booster.
     return (
