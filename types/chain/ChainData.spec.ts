@@ -38,4 +38,32 @@ describe('ChainData', () => {
       }
     });
   });
+
+  it('should get all step attempts for a certain chain step', () => {
+    const chainStepId = 0;
+    const stepAttempts = chainData.getAllStepAttemptsForChainStep(chainStepId);
+    expect(stepAttempts).toHaveLength(chainData.sessions.length);
+    expect(stepAttempts.every((s) => s.chain_step_id === chainStepId)).toBeTruthy();
+
+    stepAttempts.forEach((stepAttempt, i) => {
+      expect(stepAttempt).toBeTruthy();
+      const lastStepIndex = i - 1;
+
+      if (lastStepIndex >= 0) {
+        const lastStep = chainData.sessions[lastStepIndex];
+        expect(lastStep).toBeTruthy();
+
+        if (lastStep && stepAttempt) {
+          expect(lastStep.date).toBeTruthy();
+          expect(stepAttempt.date).toBeTruthy();
+          expect(lastStep.date).toBeInstanceOf(Date);
+          expect(stepAttempt.date).toBeInstanceOf(Date);
+
+          if (lastStep.date && stepAttempt.date) {
+            expect(lastStep.date.getTime()).toBeLessThan(stepAttempt.date.getTime());
+          }
+        }
+      }
+    });
+  });
 });

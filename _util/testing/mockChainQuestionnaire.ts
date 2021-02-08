@@ -10,7 +10,7 @@ import {
 
 export const mockChainQuestionnaire: SkillstarChain = {
   id: 2,
-  last_updated: new Date('2021-01-01T15:48:05.757662+00:00'),
+  last_updated: new Date('2021-01-05T13:00:00.000000+00:00'),
   participant_id: 704609662,
   user_id: 4,
   time_on_task_ms: 276853,
