@@ -97,9 +97,9 @@ const ChainsHomeScreen = (): JSX.Element => {
             // TODO: Do we need this anymore?
           }}
         />
-        {chainMasteryState.chainMastery ? (
+        {chainMasteryState.chainMastery?.draftSession ? (
           <View style={styles.listContainer}>
-            <SessionDataAside />
+            <SessionDataAside currentSession={chainMasteryState.chainMastery.draftSession} />
             {chainMasteryState.chainMastery.chainSteps && chainMasteryState.chainMastery.draftSession && (
               <ScrollView style={styles.list}>
                 {chainMasteryState.chainMastery.draftSession.step_attempts.map((stepAttempt) => {
