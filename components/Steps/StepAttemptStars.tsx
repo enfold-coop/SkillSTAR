@@ -2,10 +2,11 @@ import { AntDesign } from '@expo/vector-icons';
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import CustomColors from '../../styles/Colors';
+import { StepAttempt } from '../../types/chain/StepAttempt';
 
 interface StepAttemptStarsProps {
   promptType: string;
-  attemptsWPromptType: boolean[];
+  attemptsWPromptType: boolean[] | undefined;
 }
 
 const StepAttemptStars = (props: StepAttemptStarsProps): JSX.Element => {
@@ -15,13 +16,14 @@ const StepAttemptStars = (props: StepAttemptStarsProps): JSX.Element => {
       <View style={styles.subContainer} />
       <View style={styles.starContainer}>
         <Text style={styles.promptTypeText}>{props.promptType + ':'}</Text>
-        {attemptsWPromptType.map((e, i) => {
-          if (e) {
-            return <AntDesign name={'star'} size={40} color={CustomColors.uva.orange} style={styles.star} key={i} />;
-          } else {
-            return <AntDesign name={'staro'} size={40} color={CustomColors.uva.orange} style={styles.star} key={i} />;
-          }
-        })}
+        {attemptsWPromptType &&
+          attemptsWPromptType?.slice(0, 3).map((e, i) => {
+            if (e) {
+              return <AntDesign name={'star'} size={40} color={CustomColors.uva.orange} style={styles.star} key={i} />;
+            } else {
+              return <AntDesign name={'staro'} size={40} color={CustomColors.uva.orange} style={styles.star} key={i} />;
+            }
+          })}
       </View>
     </View>
   );

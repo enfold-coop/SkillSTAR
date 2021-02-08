@@ -14,7 +14,7 @@ import { ImageAssets } from '../data/images';
 import { videos } from '../data/videos';
 import CustomColors from '../styles/Colors';
 import { ChainStep } from '../types/chain/ChainStep';
-import { StepAttempt } from '../types/chain/StepAttempt';
+import { ChainStepPromptLevel, ChainStepStatus, StepAttempt } from '../types/chain/StepAttempt';
 import { MasteryIcon } from '../styles/MasteryIcon';
 
 const StepScreen = (): JSX.Element => {
@@ -25,7 +25,9 @@ const StepScreen = (): JSX.Element => {
   const [stepAttempt, setStepAttempt] = useState<StepAttempt>();
   const [video, setVideo] = useState<AVPlaybackSource>();
   const chainMasteryState = useChainMasteryState();
-  const [isPlaying, setIsPlaying] = useState(false);
+  const [isPLaying, setIsPlaying] = useState(false);
+  const [pastFocusStepAttempts, setPastFocusStepAttempts] = useState<boolean[]>();
+  const [chainStepId, setChainStepId] = useState<number>();
 
   /**
    * BEGIN: LIFECYCLE CALLS
@@ -39,7 +41,10 @@ const StepScreen = (): JSX.Element => {
         setChainSteps(chainMasteryState.chainMastery.chainSteps);
         setStepIndex(0);
         setChainStep(chainMasteryState.chainMastery.chainSteps[0]);
+        setChainStepId(chainMasteryState.chainMastery.draftSession.step_attempts[0].chain_step_id);
+        const tempId = chainMasteryState.chainMastery.draftSession.step_attempts[0].chain_step_id;
         setStepAttempt(chainMasteryState.chainMastery.draftSession.step_attempts[0]);
+        getPrevCompletedFocusSteps(tempId);
       }
     };
 
@@ -59,6 +64,8 @@ const StepScreen = (): JSX.Element => {
         // Solves issue of videos not start play at beginning
         setVideo(videos[`step_${stepIndex + 1}`]);
         setIsPlaying(false);
+        setChainStepId(stepIndex);
+        getPrevCompletedFocusSteps(stepIndex);
       }
     };
 
@@ -71,6 +78,12 @@ const StepScreen = (): JSX.Element => {
   /**
    * END: LIFECYCLE CALLS
    */
+
+  const getPrevCompletedFocusSteps = (id: number) => {
+    if (chainMasteryState.chainMastery) {
+      setPastFocusStepAttempts(chainMasteryState.chainMastery?.getPreviousFocusStepAttempts(id));
+    }
+  };
 
   const goToStep = (i: number) => {
     if (chainMasteryState.chainMastery) {
@@ -163,7 +176,7 @@ const StepScreen = (): JSX.Element => {
             />
           </View>
         </View>
-        <StarsNIconsContainer chainStepId={chainStep.id} />
+        <StarsNIconsContainer chainStepId={chainStep.id} prevFocusStepAttempts={pastFocusStepAttempts} />
         <View style={styles.subContainer}>
           <View style={[styles.subVideoContainer]}>
             <ReturnVideoComponent />

@@ -32,6 +32,8 @@ const TrainingAside = (): JSX.Element => {
 
   const getFocusStepInstructions = (): string => {
     const stepAttempt = chainMasteryState.chainMastery?.draftFocusStepAttempt;
+    console.log(stepAttempt);
+
     if (stepAttempt && stepAttempt.chain_step) {
       return stepAttempt.chain_step.instruction;
     }
@@ -55,11 +57,12 @@ const TrainingAside = (): JSX.Element => {
   return chainMasteryState.chainMastery ? (
     <View style={styles.container}>
       <Text style={styles.headerText}>{`${getHeaderText()} Session`}</Text>
-      <Text>{TRAINING_INSTRUCTIONS}</Text>
       {chainMasteryState.chainMastery.draftFocusStepAttempt && (
         <View>
           <Text style={styles.instructionText}>{`Focus Step: ${getFocusStepInstructions()}`}</Text>
           <Text style={styles.instructionText}>{`Prompt Level: ${getPromptLevel()}`}</Text>
+          {/* Get mastery of step prompt-level */}
+          {/* <Text style={styles.instructionText}>{`Mastery of Prompt Level: ${()}`}</Text> */}
         </View>
       )}
     </View>

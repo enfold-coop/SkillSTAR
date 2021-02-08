@@ -1,10 +1,12 @@
 import date from 'date-and-time';
-import React, { useState } from 'react';
+import React, { useState, FC } from 'react';
 import { LayoutRectangle, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { Card } from 'react-native-paper';
 import { useChainMasteryState } from '../../context/ChainMasteryProvider';
 import CustomColors from '../../styles/Colors';
-import { ChainSessionType } from '../../types/chain/ChainSession';
+import { ChainSession, ChainSessionType } from '../../types/chain/ChainSession';
+import { Session } from '../../types/chain/Session';
+import { StepAttempt } from '../../types/chain/StepAttempt';
 import GraphModal from '../DataGraph/GraphModal';
 import { ChainsHomeGraph } from '../DataGraph/index';
 import { Loading } from '../Loading/Loading';
@@ -18,9 +20,16 @@ import { ProbeAside, TrainingAside } from './index';
  * **
  */
 
-const SessionDataAside = (): JSX.Element => {
+type Props = {
+  currentSession: ChainSession;
+};
+
+const SessionDataAside: FC<Props> = (props): JSX.Element => {
+  //   console.log(props.currentSession);
+
   const [graphContainerDimens, setGraphContainerDimens] = useState<LayoutRectangle>();
   const [modalVis, setModalVis] = useState(false);
+  const [asideData, setAsideData] = useState<StepAttempt>();
   const chainMasteryState = useChainMasteryState();
 
   const handleModal = () => {
