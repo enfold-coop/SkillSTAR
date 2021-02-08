@@ -1,10 +1,11 @@
-import { deepClone } from '../_util/deepClone';
-import { checkMasteryInfo } from '../_util/testing/chainTestUtils';
-import { mockChainQuestionnaire } from '../_util/testing/mockChainQuestionnaire';
-import { mockChainSteps } from '../_util/testing/mockChainSteps';
 import { ChainData } from '../types/chain/ChainData';
 import { ChainSession, ChainSessionType } from '../types/chain/ChainSession';
 import { ChainStepPromptLevel, ChainStepPromptLevelMap, ChainStepStatus } from '../types/chain/StepAttempt';
+import { deepClone } from '../_util/deepClone';
+import { checkMasteryInfo } from '../_util/testing/chainTestUtils';
+import { mockChainQuestionnaire } from '../_util/testing/mockChainQuestionnaire';
+import { makeMockChainSession } from '../_util/testing/mockChainSessions';
+import { mockChainSteps } from '../_util/testing/mockChainSteps';
 import { ChainMastery } from './ChainMastery';
 
 describe('ChainMastery', () => {
@@ -235,5 +236,25 @@ describe('ChainMastery', () => {
     expect(chainMastery.previousFocusStep).toBeTruthy();
   });
 
-  test.todo('should show Training session upon completing Probe session');
+  it('should show Training session upon completing Probe session', () => {
+    const chainDataAllProbes = chainData.clone();
+    chainDataAllProbes.sessions = [
+      makeMockChainSession(1, ChainSessionType.probe),
+      makeMockChainSession(2, ChainSessionType.probe),
+      makeMockChainSession(3, ChainSessionType.probe),
+    ];
+
+    // Save the modified chain data.
+    chainMastery.updateChainData(chainDataAllProbes);
+    expect(chainMastery.draftSession.session_type).toEqual(ChainSessionType.training);
+    expect(chainMastery.draftSession.step_attempts[0].was_focus_step).toBeTruthy();
+
+    // Mark the first step as complete with no challenging behavior.
+    chainMastery.draftSession.step_attempts.forEach((stepAttempt) => {
+      stepAttempt.completed = true;
+      stepAttempt.had_challenging_behavior = false;
+      stepAttempt.prompt_level = ChainStepPromptLevel.full_physical;
+      stepAttempt.was_prompted = true;
+    });
+  });
 });
