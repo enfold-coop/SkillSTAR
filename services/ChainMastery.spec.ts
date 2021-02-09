@@ -1,6 +1,11 @@
 import { ChainData } from '../types/chain/ChainData';
 import { ChainSession, ChainSessionType } from '../types/chain/ChainSession';
-import { ChainStepPromptLevel, ChainStepPromptLevelMap, ChainStepStatus } from '../types/chain/StepAttempt';
+import {
+  ChainStepPromptLevel,
+  ChainStepPromptLevelMap,
+  ChainStepStatus,
+  StepIncompleteReason,
+} from '../types/chain/StepAttempt';
 import { deepClone } from '../_util/deepClone';
 import { checkMasteryInfo } from '../_util/testing/chainTestUtils';
 import { mockChainQuestionnaire } from '../_util/testing/mockChainQuestionnaire';
@@ -256,5 +261,125 @@ describe('ChainMastery', () => {
       stepAttempt.prompt_level = ChainStepPromptLevel.full_physical;
       stepAttempt.was_prompted = true;
     });
+  });
+
+  it('should set Focus Step target prompt levels', () => {
+    const chainDataAllProbes = chainData.clone();
+    chainDataAllProbes.sessions = [
+      makeMockChainSession(1, ChainSessionType.probe),
+      makeMockChainSession(2, ChainSessionType.probe),
+      makeMockChainSession(3, ChainSessionType.probe),
+    ];
+
+    // Save the modified chain data.
+    chainMastery.updateChainData(chainDataAllProbes);
+
+    const numPromptLevels = chainMastery.promptHierarchy.length;
+    const numChainSteps = chainMastery.chainSteps.length;
+    let numPostProbeSessions = 0;
+    // const maxSessions = 5 * numPromptLevels * numChainSteps; // 280
+
+    // Just step through the first 5 chain steps, since 280 sessions is a bit excessive.
+    const maxSessions = 5 * numPromptLevels * 4; // 80
+
+    // For each chain step (in ascending order)...
+    for (let focusStepIndex = 0; focusStepIndex < numChainSteps; focusStepIndex++) {
+      if (numPostProbeSessions > maxSessions) {
+        break;
+      }
+
+      // For each prompt level (in descending order)...
+      for (let promptLevelIndex = numPromptLevels - 1; promptLevelIndex >= 0; promptLevelIndex--) {
+        if (numPostProbeSessions > maxSessions) {
+          break;
+        }
+
+        // 5 step attempts for focus step at current prompt level:
+        //   1. Training --> fail
+        //   2. Training --> complete
+        //   3. Training --> complete
+        //   4. Training --> complete
+        //   5. Probe --> complete
+        for (let promptLevelAttemptIndex = 0; promptLevelAttemptIndex < 5; promptLevelAttemptIndex++) {
+          numPostProbeSessions++;
+          if (numPostProbeSessions > maxSessions) {
+            break;
+          }
+
+          // Every 5th session will be a probe session
+          if (numPostProbeSessions % 5 === 0) {
+            expect(chainMastery.draftSession.session_type).toEqual(ChainSessionType.probe);
+
+            // Populate probe session step attempts
+            chainMastery.draftSession.step_attempts.forEach((stepAttempt, stepAttemptIndex) => {
+              if (stepAttemptIndex <= focusStepIndex) {
+                // Mark focus step and any previous steps as complete
+                stepAttempt.was_prompted = false;
+                stepAttempt.completed = true;
+                stepAttempt.had_challenging_behavior = false;
+              } else {
+                // Mark steps after focus step as incomplete
+                stepAttempt.was_prompted = true;
+                stepAttempt.completed = false;
+                stepAttempt.had_challenging_behavior = true;
+              }
+            });
+          } else {
+            expect(chainMastery.draftSession.session_type).toEqual(ChainSessionType.training);
+
+            // Populate training session step attempts
+            chainMastery.draftSession.step_attempts.forEach((stepAttempt, stepAttemptIndex) => {
+              // Mark steps before the focus step as complete
+              if (stepAttemptIndex < focusStepIndex) {
+                expect(stepAttempt.was_focus_step).toBeFalsy();
+
+                stepAttempt.was_prompted = false;
+                stepAttempt.completed = true;
+                stepAttempt.had_challenging_behavior = false;
+              }
+
+              // This is the focus step. Fail first attempt at this prompt level, then complete next 3.
+              if (stepAttemptIndex === focusStepIndex) {
+                expect(stepAttempt.was_focus_step).toEqual(true);
+                expect(stepAttempt.status).toEqual(ChainStepStatus.focus);
+                expect(stepAttempt.target_prompt_level).toEqual(chainMastery.promptHierarchy[promptLevelIndex].key);
+
+                if (promptLevelAttemptIndex === 0) {
+                  // Fail first attempt at this prompt level
+                  stepAttempt.was_prompted = true;
+                  stepAttempt.completed = false;
+                  stepAttempt.had_challenging_behavior = true;
+                  stepAttempt.prompt_level = ChainStepPromptLevel.full_physical;
+                  stepAttempt.reason_step_incomplete = StepIncompleteReason.challenging_behavior;
+                  stepAttempt.challenging_behaviors = [{ time: new Date() }];
+                } else {
+                  // Mark focus step as complete at the target prompt level
+                  stepAttempt.was_prompted = false;
+                  stepAttempt.completed = true;
+                  stepAttempt.had_challenging_behavior = false;
+                  stepAttempt.prompt_level = stepAttempt.target_prompt_level;
+                }
+              }
+
+              // Mark steps after focus step as incomplete
+              if (stepAttemptIndex > focusStepIndex) {
+                expect(stepAttempt.was_focus_step).toBeFalsy();
+                stepAttempt.was_prompted = true;
+                stepAttempt.completed = false;
+                stepAttempt.had_challenging_behavior = true;
+                stepAttempt.prompt_level = ChainStepPromptLevel.full_physical;
+                stepAttempt.reason_step_incomplete = StepIncompleteReason.challenging_behavior;
+                stepAttempt.challenging_behaviors = [{ time: new Date() }];
+              }
+            });
+          }
+
+          // Add draft session to chain data and update chain mastery instance.
+          const newChainData = chainMastery.chainData.clone();
+          newChainData.upsertSession(chainMastery.draftSession);
+          chainMastery.updateChainData(newChainData);
+        }
+      }
+    }
   });
 });
