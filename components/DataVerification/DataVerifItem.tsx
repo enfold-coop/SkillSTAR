@@ -22,7 +22,16 @@ const getPromptIcon = (level: string): ImageRequireSource => {
 
 interface DataVerifItemProps {
   chainStepId: number;
+  //   stepData: StepAttempt;
 }
+
+/**
+ *
+ * @param props
+ * - chainStepId,
+ * - current draft session step,
+ * -
+ */
 
 const DataVerifItem = (props: DataVerifItemProps): JSX.Element => {
   const { chainStepId } = props;
@@ -32,11 +41,18 @@ const DataVerifItem = (props: DataVerifItemProps): JSX.Element => {
   const [stepAttempt, setStepAttempt] = useState<StepAttempt>();
   const chainMasteryState = useChainMasteryState();
 
+  //   console.log('===========');
+  //   console.log(stepData);
+  //   console.log('===========');
+
   /** Lifecycle calls */
-  // Runs when chainStepId or chainMastery is updated.
+  //   Runs when chainStepId or chainMastery is updated.
   useEffect(() => {
     let isCancelled = false;
 
+    /**
+     * set stepAttempt
+     */
     const _load = async () => {
       if (!isCancelled && chainMasteryState.chainMastery) {
         const stateStepAttempt = chainMasteryState.chainMastery.getDraftSessionStep(chainStepId);
@@ -52,6 +68,11 @@ const DataVerifItem = (props: DataVerifItemProps): JSX.Element => {
   }, [chainStepId, chainMasteryState.chainMastery?.draftSession]);
 
   // Runs when step attempt is updated.
+  /**
+   * from stepAttempt, grab:
+   * - promptLevel
+   * - prompt level icon
+   */
   useEffect(() => {
     let isCancelled = false;
 
