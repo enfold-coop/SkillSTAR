@@ -25,7 +25,7 @@ const DataVerificationScreen = (): JSX.Element => {
       const sessionType = chainMasteryState.chainMastery.draftSession.session_type;
       setSessionTypeLabel(ChainSessionTypeMap[sessionType as string].value as ChainSessionTypeLabels);
     }
-  }, [chainMasteryState.chainMastery]);
+  }, []);
 
   // Post state data to API
   const postData = async () => {
@@ -52,16 +52,16 @@ const DataVerificationScreen = (): JSX.Element => {
       <View style={styles.instructionContainer}>
         <Text style={[scrolling ? styles.smallHeader : styles.screenHeader]}>{`${sessionTypeLabel} Session`}</Text>
         <Text
-          style={[scrolling ? styles.smallInstruction : styles.instruction]}
+          style={[scrolling ? styles.smallInstruction : styles.smallInstruction]}
         >{`Please review the following data.  If you see something that is incorrect, you may change by selecting an alternative option.`}</Text>
       </View>
       <View style={styles.formContainer}>
         <ColumnLabels />
         {chainMasteryState.chainMastery ? (
           <FlatList
-            onScrollBeginDrag={() => {
-              setScrolling(true);
-            }}
+            // onScrollBeginDrag={() => {
+            //   setScrolling(true);
+            // }}
             data={chainMasteryState.chainMastery.draftSession.step_attempts}
             renderItem={(item) => {
               return <DataVerifItem chainStepId={item.item.chain_step_id} />;
