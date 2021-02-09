@@ -32,7 +32,6 @@ const TrainingAside = (): JSX.Element => {
 
   const getFocusStepInstructions = (): string => {
     const stepAttempt = chainMasteryState.chainMastery?.draftFocusStepAttempt;
-    console.log(stepAttempt);
 
     if (stepAttempt && stepAttempt.chain_step) {
       return stepAttempt.chain_step.instruction;

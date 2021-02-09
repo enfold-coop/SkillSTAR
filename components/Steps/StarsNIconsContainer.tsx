@@ -14,10 +14,8 @@ const StarsNIconsContainer = (props: StarsNIconsContainerProps): JSX.Element => 
 
   return (
     <View style={styles.container}>
-      <View style={styles.subContainer}>
-        <StepAttemptStars promptType={'FP'} attemptsWPromptType={prevFocusStepAttempts} />
-        <ChallengingBehavBtn chainStepId={chainStepId} />
-      </View>
+      <StepAttemptStars promptType={'FP'} attemptsWPromptType={prevFocusStepAttempts} />
+      <ChallengingBehavBtn chainStepId={chainStepId} />
     </View>
   );
 };
@@ -27,13 +25,10 @@ export default StarsNIconsContainer;
 const styles = StyleSheet.create({
   container: {
     width: '100%',
-    flexDirection: 'column',
+    flexDirection: 'row',
     justifyContent: 'space-between',
-    alignContent: 'center',
-    margin: 10,
-    marginBottom: 0,
-    padding: 10,
-    paddingBottom: 0,
+    alignItems: 'center',
+    paddingBottom: 10,
   },
   subContainer: {
     width: '100%',
