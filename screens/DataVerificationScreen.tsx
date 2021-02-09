@@ -1,9 +1,7 @@
 import { useNavigation } from '@react-navigation/native';
 import React, { useEffect, useState } from 'react';
 import { FlatList, StyleSheet, Text, View } from 'react-native';
-import * as Animatable from 'react-native-animatable';
 import { Button } from 'react-native-paper';
-import { randomId } from '../_util/RandomId';
 import { DataVerifItem } from '../components/DataVerification';
 import ColumnLabels from '../components/DataVerification/ColumnLabels';
 import AppHeader from '../components/Header/AppHeader';
@@ -15,7 +13,6 @@ import { ChainSessionTypeLabels, ChainSessionTypeMap } from '../types/chain/Chai
 
 const DataVerificationScreen = (): JSX.Element => {
   const navigation = useNavigation();
-  const [scrolling, setScrolling] = useState<boolean>(false);
   const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
   const [sessionTypeLabel, setSessionTypeLabel] = useState<ChainSessionTypeLabels>();
   const [chainMasteryState, chainMasteryDispatch] = useChainMasteryContext();

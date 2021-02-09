@@ -25,26 +25,42 @@ interface DataVerifItemProps {
   stepData: StepAttempt | undefined;
 }
 
-/**
- *
- * @param props
- * - chainStepId,
- * - current draft session step,
- * -
- */
-
 const DataVerifItem = (props: DataVerifItemProps): JSX.Element => {
-  const { stepData } = props;
+  const { stepData, chainStepId } = props;
   const [completed, setCompleted] = useState<boolean>(true);
   const [hadChallengingBehavior, setHadChallengingBehavior] = useState<boolean>(false);
   const [promptIcon, setPromptIcon] = useState<ImageRequireSource>();
   const [stepAttempt, setStepAttempt] = useState<StepAttempt>();
   const chainMasteryState = useChainMasteryState();
 
+  /** Lifecycle calls */
+  //   Runs when chainStepId or chainMastery is updated.
   useEffect(() => {
-    if (stepData != undefined) {
-      setStepAttempt(stepData);
-      if (stepAttempt && !promptIcon) {
+    let isCancelled = false;
+
+    /**
+     * set stepAttempt
+     */
+    const _load = async () => {
+      if (!isCancelled && chainMasteryState.chainMastery) {
+        const stateStepAttempt = chainMasteryState.chainMastery.getDraftSessionStep(chainStepId);
+        setStepAttempt(stateStepAttempt);
+      }
+    };
+
+    _load();
+
+    return () => {
+      isCancelled = true;
+    };
+  }, [chainStepId, chainMasteryState.chainMastery]);
+
+  // Runs when step attempt is updated.
+  useEffect(() => {
+    let isCancelled = false;
+
+    const _load = async () => {
+      if (!isCancelled && stepAttempt && !promptIcon) {
         const promptLevel = stepAttempt.prompt_level || ChainStepPromptLevel.full_physical;
         const _promptLevelIcon = getPromptIcon(promptLevel as string);
         setPromptIcon(_promptLevelIcon);
@@ -57,61 +73,14 @@ const DataVerifItem = (props: DataVerifItemProps): JSX.Element => {
             : false,
         );
       }
-    }
-  });
+    };
 
-  /** Lifecycle calls */
-  //   Runs when chainStepId or chainMastery is updated.
-  //   useEffect(() => {
-  //     let isCancelled = false;
+    _load();
 
-  /**
-   * set stepAttempt
-   */
-  // const _load = async () => {
-  // if (chainMasteryState.chainMastery) {
-  //   const stateStepAttempt = chainMasteryState.chainMastery.getDraftSessionStep(chainStepId);
-  // }
-  // };
-
-  // _load();
-
-  // return () => {
-  //   isCancelled = true;
-  // };
-  //   }, []);
-
-  // Runs when step attempt is updated.
-  /**
-   * from stepAttempt, grab:
-   * - promptLevel
-   * - prompt level icon
-   */
-  //   useEffect(() => {
-  //     let isCancelled = false;
-
-  //     const _load = async () => {
-  //       if (!isCancelled && stepAttempt && !promptIcon) {
-  //         const promptLevel = stepAttempt.prompt_level || ChainStepPromptLevel.full_physical;
-  //         const _promptLevelIcon = getPromptIcon(promptLevel as string);
-  //         setPromptIcon(_promptLevelIcon);
-  //         setCompleted(
-  //           stepAttempt.completed !== undefined && stepAttempt.completed !== null ? stepAttempt.completed : true,
-  //         );
-  //         setHadChallengingBehavior(
-  //           stepAttempt.had_challenging_behavior !== undefined && stepAttempt.had_challenging_behavior !== null
-  //             ? stepAttempt.had_challenging_behavior
-  //             : false,
-  //         );
-  //       }
-  //     };
-
-  //     _load();
-
-  //     return () => {
-  //       isCancelled = true;
-  //     };
-  //   }, []);
+    return () => {
+      isCancelled = true;
+    };
+  }, [stepAttempt]);
   /** END: Lifecycle calls */
 
   const handleSwitch: DataVerificationControlCallback = async (chainStepId, fieldName, fieldValue) => {
