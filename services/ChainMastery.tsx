@@ -1075,19 +1075,8 @@ export class ChainMastery {
    */
   private buildMasteryInfoMap(): MasteryInfoMap {
     const masteryInfoMap: MasteryInfoMap = {};
-    if (this.chainData && this.chainData.sessions && this.chainData.sessions.length === 0) {
-      this.chainSteps.forEach((chainStep) => {
-        masteryInfoMap[`${chainStep.id}`] = this.buildMasteryInfoForChainStep(chainStep.id);
-      });
-      return masteryInfoMap;
-    }
-
-    this.chainData.sessions.forEach((session) => {
-      session.step_attempts.forEach((stepAttempt) => {
-        if (stepAttempt && stepAttempt.chain_step_id !== undefined && stepAttempt.status) {
-          masteryInfoMap[`${stepAttempt.chain_step_id}`] = this.buildMasteryInfoForChainStep(stepAttempt.chain_step_id);
-        }
-      });
+    this.chainSteps.forEach((chainStep) => {
+      masteryInfoMap[`${chainStep.id}`] = this.buildMasteryInfoForChainStep(chainStep.id);
     });
     return masteryInfoMap;
   }
