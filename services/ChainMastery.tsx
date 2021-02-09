@@ -1,8 +1,7 @@
 import {
   NUM_CHALLENGING_ATTEMPTS_FOR_FOCUS,
   NUM_COMPLETE_ATTEMPTS_FOR_MASTERY,
-  NUM_INCOMPLETE_PROBE_ATTEMPTS_FOR_BOOSTER,
-  NUM_INCOMPLETE_TRAINING_ATTEMPTS_FOR_BOOSTER,
+  NUM_INCOMPLETE_ATTEMPTS_FOR_BOOSTER,
   NUM_MIN_PROBE_SESSIONS,
   NUM_PROMPTED_ATTEMPTS_FOR_FOCUS,
 } from '../constants/MasteryAlgorithm';
@@ -335,6 +334,12 @@ export class ChainMastery {
         }
       }
     }
+
+    // If all steps have been mastered, set the session type to probe.
+    if (!focusChainStepId && !boosterChainStepId && this.masteredChainStepIds.length === this.chainSteps.length) {
+      newDraftSession.session_type = ChainSessionType.probe;
+    }
+
     return newDraftSession;
   }
 
@@ -730,10 +735,7 @@ export class ChainMastery {
 
             // If the number of consecutive incomplete sessions is at or over the threshold,
             // the next step should be a booster.
-            if (
-              numConsecutiveIncomplete > NUM_INCOMPLETE_PROBE_ATTEMPTS_FOR_BOOSTER ||
-              numConsecutiveIncomplete > NUM_INCOMPLETE_TRAINING_ATTEMPTS_FOR_BOOSTER
-            ) {
+            if (numConsecutiveIncomplete > NUM_INCOMPLETE_ATTEMPTS_FOR_BOOSTER) {
               // The step after this one will be the first booster step.
               needsBooster = true;
             }
@@ -773,10 +775,7 @@ export class ChainMastery {
 
     // If the number of consecutive incomplete sessions is at or over the threshold,
     // the next step should be a booster.
-    return (
-      numConsecutiveIncomplete >= NUM_INCOMPLETE_PROBE_ATTEMPTS_FOR_BOOSTER ||
-      numConsecutiveIncomplete >= NUM_INCOMPLETE_TRAINING_ATTEMPTS_FOR_BOOSTER
-    );
+    return numConsecutiveIncomplete >= NUM_INCOMPLETE_ATTEMPTS_FOR_BOOSTER;
   }
 
   /**
@@ -1082,19 +1081,8 @@ export class ChainMastery {
    */
   private buildMasteryInfoMap(): MasteryInfoMap {
     const masteryInfoMap: MasteryInfoMap = {};
-    if (this.chainData && this.chainData.sessions && this.chainData.sessions.length === 0) {
-      this.chainSteps.forEach((chainStep) => {
-        masteryInfoMap[`${chainStep.id}`] = this.buildMasteryInfoForChainStep(chainStep.id);
-      });
-      return masteryInfoMap;
-    }
-
-    this.chainData.sessions.forEach((session) => {
-      session.step_attempts.forEach((stepAttempt) => {
-        if (stepAttempt && stepAttempt.chain_step_id !== undefined && stepAttempt.status) {
-          masteryInfoMap[`${stepAttempt.chain_step_id}`] = this.buildMasteryInfoForChainStep(stepAttempt.chain_step_id);
-        }
-      });
+    this.chainSteps.forEach((chainStep) => {
+      masteryInfoMap[`${chainStep.id}`] = this.buildMasteryInfoForChainStep(chainStep.id);
     });
     return masteryInfoMap;
   }

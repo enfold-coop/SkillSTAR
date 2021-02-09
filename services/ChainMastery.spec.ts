@@ -202,9 +202,9 @@ describe('ChainMastery', () => {
     // Save the modified chain data.
     chainMastery.updateChainData(newMockChainData);
 
-    // The first chain step should now be marked as the focus step.
+    // No chain steps should be marked as the focus step.
     expect(chainMastery.nextFocusChainStepId).toBeUndefined();
-    expect(chainMastery.draftSession.session_type).toEqual(ChainSessionType.training);
+    expect(chainMastery.draftSession.session_type).toEqual(ChainSessionType.probe);
     for (const chainStep of mockChainSteps) {
       const draftStepAttempt = chainMastery.draftSession.step_attempts[chainStep.id];
       expect(chainMastery.masteryInfoMap[chainStep.id].stepStatus).toEqual(ChainStepStatus.mastered);
@@ -277,10 +277,9 @@ describe('ChainMastery', () => {
     const numPromptLevels = chainMastery.promptHierarchy.length;
     const numChainSteps = chainMastery.chainSteps.length;
     let numPostProbeSessions = 0;
-    // const maxSessions = 5 * numPromptLevels * numChainSteps; // 280
-
-    // Just step through the first 5 chain steps, since 280 sessions is a bit excessive.
-    const maxSessions = 5 * numPromptLevels * 4; // 80
+    const numFocusChainSessions = 5 * numPromptLevels * numChainSteps;
+    const numPostMasterySessions = 10;
+    const maxSessions = numFocusChainSessions + numPostMasterySessions; // 290
 
     // For each chain step (in ascending order)...
     for (let focusStepIndex = 0; focusStepIndex < numChainSteps; focusStepIndex++) {
@@ -380,6 +379,24 @@ describe('ChainMastery', () => {
           chainMastery.updateChainData(newChainData);
         }
       }
+    }
+
+    // All remaining sessions should be probes.
+    for (let i = 0; i < numPostProbeSessions; i++) {
+      expect(chainMastery.draftSession.session_type).toEqual(ChainSessionType.probe);
+
+      // Populate probe session step attempts
+      chainMastery.draftSession.step_attempts.forEach((stepAttempt) => {
+        // Mark all steps as complete
+        stepAttempt.was_prompted = false;
+        stepAttempt.completed = true;
+        stepAttempt.had_challenging_behavior = false;
+      });
+
+      // Add draft session to chain data and update chain mastery instance.
+      const newChainData = chainMastery.chainData.clone();
+      newChainData.upsertSession(chainMastery.draftSession);
+      chainMastery.updateChainData(newChainData);
     }
   });
 });
