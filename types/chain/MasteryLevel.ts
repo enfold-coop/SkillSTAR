@@ -1,4 +1,4 @@
-import { ChainStepStatus } from './StepAttempt';
+import { ChainStepPromptLevel, ChainStepStatus } from './StepAttempt';
 
 export interface MasteryStatus {
   stepStatus: ChainStepStatus;
@@ -15,6 +15,7 @@ export interface MasteryInfo {
   dateBoosterInitiated?: Date;
   dateBoosterMastered?: Date;
   numAttemptsSince: MasteryInfoNumAttemptsSince;
+  promptLevel?: ChainStepPromptLevel;
 }
 
 export interface MasteryInfoNumAttemptsSince {
