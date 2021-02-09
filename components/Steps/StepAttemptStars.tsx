@@ -21,7 +21,7 @@ const StepAttemptStars = (props: StepAttemptStarsProps): JSX.Element => {
       );
     }
 
-    const numSuccess = attemptsWPromptType.slice(0, 3).filter((completed) => completed).length;
+    const numSuccess = attemptsWPromptType.slice(-3).filter((completed) => completed).length;
     const icons = [];
 
     for (let i = 0; i < 3; i++) {
