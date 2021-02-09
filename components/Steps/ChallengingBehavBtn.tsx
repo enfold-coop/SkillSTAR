@@ -4,6 +4,7 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 import { Badge } from 'react-native-paper';
 import { useChainMasteryState } from '../../context/ChainMasteryProvider';
 import { ImageAssets } from '../../data/images';
+import CustomColors from '../../styles/Colors';
 import { StepAttempt } from '../../types/chain/StepAttempt';
 import { Loading } from '../Loading/Loading';
 
@@ -42,18 +43,20 @@ const ChallengingBehavBtn = (props: ChallengingBehavBtnProps): JSX.Element => {
 
   return stepAttempt ? (
     <View style={styles.container}>
-      <View style={styles.iconContainer}>
-        <TouchableOpacity onPress={onChallengingBehavior}>
-          {/* <SvgUri width={'100%" height="100%'} uri={flagIcon} /> */}
-          <Badge visible={numChallengingBehavior > 0} style={{ marginBottom: -18, marginRight: 0 }}>
-            {numChallengingBehavior}
-          </Badge>
-          <Image source={ImageAssets.flag_icon} style={{ ...styles.img, marginLeft: 0, marginRight: 10 }} />
-        </TouchableOpacity>
-      </View>
-      <Text style={styles.difficultyParagraph}>
-        {`Click on this icon anytime your child is having difficulty or experiencing challenging behavior.`}
-      </Text>
+      {/* <View style={styles.iconContainer}> */}
+      <TouchableOpacity onPress={onChallengingBehavior}>
+        {/* <SvgUri width={'100%" height="100%'} uri={flagIcon} /> */}
+        <Badge
+          adjustsFontSizeToFit={true}
+          allowFontScaling={true}
+          visible={numChallengingBehavior > 0}
+          style={{ marginBottom: -18, marginRight: 0, fontSize: 14, padding: 0 }}
+        >
+          {numChallengingBehavior}
+        </Badge>
+        <Image source={ImageAssets.flag_icon} style={{ ...styles.img, marginLeft: 0, marginRight: 10 }} />
+      </TouchableOpacity>
+      {/* </View> */}
     </View>
   ) : (
     <Loading />
@@ -64,32 +67,23 @@ export default ChallengingBehavBtn;
 
 const styles = StyleSheet.create({
   container: {
-    width: '44%',
-    paddingRight: 20,
-    paddingBottom: 0,
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
-    alignContent: 'flex-end',
-  },
-  iconContainer: {
-    padding: 10,
-    // backgroundColor: CustomColors.uva.grayMedium,
-    borderRadius: 5,
-  },
-  difficultyParagraph: {
-    width: '60%',
-    padding: 0,
-    paddingLeft: 10,
-    fontWeight: '600',
-    alignSelf: 'center',
-    fontSize: 12,
-    fontStyle: 'italic',
+    height: 80,
+    width: 80,
+    // padding: 10,
+    borderColor: CustomColors.uva.grayMedium,
+    borderWidth: 1,
+    borderBottomWidth: 2,
+    borderLeftWidth: 2,
+    borderRadius: 10,
+    justifyContent: 'center',
+    alignContent: 'center',
+    alignItems: 'center',
+    paddingVertical: 20,
   },
   img: {
-    height: 40,
-    width: 40,
+    height: 50,
+    width: 50,
     alignSelf: 'center',
-    // color: CustomColors.uva.magenta75Soft,
     resizeMode: 'contain',
   },
 });
