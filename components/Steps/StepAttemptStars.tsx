@@ -1,4 +1,4 @@
-import { MaterialIcons } from '@expo/vector-icons';
+import { AntDesign } from '@expo/vector-icons';
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import CustomColors from '../../styles/Colors';
@@ -12,29 +12,38 @@ interface StepAttemptStarsProps {
 const StepAttemptStars = (props: StepAttemptStarsProps): JSX.Element => {
   const { promptLevel, attemptsWPromptType } = props;
 
+  const Stars = (): JSX.Element => {
+    if (!(attemptsWPromptType && attemptsWPromptType.length > 0)) {
+      return (
+        <View>
+          <Text>{` `}</Text>
+        </View>
+      );
+    }
+
+    const numSuccess = attemptsWPromptType.slice(0, 3).filter((completed) => completed).length;
+    const icons = [];
+
+    for (let i = 0; i < 3; i++) {
+      const iconName = i < numSuccess - 1 ? 'star' : 'staro';
+      icons.push(
+        <AntDesign
+          name={iconName}
+          size={30}
+          color={CustomColors.uva.mountain}
+          style={styles.star}
+          key={`star-icon-${i}`}
+        />,
+      );
+    }
+
+    return <View style={styles.starContainer}>{icons}</View>;
+  };
+
   return promptLevel && attemptsWPromptType ? (
     <View style={styles.container}>
       <Text style={styles.promptLevelText}>{'Prompt Level: ' + ChainStepPromptLevelMap[promptLevel].shortName}</Text>
-      <View style={styles.starContainer}>
-        {attemptsWPromptType &&
-          attemptsWPromptType?.slice(0, 3).map((completed, i) => {
-            if (completed) {
-              return (
-                <MaterialIcons name={'check'} size={30} color={CustomColors.uva.green} style={styles.star} key={i} />
-              );
-            } else {
-              return (
-                <MaterialIcons
-                  name={'close'}
-                  size={30}
-                  color={CustomColors.uva.redEmergency}
-                  style={styles.star}
-                  key={i}
-                />
-              );
-            }
-          })}
-      </View>
+      <Stars />
     </View>
   ) : (
     <View>
