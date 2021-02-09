@@ -6,7 +6,7 @@ import { makeMockStepAttempt } from './mockStepAttempt';
 export const makeMockChainSession = (chainSessionId: number, chainSessionType: ChainSessionType): ChainSession => {
   const day = chainSessionId.toString().padStart(2, '0');
   const dateString = `2021-01-${day}T00:00:00.000000+00:00`;
-  console.log('dateString', dateString);
+
   return {
     id: chainSessionId,
     last_updated: new Date(dateString),
