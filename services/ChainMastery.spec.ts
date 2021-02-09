@@ -280,7 +280,7 @@ describe('ChainMastery', () => {
     // const maxSessions = 5 * numPromptLevels * numChainSteps; // 280
 
     // Just step through the first 5 chain steps, since 280 sessions is a bit excessive.
-    const maxSessions = 5 * numPromptLevels * 4; // 80
+    const maxSessions = 5 * numPromptLevels * 5; // 80
 
     // For each chain step (in ascending order)...
     for (let focusStepIndex = 0; focusStepIndex < numChainSteps; focusStepIndex++) {
@@ -301,6 +301,7 @@ describe('ChainMastery', () => {
         //   4. Training --> complete
         //   5. Probe --> complete
         for (let promptLevelAttemptIndex = 0; promptLevelAttemptIndex < 5; promptLevelAttemptIndex++) {
+          const timeBeforeUpdate = new Date().getTime();
           numPostProbeSessions++;
           if (numPostProbeSessions > maxSessions) {
             break;
@@ -378,6 +379,9 @@ describe('ChainMastery', () => {
           const newChainData = chainMastery.chainData.clone();
           newChainData.upsertSession(chainMastery.draftSession);
           chainMastery.updateChainData(newChainData);
+          const timeAfterUpdate = new Date().getTime();
+          const timeToUpdate = timeAfterUpdate - timeBeforeUpdate;
+          expect(timeToUpdate).toBeLessThan(1000);
         }
       }
     }
