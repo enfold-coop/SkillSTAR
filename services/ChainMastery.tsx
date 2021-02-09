@@ -334,6 +334,12 @@ export class ChainMastery {
         }
       }
     }
+
+    // If all steps have been mastered, set the session type to probe.
+    if (!focusChainStepId && !boosterChainStepId && this.masteredChainStepIds.length === this.chainSteps.length) {
+      newDraftSession.session_type = ChainSessionType.probe;
+    }
+
     return newDraftSession;
   }
 
