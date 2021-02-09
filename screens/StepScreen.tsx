@@ -81,7 +81,7 @@ const StepScreen = (): JSX.Element => {
 
   const getPrevCompletedFocusSteps = (id: number) => {
     if (chainMasteryState.chainMastery) {
-      setPastFocusStepAttempts(chainMasteryState.chainMastery?.getPreviousFocusStepAttempts(id));
+      setPastFocusStepAttempts(chainMasteryState.chainMastery.getPreviousFocusStepAttempts(id));
     }
   };
 

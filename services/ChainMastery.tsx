@@ -79,11 +79,7 @@ export class ChainMastery {
   getPreviousFocusStepAttempts(chainStepId: number): boolean[] {
     const focusStepAttempts = this.getFocusStepAttemptsForChainStep(chainStepId);
     return focusStepAttempts.map((stepAttempt) => {
-      return !!(
-        stepAttempt.status === ChainStepStatus.focus &&
-        stepAttempt.completed &&
-        this.promptLevelIsBetterThanTarget(stepAttempt.prompt_level, stepAttempt.target_prompt_level)
-      );
+      return this.stepIsComplete(stepAttempt);
     });
   }
 
@@ -1165,10 +1161,10 @@ export class ChainMastery {
   }
 
   /**
-   * Returns last actual prompt level used in a focus step for the given chain step, or undefined if none is found.
+   * Returns last actual prompt level used in a focus step for the given chain step, or Full Physical if none is found.
    * @param chainStepId
    */
-  getPromptLevelForChainStep(chainStepId: number): ChainStepPromptLevel | undefined {
+  getPromptLevelForChainStep(chainStepId: number): ChainStepPromptLevel {
     const focusSteps = this.getFocusStepAttemptsForChainStep(chainStepId);
 
     if (focusSteps && focusSteps.length > 0) {
@@ -1178,5 +1174,7 @@ export class ChainMastery {
         return actualLevel;
       }
     }
+
+    return ChainStepPromptLevel.full_physical;
   }
 }
