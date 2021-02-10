@@ -62,12 +62,7 @@ const DataVerificationScreen = (): JSX.Element => {
           <FlatList
             data={chainMasteryState.chainMastery.draftSession.step_attempts}
             renderItem={(item) => {
-              return (
-                <DataVerifItem
-                  chainStepId={item.item.chain_step_id}
-                  stepData={getDraftStepData(item.item.chain_step_id)}
-                />
-              );
+              return <DataVerifItem chainStepId={item.item.chain_step_id} />;
             }}
             keyExtractor={(item) => item.chain_step_id.toString()}
             maxToRenderPerBatch={chainMasteryState.chainMastery.chainSteps.length}

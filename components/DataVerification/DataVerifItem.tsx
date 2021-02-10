@@ -22,11 +22,10 @@ const getPromptIcon = (level: string): ImageRequireSource => {
 
 interface DataVerifItemProps {
   chainStepId: number;
-  stepData: StepAttempt | undefined;
 }
 
 const DataVerifItem = (props: DataVerifItemProps): JSX.Element => {
-  const { stepData, chainStepId } = props;
+  const { chainStepId } = props;
   const [completed, setCompleted] = useState<boolean>(true);
   const [hadChallengingBehavior, setHadChallengingBehavior] = useState<boolean>(false);
   const [promptIcon, setPromptIcon] = useState<ImageRequireSource>();
