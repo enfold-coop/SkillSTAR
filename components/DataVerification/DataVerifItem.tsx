@@ -33,10 +33,13 @@ const DataVerifItem = (props: DataVerifItemProps): JSX.Element => {
   const chainMasteryState = useChainMasteryState();
 
   /** Lifecycle calls */
-  // Runs when chainStepId or chainMastery is updated.
+  //   Runs when chainStepId or chainMastery is updated.
   useEffect(() => {
     let isCancelled = false;
 
+    /**
+     * set stepAttempt
+     */
     const _load = async () => {
       if (!isCancelled && chainMasteryState.chainMastery) {
         const stateStepAttempt = chainMasteryState.chainMastery.getDraftSessionStep(chainStepId);
@@ -49,7 +52,7 @@ const DataVerifItem = (props: DataVerifItemProps): JSX.Element => {
     return () => {
       isCancelled = true;
     };
-  }, [chainStepId, chainMasteryState.chainMastery?.draftSession]);
+  }, [chainStepId, chainMasteryState.chainMastery]);
 
   // Runs when step attempt is updated.
   useEffect(() => {
