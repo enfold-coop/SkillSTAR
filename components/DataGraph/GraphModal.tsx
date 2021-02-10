@@ -13,6 +13,7 @@ const GraphModal = (props: GraphModalProps): JSX.Element => {
   const { visible, handleVis } = props;
   const [graphDimens, setGraphDimens] = useState<LayoutRectangle>();
   const [vis, setVisible] = useState(false);
+  console.log('MODAL');
 
   const handleIsVis = () => {
     setVisible(!vis);

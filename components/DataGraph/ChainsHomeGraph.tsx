@@ -2,14 +2,20 @@ import React, { useEffect, useState } from 'react';
 import { LayoutRectangle, StyleSheet, View } from 'react-native';
 import Plotly from 'react-native-plotly';
 import CustomColors from '../../styles/Colors';
+import { ChainSessionType } from '../../types/chain/ChainSession';
+import { useChainMasteryState } from '../../context/ChainMasteryProvider';
 
 interface ChainsHomeGraphProps {
   dimensions?: LayoutRectangle;
+  xAxisTitle: string;
+  yAxisTitle: string;
 }
 
 const ChainsHomeGraph = (props: ChainsHomeGraphProps): JSX.Element => {
   const { dimensions } = props;
   const [dimens, setDimens] = useState<LayoutRectangle>();
+  const chainMasteryState = useChainMasteryState();
+  console.log(chainMasteryState.chainMastery?.chainData);
 
   useEffect(() => {
     if (dimensions && !dimens) {
@@ -58,13 +64,19 @@ const ChainsHomeGraph = (props: ChainsHomeGraphProps): JSX.Element => {
       pad: 0,
     },
     showlegend: false,
-    xAxis: {
+    xaxis: {
+      title: '',
       ticks: '',
       ticktext: '',
+      tickformat: '',
+      showticklabels: false,
     },
-    yAxis: {
+    yaxis: {
       ticks: '',
       ticktext: '',
+      title: '',
+      tickformat: '',
+      showticklabels: false,
     },
   };
 

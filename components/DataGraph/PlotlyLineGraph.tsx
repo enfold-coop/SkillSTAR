@@ -93,6 +93,12 @@ const PlotlyLineGraph = (props: PlotlyLineGraphProps): JSX.Element => {
     height: thisHeight,
     width: thisWidth,
     plot_bgcolor: CustomColors.uva.sky,
+    xaxis: {
+      title: 'Session Number',
+    },
+    yaxis: {
+      title: 'Mastery (%)',
+    },
   };
 
   const setDimensions = () => {
