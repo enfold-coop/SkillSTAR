@@ -36,6 +36,24 @@ const PlotlyLineGraph = (props: PlotlyLineGraphProps): JSX.Element => {
   const [chainData, setChainData] = useState<ChainData>();
   const chainMasteryState = useChainMasteryState();
 
+  /**
+   * TODO
+   * ====
+   * 1. Calculate percentage of mastery/session:
+   * -- % of steps completed w/out prompting
+   *
+   * 2. Calculate percentage of CB / session:
+   * -- % of steps completed w/ CB / session
+   */
+
+  /**
+   * TODO:
+   * -- create 3 arrays:
+   * 1. Probe session: [{sessionDate:??/??/????, masteryPercent: ??%}, ...]
+   * 2. Training session: [{sessionDate:??/??/????, masteryPercent: ??%}, ...]
+   * 3. Challenging behavior occurence: [{sessionDate:??/??/????, CBPercent: ??%}, ...]
+   */
+
   useEffect(() => {
     let isCancelled = false;
 
@@ -64,7 +82,7 @@ const PlotlyLineGraph = (props: PlotlyLineGraphProps): JSX.Element => {
   const data = [
     {
       x: [1, 2, 3, 4, 5],
-      y: [1, 2, 3, 4, 5],
+      y: [5, 4, 4, 4, 4],
       mode: 'markers',
       name: 'Probe Session',
       marker: {
@@ -78,7 +96,7 @@ const PlotlyLineGraph = (props: PlotlyLineGraphProps): JSX.Element => {
     },
     {
       x: [1, 2, 3, 4, 5],
-      y: [1, 2, 3, 4, 5],
+      y: [5, 2, 5, 1, 2],
       mode: 'lines',
       name: 'Training Session',
     },
