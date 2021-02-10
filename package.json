@@ -51,6 +51,7 @@
         "expo-video-player": "^1.6.1",
         "expo-web-browser": "~8.6.0",
         "jsonfile": "^6.1.0",
+        "lodash.clonedeep": "^4.5.0",
         "react": "16.13.1",
         "react-dom": "16.13.1",
         "react-native": "^0.63.4",

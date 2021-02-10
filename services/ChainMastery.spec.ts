@@ -264,15 +264,35 @@ describe('ChainMastery', () => {
   });
 
   it('should set Focus Step target prompt levels', () => {
+    // Clear out all sessions.
     const chainDataAllProbes = chainData.clone();
-    chainDataAllProbes.sessions = [
-      makeMockChainSession(1, ChainSessionType.probe),
-      makeMockChainSession(2, ChainSessionType.probe),
-      makeMockChainSession(3, ChainSessionType.probe),
-    ];
-
-    // Save the modified chain data.
+    chainDataAllProbes.sessions = [];
     chainMastery.updateChainData(chainDataAllProbes);
+
+    /* INITIAL PROBE SESSIONS */
+
+    // First 3 sessions should be failing probes.
+    for (let i = 0; i < 3; i++) {
+      expect(chainMastery.draftSession.session_type).toEqual(ChainSessionType.probe);
+
+      // Populate probe session step attempts
+      chainMastery.draftSession.step_attempts.forEach((stepAttempt) => {
+        expect(stepAttempt.was_focus_step).toBeFalsy();
+        expect(stepAttempt.session_type).toEqual(ChainSessionType.probe);
+        expect(stepAttempt.status).toEqual(ChainStepStatus.not_yet_started);
+        expect(stepAttempt.target_prompt_level).toBeFalsy();
+
+        // Mark all steps as incomplete
+        stepAttempt.was_prompted = true;
+        stepAttempt.completed = false;
+        stepAttempt.had_challenging_behavior = true;
+      });
+
+      // Add draft session to chain data and update chain mastery instance.
+      chainMastery.saveDraftSession();
+    }
+
+    /* FOCUS STEP MASTERY SESSIONS */
 
     const numPromptLevels = chainMastery.promptHierarchy.length;
     const numChainSteps = chainMastery.chainSteps.length;
@@ -374,9 +394,7 @@ describe('ChainMastery', () => {
           }
 
           // Add draft session to chain data and update chain mastery instance.
-          const newChainData = chainMastery.chainData.clone();
-          newChainData.upsertSession(chainMastery.draftSession);
-          chainMastery.updateChainData(newChainData);
+          chainMastery.saveDraftSession();
         }
       }
     }
@@ -387,6 +405,11 @@ describe('ChainMastery', () => {
 
       // Populate probe session step attempts
       chainMastery.draftSession.step_attempts.forEach((stepAttempt) => {
+        expect(stepAttempt.was_focus_step).toBeFalsy();
+        expect(stepAttempt.session_type).toEqual(ChainSessionType.probe);
+        expect(stepAttempt.status).toEqual(ChainStepStatus.mastered);
+        expect(stepAttempt.target_prompt_level).toBeFalsy();
+
         // Mark all steps as complete
         stepAttempt.was_prompted = false;
         stepAttempt.completed = true;
@@ -394,9 +417,7 @@ describe('ChainMastery', () => {
       });
 
       // Add draft session to chain data and update chain mastery instance.
-      const newChainData = chainMastery.chainData.clone();
-      newChainData.upsertSession(chainMastery.draftSession);
-      chainMastery.updateChainData(newChainData);
+      chainMastery.saveDraftSession();
     }
   });
 });

@@ -1,4 +1,4 @@
-import { parse, stringify } from 'telejson';
+const lodash = { cloneDeep: require('lodash.clonedeep') };
 
 /**
  * Returns a deep clone of the given object. However, it does NOT clone class prototypes.
@@ -7,5 +7,5 @@ import { parse, stringify } from 'telejson';
  * @param original: The object to clone.
  */
 export const deepClone = <T>(original: T): T => {
-  return parse(stringify(original)) as T;
+  return lodash.cloneDeep(original) as T;
 };

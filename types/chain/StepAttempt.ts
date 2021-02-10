@@ -46,6 +46,8 @@ export interface ChainStepPromptLevelMapItem {
   order: number;
   key: ChainStepPromptLevel;
   value: ChainStepPromptLevelLabels;
+  shortName: string;
+  abbreviation: string;
 }
 
 export const ChainStepPromptLevelMap: { [key: string]: ChainStepPromptLevelMapItem } = {
@@ -53,21 +55,29 @@ export const ChainStepPromptLevelMap: { [key: string]: ChainStepPromptLevelMapIt
     order: 0,
     key: ChainStepPromptLevel.none,
     value: ChainStepPromptLevelLabels.none,
+    shortName: 'Independent',
+    abbreviation: 'I',
   },
   shadow: {
     order: 1,
     key: ChainStepPromptLevel.shadow,
     value: ChainStepPromptLevelLabels.shadow,
+    shortName: 'Shadow',
+    abbreviation: 'S',
   },
   partial_physical: {
     order: 2,
     key: ChainStepPromptLevel.partial_physical,
     value: ChainStepPromptLevelLabels.partial_physical,
+    shortName: 'Partial Physical',
+    abbreviation: 'PP',
   },
   full_physical: {
     order: 3,
     key: ChainStepPromptLevel.full_physical,
     value: ChainStepPromptLevelLabels.full_physical,
+    shortName: 'Full Physical',
+    abbreviation: 'FP',
   },
 };
 

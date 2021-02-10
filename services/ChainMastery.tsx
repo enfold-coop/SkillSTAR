@@ -79,11 +79,7 @@ export class ChainMastery {
   getPreviousFocusStepAttempts(chainStepId: number): boolean[] {
     const focusStepAttempts = this.getFocusStepAttemptsForChainStep(chainStepId);
     return focusStepAttempts.map((stepAttempt) => {
-      return !!(
-        stepAttempt.status === ChainStepStatus.focus &&
-        stepAttempt.completed &&
-        this.promptLevelIsBetterThanTarget(stepAttempt.prompt_level, stepAttempt.target_prompt_level)
-      );
+      return this.stepIsComplete(stepAttempt);
     });
   }
 
@@ -116,8 +112,6 @@ export class ChainMastery {
     if (this.unmasteredChainStepIds.length > 0) {
       return this.unmasteredChainStepIds[0];
     }
-
-    console.log('All chain steps have been mastered!');
   }
 
   /**
@@ -338,6 +332,7 @@ export class ChainMastery {
     // If all steps have been mastered, set the session type to probe.
     if (!focusChainStepId && !boosterChainStepId && this.masteredChainStepIds.length === this.chainSteps.length) {
       newDraftSession.session_type = ChainSessionType.probe;
+      newDraftSession.step_attempts.forEach((stepAttempt) => (stepAttempt.session_type = ChainSessionType.probe));
     }
 
     return newDraftSession;
@@ -1165,10 +1160,10 @@ export class ChainMastery {
   }
 
   /**
-   * Returns last actual prompt level used in a focus step for the given chain step, or undefined if none is found.
+   * Returns last actual prompt level used in a focus step for the given chain step, or Full Physical if none is found.
    * @param chainStepId
    */
-  getPromptLevelForChainStep(chainStepId: number): ChainStepPromptLevel | undefined {
+  getPromptLevelForChainStep(chainStepId: number): ChainStepPromptLevel {
     const focusSteps = this.getFocusStepAttemptsForChainStep(chainStepId);
 
     if (focusSteps && focusSteps.length > 0) {
@@ -1178,5 +1173,17 @@ export class ChainMastery {
         return actualLevel;
       }
     }
+
+    return ChainStepPromptLevel.full_physical;
+  }
+
+  /**
+   * Adds the current draft session to the chain data, updates the chain data,
+   * updates the mastery info, and generates a new draft session.
+   */
+  saveDraftSession(): void {
+    const newChainData = this.chainData.clone();
+    newChainData.upsertSession(this.draftSession);
+    this.updateChainData(newChainData);
   }
 }

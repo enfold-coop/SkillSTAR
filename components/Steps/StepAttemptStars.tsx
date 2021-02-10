@@ -2,28 +2,52 @@ import { AntDesign } from '@expo/vector-icons';
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import CustomColors from '../../styles/Colors';
-import { StepAttempt } from '../../types/chain/StepAttempt';
+import { ChainStepPromptLevel, ChainStepPromptLevelMap } from '../../types/chain/StepAttempt';
 
 interface StepAttemptStarsProps {
-  promptType: string;
+  promptLevel?: ChainStepPromptLevel;
   attemptsWPromptType: boolean[] | undefined;
 }
 
 const StepAttemptStars = (props: StepAttemptStarsProps): JSX.Element => {
-  const { attemptsWPromptType } = props;
-  return (
+  const { promptLevel, attemptsWPromptType } = props;
+
+  const Stars = (): JSX.Element => {
+    if (!(attemptsWPromptType && attemptsWPromptType.length > 0)) {
+      return (
+        <View>
+          <Text>{` `}</Text>
+        </View>
+      );
+    }
+
+    const numSuccess = attemptsWPromptType.slice(-3).filter((completed) => completed).length;
+    const icons = [];
+
+    for (let i = 0; i < 3; i++) {
+      const iconName = i < numSuccess - 1 ? 'star' : 'staro';
+      icons.push(
+        <AntDesign
+          name={iconName}
+          size={30}
+          color={CustomColors.uva.mountain}
+          style={styles.star}
+          key={`star-icon-${i}`}
+        />,
+      );
+    }
+
+    return <View style={styles.starContainer}>{icons}</View>;
+  };
+
+  return promptLevel && attemptsWPromptType ? (
     <View style={styles.container}>
-      <Text style={styles.promptTypeText}>{props.promptType + ':'}</Text>
-      <View style={styles.starContainer}>
-        {attemptsWPromptType &&
-          attemptsWPromptType?.slice(0, 3).map((e, i) => {
-            if (e) {
-              return <AntDesign name={'star'} size={50} color={CustomColors.uva.orange} style={styles.star} key={i} />;
-            } else {
-              return <AntDesign name={'staro'} size={50} color={CustomColors.uva.orange} style={styles.star} key={i} />;
-            }
-          })}
-      </View>
+      <Text style={styles.promptLevelText}>{'Prompt Level: ' + ChainStepPromptLevelMap[promptLevel].shortName}</Text>
+      <Stars />
+    </View>
+  ) : (
+    <View>
+      <Text>{` `}</Text>
     </View>
   );
 };
@@ -33,17 +57,19 @@ export default StepAttemptStars;
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
-    width: '33%',
+    alignContent: 'center',
+    justifyContent: 'flex-start',
   },
-  promptTypeText: {
-    alignSelf: 'center',
+  promptLevelText: {
     paddingRight: 20,
-    fontSize: 30,
-    fontWeight: '800',
+    fontSize: 24,
+    fontWeight: 'bold',
     color: '#333',
   },
   starContainer: {
     flexDirection: 'row',
+    alignContent: 'center',
+    justifyContent: 'flex-start',
   },
   star: {},
 });
