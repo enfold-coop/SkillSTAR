@@ -66,4 +66,24 @@ describe('ChainData', () => {
       }
     });
   });
+
+  it('should clone chain data', () => {
+    const numStepAttemptsBefore = chainData.sessions.reduce((totalNumAttempts, session) => {
+      return totalNumAttempts + session.step_attempts.length;
+    }, 0);
+
+    const clonedChainData = chainData.clone();
+
+    // Should not be the same object.
+    expect(clonedChainData === chainData).toEqual(false);
+
+    // Should have all the same data, though.
+    expect(clonedChainData).toEqual(chainData);
+
+    const numStepAttemptsAfter = chainData.sessions.reduce((totalNumAttempts, session) => {
+      return totalNumAttempts + session.step_attempts.length;
+    }, 0);
+
+    expect(numStepAttemptsAfter).toEqual(numStepAttemptsBefore);
+  });
 });
