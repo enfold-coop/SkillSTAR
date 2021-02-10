@@ -4,18 +4,16 @@ import Plotly from 'react-native-plotly';
 import CustomColors from '../../styles/Colors';
 import { ChainSessionType } from '../../types/chain/ChainSession';
 import { useChainMasteryState } from '../../context/ChainMasteryProvider';
+import { ChainData } from '../../types/chain/ChainData';
 
 interface ChainsHomeGraphProps {
   dimensions?: LayoutRectangle;
-  xAxisTitle: string;
-  yAxisTitle: string;
+  chainData: ChainData;
 }
 
 const ChainsHomeGraph = (props: ChainsHomeGraphProps): JSX.Element => {
-  const { dimensions } = props;
+  const { dimensions, chainData } = props;
   const [dimens, setDimens] = useState<LayoutRectangle>();
-  const chainMasteryState = useChainMasteryState();
-  console.log(chainMasteryState.chainMastery?.chainData);
 
   useEffect(() => {
     if (dimensions && !dimens) {

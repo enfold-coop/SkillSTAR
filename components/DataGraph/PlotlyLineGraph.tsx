@@ -6,6 +6,7 @@ import { ApiService } from '../../services/ApiService';
 import CustomColors from '../../styles/Colors';
 import { ChainSession } from '../../types/chain/ChainSession';
 import { ChainData } from '../../types/chain/ChainData';
+import { useChainMasteryState } from '../../context/ChainMasteryProvider';
 
 interface PlotlyGraphDimensions {
   width: number;
@@ -33,6 +34,7 @@ const PlotlyLineGraph = (props: PlotlyLineGraphProps): JSX.Element => {
   const [probeSessions, setProbeSessions] = useState<ChainSession[]>([]);
   const [trainingSessions, setTrainingSessions] = useState<ChainSession[]>([]);
   const [chainData, setChainData] = useState<ChainData>();
+  const chainMasteryState = useChainMasteryState();
 
   useEffect(() => {
     let isCancelled = false;

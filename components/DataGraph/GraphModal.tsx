@@ -2,18 +2,20 @@ import React, { useEffect, useState } from 'react';
 import { LayoutRectangle, Modal, StyleSheet, View } from 'react-native';
 import { Button } from 'react-native-paper';
 import CustomColors from '../../styles/Colors';
+import { ChainData } from '../../types/chain/ChainData';
 import PlotlyLineGraph from './PlotlyLineGraph';
 
 interface GraphModalProps {
   visible: boolean;
   handleVis: () => void;
+  chainData: ChainData;
 }
 
 const GraphModal = (props: GraphModalProps): JSX.Element => {
-  const { visible, handleVis } = props;
+  const { visible, handleVis, chainData } = props;
+
   const [graphDimens, setGraphDimens] = useState<LayoutRectangle>();
   const [vis, setVisible] = useState(false);
-  console.log('MODAL');
 
   const handleIsVis = () => {
     setVisible(!vis);

@@ -40,7 +40,7 @@ const SessionDataAside: FC<Props> = (props): JSX.Element => {
     chainMasteryState.chainMastery.draftSession &&
     chainMasteryState.chainMastery.draftSession.date ? (
     <View style={styles.container}>
-      <GraphModal visible={modalVis} handleVis={handleModal} />
+      <GraphModal visible={modalVis} handleVis={handleModal} chainData={chainMasteryState.chainMastery.chainData} />
       <View>
         <View>
           <Card>
@@ -69,7 +69,7 @@ const SessionDataAside: FC<Props> = (props): JSX.Element => {
           }}
         >
           <Card>
-            <ChainsHomeGraph dimensions={graphContainerDimens} />
+            <ChainsHomeGraph dimensions={graphContainerDimens} chainData={chainMasteryState.chainMastery.chainData} />
             <TouchableOpacity
               onPress={() => {
                 setModalVis(true);
