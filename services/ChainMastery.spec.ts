@@ -349,7 +349,13 @@ describe('ChainMastery', () => {
             // Populate training session step attempts
             chainMastery.draftSession.step_attempts.forEach((stepAttempt, stepAttemptIndex) => {
               // Mark steps before the focus step as complete
+              const stepMasteryInfo = chainMastery.masteryInfoMap[stepAttempt.chain_step_id];
+
               if (stepAttemptIndex < focusStepIndex) {
+                expect(stepMasteryInfo.dateMastered).toBeTruthy();
+                expect(stepMasteryInfo.promptLevel).toEqual(ChainStepPromptLevel.none);
+                expect(stepMasteryInfo.stepStatus).toEqual(ChainStepStatus.mastered);
+                expect(stepAttempt.status).toEqual(ChainStepStatus.mastered);
                 expect(stepAttempt.was_focus_step).toBeFalsy();
 
                 stepAttempt.was_prompted = false;
@@ -359,9 +365,16 @@ describe('ChainMastery', () => {
 
               // This is the focus step. Fail first attempt at this prompt level, then complete next 3.
               if (stepAttemptIndex === focusStepIndex) {
+                const expectedPromptLevel = chainMastery.promptHierarchy[promptLevelIndex].key;
                 expect(stepAttempt.was_focus_step).toEqual(true);
+                expect(stepMasteryInfo.dateMastered).toBeFalsy();
+
+                // TODO: Mastery info should stay in sync with draft session
+                // expect(stepMasteryInfo.promptLevel).toEqual(expectedPromptLevel);
+                // expect(stepMasteryInfo.stepStatus).toEqual(ChainStepStatus.focus);
+
                 expect(stepAttempt.status).toEqual(ChainStepStatus.focus);
-                expect(stepAttempt.target_prompt_level).toEqual(chainMastery.promptHierarchy[promptLevelIndex].key);
+                expect(stepAttempt.target_prompt_level).toEqual(expectedPromptLevel);
 
                 if (promptLevelAttemptIndex === 0) {
                   // Fail first attempt at this prompt level
@@ -373,6 +386,7 @@ describe('ChainMastery', () => {
                   stepAttempt.challenging_behaviors = [{ time: new Date() }];
                 } else {
                   // Mark focus step as complete at the target prompt level
+                  expect(stepMasteryInfo.numAttemptsSince.lastFailedWithFocus).toEqual(promptLevelAttemptIndex - 1);
                   stepAttempt.was_prompted = false;
                   stepAttempt.completed = true;
                   stepAttempt.had_challenging_behavior = false;

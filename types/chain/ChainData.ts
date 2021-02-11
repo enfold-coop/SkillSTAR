@@ -25,7 +25,7 @@ export class ChainData implements SkillstarChain {
     this.participant_id = skillstarChain.participant_id;
     this.user_id = skillstarChain.user_id;
     this.time_on_task_ms = skillstarChain.time_on_task_ms;
-    this.sessions = this.sortSessions(skillstarChain);
+    this.sessions = this.sortSessionsInChain(skillstarChain);
   }
 
   get numSessions(): number {
@@ -61,10 +61,12 @@ export class ChainData implements SkillstarChain {
    */
   updateSession(sessionId: number, newSession: ChainSession): void {
     this.sessions.forEach((session, i) => {
-      if (session.id === sessionId) {
+      if (session.id !== undefined && session.id === sessionId) {
         this.sessions[i] = newSession;
       }
     });
+
+    this.sortSessions();
   }
 
   /**
@@ -77,6 +79,8 @@ export class ChainData implements SkillstarChain {
     } else {
       this.sessions.push(newSession);
     }
+
+    this.sortSessions();
   }
 
   /**
@@ -122,30 +126,57 @@ export class ChainData implements SkillstarChain {
    * @param skillstarChain
    * @private
    */
-  private sortSessions(skillstarChain: SkillstarChain): ChainSession[] {
-    return (
-      skillstarChain.sessions
-        // Make sure all the dates are actually dates
-        .map((s) => {
-          s.date = s.date ? new Date(s.date) : new Date();
+  private sortSessionsInChain(skillstarChain: SkillstarChain): ChainSession[] {
+    return this.sortSessionDates(this.convertSessionDates(skillstarChain.sessions));
+  }
 
-          // Convert all step attempt dates to strings
-          s.step_attempts = s.step_attempts.map((sa) => {
-            sa.date = sa.date ? new Date(sa.date) : new Date();
-            sa.last_updated = sa.last_updated ? new Date(sa.last_updated) : new Date();
-            return sa;
-          });
-          return s;
-        })
-        .sort((a, b) => {
-          if (a && b && a.date && b.date) {
-            a.date = new Date(a.date);
-            b.date = new Date(b.date);
-            return a.date.getTime() - b.date.getTime();
-          } else {
-            return 0;
-          }
-        })
-    );
+  /**
+   * Given a SkillstarChain, returns a list of sessions, sorted by date in ascending order (from past to present).
+   * @param skillstarChain
+   * @private
+   */
+  private sortSessions() {
+    this.sessions = this.sortSessionDates(this.convertSessionDates(this.sessions));
+  }
+
+  /**
+   * Returns the given list of sessions, with all dates converted to Date instances.
+   * @param sessions
+   */
+  private convertSessionDates(sessions: ChainSession[]): ChainSession[] {
+    // Make sure all the dates are actually dates
+    return sessions.map((s) => {
+      if (!s.date) {
+        throw new Error('session date is not populated.');
+      } else {
+        s.date = new Date(s.date);
+      }
+
+      // Convert all step attempt dates to strings
+      s.step_attempts = s.step_attempts.map((sa) => {
+        if (!sa.date) {
+          throw new Error('step attempt date is not populated.');
+        } else {
+          sa.date = new Date(sa.date);
+        }
+        sa.last_updated = sa.last_updated ? new Date(sa.last_updated) : new Date();
+        return sa;
+      });
+      return s;
+    });
+  }
+
+  /**
+   * Returns the given list of sessions, with all sessions sorted by date.
+   * @param sessions
+   */
+  private sortSessionDates(sessions: ChainSession[]): ChainSession[] {
+    return sessions.sort((a, b) => {
+      if (a && b && a.date && b.date) {
+        return a.date.getTime() - b.date.getTime();
+      } else {
+        return 0;
+      }
+    });
   }
 }

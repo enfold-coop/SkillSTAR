@@ -66,10 +66,10 @@ const PrepareMaterialsScreen = (): JSX.Element => {
             style={styles.nextBtn}
             labelStyle={{ fontSize: 24, paddingVertical: 5 }}
             onPress={() => {
-              if ((chainSessionType as string) === 'training') {
-                navigation.navigate('StepScreen');
-              } else {
+              if (chainSessionType === ChainSessionType.probe) {
                 navigation.navigate('BaselineAssessmentScreen');
+              } else {
+                navigation.navigate('StepScreen');
               }
             }}
           >{`Next`}</Button>
