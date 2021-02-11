@@ -1,5 +1,5 @@
 import date from 'date-and-time';
-import React, { useState, FC } from 'react';
+import React, { useState, FC, useEffect } from 'react';
 import { LayoutRectangle, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { Card } from 'react-native-paper';
 import { useChainMasteryState } from '../../context/ChainMasteryProvider';
@@ -11,6 +11,10 @@ import GraphModal from '../DataGraph/GraphModal';
 import { ChainsHomeGraph } from '../DataGraph/index';
 import { Loading } from '../Loading/Loading';
 import { ProbeAside, TrainingAside } from './index';
+import { FilterSessionsByType } from '../../_util/FilterSessionType';
+import { CalcMasteryPercentage } from '../../_util/CalculateMasteryPercentage';
+import { ApiService } from '../../services/ApiService';
+import { ChainData } from '../../types/chain/ChainData';
 
 /**
  * NEEDS:
@@ -30,7 +34,35 @@ const SessionDataAside: FC<Props> = (props): JSX.Element => {
   const [graphContainerDimens, setGraphContainerDimens] = useState<LayoutRectangle>();
   const [modalVis, setModalVis] = useState(false);
   const [asideData, setAsideData] = useState<StepAttempt>();
+  const [probeSessions, setProbeSessions] = useState<ChainSession[]>([]);
+  const [trainingSessions, setTrainingSessions] = useState<ChainSession[]>([]);
+  const [chainData, setChainData] = useState<ChainData>();
   const chainMasteryState = useChainMasteryState();
+
+  useEffect(() => {
+    let isCancelled = false;
+
+    const _load = async () => {
+      if (!isCancelled) {
+        const contextChainData = await ApiService.contextState('chainData');
+        if (contextChainData !== undefined) {
+          setChainData(contextChainData as ChainData);
+        }
+        if (chainData) {
+          const { probeArr, trainingArr } = FilterSessionsByType(chainData.sessions);
+          setTrainingSessions(trainingArr);
+          setProbeSessions(probeArr);
+          CalcMasteryPercentage(trainingArr);
+        }
+      }
+    };
+
+    _load();
+
+    return () => {
+      isCancelled = true;
+    };
+  }, []);
 
   const handleModal = () => {
     setModalVis(!modalVis);

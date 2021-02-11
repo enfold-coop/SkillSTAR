@@ -7,6 +7,7 @@ import CustomColors from '../../styles/Colors';
 import { ChainSession } from '../../types/chain/ChainSession';
 import { ChainData } from '../../types/chain/ChainData';
 import { useChainMasteryState } from '../../context/ChainMasteryProvider';
+import { CalcMasteryPercentage } from '../../_util/CalculateMasteryPercentage';
 
 interface PlotlyGraphDimensions {
   width: number;
@@ -18,14 +19,6 @@ type PlotlyLineGraphProps = {
   modal: boolean;
 };
 
-/**
- * - get data from Context,
- * - sort session data by type,
- * - (PROBE) X: Session Number, Y: %mastery
- * - (training) X: Session Number, Y: %mastery,
- * - (challenging behavior) X: SessionNumber, Y: %chal.behav
- */
-
 const PlotlyLineGraph = (props: PlotlyLineGraphProps): JSX.Element => {
   const { dimensions, modal } = props;
   const [thisHeight, setHeight] = useState<number>();
@@ -36,24 +29,6 @@ const PlotlyLineGraph = (props: PlotlyLineGraphProps): JSX.Element => {
   const [chainData, setChainData] = useState<ChainData>();
   const chainMasteryState = useChainMasteryState();
 
-  /**
-   * TODO
-   * ====
-   * 1. Calculate percentage of mastery/session:
-   * -- % of steps completed w/out prompting
-   *
-   * 2. Calculate percentage of CB / session:
-   * -- % of steps completed w/ CB / session
-   */
-
-  /**
-   * TODO:
-   * -- create 3 arrays:
-   * 1. Probe session: [{sessionDate:??/??/????, masteryPercent: ??%}, ...]
-   * 2. Training session: [{sessionDate:??/??/????, masteryPercent: ??%}, ...]
-   * 3. Challenging behavior occurence: [{sessionDate:??/??/????, CBPercent: ??%}, ...]
-   */
-
   useEffect(() => {
     let isCancelled = false;
 
@@ -63,7 +38,6 @@ const PlotlyLineGraph = (props: PlotlyLineGraphProps): JSX.Element => {
         if (contextChainData !== undefined) {
           setChainData(contextChainData as ChainData);
         }
-
         if (chainData) {
           const { probeArr, trainingArr } = FilterSessionsByType(chainData.sessions);
           setTrainingSessions(trainingArr);
