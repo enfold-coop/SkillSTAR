@@ -9,8 +9,6 @@ function hadChalBehavior(step: StepAttempt): boolean | undefined {
   return false;
 }
 
-const i = 0;
-
 function wasMastered(step: StepAttempt) {
   if (step && step.prompt_level === ChainStepPromptLevel.none) {
     return true;
@@ -18,37 +16,32 @@ function wasMastered(step: StepAttempt) {
   return false;
 }
 
-function percentMastered(step: StepAttempt) {
-  console.log('percent mastered placeholder to make linter happy');
+function percentMastered(stepsMastered: number, stepCount: number) {
+  return (stepsMastered / stepCount) * 100;
 }
 
 export function CalcMasteryPercentage(sessionArr: ChainSession[]) {
   const data = [];
-  const percentMastered = 0;
-  sessionArr.forEach((e) => {
-    e.step_attempts.map((f) => {
+
+  for (let i = 0; i < sessionArr.length; i++) {
+    let count = 0;
+    for (let j = 0; j < sessionArr[i].step_attempts.length; j++) {
+      const f = sessionArr[i].step_attempts[j];
+      const sessionDate = sessionArr[i].date;
       if (f.status === ChainStepStatus.focus) {
         if (!hadChalBehavior(f) && wasMastered(f)) {
-          const percent = percentMastered(f);
-          data.push({ date: f.date });
+          count++;
+          const percMastered = percentMastered(count, sessionArr[i].step_attempts.length);
         }
-        return;
       }
-    });
-  });
 
-  /**
-   * 1. get focus step date,
-   * 2. get focus step mastery:
-   *   -- was focus step previously mastered?
-   *   -- was focus step completed?
-   *   -- was focus step completed independently?
-   *   -- was focus step completed w/out chal behavior?
-   * 3.
-   *
-   *
-   * return [{date: --/--/----, mastery: --%}, {date: --/--/----, mastery: --%}, ...]
-   */
+      return { date: sessionDate, percentMastered: percentMastered };
+    }
+  }
+
+  //   sessionArr.forEach((e) => {
+  //     data = e.step_attempts.map((f) => {});
+  //   });
 
   return;
 }
