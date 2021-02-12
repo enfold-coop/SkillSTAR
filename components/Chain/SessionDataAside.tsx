@@ -37,9 +37,6 @@ const SessionDataAside: FC<Props> = (props): JSX.Element => {
   const [asideData, setAsideData] = useState<StepAttempt>();
   const [probeSessions, setProbeSessions] = useState<ChainSession[]>([]);
   const [trainingSessions, setTrainingSessions] = useState<ChainSession[]>();
-  const [trainingGraphData, setTrainingGraphData] = useState<ChainSession[]>();
-  const [probeGraphData, setProbeGraphData] = useState<ChainSession[]>();
-  const [chalBehavGraphData, setChalBehavGraphData] = useState<ChainSession[]>([]);
   const [chainData, setChainData] = useState<ChainData>();
   const chainMasteryState = useChainMasteryState();
 
@@ -88,12 +85,7 @@ const SessionDataAside: FC<Props> = (props): JSX.Element => {
     chainMasteryState.chainMastery.draftSession &&
     chainMasteryState.chainMastery.draftSession.date ? (
     <View style={styles.container}>
-      {}
-      <GraphModal
-        visible={modalVis}
-        handleVis={handleModal}
-        graphData={{ probeData: probeGraphData, trainingData: trainingGraphData, behavData: chalBehavGraphData }}
-      />
+      <GraphModal visible={modalVis} handleVis={handleModal} />
       <View>
         <View>
           <Card>

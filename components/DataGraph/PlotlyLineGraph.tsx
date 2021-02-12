@@ -7,7 +7,7 @@ import CustomColors from '../../styles/Colors';
 import { ChainSession } from '../../types/chain/ChainSession';
 import { ChainData } from '../../types/chain/ChainData';
 import { useChainMasteryState } from '../../context/ChainMasteryProvider';
-import { CalcMasteryPercentage } from '../../_util/CalculateMasteryPercentage';
+import { CalcMasteryPercentage, CalcChalBehaviorPercentage } from '../../_util/CalculateMasteryPercentage';
 
 interface PlotlyGraphDimensions {
   width: number;
@@ -24,9 +24,10 @@ const PlotlyLineGraph = (props: PlotlyLineGraphProps): JSX.Element => {
   const [thisHeight, setHeight] = useState<number>();
   const [thisWidth, setWidth] = useState<number>();
   const [isModal, setIsModal] = useState<boolean>(false);
-  const [probeSessions, setProbeSessions] = useState<ChainSession[]>([]);
-  const [trainingSessions, setTrainingSessions] = useState<ChainSession[]>([]);
   const [chainData, setChainData] = useState<ChainData>();
+  const [trainingGraphData, setTrainingGraphData] = useState<ChainSession[]>();
+  const [probeGraphData, setProbeGraphData] = useState<ChainSession[]>();
+  const [chalBehavGraphData, setChalBehavGraphData] = useState<ChainSession[]>([]);
   const chainMasteryState = useChainMasteryState();
 
   useEffect(() => {
@@ -38,10 +39,8 @@ const PlotlyLineGraph = (props: PlotlyLineGraphProps): JSX.Element => {
         if (contextChainData !== undefined) {
           setChainData(contextChainData as ChainData);
         }
-        if (chainData) {
-          const { probeArr, trainingArr } = FilterSessionsByType(chainData.sessions);
-          setTrainingSessions(trainingArr);
-          setProbeSessions(probeArr);
+        if (chainData && chainData.sessions) {
+          setGraphData(chainData.sessions);
         }
       }
     };
@@ -52,6 +51,18 @@ const PlotlyLineGraph = (props: PlotlyLineGraphProps): JSX.Element => {
       isCancelled = true;
     };
   }, []);
+
+  const setGraphData = (sessions: ChainSession[]) => {
+    const { probeArr, trainingArr } = FilterSessionsByType(sessions);
+    if (trainingArr && trainingArr.length > 0) {
+      const tGD = CalcMasteryPercentage(trainingArr);
+      setTrainingGraphData(tGD);
+    }
+    if (probeArr && probeArr.length > 0) {
+      const pGD = CalcMasteryPercentage(probeArr);
+      setProbeGraphData(pGD);
+    }
+  };
 
   const data = [
     {

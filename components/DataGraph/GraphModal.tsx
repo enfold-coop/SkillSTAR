@@ -6,23 +6,13 @@ import { ChainData } from '../../types/chain/ChainData';
 import { ChainSession } from '../../types/chain/ChainSession';
 import PlotlyLineGraph from './PlotlyLineGraph';
 
-type GraphData = {
-  probeData: ChainSession[];
-  trainingData: ChainSession[];
-  behavData: ChainSession[];
-};
-
 interface GraphModalProps {
   visible: boolean;
   handleVis: () => void;
-  chainData: ChainData;
-  graphData: GraphData;
 }
 
 const GraphModal = (props: GraphModalProps): JSX.Element => {
-  const { visible, handleVis, graphData } = props;
-  const { probeData, trainingData, behavData } = graphData;
-  console.log(trainingData);
+  const { visible, handleVis } = props;
 
   const [graphDimens, setGraphDimens] = useState<LayoutRectangle>();
   const [vis, setVisible] = useState(false);
