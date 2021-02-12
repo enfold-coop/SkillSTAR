@@ -26,16 +26,21 @@ import { ChainData } from '../../types/chain/ChainData';
 
 type Props = {
   currentSession: ChainSession;
+  sessionData: ChainSession[] | undefined;
 };
 
 const SessionDataAside: FC<Props> = (props): JSX.Element => {
-  //   console.log(props.currentSession);
+  // eslint-disable-next-line react/prop-types
+  const { sessionData } = props;
 
   const [graphContainerDimens, setGraphContainerDimens] = useState<LayoutRectangle>();
   const [modalVis, setModalVis] = useState(false);
   const [asideData, setAsideData] = useState<StepAttempt>();
   const [probeSessions, setProbeSessions] = useState<ChainSession[]>([]);
   const [trainingSessions, setTrainingSessions] = useState<ChainSession[]>([]);
+  const [trainingGraphData, setTrainingGraphData] = useState([]);
+  const [chalBehavGraphData, setChalBehavGraphData] = useState([]);
+  const [probeGraphData, setProbeGraphData] = useState([]);
   const [chainData, setChainData] = useState<ChainData>();
   const chainMasteryState = useChainMasteryState();
 
@@ -48,11 +53,15 @@ const SessionDataAside: FC<Props> = (props): JSX.Element => {
         if (contextChainData !== undefined) {
           setChainData(contextChainData as ChainData);
         }
-        if (chainData) {
-          const { probeArr, trainingArr } = FilterSessionsByType(chainData.sessions);
+        if (sessionData) {
+          const { probeArr, trainingArr } = FilterSessionsByType(sessionData);
           setTrainingSessions(trainingArr);
           setProbeSessions(probeArr);
-          CalcMasteryPercentage(trainingArr);
+          const pGD = CalcMasteryPercentage(probeArr);
+          const tGD = CalcMasteryPercentage(trainingArr);
+          setProbeGraphData(pGD);
+          setTrainingGraphData(tGD);
+          console.log(probeGraphData);
         }
       }
     };
@@ -62,7 +71,7 @@ const SessionDataAside: FC<Props> = (props): JSX.Element => {
     return () => {
       isCancelled = true;
     };
-  }, []);
+  }, [chainMasteryState.chainMastery?.chainData]);
 
   const handleModal = () => {
     setModalVis(!modalVis);
