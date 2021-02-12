@@ -49,9 +49,6 @@ const SessionDataAside: FC<Props> = (props): JSX.Element => {
         if (contextChainData !== undefined) {
           setChainData(contextChainData as ChainData);
         }
-        if (chainMasteryState.chainMastery?.chainData.sessions) {
-          setGraphData(chainMasteryState.chainMastery?.chainData.sessions);
-        }
       }
     };
 
@@ -61,21 +58,6 @@ const SessionDataAside: FC<Props> = (props): JSX.Element => {
       isCancelled = true;
     };
   }, [chainMasteryState.chainMastery?.chainData]);
-
-  const setGraphData = (sessions: ChainSession[]) => {
-    const { probeArr, trainingArr } = FilterSessionsByType(sessions);
-    if (trainingArr && trainingArr.length > 0) {
-      setTrainingSessions(trainingArr);
-      const tGD = CalcMasteryPercentage(trainingArr);
-      setTrainingGraphData(tGD);
-    }
-    if (probeArr && probeArr.length > 0) {
-      setProbeSessions(probeArr);
-      const pGD = CalcMasteryPercentage(probeArr);
-      console.log(pGD);
-      setProbeGraphData(pGD);
-    }
-  };
 
   const handleModal = () => {
     setModalVis(!modalVis);

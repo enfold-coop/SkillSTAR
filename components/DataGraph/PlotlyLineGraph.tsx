@@ -39,8 +39,8 @@ const PlotlyLineGraph = (props: PlotlyLineGraphProps): JSX.Element => {
         if (contextChainData !== undefined) {
           setChainData(contextChainData as ChainData);
         }
-        if (chainData && chainData.sessions) {
-          setGraphData(chainData.sessions);
+        if (chainMasteryState.chainMastery?.chainData.sessions) {
+          setGraphData(chainMasteryState.chainMastery?.chainData.sessions);
         }
       }
     };
@@ -50,9 +50,16 @@ const PlotlyLineGraph = (props: PlotlyLineGraphProps): JSX.Element => {
     return () => {
       isCancelled = true;
     };
-  }, []);
+  }, [chainMasteryState.chainMastery?.chainData.sessions]);
 
   const setGraphData = (sessions: ChainSession[]) => {
+    console.log(sessions.length);
+
+    if (sessions) {
+      const cBD = CalcChalBehaviorPercentage(sessions);
+      console.log(cBD);
+    }
+
     const { probeArr, trainingArr } = FilterSessionsByType(sessions);
     if (trainingArr && trainingArr.length > 0) {
       const tGD = CalcMasteryPercentage(trainingArr);
