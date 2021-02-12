@@ -211,8 +211,8 @@ export class ChainMastery {
       step_attempts: [],
       session_type: sessionType,
     };
-    let focusChainStepId: number | undefined = undefined;
-    let boosterChainStepId: number | undefined = undefined;
+    let focusChainStepId: number | undefined = this.nextFocusChainStepId;
+    const boosterChainStepId: number | undefined = this.nextBoosterChainStepId;
 
     // If no session type is passed in as a parameter, decide what kind of session this should be.
     if (!sessionType) {
@@ -223,25 +223,35 @@ export class ChainMastery {
       }
 
       // ...a booster?
-      else if ((boosterChainStepId = this.nextBoosterChainStepId) !== undefined) {
+      else if (boosterChainStepId !== undefined) {
         newDraftSession.session_type = ChainSessionType.booster;
       }
 
       // ...a training session?
-      else {
+      else if (focusChainStepId !== undefined) {
         newDraftSession.session_type = ChainSessionType.training;
-        focusChainStepId = this.nextFocusChainStepId;
       }
     } else {
       if (sessionType !== ChainSessionType.probe) {
         // Check if the session type needs to be a booster
-        if ((boosterChainStepId = this.nextBoosterChainStepId) !== undefined) {
+        if (boosterChainStepId !== undefined) {
           newDraftSession.session_type = ChainSessionType.booster;
-        } else {
-          // It's a training session. Figure out which step we need to focus on.
-          focusChainStepId = this.nextFocusChainStepId;
+          focusChainStepId = boosterChainStepId;
+          this.masteryInfoMap[boosterChainStepId].stepStatus = ChainStepStatus.booster_needed;
+        } else if (focusChainStepId !== undefined) {
+          this.masteryInfoMap[focusChainStepId].stepStatus = ChainStepStatus.focus;
         }
       }
+    }
+
+    // If all steps have been mastered, set the session type to probe.
+    if (
+      focusChainStepId === undefined &&
+      boosterChainStepId === undefined &&
+      this.masteredChainStepIds.length === this.chainSteps.length
+    ) {
+      newDraftSession.session_type = ChainSessionType.probe;
+      newDraftSession.step_attempts.forEach((stepAttempt) => (stepAttempt.session_type = ChainSessionType.probe));
     }
 
     // Populate step attempts
@@ -266,28 +276,45 @@ export class ChainMastery {
 
       newDraftSession.step_attempts.forEach((stepAttempt, i) => {
         // Mark which chain step should be the focus step.
-        if (focusChainStepId !== undefined) {
+        if (boosterChainStepId === undefined && focusChainStepId !== undefined) {
           newDraftSession.step_attempts[i].was_focus_step = stepAttempt.chain_step_id === focusChainStepId;
-          if (focusChainStepId === stepAttempt.chain_step_id) {
+
+          if (newDraftSession.step_attempts[i].was_focus_step) {
+            this.masteryInfoMap[stepAttempt.chain_step_id].stepStatus = ChainStepStatus.focus;
             newDraftSession.step_attempts[i].status = ChainStepStatus.focus;
             draftFocusStepIndex = i;
             stepAttempt.status = ChainStepStatus.focus;
           }
         }
 
-        // Mark which chain step should needs a booster.
-        if (boosterChainStepId !== undefined) {
-          if (boosterChainStepId === stepAttempt.chain_step_id) {
+        // Mark which chain step needs a booster.
+        else if (boosterChainStepId !== undefined) {
+          newDraftSession.step_attempts[i].was_focus_step = stepAttempt.chain_step_id === boosterChainStepId;
+
+          if (newDraftSession.step_attempts[i].was_focus_step) {
+            this.masteryInfoMap[stepAttempt.chain_step_id].stepStatus = ChainStepStatus.booster_needed;
             newDraftSession.step_attempts[i].status = ChainStepStatus.booster_needed;
+            draftFocusStepIndex = i;
+            stepAttempt.status = ChainStepStatus.booster_needed;
           }
         }
       });
 
       // Determine the target prompt level for the draft session focus step.
-      if (focusChainStepId !== undefined && draftFocusStepIndex !== -1) {
+      if ((focusChainStepId !== undefined || boosterChainStepId !== undefined) && draftFocusStepIndex !== -1) {
         // Get all the step attempts across all sessions for the focus step.
-        const masteryInfo = this.masteryInfoMap[focusChainStepId];
-        const recentAttempts = this.getFocusStepAttemptsForChainStep(focusChainStepId).reverse();
+        let chainStepIdForFocus: number;
+
+        if (focusChainStepId !== undefined) {
+          chainStepIdForFocus = focusChainStepId;
+        } else if (boosterChainStepId !== undefined) {
+          chainStepIdForFocus = boosterChainStepId;
+        } else {
+          throw new Error('No id to focus on.');
+        }
+
+        const masteryInfo = this.masteryInfoMap[chainStepIdForFocus];
+        const recentAttempts = this.getFocusStepAttemptsForChainStep(chainStepIdForFocus).reverse();
         let numTargetLevelsMet = 0;
         let lastAttemptLevel: ChainStepPromptLevel | undefined = masteryInfo.promptLevel;
 
@@ -315,14 +342,17 @@ export class ChainMastery {
           if (lastAttemptLevel) {
             const nextLevel = this.getNextPromptLevel(lastAttemptLevel).key;
             newDraftSession.step_attempts[draftFocusStepIndex].target_prompt_level = nextLevel;
+            this.masteryInfoMap[chainStepIdForFocus].promptLevel = nextLevel;
           }
         } else if (lastAttemptLevel) {
           newDraftSession.step_attempts[draftFocusStepIndex].target_prompt_level = lastAttemptLevel;
+          this.masteryInfoMap[chainStepIdForFocus].promptLevel = lastAttemptLevel;
         }
 
         // If target prompt level for the training session is still undefined, set it to full physical.
         if (newDraftSession.step_attempts[draftFocusStepIndex].target_prompt_level === undefined) {
           newDraftSession.step_attempts[draftFocusStepIndex].target_prompt_level = ChainStepPromptLevel.full_physical;
+          this.masteryInfoMap[chainStepIdForFocus].promptLevel = ChainStepPromptLevel.full_physical;
         }
 
         // If this is a training session and target level hasn't been set yet,
@@ -335,15 +365,16 @@ export class ChainMastery {
             !this.draftFocusStepAttempt.target_prompt_level
           ) {
             newDraftSession.step_attempts[draftFocusStepIndex].target_prompt_level = lastAttemptLevel;
+            this.masteryInfoMap[chainStepIdForFocus].promptLevel = lastAttemptLevel;
           }
         }
-      }
-    }
 
-    // If all steps have been mastered, set the session type to probe.
-    if (!focusChainStepId && !boosterChainStepId && this.masteredChainStepIds.length === this.chainSteps.length) {
-      newDraftSession.session_type = ChainSessionType.probe;
-      newDraftSession.step_attempts.forEach((stepAttempt) => (stepAttempt.session_type = ChainSessionType.probe));
+        // If this if the first booster step, go back to the previous prompt level.
+        if (boosterChainStepId !== undefined) {
+          newDraftSession.step_attempts[draftFocusStepIndex].target_prompt_level = ChainStepPromptLevel.shadow;
+          this.masteryInfoMap[chainStepIdForFocus].promptLevel = ChainStepPromptLevel.shadow;
+        }
+      }
     }
 
     return newDraftSession;
@@ -726,7 +757,7 @@ export class ChainMastery {
     // Loop through all steps
     for (const stepAttempt of stepAttempts) {
       // Skip ahead to the attempt where the step was first mastered
-      if (stepAttempt.id === attemptFirstMastered.id) {
+      if (stepAttempt === attemptFirstMastered) {
         masteredOnce = true;
       }
 
@@ -741,7 +772,7 @@ export class ChainMastery {
 
             // If the number of consecutive incomplete sessions is at or over the threshold,
             // the next step should be a booster.
-            if (numConsecutiveIncomplete > NUM_INCOMPLETE_ATTEMPTS_FOR_BOOSTER) {
+            if (numConsecutiveIncomplete >= NUM_INCOMPLETE_ATTEMPTS_FOR_BOOSTER) {
               // The step after this one will be the first booster step.
               needsBooster = true;
             }
@@ -763,13 +794,13 @@ export class ChainMastery {
   chainStepNeedsBooster(stepAttempts: StepAttempt[]): boolean {
     let numConsecutiveIncomplete = 0;
 
-    // Skip if there are fewer than 3 attempts, or the step has never been mastered.
-    if (stepAttempts.length < 3 || !this.stepFirstMastered(stepAttempts)) {
+    // Skip if there are fewer than 2 attempts, or the step has never been mastered.
+    if (stepAttempts.length < NUM_INCOMPLETE_ATTEMPTS_FOR_BOOSTER || !this.stepFirstMastered(stepAttempts)) {
       return false;
     }
 
-    // Only need to look at the last 3 sessions, in reverse date order.
-    const lastFewSessions = stepAttempts.slice(-3).reverse();
+    // Only need to look at the last 2 sessions, in reverse date order.
+    const lastFewSessions = stepAttempts.slice(-NUM_INCOMPLETE_ATTEMPTS_FOR_BOOSTER).reverse();
     for (const stepAttempt of lastFewSessions) {
       if (this.stepIsComplete(stepAttempt)) {
         numConsecutiveIncomplete = 0;
@@ -859,11 +890,13 @@ export class ChainMastery {
   numSinceBoosterInitiated(stepAttempts: StepAttempt[]): number {
     const boosterStep = this.getBoosterStep(stepAttempts);
 
-    if (boosterStep && boosterStep.id) {
-      const boosterStepIndex = stepAttempts.findIndex((s) => s.id === boosterStep.id);
+    if (boosterStep) {
+      const boosterStepIndex = stepAttempts.findIndex((s) => s === boosterStep);
       if (boosterStepIndex !== -1) {
         return stepAttempts.length - (boosterStepIndex + 1);
       }
+    } else if (this.chainStepNeedsBooster(stepAttempts)) {
+      return 0;
     }
 
     return -1;
@@ -876,10 +909,30 @@ export class ChainMastery {
    */
   numSinceBoosterMastered(stepAttempts: StepAttempt[]): number {
     const boosterStep = this.getBoosterStep(stepAttempts);
+    let masteredIndex = -1;
 
-    if (boosterStep && boosterStep.id) {
-      const boosterStepIndex = stepAttempts.findIndex((s) => s.id === boosterStep.id);
-      if (boosterStepIndex !== -1) {
+    if (boosterStep) {
+      let boosterStepIndex = -1;
+      stepAttempts.forEach((s, i) => {
+        if (s === boosterStep) {
+          boosterStepIndex = i;
+        }
+
+        if (boosterStepIndex !== -1 && i > boosterStepIndex) {
+          let numConsecutiveComplete = 0;
+          if (this.stepIsComplete(s)) {
+            numConsecutiveComplete++;
+          } else {
+            numConsecutiveComplete = 0;
+          }
+
+          if (numConsecutiveComplete >= NUM_COMPLETE_ATTEMPTS_FOR_MASTERY) {
+            masteredIndex = i;
+          }
+        }
+      });
+
+      if (masteredIndex !== -1) {
         return stepAttempts.length - (boosterStepIndex + 1);
       }
     }
@@ -927,6 +980,19 @@ export class ChainMastery {
     }
 
     if ((m.dateBoosterInitiated && !m.dateBoosterMastered) || needsBooster) {
+      const stepAttempt = stepAttempts[stepAttempts.length - 1];
+      console.log(`
+booster session:
+stepAttempt.chain_step_id = ${stepAttempt.chain_step_id}
+stepAttempt.was_prompted = ${stepAttempt.had_challenging_behavior}
+stepAttempt.had_challenging_behavior = ${stepAttempt.had_challenging_behavior}
+stepAttempt.completed = ${stepAttempt.completed}
+stepIsComplete = ${!!(!stepAttempt.was_prompted && !stepAttempt.had_challenging_behavior && stepAttempt.completed)}
+m.dateBoosterInitiated: ${m.dateBoosterInitiated}
+m.dateBoosterMastered: ${m.dateBoosterMastered}
+needsBooster: ${needsBooster}
+m.chainStepId: ${m.chainStepId}
+      `);
       return ChainStepStatus.booster_needed;
     }
 
