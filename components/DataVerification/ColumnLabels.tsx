@@ -18,7 +18,6 @@ export default ColumnLabels;
 
 const styles = StyleSheet.create({
   container: {
-    // flex: 1,
     flexDirection: 'row',
     alignContent: 'space-between',
     justifyContent: 'space-around',
@@ -30,14 +29,12 @@ const styles = StyleSheet.create({
     marginLeft: 30,
     marginRight: 30,
     borderColor: CustomColors.uva.sky,
-    // backgroundColor: CustomColors.uva.mountain,
   },
   text: {
     fontSize: 16,
     textAlign: 'center',
     alignSelf: 'center',
     color: CustomColors.uva.mountain,
-    // transform: [{ rotate: "-9deg" }],
   },
   mastery: {
     width: '10%',
@@ -46,7 +43,6 @@ const styles = StyleSheet.create({
   step: {
     alignSelf: 'flex-start',
     width: '30%',
-    // backgroundColor: "#f0f",
   },
   promptLevel: {
     width: '10%',

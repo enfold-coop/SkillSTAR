@@ -1,9 +1,7 @@
 import { useNavigation } from '@react-navigation/native';
 import React, { useEffect, useState } from 'react';
 import { FlatList, StyleSheet, Text, View } from 'react-native';
-import * as Animatable from 'react-native-animatable';
 import { Button } from 'react-native-paper';
-import { randomId } from '../_util/RandomId';
 import { DataVerifItem } from '../components/DataVerification';
 import ColumnLabels from '../components/DataVerification/ColumnLabels';
 import AppHeader from '../components/Header/AppHeader';
@@ -15,7 +13,6 @@ import { ChainSessionTypeLabels, ChainSessionTypeMap } from '../types/chain/Chai
 
 const DataVerificationScreen = (): JSX.Element => {
   const navigation = useNavigation();
-  const [scrolling, setScrolling] = useState<boolean>(false);
   const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
   const [sessionTypeLabel, setSessionTypeLabel] = useState<ChainSessionTypeLabels>();
   const [chainMasteryState, chainMasteryDispatch] = useChainMasteryContext();
@@ -46,27 +43,28 @@ const DataVerificationScreen = (): JSX.Element => {
     }
   };
 
+  const getDraftStepData = (id: number) => {
+    return chainMasteryState.chainMastery?.getDraftSessionStep(id);
+  };
+
   return chainMasteryState.chainMastery ? (
     <View style={styles.container}>
       <AppHeader name={'Brushing Teeth'} />
       <View style={styles.instructionContainer}>
-        <Text style={[scrolling ? styles.smallHeader : styles.screenHeader]}>{`${sessionTypeLabel} Session`}</Text>
+        <Text style={[styles.smallHeader]}>{`${sessionTypeLabel} Session`}</Text>
         <Text
-          style={[scrolling ? styles.smallInstruction : styles.instruction]}
+          style={[styles.smallInstruction]}
         >{`Please review the following data.  If you see something that is incorrect, you may change by selecting an alternative option.`}</Text>
       </View>
       <View style={styles.formContainer}>
         <ColumnLabels />
         {chainMasteryState.chainMastery ? (
           <FlatList
-            onScrollBeginDrag={() => {
-              setScrolling(true);
-            }}
             data={chainMasteryState.chainMastery.draftSession.step_attempts}
             renderItem={(item) => {
               return <DataVerifItem chainStepId={item.item.chain_step_id} />;
             }}
-            keyExtractor={randomId}
+            keyExtractor={(item) => item.chain_step_id.toString()}
             maxToRenderPerBatch={chainMasteryState.chainMastery.chainSteps.length}
           />
         ) : (

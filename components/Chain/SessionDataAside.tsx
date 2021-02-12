@@ -41,7 +41,6 @@ type Props = {
 const SessionDataAside: FC<Props> = (props): JSX.Element => {
   // eslint-disable-next-line react/prop-types
   const { sessionData } = props;
-
   const [graphContainerDimens, setGraphContainerDimens] = useState<LayoutRectangle>();
   const [modalVis, setModalVis] = useState(false);
   const [asideData, setAsideData] = useState<StepAttempt>();
