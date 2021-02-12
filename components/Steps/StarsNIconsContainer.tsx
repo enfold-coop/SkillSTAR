@@ -31,7 +31,7 @@ const StarsNIconsContainer = (props: StarsNIconsContainerProps): JSX.Element => 
         } else {
           const focusStepAttempts = chainMasteryState.chainMastery.getFocusStepAttemptsForChainStep(chainStepId);
           if (focusStepAttempts && focusStepAttempts.length > 0) {
-            setPromptLevel(focusStepAttempts[focusStepAttempts.length - 1].prompt_level);
+            setPromptLevel(focusStepAttempts[focusStepAttempts.length - 1].target_prompt_level);
           }
         }
       }

@@ -25,7 +25,7 @@ const StepAttemptStars = (props: StepAttemptStarsProps): JSX.Element => {
     const icons = [];
 
     for (let i = 0; i < 3; i++) {
-      const iconName = i < numSuccess - 1 ? 'star' : 'staro';
+      const iconName = i < numSuccess ? 'star' : 'staro';
       icons.push(
         <AntDesign
           name={iconName}

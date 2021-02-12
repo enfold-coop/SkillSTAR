@@ -47,7 +47,7 @@ export default function App(): JSX.Element | null {
 
     if (!isCancelled) {
       _loadFonts().catch((e) => {
-        console.log(e);
+        console.error(e);
       });
     }
 

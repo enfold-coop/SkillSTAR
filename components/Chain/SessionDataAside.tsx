@@ -25,8 +25,6 @@ type Props = {
 };
 
 const SessionDataAside: FC<Props> = (props): JSX.Element => {
-  //   console.log(props.currentSession);
-
   const [graphContainerDimens, setGraphContainerDimens] = useState<LayoutRectangle>();
   const [modalVis, setModalVis] = useState(false);
   const [asideData, setAsideData] = useState<StepAttempt>();
