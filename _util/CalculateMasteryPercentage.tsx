@@ -16,7 +16,6 @@ function percentChalBehavior(steps: StepAttempt[]) {
   steps.forEach((e) => {
     if (e.had_challenging_behavior) {
       r++;
-      //   console.log(r);
     }
   });
   return (r / steps.length) * 100;
