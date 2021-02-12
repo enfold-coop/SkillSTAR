@@ -12,7 +12,7 @@ import { ChainsHomeGraph } from '../DataGraph/index';
 import { Loading } from '../Loading/Loading';
 import { ProbeAside, TrainingAside } from './index';
 import { FilterSessionsByType } from '../../_util/FilterSessionType';
-import { CalcMasteryPercentage } from '../../_util/CalculateMasteryPercentage';
+import { CalcMasteryPercentage, CalcChalBehaviorPercentage } from '../../_util/CalculateMasteryPercentage';
 import { ApiService } from '../../services/ApiService';
 import { ChainData } from '../../types/chain/ChainData';
 
@@ -23,15 +23,6 @@ import { ChainData } from '../../types/chain/ChainData';
  * ** today's PROMPT LEVEL
  * **
  */
-
-type GraphDataObject = {
-  sessionNumber: number;
-  percentMastered: number;
-};
-
-type GraphData = {
-  graphData: GraphDataObject[] | undefined;
-};
 
 type Props = {
   currentSession: ChainSession;
@@ -45,10 +36,10 @@ const SessionDataAside: FC<Props> = (props): JSX.Element => {
   const [modalVis, setModalVis] = useState(false);
   const [asideData, setAsideData] = useState<StepAttempt>();
   const [probeSessions, setProbeSessions] = useState<ChainSession[]>([]);
-  const [trainingSessions, setTrainingSessions] = useState();
-  const [trainingGraphData, setTrainingGraphData] = useState<GraphData>();
-  const [probeGraphData, setProbeGraphData] = useState<GraphData>();
-  const [chalBehavGraphData, setChalBehavGraphData] = useState([]);
+  const [trainingSessions, setTrainingSessions] = useState<ChainSession[]>();
+  const [trainingGraphData, setTrainingGraphData] = useState<ChainSession[]>();
+  const [probeGraphData, setProbeGraphData] = useState<ChainSession[]>();
+  const [chalBehavGraphData, setChalBehavGraphData] = useState<ChainSession[]>([]);
   const [chainData, setChainData] = useState<ChainData>();
   const chainMasteryState = useChainMasteryState();
 
@@ -61,16 +52,8 @@ const SessionDataAside: FC<Props> = (props): JSX.Element => {
         if (contextChainData !== undefined) {
           setChainData(contextChainData as ChainData);
         }
-        if (sessionData) {
-          const { probeArr, trainingArr } = FilterSessionsByType(chainMasteryState.chainMastery?.chainData.sessions);
-          setProbeSessions(probeArr);
-          const pGD = CalcMasteryPercentage(probeArr);
-          console.log(pGD);
-          // setTrainingSessions(trainingArr);
-          const tGD = CalcMasteryPercentage(trainingArr);
-          setProbeGraphData(pGD);
-          // setTrainingGraphData(tGD);
-          // console.log(probeGraphData);
+        if (chainMasteryState.chainMastery?.chainData.sessions) {
+          setProbeGraphData(chainMasteryState.chainMastery?.chainData.sessions);
         }
       }
     };
@@ -81,6 +64,20 @@ const SessionDataAside: FC<Props> = (props): JSX.Element => {
       isCancelled = true;
     };
   }, [chainMasteryState.chainMastery?.chainData]);
+
+  const setGraphData = (sessions: ChainSession[]) => {
+    const { probeArr, trainingArr } = FilterSessionsByType(sessions);
+    if (trainingArr && trainingArr.length > 0) {
+      setTrainingSessions(trainingArr);
+      const tGD = CalcMasteryPercentage(trainingArr);
+      setTrainingGraphData(tGD);
+    }
+    if (probeArr && probeArr.length > 0) {
+      setProbeSessions(probeArr);
+      const pGD = CalcMasteryPercentage(probeArr);
+      setProbeGraphData(pGD);
+    }
+  };
 
   const handleModal = () => {
     setModalVis(!modalVis);
