@@ -24,6 +24,15 @@ import { ChainData } from '../../types/chain/ChainData';
  * **
  */
 
+type GraphDataObject = {
+  sessionNumber: number;
+  percentMastered: number;
+};
+
+type GraphData = {
+  graphData: GraphDataObject[] | undefined;
+};
+
 type Props = {
   currentSession: ChainSession;
   sessionData: ChainSession[] | undefined;
@@ -37,10 +46,10 @@ const SessionDataAside: FC<Props> = (props): JSX.Element => {
   const [modalVis, setModalVis] = useState(false);
   const [asideData, setAsideData] = useState<StepAttempt>();
   const [probeSessions, setProbeSessions] = useState<ChainSession[]>([]);
-  const [trainingSessions, setTrainingSessions] = useState<ChainSession[]>([]);
-  const [trainingGraphData, setTrainingGraphData] = useState([]);
+  const [trainingSessions, setTrainingSessions] = useState();
+  const [trainingGraphData, setTrainingGraphData] = useState<GraphData>();
+  const [probeGraphData, setProbeGraphData] = useState<GraphData>();
   const [chalBehavGraphData, setChalBehavGraphData] = useState([]);
-  const [probeGraphData, setProbeGraphData] = useState([]);
   const [chainData, setChainData] = useState<ChainData>();
   const chainMasteryState = useChainMasteryState();
 
@@ -54,14 +63,15 @@ const SessionDataAside: FC<Props> = (props): JSX.Element => {
           setChainData(contextChainData as ChainData);
         }
         if (sessionData) {
-          const { probeArr, trainingArr } = FilterSessionsByType(sessionData);
-          setTrainingSessions(trainingArr);
+          const { probeArr, trainingArr } = FilterSessionsByType(chainMasteryState.chainMastery?.chainData.sessions);
           setProbeSessions(probeArr);
           const pGD = CalcMasteryPercentage(probeArr);
+          console.log(pGD);
+          // setTrainingSessions(trainingArr);
           const tGD = CalcMasteryPercentage(trainingArr);
           setProbeGraphData(pGD);
-          setTrainingGraphData(tGD);
-          console.log(probeGraphData);
+          // setTrainingGraphData(tGD);
+          // console.log(probeGraphData);
         }
       }
     };
