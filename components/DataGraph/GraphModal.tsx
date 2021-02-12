@@ -3,16 +3,26 @@ import { LayoutRectangle, Modal, StyleSheet, View } from 'react-native';
 import { Button } from 'react-native-paper';
 import CustomColors from '../../styles/Colors';
 import { ChainData } from '../../types/chain/ChainData';
+import { ChainSession } from '../../types/chain/ChainSession';
 import PlotlyLineGraph from './PlotlyLineGraph';
+
+type GraphData = {
+  probeData: ChainSession[];
+  trainingData: ChainSession[];
+  behavData: ChainSession[];
+};
 
 interface GraphModalProps {
   visible: boolean;
   handleVis: () => void;
   chainData: ChainData;
+  graphData: GraphData;
 }
 
 const GraphModal = (props: GraphModalProps): JSX.Element => {
-  const { visible, handleVis, chainData } = props;
+  const { visible, handleVis, graphData } = props;
+  const { probeData, trainingData, behavData } = graphData;
+  console.log(trainingData);
 
   const [graphDimens, setGraphDimens] = useState<LayoutRectangle>();
   const [vis, setVisible] = useState(false);

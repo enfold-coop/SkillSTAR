@@ -53,7 +53,7 @@ const SessionDataAside: FC<Props> = (props): JSX.Element => {
           setChainData(contextChainData as ChainData);
         }
         if (chainMasteryState.chainMastery?.chainData.sessions) {
-          setProbeGraphData(chainMasteryState.chainMastery?.chainData.sessions);
+          setGraphData(chainMasteryState.chainMastery?.chainData.sessions);
         }
       }
     };
@@ -75,6 +75,7 @@ const SessionDataAside: FC<Props> = (props): JSX.Element => {
     if (probeArr && probeArr.length > 0) {
       setProbeSessions(probeArr);
       const pGD = CalcMasteryPercentage(probeArr);
+      console.log(pGD);
       setProbeGraphData(pGD);
     }
   };
@@ -87,7 +88,12 @@ const SessionDataAside: FC<Props> = (props): JSX.Element => {
     chainMasteryState.chainMastery.draftSession &&
     chainMasteryState.chainMastery.draftSession.date ? (
     <View style={styles.container}>
-      <GraphModal visible={modalVis} handleVis={handleModal} chainData={chainMasteryState.chainMastery.chainData} />
+      {}
+      <GraphModal
+        visible={modalVis}
+        handleVis={handleModal}
+        graphData={{ probeData: probeGraphData, trainingData: trainingGraphData, behavData: chalBehavGraphData }}
+      />
       <View>
         <View>
           <Card>

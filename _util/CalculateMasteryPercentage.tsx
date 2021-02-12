@@ -21,7 +21,7 @@ function percentChalBehavior(steps: StepAttempt[]) {
   return (r / steps.length) * 100;
 }
 
-export function calcChalBehaviorPercentage(sessionArr: ChainSession[]) {
+export function CalcChalBehaviorPercentage(sessionArr: ChainSession[]) {
   if (sessionArr.length > 0) {
     return sessionArr.map((e) => {
       return { session_number: e.id, challenging_behavior: percentChalBehavior(e.step_attempts) };
