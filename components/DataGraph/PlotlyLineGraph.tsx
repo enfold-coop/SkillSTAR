@@ -92,7 +92,8 @@ const PlotlyLineGraph = (props: PlotlyLineGraphProps): JSX.Element => {
 
     const { probeArr, trainingArr } = FilterSessionsByType(sessions);
     if (trainingArr && trainingArr.length > 0) {
-      const tGD = CalcMasteryPercentage(trainingArr);
+      const tGD = CalcMasteryPercentage(trainingArr, probeArr.length);
+      console.log(tGD);
       setTrainingGraphData(tGD);
       handleGraphPopulation(tGD);
     }

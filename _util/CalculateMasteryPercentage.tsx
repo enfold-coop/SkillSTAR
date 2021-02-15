@@ -29,10 +29,10 @@ export function CalcChalBehaviorPercentage(sessionArr: ChainSession[]) {
   }
 }
 
-export function CalcMasteryPercentage(sessionArr: ChainSession[]) {
+export function CalcMasteryPercentage(sessionArr: ChainSession[], length: number = 0) {
   if (sessionArr.length > 0) {
     return sessionArr.map((e, i) => {
-      return { session_number: i + 1, mastery: percentMastered(e.step_attempts) };
+      return { session_number: length + 1, mastery: percentMastered(e.step_attempts) };
     });
   }
 }
