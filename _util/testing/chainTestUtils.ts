@@ -1,7 +1,7 @@
 import { ChainMastery } from '../../services/ChainMastery';
 import { mockChainSteps } from './mockChainSteps';
 
-export const checkMasteryInfo = (chainMastery: ChainMastery, numLastFailed = -1, numLastFailedWithFocus = -1) => {
+export const checkMasteryInfo = (chainMastery: ChainMastery, numLastFailed = -1, numLastFailedWithFocus = -1): void => {
   expect(chainMastery).toBeTruthy();
   expect(chainMastery.chainSteps).toBeTruthy();
   expect(chainMastery.chainSteps.length).toBeGreaterThan(0);
