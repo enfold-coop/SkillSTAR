@@ -34,8 +34,8 @@ const PlotlyLineGraph = (props: PlotlyLineGraphProps): JSX.Element => {
   const [chalBehavGraphData, setChalBehavGraphData] = useState<ChainSession[]>([]);
   const [data, setData] = useState([
     {
-      x: [],
-      y: [],
+      x: [0],
+      y: [0],
       mode: 'markers',
       name: PROBE_NAME,
       marker: {
@@ -48,8 +48,8 @@ const PlotlyLineGraph = (props: PlotlyLineGraphProps): JSX.Element => {
       },
     },
     {
-      x: [],
-      y: [],
+      x: [0],
+      y: [0],
       mode: 'lines',
       name: TRAINING_NAME,
     },
