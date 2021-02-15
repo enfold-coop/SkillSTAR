@@ -47,9 +47,9 @@ const BaselineAssessmentScreen = (): JSX.Element => {
       chainMasteryState.chainMastery.draftSession
     ) {
       chainMasteryState.chainMastery.draftSession.completed = true;
-      chainMasteryState.chainMastery.chainData.upsertSession(chainMasteryState.chainMastery.draftSession);
-
+      chainMasteryState.chainMastery.saveDraftSession();
       const dbChainData = await ApiService.upsertChainData(chainMasteryState.chainMastery.chainData);
+
       if (dbChainData) {
         chainMasteryState.chainMastery.updateChainData(dbChainData);
         chainMasteryDispatch({ type: 'chainMastery', payload: chainMasteryState.chainMastery });

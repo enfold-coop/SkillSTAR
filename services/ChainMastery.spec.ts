@@ -278,9 +278,14 @@ describe('ChainMastery', () => {
 
       // Populate probe session step attempts
       chainMastery.draftSession.step_attempts.forEach((stepAttempt) => {
+        if (i === 0) {
+          expect(stepAttempt.status).toEqual(ChainStepStatus.not_yet_started);
+        } else {
+          expect(stepAttempt.status).toEqual(ChainStepStatus.not_complete);
+        }
+
         expect(stepAttempt.was_focus_step).toBeFalsy();
         expect(stepAttempt.session_type).toEqual(ChainSessionType.probe);
-        expect(stepAttempt.status).toEqual(ChainStepStatus.not_yet_started);
         expect(stepAttempt.target_prompt_level).toBeFalsy();
 
         // Mark all steps as incomplete
@@ -400,6 +405,7 @@ describe('ChainMastery', () => {
               // Mark steps after focus step as incomplete
               if (stepAttemptIndex > focusStepIndex) {
                 expect(stepAttempt.was_focus_step).toBeFalsy();
+                expect(stepAttempt.status).toEqual(ChainStepStatus.not_complete);
                 stepAttempt.was_prompted = true;
                 stepAttempt.completed = false;
                 stepAttempt.had_challenging_behavior = true;
@@ -461,9 +467,14 @@ describe('ChainMastery', () => {
 
       // Populate probe session step attempts
       chainMastery.draftSession.step_attempts.forEach((stepAttempt) => {
+        if (i === 0) {
+          expect(stepAttempt.status).toEqual(ChainStepStatus.not_yet_started);
+        } else {
+          expect(stepAttempt.status).toEqual(ChainStepStatus.not_complete);
+        }
+
         expect(stepAttempt.was_focus_step).toBeFalsy();
         expect(stepAttempt.session_type).toEqual(ChainSessionType.probe);
-        expect(stepAttempt.status).toEqual(ChainStepStatus.not_yet_started);
         expect(stepAttempt.target_prompt_level).toBeFalsy();
 
         // Mark all steps as incomplete

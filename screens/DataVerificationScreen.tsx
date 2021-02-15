@@ -29,11 +29,9 @@ const DataVerificationScreen = (): JSX.Element => {
     console.log('POSTING DATA');
     if (chainMasteryState.chainMastery) {
       setIsSubmitted(true);
-      const draftSession = chainMasteryState.chainMastery.draftSession;
-      const chainData = chainMasteryState.chainMastery.chainData;
-      draftSession.completed = true;
-      chainData.sessions.push(draftSession);
-      const dbChainData = await ApiService.upsertChainData(chainData);
+      chainMasteryState.chainMastery.draftSession.completed = true;
+      chainMasteryState.chainMastery.saveDraftSession();
+      const dbChainData = await ApiService.upsertChainData(chainMasteryState.chainMastery.chainData);
 
       if (dbChainData) {
         chainMasteryState.chainMastery.updateChainData(dbChainData);
