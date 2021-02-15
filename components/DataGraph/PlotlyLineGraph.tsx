@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import Plotly from 'react-native-plotly';
-import { FilterSessionsByType } from '../../_util/FilterSessionType';
+import { FilterSessionsByType, FilteredSessionWithSessionIndex } from '../../_util/FilterSessionType';
 import { ApiService } from '../../services/ApiService';
 import CustomColors from '../../styles/Colors';
 import { ChainSession } from '../../types/chain/ChainSession';
@@ -85,28 +85,31 @@ const PlotlyLineGraph = (props: PlotlyLineGraphProps): JSX.Element => {
   }, [chainMasteryState.chainMastery?.chainData.sessions]);
 
   const setGraphData = (sessions: ChainSession[]) => {
-    // if there are any number of sessions, then calculate the number that had CB
     if (sessions) {
       const cBD = CalcChalBehaviorPercentage(sessions);
       handleGraphPopulation(cBD, CB_NAME);
     }
 
-    const { probeArr, trainingArr } = FilterSessionsByType(sessions);
-    const l = probeArr.length;
-    console.log(trainingArr);
-
-    // console.log(trainingArr);
-
-    if (probeArr && probeArr.length > 0) {
-      const pGD = CalcMasteryPercentage(probeArr, 0);
-      setProbeGraphData(pGD);
-      handleGraphPopulation(pGD, PROBE_NAME);
+    if (sessions) {
+      const { probeArr, trainingArr } = FilteredSessionWithSessionIndex(sessions);
+      console.log(probeArr[0]);
     }
-    if (trainingArr && trainingArr.length > 0) {
-      const tGD = CalcMasteryPercentage(trainingArr, l);
-      setTrainingGraphData(tGD);
-      handleGraphPopulation(tGD, TRAINING_NAME);
-    }
+
+    // if (probeArr && probeArr.length > 0) {
+    //   const pGD = CalcMasteryPercentage(probeArr, 0);
+    //   if (pGD?.length > 0) {
+    //     setProbeGraphData(pGD);
+    //     handleGraphPopulation(pGD, PROBE_NAME);
+    //   }
+    // }
+    // if (trainingArr && trainingArr.length > 0) {
+    //   console.log(probeArr.length);
+    //   const tGD = CalcMasteryPercentage(trainingArr, probeArr.length);
+    //   if (tGD?.length > 0) {
+    //     setTrainingGraphData(tGD);
+    //     handleGraphPopulation(tGD, TRAINING_NAME);
+    //   }
+    // }
   };
 
   const handleGraphPopulation = (d: [], dataset: string) => {

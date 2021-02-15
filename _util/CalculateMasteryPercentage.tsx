@@ -30,11 +30,8 @@ export function CalcChalBehaviorPercentage(sessionArr: ChainSession[]) {
 }
 
 export function CalcMasteryPercentage(sessionArr: ChainSession[], sessionIndex: number) {
-  //   console.log(sessionIndex);
-
   if (sessionArr.length > 0) {
     return sessionArr.map((e, i) => {
-      console.log(sessionIndex + i + 1);
       return { session_number: sessionIndex + i + 1, mastery: percentMastered(e.step_attempts) };
     });
   }
