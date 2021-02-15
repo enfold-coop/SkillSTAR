@@ -32,65 +32,7 @@ const PlotlyLineGraph = (props: PlotlyLineGraphProps): JSX.Element => {
   const [trainingGraphData, setTrainingGraphData] = useState<ChainSession[]>();
   const [probeGraphData, setProbeGraphData] = useState<ChainSession[]>();
   const [chalBehavGraphData, setChalBehavGraphData] = useState<ChainSession[]>([]);
-  const chainMasteryState = useChainMasteryState();
-
-  useEffect(() => {
-    let isCancelled = false;
-
-    const _load = async () => {
-      if (!isCancelled) {
-        const contextChainData = await ApiService.contextState('chainData');
-
-        if (contextChainData !== undefined) {
-          setChainData(contextChainData as ChainData);
-        }
-        if (chainMasteryState.chainMastery?.chainData.sessions) {
-          console.log(chainMasteryState.chainMastery?.chainData.sessions);
-
-          setGraphData(chainMasteryState.chainMastery?.chainData.sessions);
-        }
-      }
-    };
-
-    _load();
-
-    return () => {
-      isCancelled = true;
-    };
-  }, [chainMasteryState.chainMastery?.chainData.sessions]);
-
-  const setGraphData = (sessions: ChainSession[]) => {
-    console.log(sessions.length);
-
-    if (sessions) {
-      const cBD = CalcChalBehaviorPercentage(sessions);
-      console.log(cBD);
-    }
-
-    const { probeArr, trainingArr } = FilterSessionsByType(sessions);
-    if (trainingArr && trainingArr.length > 0) {
-      const tGD = CalcMasteryPercentage(trainingArr);
-      setTrainingGraphData(tGD);
-    }
-    if (probeArr && probeArr.length > 0) {
-      const pGD = CalcMasteryPercentage(probeArr);
-      setProbeGraphData(pGD);
-    }
-  };
-
-  const handleGraphPopulation = (d: []) => {
-    data.find((e) => {
-      if (e.name === PROBE_NAME) {
-        console.log(e.name);
-      } else if (e.name === TRAINING_NAME) {
-        //
-      } else if (e.name === CB_NAME) {
-        //
-      }
-    });
-  };
-
-  const data = [
+  const [data, setData] = useState([
     {
       x: [],
       y: [],
@@ -117,7 +59,99 @@ const PlotlyLineGraph = (props: PlotlyLineGraphProps): JSX.Element => {
       mode: 'lines',
       name: CB_NAME,
     },
-  ];
+  ]);
+  const chainMasteryState = useChainMasteryState();
+
+  useEffect(() => {
+    let isCancelled = false;
+
+    const _load = async () => {
+      if (!isCancelled) {
+        const contextChainData = await ApiService.contextState('chainData');
+        if (contextChainData !== undefined) {
+          setChainData(contextChainData as ChainData);
+        }
+        if (chainMasteryState.chainMastery?.chainData.sessions) {
+          setGraphData(chainMasteryState.chainMastery?.chainData.sessions);
+        }
+      }
+    };
+
+    _load();
+
+    return () => {
+      isCancelled = true;
+    };
+  }, [chainMasteryState.chainMastery?.chainData.sessions]);
+
+  const setGraphData = (sessions: ChainSession[]) => {
+    if (sessions) {
+      const cBD = CalcChalBehaviorPercentage(sessions);
+      handleGraphPopulation(cBD);
+    }
+
+    const { probeArr, trainingArr } = FilterSessionsByType(sessions);
+    if (trainingArr && trainingArr.length > 0) {
+      const tGD = CalcMasteryPercentage(trainingArr);
+      setTrainingGraphData(tGD);
+      handleGraphPopulation(tGD);
+    }
+    if (probeArr && probeArr.length > 0) {
+      const pGD = CalcMasteryPercentage(probeArr);
+      setProbeGraphData(pGD);
+      handleGraphPopulation(pGD);
+    }
+  };
+
+  const handleGraphPopulation = (d: []) => {
+    data.find((e) => {
+      if (e.name === PROBE_NAME) {
+        d.forEach((f) => {
+          data[0].y.push(f['mastery']);
+          data[0].x.push(f['session_number']);
+        });
+      } else if (e.name === TRAINING_NAME) {
+        d.forEach((f) => {
+          data[1].y.push(f['mastery']);
+          data[1].x.push(f['session_number']);
+        });
+      } else if (e.name === CB_NAME) {
+        d.forEach((f) => {
+          data[2].y.push(f['challenging_behavior']);
+          data[2].x.push(f['session_number']);
+        });
+      }
+    });
+  };
+
+  //   const data = [
+  //     {
+  //       x: [],
+  //       y: [],
+  //       mode: 'markers',
+  //       name: PROBE_NAME,
+  //       marker: {
+  //         color: 'rgb(164, 194, 244)',
+  //         size: 12,
+  //         line: {
+  //           color: 'white',
+  //           width: 0.5,
+  //         },
+  //       },
+  //     },
+  //     {
+  //       x: [],
+  //       y: [],
+  //       mode: 'lines',
+  //       name: TRAINING_NAME,
+  //     },
+  //     {
+  //       x: [],
+  //       y: [],
+  //       mode: 'lines',
+  //       name: CB_NAME,
+  //     },
+  //   ];
 
   const layout = {
     title: 'SkillStar',
