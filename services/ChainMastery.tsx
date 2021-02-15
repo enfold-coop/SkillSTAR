@@ -997,7 +997,12 @@ export class ChainMastery {
    */
   getStepStatus(stepAttempts: StepAttempt[], m: MasteryInfo): ChainStepStatus {
     const needsBooster = this.chainStepNeedsBooster(stepAttempts);
-    const neverAttempted = stepAttempts.every((s) => s.status === ChainStepStatus.not_yet_started);
+    const focusStep = this.currentFocusStep;
+
+    // No step attempts yet.
+    if (!stepAttempts || stepAttempts.length === 0) {
+      return ChainStepStatus.not_yet_started;
+    }
 
     // Step required booster, and it was mastered again
     if (m.dateBoosterMastered && !needsBooster) {
@@ -1013,12 +1018,8 @@ export class ChainMastery {
       return ChainStepStatus.booster_needed;
     }
 
-    if (this.chainStepNeedsFocus(m)) {
+    if (this.chainStepNeedsFocus(m) && focusStep && focusStep.chain_step_id === m.chainStepId) {
       return ChainStepStatus.focus;
-    }
-
-    if (neverAttempted) {
-      return ChainStepStatus.not_yet_started;
     }
 
     return ChainStepStatus.not_complete;
