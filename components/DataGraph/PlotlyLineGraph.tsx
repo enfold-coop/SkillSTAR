@@ -48,8 +48,8 @@ const PlotlyLineGraph = (props: PlotlyLineGraphProps): JSX.Element => {
       },
     },
     {
-      x: [0],
-      y: [0],
+      x: [],
+      y: [],
       mode: 'lines',
       name: TRAINING_NAME,
     },
@@ -85,38 +85,45 @@ const PlotlyLineGraph = (props: PlotlyLineGraphProps): JSX.Element => {
   }, [chainMasteryState.chainMastery?.chainData.sessions]);
 
   const setGraphData = (sessions: ChainSession[]) => {
+    // if there are any number of sessions, then calculate the number that had CB
     if (sessions) {
       const cBD = CalcChalBehaviorPercentage(sessions);
-      handleGraphPopulation(cBD);
+      handleGraphPopulation(cBD, CB_NAME);
     }
 
     const { probeArr, trainingArr } = FilterSessionsByType(sessions);
-    if (trainingArr && trainingArr.length > 0) {
-      const tGD = CalcMasteryPercentage(trainingArr, probeArr.length);
-      console.log(tGD);
-      setTrainingGraphData(tGD);
-      handleGraphPopulation(tGD);
-    }
+    let l = probeArr.length;
+    console.log(trainingArr);
+
+    // console.log(trainingArr);
+
     if (probeArr && probeArr.length > 0) {
-      const pGD = CalcMasteryPercentage(probeArr);
+      const pGD = CalcMasteryPercentage(probeArr, 0);
       setProbeGraphData(pGD);
-      handleGraphPopulation(pGD);
+      handleGraphPopulation(pGD, PROBE_NAME);
+    }
+    if (trainingArr && trainingArr.length > 0) {
+      const tGD = CalcMasteryPercentage(trainingArr, l);
+      setTrainingGraphData(tGD);
+      handleGraphPopulation(tGD, TRAINING_NAME);
     }
   };
 
-  const handleGraphPopulation = (d: []) => {
-    data.find((e) => {
-      if (e.name === PROBE_NAME) {
+  const handleGraphPopulation = (d: [], dataset: string) => {
+    data.forEach((e) => {
+      if (e.name === dataset) {
         d.forEach((f) => {
-          data[0].y.push(f['mastery']);
-          data[0].x.push(f['session_number']);
+          e.y.push(f['mastery']);
+          e.x.push(f['session_number']);
         });
-      } else if (e.name === TRAINING_NAME) {
-        d.forEach((f) => {
+      }
+      if (e.name === dataset && d.length > 0) {
+        d.forEach((f, i) => {
           data[1].y.push(f['mastery']);
           data[1].x.push(f['session_number']);
         });
-      } else if (e.name === CB_NAME) {
+      }
+      if (e.name === dataset) {
         d.forEach((f) => {
           data[2].y.push(f['challenging_behavior']);
           data[2].x.push(f['session_number']);
