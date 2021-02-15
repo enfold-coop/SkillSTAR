@@ -1,4 +1,5 @@
 import { ChainSession } from '../types/chain/ChainSession';
+import { SessionAndIndex } from '../types/chain/FilteredSessions';
 import { ChainStepPromptLevel, ChainStepStatus, StepAttempt } from '../types/chain/StepAttempt';
 
 function percentMastered(steps: StepAttempt[]) {
@@ -29,10 +30,10 @@ export function CalcChalBehaviorPercentage(sessionArr: ChainSession[]) {
   }
 }
 
-export function CalcMasteryPercentage(sessionArr: ChainSession[], sessionIndex: number) {
+export function CalcMasteryPercentage(sessionArr: SessionAndIndex[]) {
   if (sessionArr.length > 0) {
     return sessionArr.map((e, i) => {
-      return { session_number: sessionIndex + i + 1, mastery: percentMastered(e.step_attempts) };
+      return { session_number: e.session_index + 1, mastery: percentMastered(e.session?.step_attempts) };
     });
   }
 }

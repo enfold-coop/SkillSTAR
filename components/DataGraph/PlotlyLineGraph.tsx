@@ -34,8 +34,8 @@ const PlotlyLineGraph = (props: PlotlyLineGraphProps): JSX.Element => {
   const [chalBehavGraphData, setChalBehavGraphData] = useState<ChainSession[]>([]);
   const [data, setData] = useState([
     {
-      x: [0],
-      y: [0],
+      x: [],
+      y: [],
       mode: 'markers',
       name: PROBE_NAME,
       marker: {
@@ -87,29 +87,26 @@ const PlotlyLineGraph = (props: PlotlyLineGraphProps): JSX.Element => {
   const setGraphData = (sessions: ChainSession[]) => {
     if (sessions) {
       const cBD = CalcChalBehaviorPercentage(sessions);
+      console.log(cBD);
+
       handleGraphPopulation(cBD, CB_NAME);
-    }
 
-    if (sessions) {
       const { probeArr, trainingArr } = FilteredSessionWithSessionIndex(sessions);
-      console.log(probeArr[0]);
+      if (probeArr && probeArr.length > 0) {
+        const pGD = CalcMasteryPercentage(probeArr);
+        if (pGD?.length > 0) {
+          setProbeGraphData(pGD);
+          handleGraphPopulation(pGD, PROBE_NAME);
+        }
+      }
+      if (trainingArr && trainingArr.length > 0) {
+        const tGD = CalcMasteryPercentage(trainingArr);
+        if (tGD?.length > 0) {
+          setTrainingGraphData(tGD);
+          handleGraphPopulation(tGD, TRAINING_NAME);
+        }
+      }
     }
-
-    // if (probeArr && probeArr.length > 0) {
-    //   const pGD = CalcMasteryPercentage(probeArr, 0);
-    //   if (pGD?.length > 0) {
-    //     setProbeGraphData(pGD);
-    //     handleGraphPopulation(pGD, PROBE_NAME);
-    //   }
-    // }
-    // if (trainingArr && trainingArr.length > 0) {
-    //   console.log(probeArr.length);
-    //   const tGD = CalcMasteryPercentage(trainingArr, probeArr.length);
-    //   if (tGD?.length > 0) {
-    //     setTrainingGraphData(tGD);
-    //     handleGraphPopulation(tGD, TRAINING_NAME);
-    //   }
-    // }
   };
 
   const handleGraphPopulation = (d: [], dataset: string) => {

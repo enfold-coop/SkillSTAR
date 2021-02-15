@@ -10,14 +10,13 @@ export function FilteredSessionWithSessionIndex(data: ChainSession[]): FilteredS
   if (data != undefined) {
     data.forEach((e, i) => {
       if (e != undefined) {
-        console.log(e.session_type);
         if (e.session_type === ChainSessionType.probe) {
-          probeArr[i].session = e;
-          probeArr[i].session_index = i;
+          const item = { session: e, session_index: i };
+          probeArr.push(item);
         }
         if (e.session_type === ChainSessionType.training) {
-          trainingArr[i].session = e;
-          trainingArr[i].session_index = i;
+          const item = { session: e, session_index: i };
+          trainingArr.push(item);
         }
       }
     });
