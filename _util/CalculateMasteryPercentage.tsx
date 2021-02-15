@@ -33,7 +33,9 @@ export function CalcChalBehaviorPercentage(sessionArr: ChainSession[]) {
 export function CalcMasteryPercentage(sessionArr: SessionAndIndex[]) {
   if (sessionArr.length > 0) {
     return sessionArr.map((e, i) => {
-      return { session_number: e.session_index + 1, mastery: percentMastered(e.session?.step_attempts) };
+      if (e && e.session?.step_attempts) {
+        return { session_number: e.session_index + 1, mastery: percentMastered(e.session?.step_attempts) };
+      }
     });
   }
 }

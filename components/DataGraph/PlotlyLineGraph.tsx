@@ -8,6 +8,7 @@ import { ChainSession } from '../../types/chain/ChainSession';
 import { ChainData } from '../../types/chain/ChainData';
 import { useChainMasteryState } from '../../context/ChainMasteryProvider';
 import { CalcMasteryPercentage, CalcChalBehaviorPercentage } from '../../_util/CalculateMasteryPercentage';
+import { loadPartialConfig } from '@babel/core';
 
 interface PlotlyGraphDimensions {
   width: number;
@@ -86,80 +87,54 @@ const PlotlyLineGraph = (props: PlotlyLineGraphProps): JSX.Element => {
 
   const setGraphData = (sessions: ChainSession[]) => {
     if (sessions) {
-      const cBD = CalcChalBehaviorPercentage(sessions);
-      console.log(cBD);
-
-      handleGraphPopulation(cBD, CB_NAME);
+      const calculatedChalBehavPerc = CalcChalBehaviorPercentage(sessions);
+      handleGraphPopulation(calculatedChalBehavPerc, CB_NAME);
 
       const { probeArr, trainingArr } = FilteredSessionWithSessionIndex(sessions);
+
       if (probeArr && probeArr.length > 0) {
-        const pGD = CalcMasteryPercentage(probeArr);
-        if (pGD?.length > 0) {
-          setProbeGraphData(pGD);
-          handleGraphPopulation(pGD, PROBE_NAME);
+        const calculatedProbeMasteryPerc = CalcMasteryPercentage(probeArr);
+        if (calculatedProbeMasteryPerc?.length > 0) {
+          setProbeGraphData(calculatedProbeMasteryPerc);
+          handleGraphPopulation(calculatedProbeMasteryPerc, PROBE_NAME);
         }
       }
       if (trainingArr && trainingArr.length > 0) {
-        const tGD = CalcMasteryPercentage(trainingArr);
-        if (tGD?.length > 0) {
-          setTrainingGraphData(tGD);
-          handleGraphPopulation(tGD, TRAINING_NAME);
+        const calculatedTrainingMasteryPerc = CalcMasteryPercentage(trainingArr);
+        if (calculatedTrainingMasteryPerc && calculatedTrainingMasteryPerc?.length > 0) {
+          setTrainingGraphData(calculatedTrainingMasteryPerc);
+          handleGraphPopulation(calculatedTrainingMasteryPerc, TRAINING_NAME);
         }
       }
     }
   };
 
   const handleGraphPopulation = (d: [], dataset: string) => {
+    const tempData = data.slice();
+    console.log(dataset);
+
     data.forEach((e) => {
       if (e.name === dataset) {
         d.forEach((f) => {
-          e.y.push(f['mastery']);
-          e.x.push(f['session_number']);
+          tempData[0].y.push(f['mastery']);
+          tempData[0].x.push(f['session_number']);
         });
       }
-      if (e.name === dataset && d.length > 0) {
+      if (e.name === dataset) {
         d.forEach((f, i) => {
-          data[1].y.push(f['mastery']);
-          data[1].x.push(f['session_number']);
+          tempData[1].y.push(f['mastery']);
+          tempData[1].x.push(f['session_number']);
         });
       }
       if (e.name === dataset) {
         d.forEach((f) => {
-          data[2].y.push(f['challenging_behavior']);
-          data[2].x.push(f['session_number']);
+          tempData[2].y.push(f['challenging_behavior']);
+          tempData[2].x.push(f['session_number']);
         });
       }
     });
+    setGraphData(tempData);
   };
-
-  //   const data = [
-  //     {
-  //       x: [],
-  //       y: [],
-  //       mode: 'markers',
-  //       name: PROBE_NAME,
-  //       marker: {
-  //         color: 'rgb(164, 194, 244)',
-  //         size: 12,
-  //         line: {
-  //           color: 'white',
-  //           width: 0.5,
-  //         },
-  //       },
-  //     },
-  //     {
-  //       x: [],
-  //       y: [],
-  //       mode: 'lines',
-  //       name: TRAINING_NAME,
-  //     },
-  //     {
-  //       x: [],
-  //       y: [],
-  //       mode: 'lines',
-  //       name: CB_NAME,
-  //     },
-  //   ];
 
   const layout = {
     title: 'SkillStar',
