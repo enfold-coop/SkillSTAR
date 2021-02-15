@@ -19,6 +19,10 @@ type PlotlyLineGraphProps = {
   modal: boolean;
 };
 
+const PROBE_NAME = 'Probe Session';
+const TRAINING_NAME = 'Training Session';
+const CB_NAME = 'Challenging Behavior';
+
 const PlotlyLineGraph = (props: PlotlyLineGraphProps): JSX.Element => {
   const { dimensions, modal } = props;
   const [thisHeight, setHeight] = useState<number>();
@@ -36,10 +40,13 @@ const PlotlyLineGraph = (props: PlotlyLineGraphProps): JSX.Element => {
     const _load = async () => {
       if (!isCancelled) {
         const contextChainData = await ApiService.contextState('chainData');
+
         if (contextChainData !== undefined) {
           setChainData(contextChainData as ChainData);
         }
         if (chainMasteryState.chainMastery?.chainData.sessions) {
+          console.log(chainMasteryState.chainMastery?.chainData.sessions);
+
           setGraphData(chainMasteryState.chainMastery?.chainData.sessions);
         }
       }
@@ -71,12 +78,24 @@ const PlotlyLineGraph = (props: PlotlyLineGraphProps): JSX.Element => {
     }
   };
 
+  const handleGraphPopulation = (d: []) => {
+    data.find((e) => {
+      if (e.name === PROBE_NAME) {
+        console.log(e.name);
+      } else if (e.name === TRAINING_NAME) {
+        //
+      } else if (e.name === CB_NAME) {
+        //
+      }
+    });
+  };
+
   const data = [
     {
-      x: [1, 2, 3, 4, 5],
-      y: [5, 4, 4, 4, 4],
+      x: [],
+      y: [],
       mode: 'markers',
-      name: 'Probe Session',
+      name: PROBE_NAME,
       marker: {
         color: 'rgb(164, 194, 244)',
         size: 12,
@@ -87,16 +106,16 @@ const PlotlyLineGraph = (props: PlotlyLineGraphProps): JSX.Element => {
       },
     },
     {
-      x: [1, 2, 3, 4, 5],
-      y: [5, 2, 5, 1, 2],
+      x: [],
+      y: [],
       mode: 'lines',
-      name: 'Training Session',
+      name: TRAINING_NAME,
     },
     {
-      x: [1, 2, 3, 4, 5],
-      y: [1, 2, 3, 4, 5],
+      x: [],
+      y: [],
       mode: 'lines',
-      name: 'Challenging Behavior',
+      name: CB_NAME,
     },
   ];
 
