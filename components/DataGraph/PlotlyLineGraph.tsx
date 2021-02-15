@@ -92,7 +92,7 @@ const PlotlyLineGraph = (props: PlotlyLineGraphProps): JSX.Element => {
     }
 
     const { probeArr, trainingArr } = FilterSessionsByType(sessions);
-    let l = probeArr.length;
+    const l = probeArr.length;
     console.log(trainingArr);
 
     // console.log(trainingArr);
