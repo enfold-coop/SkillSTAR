@@ -62,7 +62,6 @@ const PlotlyLineGraph = (props: PlotlyLineGraphProps): JSX.Element => {
       name: CB_NAME,
     },
   ]);
-  const chainMasteryState = useChainMasteryState();
 
   useEffect(() => {
     let isCancelled = false;
@@ -71,7 +70,7 @@ const PlotlyLineGraph = (props: PlotlyLineGraphProps): JSX.Element => {
       if (!isCancelled) {
         const contextChainData = await ApiService.contextState('chainData');
         if (sessions !== undefined) {
-          setGraphData(sessions.sessions);
+          setGraphData(sessions);
         }
       }
     };
@@ -81,7 +80,7 @@ const PlotlyLineGraph = (props: PlotlyLineGraphProps): JSX.Element => {
     return () => {
       isCancelled = true;
     };
-  }, [sessions]);
+  });
 
   const setGraphData = (sessions: ChainSession[]) => {
     const temp = [];
@@ -106,10 +105,7 @@ const PlotlyLineGraph = (props: PlotlyLineGraphProps): JSX.Element => {
           temp.push({ data: calculatedTrainingMasteryPerc, name: TRAINING_NAME });
         }
       }
-
-      if (temp.length > 0) {
-        handleGraphPopulation(temp);
-      }
+      handleGraphPopulation(temp);
     }
   };
 
@@ -129,9 +125,8 @@ const PlotlyLineGraph = (props: PlotlyLineGraphProps): JSX.Element => {
           });
         }
       }
+      setData(tempData);
     });
-
-    setGraphData(tempData);
   };
 
   const layout = {

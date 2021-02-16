@@ -28,10 +28,6 @@ const GraphModal = (props: GraphModalProps): JSX.Element => {
     setVisible(visible);
   }, [visible]);
 
-  useEffect(() => {
-    console.log('sessionData in graph modal');
-  }, [sessionsData]);
-
   return (
     <Modal
       visible={vis}

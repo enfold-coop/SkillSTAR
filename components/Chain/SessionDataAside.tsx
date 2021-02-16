@@ -46,7 +46,7 @@ const SessionDataAside: FC<Props> = (props): JSX.Element => {
         const contextChainData = await ApiService.contextState('chainData');
         if (contextChainData !== undefined) {
           setChainData(contextChainData as ChainData);
-          setSessions(contextChainData);
+          setSessions(sessionData);
         }
       }
     };
@@ -66,7 +66,7 @@ const SessionDataAside: FC<Props> = (props): JSX.Element => {
     chainMasteryState.chainMastery.draftSession &&
     chainMasteryState.chainMastery.draftSession.date ? (
     <View style={styles.container}>
-      <GraphModal visible={modalVis} handleVis={handleModal} sessionsData={sessions} />
+      {sessions && <GraphModal visible={modalVis} handleVis={handleModal} sessionsData={sessions} />}
       <View>
         <View>
           <Card>

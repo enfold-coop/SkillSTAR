@@ -23,8 +23,8 @@ const ChainsHomeGraph = (props: ChainsHomeGraphProps): JSX.Element => {
 
   const data = [
     {
-      x: [1, 2, 3, 4, 5],
-      y: [1, 2, 3, 4, 5],
+      x: [],
+      y: [],
       mode: 'markers',
       name: 'Probe Session',
       marker: {
@@ -37,14 +37,14 @@ const ChainsHomeGraph = (props: ChainsHomeGraphProps): JSX.Element => {
       },
     },
     {
-      x: [1, 2, 3, 4, 5],
-      y: [1, 2, 3, 4, 5],
+      x: [],
+      y: [],
       mode: 'lines',
       name: 'Training Session',
     },
     {
-      x: [1, 2, 3, 4, 5],
-      y: [1, 2, 3, 4, 5],
+      x: [],
+      y: [],
       mode: 'lines',
       name: 'Challenging Behavior',
     },
