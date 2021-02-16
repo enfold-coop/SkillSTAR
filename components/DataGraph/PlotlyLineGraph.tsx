@@ -30,10 +30,7 @@ const PlotlyLineGraph = (props: PlotlyLineGraphProps): JSX.Element => {
   const [thisHeight, setHeight] = useState<number>();
   const [thisWidth, setWidth] = useState<number>();
   const [isModal, setIsModal] = useState<boolean>(false);
-  const [chainData, setChainData] = useState<ChainData>();
-  const [trainingGraphData, setTrainingGraphData] = useState<ChainSession[]>();
-  const [probeGraphData, setProbeGraphData] = useState<ChainSession[]>();
-  const [chalBehavGraphData, setChalBehavGraphData] = useState<ChainSession[]>([]);
+
   const [data, setData] = useState([
     {
       x: [],
@@ -64,23 +61,10 @@ const PlotlyLineGraph = (props: PlotlyLineGraphProps): JSX.Element => {
   ]);
 
   useEffect(() => {
-    let isCancelled = false;
-
-    const _load = async () => {
-      if (!isCancelled) {
-        const contextChainData = await ApiService.contextState('chainData');
-        if (sessions !== undefined) {
-          setGraphData(sessions);
-        }
-      }
-    };
-
-    _load();
-
-    return () => {
-      isCancelled = true;
-    };
-  });
+    if (sessions !== undefined) {
+      setGraphData(sessions);
+    }
+  }, []);
 
   const setGraphData = (sessions: ChainSession[]) => {
     const temp = [];

@@ -32,7 +32,7 @@ export function CalcMasteryPercentage(sessionArr: SessionAndIndex[]) {
   if (sessionArr.length > 0) {
     return sessionArr.map((e, i) => {
       if (e && e.session?.step_attempts) {
-        let mastery = percentMastered(e.session?.step_attempts);
+        const mastery = percentMastered(e.session?.step_attempts);
         return { session_number: e.session_index + 1, mastery: mastery };
       }
     });

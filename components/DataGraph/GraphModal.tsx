@@ -4,7 +4,6 @@ import { Button } from 'react-native-paper';
 import CustomColors from '../../styles/Colors';
 import { ChainData } from '../../types/chain/ChainData';
 import { ChainSession } from '../../types/chain/ChainSession';
-import { Session } from '../../types/chain/Session';
 import PlotlyLineGraph from './PlotlyLineGraph';
 
 interface GraphModalProps {
