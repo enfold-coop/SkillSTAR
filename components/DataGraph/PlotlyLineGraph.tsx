@@ -84,11 +84,13 @@ const PlotlyLineGraph = (props: PlotlyLineGraphProps): JSX.Element => {
   }, [sessions]);
 
   const setGraphData = (sessions: ChainSession[]) => {
+    const temp = [];
     if (sessions != undefined) {
       const calculatedChalBehavPerc = CalcChalBehaviorPercentage(sessions);
 
       if (calculatedChalBehavPerc != undefined) {
-        handleGraphPopulation(calculatedChalBehavPerc, CB_NAME);
+        // handleGraphPopulation(calculatedChalBehavPerc, CB_NAME);
+        temp.push({ data: calculatedChalBehavPerc, name: CB_NAME });
       }
 
       const { probeArr, trainingArr } = FilteredSessionWithSessionIndex(sessions);
@@ -96,34 +98,44 @@ const PlotlyLineGraph = (props: PlotlyLineGraphProps): JSX.Element => {
       if (probeArr && probeArr.length > 0) {
         const calculatedProbeMasteryPerc = CalcMasteryPercentage(probeArr);
         if (calculatedProbeMasteryPerc != undefined) {
-          handleGraphPopulation(calculatedProbeMasteryPerc, PROBE_NAME);
+          temp.push({ data: calculatedProbeMasteryPerc, name: PROBE_NAME });
+          //   handleGraphPopulation(calculatedProbeMasteryPerc, PROBE_NAME);
         }
       }
       if (trainingArr && trainingArr.length > 0) {
         const calculatedTrainingMasteryPerc = CalcMasteryPercentage(trainingArr);
         if (calculatedTrainingMasteryPerc != undefined) {
-          handleGraphPopulation(calculatedTrainingMasteryPerc, TRAINING_NAME);
+          temp.push({ data: calculatedTrainingMasteryPerc, name: TRAINING_NAME });
+          //   handleGraphPopulation(calculatedTrainingMasteryPerc, TRAINING_NAME);
         }
+      }
+
+      if (temp.length > 0) {
+        handleGraphPopulation(temp);
       }
     }
   };
 
-  const handleGraphPopulation = (d: [], dataset: string) => {
+  const handleGraphPopulation = (d: []) => {
     const tempData = data.slice();
 
-    // console.log(tempData);
-
-    // data.forEach((e) => {
-    //   if (d && e && e.name != undefined) {
-    //     if (e.name === dataset) {
-    //       d.forEach((f) => {
-    //         tempData[0].y.push(f['mastery']);
-    //         tempData[0].x.push(f['session_number']);
-    //       });
-    //     }
-    //   }
-    // });
-    // setGraphData(tempData);
+    d.forEach((e) => {
+      console.log('e');
+      if (e && e.name) {
+        const dE = tempData.find((f) => f.name === e.name);
+        if (dE && e.data) {
+          const keys = Object.keys(e.data[0]);
+          dE.x.splice(0, dE.x.length);
+          dE.y.splice(0, dE.y.length);
+          e.data.forEach((dataObj, i) => {
+            dE.x[i] = dataObj[keys[0]];
+            dE.y[i] = dataObj[keys[1]];
+          });
+        }
+      }
+    });
+    console.log(tempData);
+    setGraphData(tempData);
   };
 
   const layout = {
