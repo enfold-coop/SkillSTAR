@@ -4,18 +4,20 @@ import { ChainStepPromptLevel, ChainStepStatus, StepAttempt } from '../types/cha
 
 function percentMastered(steps: StepAttempt[]) {
   let r = 0;
-  steps.forEach((e) => {
-    if (e.completed && !e.had_challenging_behavior) {
-      r++;
-    }
-  });
+  if (steps) {
+    steps.forEach((e) => {
+      if (e.completed && !e.had_challenging_behavior) {
+        r++;
+      }
+    });
+  }
   return (r / steps.length) * 100;
 }
 
 function percentChalBehavior(steps: StepAttempt[]) {
   let r = 0;
   steps.forEach((e) => {
-    if (e.had_challenging_behavior) {
+    if (e && e.had_challenging_behavior) {
       r++;
     }
   });
@@ -23,11 +25,9 @@ function percentChalBehavior(steps: StepAttempt[]) {
 }
 
 export function CalcChalBehaviorPercentage(sessionArr: ChainSession[]) {
-  if (sessionArr.length > 0) {
-    return sessionArr.map((e, i) => {
-      return { session_number: i + 1, challenging_behavior: percentChalBehavior(e.step_attempts) };
-    });
-  }
+  return sessionArr.map((e, i) => {
+    return { session_number: i + 1, challenging_behavior: percentChalBehavior(e.step_attempts) };
+  });
 }
 
 export function CalcMasteryPercentage(sessionArr: SessionAndIndex[]) {

@@ -4,15 +4,17 @@ import { Button } from 'react-native-paper';
 import CustomColors from '../../styles/Colors';
 import { ChainData } from '../../types/chain/ChainData';
 import { ChainSession } from '../../types/chain/ChainSession';
+import { Session } from '../../types/chain/Session';
 import PlotlyLineGraph from './PlotlyLineGraph';
 
 interface GraphModalProps {
   visible: boolean;
   handleVis: () => void;
+  sessionsData: ChainSession[];
 }
 
 const GraphModal = (props: GraphModalProps): JSX.Element => {
-  const { visible, handleVis } = props;
+  const { visible, handleVis, sessionsData } = props;
 
   const [graphDimens, setGraphDimens] = useState<LayoutRectangle>();
   const [vis, setVisible] = useState(false);
@@ -25,6 +27,10 @@ const GraphModal = (props: GraphModalProps): JSX.Element => {
   useEffect(() => {
     setVisible(visible);
   }, [visible]);
+
+  useEffect(() => {
+    console.log('sessionData in graph modal');
+  }, [sessionsData]);
 
   return (
     <Modal
@@ -39,7 +45,9 @@ const GraphModal = (props: GraphModalProps): JSX.Element => {
           setGraphDimens(e.nativeEvent.layout);
         }}
       >
-        {graphDimens && graphDimens.height && <PlotlyLineGraph modal={true} dimensions={graphDimens} />}
+        {graphDimens && graphDimens.height && sessionsData && (
+          <PlotlyLineGraph modal={true} dimensions={graphDimens} sessions={sessionsData} />
+        )}
         <Button
           style={styles.closeBtn}
           labelStyle={{ fontSize: 16 }}

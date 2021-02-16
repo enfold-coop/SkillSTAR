@@ -34,9 +34,7 @@ const SessionDataAside: FC<Props> = (props): JSX.Element => {
   const { sessionData } = props;
   const [graphContainerDimens, setGraphContainerDimens] = useState<LayoutRectangle>();
   const [modalVis, setModalVis] = useState(false);
-  const [asideData, setAsideData] = useState<StepAttempt>();
-  const [probeSessions, setProbeSessions] = useState<ChainSession[]>([]);
-  const [trainingSessions, setTrainingSessions] = useState<ChainSession[]>();
+  const [sessions, setSessions] = useState<ChainSession[]>();
   const [chainData, setChainData] = useState<ChainData>();
   const chainMasteryState = useChainMasteryState();
 
@@ -48,6 +46,7 @@ const SessionDataAside: FC<Props> = (props): JSX.Element => {
         const contextChainData = await ApiService.contextState('chainData');
         if (contextChainData !== undefined) {
           setChainData(contextChainData as ChainData);
+          setSessions(contextChainData);
         }
       }
     };
@@ -67,7 +66,7 @@ const SessionDataAside: FC<Props> = (props): JSX.Element => {
     chainMasteryState.chainMastery.draftSession &&
     chainMasteryState.chainMastery.draftSession.date ? (
     <View style={styles.container}>
-      <GraphModal visible={modalVis} handleVis={handleModal} />
+      <GraphModal visible={modalVis} handleVis={handleModal} sessionsData={sessions} />
       <View>
         <View>
           <Card>

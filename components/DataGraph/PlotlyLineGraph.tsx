@@ -18,6 +18,7 @@ interface PlotlyGraphDimensions {
 type PlotlyLineGraphProps = {
   dimensions: PlotlyGraphDimensions;
   modal: boolean;
+  sessions: ChainSession[];
 };
 
 const PROBE_NAME = 'Probe Session';
@@ -25,7 +26,7 @@ const TRAINING_NAME = 'Training Session';
 const CB_NAME = 'Challenging Behavior';
 
 const PlotlyLineGraph = (props: PlotlyLineGraphProps): JSX.Element => {
-  const { dimensions, modal } = props;
+  const { dimensions, modal, sessions } = props;
   const [thisHeight, setHeight] = useState<number>();
   const [thisWidth, setWidth] = useState<number>();
   const [isModal, setIsModal] = useState<boolean>(false);
@@ -69,11 +70,8 @@ const PlotlyLineGraph = (props: PlotlyLineGraphProps): JSX.Element => {
     const _load = async () => {
       if (!isCancelled) {
         const contextChainData = await ApiService.contextState('chainData');
-        if (contextChainData !== undefined) {
-          setChainData(contextChainData as ChainData);
-        }
-        if (chainMasteryState.chainMastery?.chainData.sessions) {
-          setGraphData(chainMasteryState.chainMastery?.chainData.sessions);
+        if (sessions !== undefined) {
+          setGraphData(sessions.sessions);
         }
       }
     };
@@ -83,26 +81,27 @@ const PlotlyLineGraph = (props: PlotlyLineGraphProps): JSX.Element => {
     return () => {
       isCancelled = true;
     };
-  }, [chainMasteryState.chainMastery?.chainData.sessions]);
+  }, [sessions]);
 
   const setGraphData = (sessions: ChainSession[]) => {
-    if (sessions) {
+    if (sessions != undefined) {
       const calculatedChalBehavPerc = CalcChalBehaviorPercentage(sessions);
-      handleGraphPopulation(calculatedChalBehavPerc, CB_NAME);
+
+      if (calculatedChalBehavPerc != undefined) {
+        handleGraphPopulation(calculatedChalBehavPerc, CB_NAME);
+      }
 
       const { probeArr, trainingArr } = FilteredSessionWithSessionIndex(sessions);
 
       if (probeArr && probeArr.length > 0) {
         const calculatedProbeMasteryPerc = CalcMasteryPercentage(probeArr);
-        if (calculatedProbeMasteryPerc?.length > 0) {
-          setProbeGraphData(calculatedProbeMasteryPerc);
+        if (calculatedProbeMasteryPerc != undefined) {
           handleGraphPopulation(calculatedProbeMasteryPerc, PROBE_NAME);
         }
       }
       if (trainingArr && trainingArr.length > 0) {
         const calculatedTrainingMasteryPerc = CalcMasteryPercentage(trainingArr);
-        if (calculatedTrainingMasteryPerc && calculatedTrainingMasteryPerc?.length > 0) {
-          setTrainingGraphData(calculatedTrainingMasteryPerc);
+        if (calculatedTrainingMasteryPerc != undefined) {
           handleGraphPopulation(calculatedTrainingMasteryPerc, TRAINING_NAME);
         }
       }
@@ -111,29 +110,20 @@ const PlotlyLineGraph = (props: PlotlyLineGraphProps): JSX.Element => {
 
   const handleGraphPopulation = (d: [], dataset: string) => {
     const tempData = data.slice();
-    console.log(dataset);
 
-    data.forEach((e) => {
-      if (e.name === dataset) {
-        d.forEach((f) => {
-          tempData[0].y.push(f['mastery']);
-          tempData[0].x.push(f['session_number']);
-        });
-      }
-      if (e.name === dataset) {
-        d.forEach((f, i) => {
-          tempData[1].y.push(f['mastery']);
-          tempData[1].x.push(f['session_number']);
-        });
-      }
-      if (e.name === dataset) {
-        d.forEach((f) => {
-          tempData[2].y.push(f['challenging_behavior']);
-          tempData[2].x.push(f['session_number']);
-        });
-      }
-    });
-    setGraphData(tempData);
+    // console.log(tempData);
+
+    // data.forEach((e) => {
+    //   if (d && e && e.name != undefined) {
+    //     if (e.name === dataset) {
+    //       d.forEach((f) => {
+    //         tempData[0].y.push(f['mastery']);
+    //         tempData[0].x.push(f['session_number']);
+    //       });
+    //     }
+    //   }
+    // });
+    // setGraphData(tempData);
   };
 
   const layout = {
