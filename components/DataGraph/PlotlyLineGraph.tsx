@@ -89,7 +89,6 @@ const PlotlyLineGraph = (props: PlotlyLineGraphProps): JSX.Element => {
       const calculatedChalBehavPerc = CalcChalBehaviorPercentage(sessions);
 
       if (calculatedChalBehavPerc != undefined) {
-        // handleGraphPopulation(calculatedChalBehavPerc, CB_NAME);
         temp.push({ data: calculatedChalBehavPerc, name: CB_NAME });
       }
 
@@ -99,14 +98,12 @@ const PlotlyLineGraph = (props: PlotlyLineGraphProps): JSX.Element => {
         const calculatedProbeMasteryPerc = CalcMasteryPercentage(probeArr);
         if (calculatedProbeMasteryPerc != undefined) {
           temp.push({ data: calculatedProbeMasteryPerc, name: PROBE_NAME });
-          //   handleGraphPopulation(calculatedProbeMasteryPerc, PROBE_NAME);
         }
       }
       if (trainingArr && trainingArr.length > 0) {
         const calculatedTrainingMasteryPerc = CalcMasteryPercentage(trainingArr);
         if (calculatedTrainingMasteryPerc != undefined) {
           temp.push({ data: calculatedTrainingMasteryPerc, name: TRAINING_NAME });
-          //   handleGraphPopulation(calculatedTrainingMasteryPerc, TRAINING_NAME);
         }
       }
 
@@ -120,7 +117,6 @@ const PlotlyLineGraph = (props: PlotlyLineGraphProps): JSX.Element => {
     const tempData = data.slice();
 
     d.forEach((e) => {
-      console.log('e');
       if (e && e.name) {
         const dE = tempData.find((f) => f.name === e.name);
         if (dE && e.data) {
@@ -134,7 +130,7 @@ const PlotlyLineGraph = (props: PlotlyLineGraphProps): JSX.Element => {
         }
       }
     });
-    console.log(tempData);
+
     setGraphData(tempData);
   };
 
