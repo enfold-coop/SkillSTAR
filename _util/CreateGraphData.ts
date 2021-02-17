@@ -1,3 +1,42 @@
+import { ChainSession } from '../types/chain/ChainSession';
+import { CalcChalBehaviorPercentage, CalcMasteryPercentage } from './CalculateMasteryPercentage';
+import { FilteredSessionWithSessionIndex } from './FilterSessionType';
+
+const PROBE_NAME = 'Probe Session';
+const TRAINING_NAME = 'Training Session';
+const CB_NAME = 'Challenging Behavior';
+
+/**
+ * Returns array with computed mastery and CB percentages;
+ * @param sessions : array of ChainSessions to be provides to mastery calculations
+ */
+export const SetGraphData = (sessions: ChainSession[]) => {
+  const temp = [];
+  if (sessions != undefined) {
+    const calculatedChalBehavPerc = CalcChalBehaviorPercentage(sessions);
+
+    if (calculatedChalBehavPerc != undefined) {
+      temp.push({ data: calculatedChalBehavPerc, name: CB_NAME });
+    }
+
+    const { probeArr, trainingArr } = FilteredSessionWithSessionIndex(sessions);
+
+    if (probeArr && probeArr.length > 0) {
+      const calculatedProbeMasteryPerc = CalcMasteryPercentage(probeArr);
+      if (calculatedProbeMasteryPerc != undefined) {
+        temp.push({ data: calculatedProbeMasteryPerc, name: PROBE_NAME });
+      }
+    }
+    if (trainingArr && trainingArr.length > 0) {
+      const calculatedTrainingMasteryPerc = CalcMasteryPercentage(trainingArr);
+      if (calculatedTrainingMasteryPerc != undefined) {
+        temp.push({ data: calculatedTrainingMasteryPerc, name: TRAINING_NAME });
+      }
+    }
+  }
+  return temp;
+};
+
 /**
  *
  * @param currGraphData: data that is already present in graph's "data" state property

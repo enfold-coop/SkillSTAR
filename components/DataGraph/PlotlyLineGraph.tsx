@@ -5,7 +5,7 @@ import { FilteredSessionWithSessionIndex } from '../../_util/FilterSessionType';
 import CustomColors from '../../styles/Colors';
 import { ChainSession } from '../../types/chain/ChainSession';
 import { CalcMasteryPercentage, CalcChalBehaviorPercentage } from '../../_util/CalculateMasteryPercentage';
-import { HandleGraphPopulation } from '../../_util/CreateGraphData';
+import { HandleGraphPopulation, SetGraphData } from '../../_util/CreateGraphData';
 
 interface PlotlyGraphDimensions {
   width: number;
@@ -63,31 +63,36 @@ const PlotlyLineGraph = (props: PlotlyLineGraphProps): JSX.Element => {
     }
   }, [isModal]);
 
+  //   const setGraphData = (sessions: ChainSession[]) => {
+  //     const temp = [];
+  //     if (sessions != undefined) {
+  //       const calculatedChalBehavPerc = CalcChalBehaviorPercentage(sessions);
+
+  //       if (calculatedChalBehavPerc != undefined) {
+  //         temp.push({ data: calculatedChalBehavPerc, name: CB_NAME });
+  //       }
+
+  //       const { probeArr, trainingArr } = FilteredSessionWithSessionIndex(sessions);
+
+  //       if (probeArr && probeArr.length > 0) {
+  //         const calculatedProbeMasteryPerc = CalcMasteryPercentage(probeArr);
+  //         if (calculatedProbeMasteryPerc != undefined) {
+  //           temp.push({ data: calculatedProbeMasteryPerc, name: PROBE_NAME });
+  //         }
+  //       }
+  //       if (trainingArr && trainingArr.length > 0) {
+  //         const calculatedTrainingMasteryPerc = CalcMasteryPercentage(trainingArr);
+  //         if (calculatedTrainingMasteryPerc != undefined) {
+  //           temp.push({ data: calculatedTrainingMasteryPerc, name: TRAINING_NAME });
+  //         }
+  //       }
+  //       handleGraphPopulation(temp);
+  //     }
+  //   };
+
   const setGraphData = (sessions: ChainSession[]) => {
-    const temp = [];
-    if (sessions != undefined) {
-      const calculatedChalBehavPerc = CalcChalBehaviorPercentage(sessions);
-
-      if (calculatedChalBehavPerc != undefined) {
-        temp.push({ data: calculatedChalBehavPerc, name: CB_NAME });
-      }
-
-      const { probeArr, trainingArr } = FilteredSessionWithSessionIndex(sessions);
-
-      if (probeArr && probeArr.length > 0) {
-        const calculatedProbeMasteryPerc = CalcMasteryPercentage(probeArr);
-        if (calculatedProbeMasteryPerc != undefined) {
-          temp.push({ data: calculatedProbeMasteryPerc, name: PROBE_NAME });
-        }
-      }
-      if (trainingArr && trainingArr.length > 0) {
-        const calculatedTrainingMasteryPerc = CalcMasteryPercentage(trainingArr);
-        if (calculatedTrainingMasteryPerc != undefined) {
-          temp.push({ data: calculatedTrainingMasteryPerc, name: TRAINING_NAME });
-        }
-      }
-      handleGraphPopulation(temp);
-    }
+    let calculatedDataArray = SetGraphData(sessions);
+    console.log(calculatedDataArray);
   };
 
   const handleGraphPopulation = (d: []) => {
