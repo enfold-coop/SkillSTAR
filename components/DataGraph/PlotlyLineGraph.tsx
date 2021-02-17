@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import Plotly from 'react-native-plotly';
-import {FilteredSessionWithSessionIndex } from '../../_util/FilterSessionType';
+import { FilteredSessionWithSessionIndex } from '../../_util/FilterSessionType';
 import CustomColors from '../../styles/Colors';
 import { ChainSession } from '../../types/chain/ChainSession';
 import { CalcMasteryPercentage, CalcChalBehaviorPercentage } from '../../_util/CalculateMasteryPercentage';
+import { HandleGraphPopulation } from '../../_util/CreateGraphData';
 
 interface PlotlyGraphDimensions {
   width: number;
@@ -90,23 +91,9 @@ const PlotlyLineGraph = (props: PlotlyLineGraphProps): JSX.Element => {
   };
 
   const handleGraphPopulation = (d: []) => {
-    const tempData = data.slice();
-
-    d.forEach((e) => {
-      if (e && e.name) {
-        const dE = tempData.find((f) => f.name === e.name);
-        if (dE && e.data) {
-          const keys = Object.keys(e.data[0]);
-          dE.x.splice(0, dE.x.length);
-          dE.y.splice(0, dE.y.length);
-          e.data.forEach((dataObj, i) => {
-            dE.x[i] = dataObj[keys[0]];
-            dE.y[i] = dataObj[keys[1]];
-          });
-        }
-      }
-      setData(tempData);
-    });
+    const newGraphData = HandleGraphPopulation(data, d);
+    console.log('setting new graph data');
+    setData(newGraphData);
   };
 
   const layout = {
