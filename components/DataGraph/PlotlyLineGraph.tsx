@@ -1,14 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import Plotly from 'react-native-plotly';
-import { FilterSessionsByType, FilteredSessionWithSessionIndex } from '../../_util/FilterSessionType';
-import { ApiService } from '../../services/ApiService';
+import {FilteredSessionWithSessionIndex } from '../../_util/FilterSessionType';
 import CustomColors from '../../styles/Colors';
 import { ChainSession } from '../../types/chain/ChainSession';
-import { ChainData } from '../../types/chain/ChainData';
-import { useChainMasteryState } from '../../context/ChainMasteryProvider';
 import { CalcMasteryPercentage, CalcChalBehaviorPercentage } from '../../_util/CalculateMasteryPercentage';
-import { loadPartialConfig } from '@babel/core';
 
 interface PlotlyGraphDimensions {
   width: number;
@@ -64,7 +60,7 @@ const PlotlyLineGraph = (props: PlotlyLineGraphProps): JSX.Element => {
     if (sessions !== undefined) {
       setGraphData(sessions);
     }
-  }, []);
+  }, [isModal]);
 
   const setGraphData = (sessions: ChainSession[]) => {
     const temp = [];
