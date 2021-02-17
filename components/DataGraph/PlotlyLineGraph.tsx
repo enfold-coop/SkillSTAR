@@ -63,41 +63,15 @@ const PlotlyLineGraph = (props: PlotlyLineGraphProps): JSX.Element => {
     }
   }, [isModal]);
 
-  //   const setGraphData = (sessions: ChainSession[]) => {
-  //     const temp = [];
-  //     if (sessions != undefined) {
-  //       const calculatedChalBehavPerc = CalcChalBehaviorPercentage(sessions);
-
-  //       if (calculatedChalBehavPerc != undefined) {
-  //         temp.push({ data: calculatedChalBehavPerc, name: CB_NAME });
-  //       }
-
-  //       const { probeArr, trainingArr } = FilteredSessionWithSessionIndex(sessions);
-
-  //       if (probeArr && probeArr.length > 0) {
-  //         const calculatedProbeMasteryPerc = CalcMasteryPercentage(probeArr);
-  //         if (calculatedProbeMasteryPerc != undefined) {
-  //           temp.push({ data: calculatedProbeMasteryPerc, name: PROBE_NAME });
-  //         }
-  //       }
-  //       if (trainingArr && trainingArr.length > 0) {
-  //         const calculatedTrainingMasteryPerc = CalcMasteryPercentage(trainingArr);
-  //         if (calculatedTrainingMasteryPerc != undefined) {
-  //           temp.push({ data: calculatedTrainingMasteryPerc, name: TRAINING_NAME });
-  //         }
-  //       }
-  //       handleGraphPopulation(temp);
-  //     }
-  //   };
-
   const setGraphData = (sessions: ChainSession[]) => {
-    let calculatedDataArray = SetGraphData(sessions);
-    console.log(calculatedDataArray);
+    const calculatedDataArray = SetGraphData(sessions);
+    if (calculatedDataArray) {
+      handleGraphPopulation(calculatedDataArray);
+    }
   };
 
   const handleGraphPopulation = (d: []) => {
     const newGraphData = HandleGraphPopulation(data, d);
-    console.log('setting new graph data');
     setData(newGraphData);
   };
 
