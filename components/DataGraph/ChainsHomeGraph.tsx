@@ -2,31 +2,31 @@ import React, { useEffect, useState } from 'react';
 import { LayoutRectangle, StyleSheet, View } from 'react-native';
 import Plotly from 'react-native-plotly';
 import CustomColors from '../../styles/Colors';
-import { ChainSessionType } from '../../types/chain/ChainSession';
+import { ChainSession, ChainSessionType } from '../../types/chain/ChainSession';
 import { useChainMasteryState } from '../../context/ChainMasteryProvider';
 import { ChainData } from '../../types/chain/ChainData';
+import { SetGraphData, HandleGraphPopulation } from '../../_util/CreateGraphData';
 
 interface ChainsHomeGraphProps {
   dimensions?: LayoutRectangle;
   chainData: ChainData;
+  sessionData: ChainSession[];
 }
 
+const PROBE_NAME = 'Probe Session';
+const TRAINING_NAME = 'Training Session';
+const CB_NAME = 'Challenging Behavior';
+
 const ChainsHomeGraph = (props: ChainsHomeGraphProps): JSX.Element => {
-  const { dimensions, chainData } = props;
+  const { dimensions, chainData, sessionData } = props;
   const [dimens, setDimens] = useState<LayoutRectangle>();
-
-  useEffect(() => {
-    if (dimensions && !dimens) {
-      setDimens(dimensions);
-    }
-  }, []);
-
-  const data = [
+  const [sessions, setSesionData] = useState<ChainSession[]>([]);
+  const [data, setData] = useState([
     {
       x: [],
       y: [],
       mode: 'markers',
-      name: 'Probe Session',
+      name: PROBE_NAME,
       marker: {
         color: 'rgb(164, 194, 244)',
         size: 12,
@@ -40,15 +40,66 @@ const ChainsHomeGraph = (props: ChainsHomeGraphProps): JSX.Element => {
       x: [],
       y: [],
       mode: 'lines',
-      name: 'Training Session',
+      name: TRAINING_NAME,
     },
     {
       x: [],
       y: [],
       mode: 'lines',
-      name: 'Challenging Behavior',
+      name: CB_NAME,
     },
-  ];
+  ]);
+
+  useEffect(() => {
+    if (dimensions && !dimens) {
+      setDimens(dimensions);
+    }
+    if (sessions != undefined) {
+      setSesionData(sessionData);
+      setGraphData(sessionData);
+    }
+  }, []);
+
+  const setGraphData = (sessions: ChainSession[]) => {
+    const calculatedDataArray = SetGraphData(sessions);
+    if (calculatedDataArray) {
+      handleGraphPopulation(calculatedDataArray);
+    }
+  };
+
+  const handleGraphPopulation = (d: []) => {
+    const newGraphData = HandleGraphPopulation(data, d);
+    setData(newGraphData);
+  };
+
+  //   const data = [
+  //     {
+  //       x: [],
+  //       y: [],
+  //       mode: 'markers',
+  //       name: 'Probe Session',
+  //       marker: {
+  //         color: 'rgb(164, 194, 244)',
+  //         size: 12,
+  //         line: {
+  //           color: 'white',
+  //           width: 0.5,
+  //         },
+  //       },
+  //     },
+  //     {
+  //       x: [],
+  //       y: [],
+  //       mode: 'lines',
+  //       name: 'Training Session',
+  //     },
+  //     {
+  //       x: [],
+  //       y: [],
+  //       mode: 'lines',
+  //       name: 'Challenging Behavior',
+  //     },
+  //   ];
 
   const layout = {
     width: dimens ? dimens.width : 270,

@@ -95,7 +95,11 @@ const SessionDataAside: FC<Props> = (props): JSX.Element => {
           }}
         >
           <Card>
-            <ChainsHomeGraph dimensions={graphContainerDimens} chainData={chainMasteryState.chainMastery.chainData} />
+            <ChainsHomeGraph
+              dimensions={graphContainerDimens}
+              chainData={chainMasteryState.chainMastery.chainData}
+              sessionData={sessions}
+            />
             <TouchableOpacity
               onPress={() => {
                 setModalVis(true);
