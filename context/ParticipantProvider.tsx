@@ -41,7 +41,7 @@ function useParticipantState(): ParticipantProviderState {
   const context = React.useContext(ParticipantStateContext);
 
   if (context === undefined) {
-    throw new Error('useChainState must be used within a ChainProvider.');
+    throw new Error('useParticipantState must be used within a ParticipantProvider.');
   }
 
   return context;

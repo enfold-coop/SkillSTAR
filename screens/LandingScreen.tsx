@@ -37,7 +37,8 @@ const LandingScreen = (): JSX.Element => {
         if (selectedParticipant) {
           // When the participant is returned, go to the ChainsHomeScreen.
           await participantDispatch({ type: 'participant', payload: selectedParticipant });
-          navigation.navigate('ChainsHomeScreen');
+          // navigation.navigate('ChainsHomeScreen');
+          navigation.navigate('SelectParticipant');
         } else {
           // TODO: There is a cached user, but the user account has no participants.
           //  Render a message that instructs the user to go to STAR DRIVE and
@@ -84,7 +85,7 @@ const LandingScreen = (): JSX.Element => {
       const user = await ApiService.login(email, password);
       if (user) {
         userDispatch({ type: 'user', payload: user });
-        navigation.navigate('ChainsHomeScreen');
+        navigation.navigate('SelectParticipant');
       }
     } catch (e) {
       setErrorMessage('Invalid username or password. Please check your login information and try again.');

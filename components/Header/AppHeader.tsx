@@ -2,10 +2,11 @@ import { useDeviceOrientation } from '@react-native-community/hooks';
 import { useNavigation } from '@react-navigation/native';
 import React, { useEffect, useState } from 'react';
 import { Image, StyleSheet, Text, View } from 'react-native';
+import { participantName } from '../../_util/ParticipantName';
+import { useParticipantState } from '../../context/ParticipantProvider';
 import { ImageAssets } from '../../data/images';
 import CustomColors from '../../styles/Colors';
 import { Participant } from '../../types/User';
-import { SelectParticipant } from '../SelectParticipant/SelectParticipant';
 
 type AppHeaderProps = {
   name: string;
@@ -13,29 +14,40 @@ type AppHeaderProps = {
 };
 
 const AppHeader = (props: AppHeaderProps): JSX.Element => {
+  const navigation = useNavigation();
   const { portrait } = useDeviceOrientation();
   const [orient, setOrient] = useState(false);
-  const { onParticipantChange } = props;
-  const navigation = useNavigation();
+  const participantState = useParticipantState();
 
   useEffect(() => {
     setOrient(portrait);
   }, [portrait]);
+
+  useEffect(() => {
+    let isCancelled = false;
+
+    const _load = async () => {
+      if (!isCancelled) {
+        if (participantState.participant) {
+          navigation.setOptions({ title: participantName(participantState.participant) });
+        }
+      }
+    };
+
+    if (!isCancelled) {
+      _load();
+    }
+
+    return () => {
+      isCancelled = true;
+    };
+  }, [participantState.participant]);
 
   return (
     <View style={styles.container}>
       <View style={styles.skillTextContainer}>
         <Image source={ImageAssets.logo} style={orient ? styles.logo : styles.landscapeLogo} />
         <Text style={orient ? styles.headline : styles.headlineLandscape}>{props.name}</Text>
-        <SelectParticipant
-          onChange={(participant: Participant) => {
-            if (onParticipantChange) {
-              onParticipantChange(participant);
-            } else {
-              navigation.navigate('ChainsHomeScreen');
-            }
-          }}
-        />
       </View>
     </View>
   );

@@ -807,11 +807,39 @@ export class ChainMastery {
       }
     }
 
+    // // Check to see if there is a booster session in progress
+    // let boosterInProgress = false;
+    // let numBoosterStepsComplete = 0;
+    // for (const stepAttempt of stepAttempts) {
+    //   if (!boosterInProgress && stepAttempt.status === ChainStepStatus.booster_needed) {
+    //     boosterInProgress = true;
+    //   }
+    //
+    //   // Step after the booster initiated
+    //   if (boosterInProgress) {
+    //     if (this.stepIsComplete(stepAttempt)) {
+    //       numBoosterStepsComplete++;
+    //     }
+    //
+    //     // Booster mastered.
+    //     if (numBoosterStepsComplete > NUM_COMPLETE_ATTEMPTS_FOR_MASTERY) {
+    //       boosterInProgress = false;
+    //       numBoosterStepsComplete = 0;
+    //     }
+    //   }
+    // }
+
     // If the number of consecutive incomplete sessions is at or over the threshold,
     // the next step should be a booster.
+    let boosterInProgress;
     const chainStepId = stepAttempts[0].chain_step_id;
-    const masteryInfo = this.masteryInfoMap[chainStepId];
-    const boosterInProgress = masteryInfo.dateBoosterInitiated && !masteryInfo.dateBoosterMastered;
+    if (this.masteryInfoMap && this.masteryInfoMap[chainStepId]) {
+      const masteryInfo = this.masteryInfoMap[chainStepId];
+      boosterInProgress = masteryInfo.dateBoosterInitiated && !masteryInfo.dateBoosterMastered;
+    }
+
+    // If the number of consecutive incomplete sessions is at or over the threshold,
+    // the next step should be a booster.
     return boosterInProgress || numConsecutiveIncomplete >= NUM_INCOMPLETE_ATTEMPTS_FOR_BOOSTER;
   }
 
