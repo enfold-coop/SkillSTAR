@@ -45,19 +45,21 @@ export const SetGraphData = (sessions: ChainSession[]) => {
  */
 export const HandleGraphPopulation = (currGraphData: [], incomingData: []) => {
   const tempData = currGraphData.slice();
-  incomingData.forEach((e) => {
-    if (e && e.name) {
-      const dE = tempData.find((f) => f.name === e.name);
-      if (dE && e.data) {
+  if (incomingData) {
+    incomingData.forEach((e) => {
+      if (e && e.name && e.data.length > 0) {
+        const dE = tempData.find((f) => f.name === e.name);
         const keys = Object.keys(e.data[0]);
-        dE.x.splice(0, dE.x.length);
-        dE.y.splice(0, dE.y.length);
-        e.data.forEach((dataObj, i) => {
-          dE.x[i] = dataObj[keys[0]];
-          dE.y[i] = dataObj[keys[1]];
-        });
+        if (keys != undefined) {
+          dE.x.splice(0, dE.x.length);
+          dE.y.splice(0, dE.y.length);
+          e.data.forEach((dataObj, i) => {
+            dE.x[i] = dataObj[keys[0]];
+            dE.y[i] = dataObj[keys[1]];
+          });
+        }
       }
-    }
-  });
+    });
+  }
   return tempData;
 };

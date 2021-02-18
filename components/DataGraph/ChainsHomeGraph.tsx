@@ -2,14 +2,11 @@ import React, { useEffect, useState } from 'react';
 import { LayoutRectangle, StyleSheet, View } from 'react-native';
 import Plotly from 'react-native-plotly';
 import CustomColors from '../../styles/Colors';
-import { ChainSession, ChainSessionType } from '../../types/chain/ChainSession';
-import { useChainMasteryState } from '../../context/ChainMasteryProvider';
-import { ChainData } from '../../types/chain/ChainData';
+import { ChainSession } from '../../types/chain/ChainSession';
 import { SetGraphData, HandleGraphPopulation } from '../../_util/CreateGraphData';
 
 interface ChainsHomeGraphProps {
   dimensions?: LayoutRectangle;
-  chainData: ChainData;
   sessionData: ChainSession[];
 }
 
@@ -18,7 +15,8 @@ const TRAINING_NAME = 'Training Session';
 const CB_NAME = 'Challenging Behavior';
 
 const ChainsHomeGraph = (props: ChainsHomeGraphProps): JSX.Element => {
-  const { dimensions, chainData, sessionData } = props;
+  const { dimensions, sessionData } = props;
+
   const [dimens, setDimens] = useState<LayoutRectangle>();
   const [sessions, setSesionData] = useState<ChainSession[]>([]);
   const [data, setData] = useState([
@@ -58,7 +56,7 @@ const ChainsHomeGraph = (props: ChainsHomeGraphProps): JSX.Element => {
       setSesionData(sessionData);
       setGraphData(sessionData);
     }
-  }, []);
+  }, [sessionData]);
 
   const setGraphData = (sessions: ChainSession[]) => {
     const calculatedDataArray = SetGraphData(sessions);
@@ -71,35 +69,6 @@ const ChainsHomeGraph = (props: ChainsHomeGraphProps): JSX.Element => {
     const newGraphData = HandleGraphPopulation(data, d);
     setData(newGraphData);
   };
-
-  //   const data = [
-  //     {
-  //       x: [],
-  //       y: [],
-  //       mode: 'markers',
-  //       name: 'Probe Session',
-  //       marker: {
-  //         color: 'rgb(164, 194, 244)',
-  //         size: 12,
-  //         line: {
-  //           color: 'white',
-  //           width: 0.5,
-  //         },
-  //       },
-  //     },
-  //     {
-  //       x: [],
-  //       y: [],
-  //       mode: 'lines',
-  //       name: 'Training Session',
-  //     },
-  //     {
-  //       x: [],
-  //       y: [],
-  //       mode: 'lines',
-  //       name: 'Challenging Behavior',
-  //     },
-  //   ];
 
   const layout = {
     width: dimens ? dimens.width : 270,
@@ -129,21 +98,18 @@ const ChainsHomeGraph = (props: ChainsHomeGraphProps): JSX.Element => {
     },
   };
 
-  const handleUpdate = () => {
-    // TODO
-  };
-
   return (
     <View style={[styles.container]}>
-      <Plotly
-        update={handleUpdate}
-        data={data}
-        layout={layout}
-        enableFullPlotly={true}
-        config={{
-          displayModeBar: false,
-        }}
-      />
+      {data && (
+        <Plotly
+          data={data}
+          layout={layout}
+          enableFullPlotly={true}
+          config={{
+            displayModeBar: false,
+          }}
+        />
+      )}
     </View>
   );
 };

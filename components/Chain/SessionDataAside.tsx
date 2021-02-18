@@ -5,14 +5,10 @@ import { Card } from 'react-native-paper';
 import { useChainMasteryState } from '../../context/ChainMasteryProvider';
 import CustomColors from '../../styles/Colors';
 import { ChainSession, ChainSessionType } from '../../types/chain/ChainSession';
-import { Session } from '../../types/chain/Session';
-import { StepAttempt } from '../../types/chain/StepAttempt';
 import GraphModal from '../DataGraph/GraphModal';
 import { ChainsHomeGraph } from '../DataGraph/index';
 import { Loading } from '../Loading/Loading';
 import { ProbeAside, TrainingAside } from './index';
-import { FilterSessionsByType } from '../../_util/FilterSessionType';
-import { CalcMasteryPercentage, CalcChalBehaviorPercentage } from '../../_util/CalculateMasteryPercentage';
 import { ApiService } from '../../services/ApiService';
 import { ChainData } from '../../types/chain/ChainData';
 
@@ -95,11 +91,7 @@ const SessionDataAside: FC<Props> = (props): JSX.Element => {
           }}
         >
           <Card>
-            <ChainsHomeGraph
-              dimensions={graphContainerDimens}
-              chainData={chainMasteryState.chainMastery.chainData}
-              sessionData={sessions}
-            />
+            {sessionData && <ChainsHomeGraph dimensions={graphContainerDimens} sessionData={sessionData} />}
             <TouchableOpacity
               onPress={() => {
                 setModalVis(true);
