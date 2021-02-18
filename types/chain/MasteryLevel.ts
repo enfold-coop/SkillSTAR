@@ -29,6 +29,7 @@ export interface MasteryInfoNumAttemptsSince {
   lastProbe: number;
   firstMastered: number;
   boosterInitiated: number;
+  boosterLastAttempted: number;
   boosterMastered: number;
 }
 
