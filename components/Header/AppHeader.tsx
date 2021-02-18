@@ -14,9 +14,9 @@ type AppHeaderProps = {
 };
 
 const AppHeader = (props: AppHeaderProps): JSX.Element => {
-  const navigation = useNavigation();
   const { portrait } = useDeviceOrientation();
   const [orient, setOrient] = useState(false);
+  const [name, setParticipantName] = useState<string>();
   const participantState = useParticipantState();
 
   useEffect(() => {
@@ -29,7 +29,8 @@ const AppHeader = (props: AppHeaderProps): JSX.Element => {
     const _load = async () => {
       if (!isCancelled) {
         if (participantState.participant) {
-          navigation.setOptions({ title: participantName(participantState.participant) });
+          const partName = participantName(participantState.participant);
+          setParticipantName(partName);
         }
       }
     };
@@ -49,6 +50,7 @@ const AppHeader = (props: AppHeaderProps): JSX.Element => {
         <Image source={ImageAssets.logo} style={orient ? styles.logo : styles.landscapeLogo} />
         <Text style={orient ? styles.headline : styles.headlineLandscape}>{props.name}</Text>
       </View>
+      <Text style={orient ? styles.participantName : styles.headlineLandscape}>{name}</Text>
     </View>
   );
 };
@@ -59,6 +61,7 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'space-between',
+    alignItems: 'center',
     color: CustomColors.uva.white,
     borderBottomWidth: 3,
     borderBottomColor: CustomColors.uva.orange,
@@ -74,12 +77,10 @@ const styles = StyleSheet.create({
   logo: {
     width: 50,
     height: 50,
-    // marginBottom: 10,
   },
   landscapeLogo: {
     width: 30,
     height: 30,
-    // marginBottom: 5,
   },
   headline: {
     fontSize: 30,
@@ -87,6 +88,12 @@ const styles = StyleSheet.create({
     color: CustomColors.uva.blue,
     paddingLeft: 20,
     textAlign: 'center',
+  },
+  participantName: {
+    fontSize: 20,
+    fontWeight: '800',
+    color: CustomColors.uva.blue,
+    paddingLeft: 20,
   },
   headlineLandscape: {
     fontSize: 20,
