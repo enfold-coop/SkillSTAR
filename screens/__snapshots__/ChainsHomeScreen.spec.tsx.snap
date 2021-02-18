@@ -87,26 +87,6 @@ exports[`ChainsHomeScreen renders correctly 1`] = `
         >
           Chains Home
         </Text>
-        <View
-          style={
-            Object {
-              "alignContent": "center",
-              "flex": 1,
-              "flexDirection": "row",
-              "justifyContent": "flex-end",
-            }
-          }
-        >
-          <Text
-            style={
-              Object {
-                "marginRight": 100,
-              }
-            }
-          >
-            Loading...
-          </Text>
-        </View>
       </View>
     </View>
     <View>
