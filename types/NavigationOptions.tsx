@@ -25,9 +25,3 @@ export type RootStackParamList = {
   RewardsScreens: undefined;
   NoQuestionnaireScreen: undefined;
 };
-
-// A generic used to provide propTypes to Root Screens.
-export type RootNavProps<T extends keyof RootStackParamList> = {
-  navigation: StackNavigationProp<RootStackParamList, T>;
-  route: RouteProp<RootStackParamList, T>;
-};
