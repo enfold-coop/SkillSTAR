@@ -94,8 +94,6 @@ export class ApiService {
   static async getChainDataForSelectedParticipant(): Promise<ChainData | undefined> {
     const questionnaireId = await ApiService.getChainQuestionnaireId();
 
-    console.log('questionnaireId', questionnaireId);
-
     if (questionnaireId !== undefined) {
       return ApiService.getChainData(questionnaireId);
     }
@@ -194,7 +192,6 @@ export class ApiService {
       if (cachedDataJson) {
         const cachedData = new ChainData(parse(cachedDataJson) as SkillstarChain);
         await ApiService.contextDispatch({ type: 'chainData', payload: cachedData });
-        console.log('Returning cached chain data.');
         return new ChainData(cachedData);
       } else {
         // Nothing cached. Return undefined.
@@ -210,8 +207,6 @@ export class ApiService {
       const dbData = await ApiService._parseResponse(response, 'getChainData', headers.method);
 
       if (dbData && dbData.hasOwnProperty('id')) {
-        console.log('Returning chain data from the backend.');
-
         // Cache the latest data
         await ApiService._cache('chain_data_' + questionnaireId, dbData);
         await ApiService.contextDispatch({ type: 'chainData', payload: new ChainData(dbData) });
@@ -224,8 +219,6 @@ export class ApiService {
 
   // Add a new chain if none exists. Otherwise updated an existing chain.
   static async upsertChainData(data: SkillstarChain): Promise<SkillstarChain | undefined> {
-    console.log('data.id', data.id);
-
     if (!data) {
       console.error('ApiService.ts > upsertChainData > No chain data to upsert.');
       return;
