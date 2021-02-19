@@ -20,13 +20,24 @@ const ChallengingBehavBtn = (props: ChallengingBehavBtnProps): JSX.Element => {
 
   // Runs when chainStepId changes
   useEffect(() => {
-    if (chainMasteryState.chainMastery && chainStepId !== undefined) {
-      const stateStepAttempt = chainMasteryState.chainMastery.getDraftSessionStep(chainStepId);
-      setStepAttempt(stateStepAttempt);
+    let isCancelled = false;
 
-      const stepAttemptCBs = stateStepAttempt.challenging_behaviors || [];
-      setNumChallengingBehavior(stepAttemptCBs.length);
-    }
+    const _load = async () => {
+      if (!isCancelled) {
+        if (chainMasteryState.chainMastery && chainStepId !== undefined) {
+          const stateStepAttempt = chainMasteryState.chainMastery.getDraftSessionStep(chainStepId);
+          setStepAttempt(stateStepAttempt);
+
+          const stepAttemptCBs = stateStepAttempt.challenging_behaviors || [];
+          setNumChallengingBehavior(stepAttemptCBs.length);
+        }
+      }
+    };
+
+    _load();
+    return () => {
+      isCancelled = true;
+    };
   }, [chainStepId, chainMasteryState.chainMastery]);
 
   // Set had_challenging_behavior to true, and add the current time to challenging_behaviors for the current step attempt.
