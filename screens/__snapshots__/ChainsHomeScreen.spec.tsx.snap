@@ -44,6 +44,7 @@ exports[`ChainsHomeScreen renders correctly 1`] = `
     <View
       style={
         Object {
+          "alignItems": "center",
           "alignSelf": "center",
           "backgroundColor": "transparent",
           "borderBottomColor": "#E57200",
@@ -87,27 +88,17 @@ exports[`ChainsHomeScreen renders correctly 1`] = `
         >
           Chains Home
         </Text>
-        <View
-          style={
-            Object {
-              "alignContent": "center",
-              "flex": 1,
-              "flexDirection": "row",
-              "justifyContent": "flex-end",
-            }
-          }
-        >
-          <Text
-            style={
-              Object {
-                "marginRight": 100,
-              }
-            }
-          >
-            Loading...
-          </Text>
-        </View>
       </View>
+      <Text
+        style={
+          Object {
+            "color": "#232D4B",
+            "fontSize": 20,
+            "fontWeight": "800",
+            "paddingLeft": 20,
+          }
+        }
+      />
     </View>
     <View>
       <View

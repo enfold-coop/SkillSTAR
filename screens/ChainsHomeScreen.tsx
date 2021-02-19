@@ -1,6 +1,6 @@
 import { useDeviceOrientation } from '@react-native-community/hooks';
 import { useNavigation } from '@react-navigation/native';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { ImageBackground, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 import * as Animatable from 'react-native-animatable';
 import { Text } from 'react-native-paper';
@@ -14,15 +14,43 @@ import SessionDataAside from '../components/Chain/SessionDataAside';
 import AppHeader from '../components/Header/AppHeader';
 import { Loading } from '../components/Loading/Loading';
 import { useChainMasteryState } from '../context/ChainMasteryProvider';
+import { useParticipantState } from '../context/ParticipantProvider';
 import { ImageAssets } from '../data/images';
 import CustomColors from '../styles/Colors';
 import { ChainSessionType } from '../types/chain/ChainSession';
+import { Participant } from '../types/User';
 
 // Chain Home Screen
 const ChainsHomeScreen = (): JSX.Element => {
   const navigation = useNavigation();
   const { portrait } = useDeviceOrientation();
   const chainMasteryState = useChainMasteryState();
+  const participantState = useParticipantState();
+  const [selectedParticipant, setSelectedParticipant] = useState<Participant | undefined>(participantState.participant);
+
+  /** LIFECYCLE METHODS */
+
+  // Only runs when participantState.participant is updated
+  useEffect(() => {
+    // Prevents React state updates on unmounted components
+    let isCancelled = false;
+
+    const _load = async () => {
+      if (participantState.participant) {
+        setSelectedParticipant(participantState.participant);
+      }
+    };
+
+    if (!isCancelled) {
+      _load();
+    }
+
+    return () => {
+      isCancelled = true;
+    };
+  }, [participantState.participant]);
+
+  /** END LIFECYCLE METHODS */
 
   const key =
     chainMasteryState && chainMasteryState.chainMastery?.chainData
@@ -33,6 +61,7 @@ const ChainsHomeScreen = (): JSX.Element => {
     if (!chainMasteryState || !chainMasteryState.chainMastery) {
       return <Loading />;
     }
+
     const showProbeButton = chainMasteryState.chainMastery.canStartProbeSession();
     const showTrainingButton = chainMasteryState.chainMastery.canStartTrainingSession();
     const btnWidth = showTrainingButton && showProbeButton ? '45%' : '90%';
@@ -93,13 +122,20 @@ const ChainsHomeScreen = (): JSX.Element => {
       <View style={portrait ? styles.container : styles.landscapeContainer}>
         <AppHeader
           name={'Chains Home'}
-          onParticipantChange={(selectedParticipant) => {
+          onParticipantChange={(newParticipant) => {
             // TODO: Do we need this anymore?
+            setSelectedParticipant(newParticipant);
           }}
         />
-        {chainMasteryState.chainMastery?.draftSession ? (
+        {selectedParticipant &&
+        chainMasteryState.chainMastery &&
+        chainMasteryState.chainMastery.draftSession &&
+        chainMasteryState.chainMastery.chainData.sessions ? (
           <View style={styles.listContainer}>
-            <SessionDataAside currentSession={chainMasteryState.chainMastery.draftSession} />
+            <SessionDataAside
+              currentSession={chainMasteryState.chainMastery.draftSession}
+              sessionData={chainMasteryState.chainMastery.chainData.sessions}
+            />
             {chainMasteryState.chainMastery.chainSteps && chainMasteryState.chainMastery.draftSession && (
               <ScrollView style={styles.list}>
                 {chainMasteryState.chainMastery.draftSession.step_attempts.map((stepAttempt) => {
@@ -120,7 +156,7 @@ const ChainsHomeScreen = (): JSX.Element => {
         ) : (
           <Loading />
         )}
-        <SessionButtons />
+        {selectedParticipant && chainMasteryState.chainMastery ? <SessionButtons /> : <Loading />}
       </View>
     </ImageBackground>
   );

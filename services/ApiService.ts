@@ -219,8 +219,6 @@ export class ApiService {
 
   // Add a new chain if none exists. Otherwise updated an existing chain.
   static async upsertChainData(data: SkillstarChain): Promise<SkillstarChain | undefined> {
-    console.log('data.id', data.id);
-
     if (!data) {
       console.error('ApiService.ts > upsertChainData > No chain data to upsert.');
       return;

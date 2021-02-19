@@ -2,27 +2,29 @@ import React, { useEffect, useState } from 'react';
 import { LayoutRectangle, StyleSheet, View } from 'react-native';
 import Plotly from 'react-native-plotly';
 import CustomColors from '../../styles/Colors';
+import { ChainSession } from '../../types/chain/ChainSession';
+import { SetGraphData, HandleGraphPopulation } from '../../_util/CreateGraphData';
 
 interface ChainsHomeGraphProps {
   dimensions?: LayoutRectangle;
+  sessionData: ChainSession[];
 }
 
+const PROBE_NAME = 'Probe Session';
+const TRAINING_NAME = 'Training Session';
+const CB_NAME = 'Challenging Behavior';
+
 const ChainsHomeGraph = (props: ChainsHomeGraphProps): JSX.Element => {
-  const { dimensions } = props;
+  const { dimensions, sessionData } = props;
+
   const [dimens, setDimens] = useState<LayoutRectangle>();
-
-  useEffect(() => {
-    if (dimensions && !dimens) {
-      setDimens(dimensions);
-    }
-  }, []);
-
-  const data = [
+  const [sessions, setSesionData] = useState<ChainSession[]>([]);
+  const [data, setData] = useState([
     {
-      x: [1, 2, 3, 4, 5],
-      y: [1, 2, 3, 4, 5],
+      x: [],
+      y: [],
       mode: 'markers',
-      name: 'Probe Session',
+      name: PROBE_NAME,
       marker: {
         color: 'rgb(164, 194, 244)',
         size: 12,
@@ -33,18 +35,40 @@ const ChainsHomeGraph = (props: ChainsHomeGraphProps): JSX.Element => {
       },
     },
     {
-      x: [1, 2, 3, 4, 5],
-      y: [1, 2, 3, 4, 5],
+      x: [],
+      y: [],
       mode: 'lines',
-      name: 'Training Session',
+      name: TRAINING_NAME,
     },
     {
-      x: [1, 2, 3, 4, 5],
-      y: [1, 2, 3, 4, 5],
+      x: [],
+      y: [],
       mode: 'lines',
-      name: 'Challenging Behavior',
+      name: CB_NAME,
     },
-  ];
+  ]);
+
+  useEffect(() => {
+    if (dimensions && !dimens) {
+      setDimens(dimensions);
+    }
+    if (sessions != undefined) {
+      setSesionData(sessionData);
+      setGraphData(sessionData);
+    }
+  }, [sessionData]);
+
+  const setGraphData = (sessions: ChainSession[]) => {
+    const calculatedDataArray = SetGraphData(sessions);
+    if (calculatedDataArray) {
+      handleGraphPopulation(calculatedDataArray);
+    }
+  };
+
+  const handleGraphPopulation = (d: []) => {
+    const newGraphData = HandleGraphPopulation(data, d);
+    setData(newGraphData);
+  };
 
   const layout = {
     width: dimens ? dimens.width : 270,
@@ -58,31 +82,34 @@ const ChainsHomeGraph = (props: ChainsHomeGraphProps): JSX.Element => {
       pad: 0,
     },
     showlegend: false,
-    xAxis: {
+    xaxis: {
+      title: '',
       ticks: '',
       ticktext: '',
+      tickformat: '',
+      showticklabels: false,
     },
-    yAxis: {
+    yaxis: {
       ticks: '',
       ticktext: '',
+      title: '',
+      tickformat: '',
+      showticklabels: false,
     },
-  };
-
-  const handleUpdate = () => {
-    // TODO
   };
 
   return (
     <View style={[styles.container]}>
-      <Plotly
-        update={handleUpdate}
-        data={data}
-        layout={layout}
-        enableFullPlotly={true}
-        config={{
-          displayModeBar: false,
-        }}
-      />
+      {data && (
+        <Plotly
+          data={data}
+          layout={layout}
+          enableFullPlotly={true}
+          config={{
+            displayModeBar: false,
+          }}
+        />
+      )}
     </View>
   );
 };

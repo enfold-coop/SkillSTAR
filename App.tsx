@@ -2,11 +2,13 @@ import { NavigationContainer, NavigationContainerRef, ParamListBase } from '@rea
 import { createStackNavigator, StackNavigationProp } from '@react-navigation/stack';
 import * as Font from 'expo-font';
 import React, { createRef, ReactElement, useEffect, useState } from 'react';
+import { View, Text } from 'react-native';
 import { Button, Provider } from 'react-native-paper';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { Loading } from './components/Loading/Loading';
+import { SelectParticipant } from './components/SelectParticipant/SelectParticipant';
 import { ChainMasteryProvider } from './context/ChainMasteryProvider';
-import { ParticipantProvider } from './context/ParticipantProvider';
+import { ParticipantProvider, useParticipantState } from './context/ParticipantProvider';
 import { UserProvider } from './context/UserProvider';
 import {
   BaselineAssessmentScreen,
@@ -56,11 +58,22 @@ export default function App(): JSX.Element | null {
     };
   });
 
-  interface LogoutButtonProps {
+  interface NavButtonProps {
     navigation: StackNavigationProp<ParamListBase>;
   }
 
-  const LogoutButton = (props: LogoutButtonProps): ReactElement => {
+  const SelectParticpantButton = (props: NavButtonProps): ReactElement => {
+    return (
+      <Button
+        color={CustomColors.uva.white}
+        onPress={() => {
+          props.navigation.navigate('SelectParticipant');
+        }}
+      >{`Change Participant`}</Button>
+    );
+  };
+
+  const LogoutButton = (props: NavButtonProps): ReactElement => {
     return (
       <Button
         color={CustomColors.uva.white}
@@ -73,9 +86,21 @@ export default function App(): JSX.Element | null {
     );
   };
 
-  const getHeaderRightFunc = (navigation: StackNavigationProp<any>): (() => JSX.Element) => {
+  const getHeaderRightFunc = (navigation: StackNavigationProp<any>, parentScreen?: string): (() => JSX.Element) => {
     return function headerRightFunc() {
-      return <LogoutButton navigation={navigation} />;
+      if (parentScreen === 'ChainsHomeScreen') {
+        return <SelectParticpantButton navigation={navigation} />;
+      }
+
+      if (parentScreen === 'SelectParticipant') {
+        return <LogoutButton navigation={navigation} />;
+      }
+
+      return (
+        <View>
+          <Text> </Text>
+        </View>
+      );
     };
   };
 
@@ -86,8 +111,17 @@ export default function App(): JSX.Element | null {
         <Stack.Screen
           options={({ navigation }) => ({
             ...screenOpts,
+            title: 'Select Participant', // TODO: Replace this title with something more useful
+            headerRight: getHeaderRightFunc(navigation, 'SelectParticipant'),
+          })}
+          name={'SelectParticipant'}
+          component={SelectParticipant}
+        />
+        <Stack.Screen
+          options={({ navigation }) => ({
+            ...screenOpts,
             title: 'Chains', // TODO: Replace this title with something more useful
-            headerRight: getHeaderRightFunc(navigation),
+            headerRight: getHeaderRightFunc(navigation, 'ChainsHomeScreen'),
           })}
           name={'ChainsHomeScreen'}
           component={ChainsHomeScreen}
