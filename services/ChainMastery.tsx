@@ -4,6 +4,7 @@ import {
   NUM_INCOMPLETE_ATTEMPTS_FOR_BOOSTER,
   NUM_MIN_PROBE_SESSIONS,
   NUM_PROMPTED_ATTEMPTS_FOR_FOCUS,
+  NUM_TRAINING_SESSIONS_BETWEEN_PROBES,
 } from '../constants/MasteryAlgorithm';
 import { ChainData, SkillstarChain } from '../types/chain/ChainData';
 import { ChainSession, ChainSessionType } from '../types/chain/ChainSession';
@@ -292,84 +293,24 @@ export class ChainMastery {
         }
       });
 
-      // Determine the target prompt level for the draft session focus step.
-      if ((focusChainStepId !== undefined || boosterChainStepId !== undefined) && draftFocusStepIndex !== -1) {
-        // Get all the step attempts across all sessions for the focus step.
-        let chainStepIdForFocus: number;
-
-        if (focusChainStepId !== undefined) {
-          chainStepIdForFocus = focusChainStepId;
-        } else if (boosterChainStepId !== undefined) {
-          chainStepIdForFocus = boosterChainStepId;
-        } else {
-          throw new Error('No id to focus on.');
-        }
-
-        const masteryInfo = this.masteryInfoMap[chainStepIdForFocus];
-        const recentAttempts = this.getFocusStepAttemptsForChainStep(chainStepIdForFocus).reverse();
-        let numTargetLevelsMet = 0;
-        let lastAttemptLevel: ChainStepPromptLevel | undefined = masteryInfo.promptLevel;
-
-        // Get the most recent target prompt level
-        for (const pastAttempt of recentAttempts) {
-          if (pastAttempt.target_prompt_level) {
-            lastAttemptLevel = pastAttempt.target_prompt_level;
-            break;
-          }
-        }
-
-        // Count most recent successful consecutive focus step attempts
-        for (const pastAttempt of recentAttempts) {
-          if (pastAttempt.was_focus_step && this.stepIsComplete(pastAttempt)) {
-            numTargetLevelsMet++;
-          } else {
-            break;
-          }
-        }
-
-        // If the last 3 attempts were completed at the target prompt level,
-        // move on to the next prompt level.
-        if (numTargetLevelsMet >= NUM_COMPLETE_ATTEMPTS_FOR_MASTERY) {
-          // Set the target prompt level for the focus step in the draft session
-          if (lastAttemptLevel) {
-            const nextLevel = this.getNextPromptLevel(lastAttemptLevel).key;
-            newDraftSession.step_attempts[draftFocusStepIndex].target_prompt_level = nextLevel;
-            this.masteryInfoMap[chainStepIdForFocus].promptLevel = nextLevel;
-          }
-        } else if (lastAttemptLevel) {
-          newDraftSession.step_attempts[draftFocusStepIndex].target_prompt_level = lastAttemptLevel;
-          this.masteryInfoMap[chainStepIdForFocus].promptLevel = lastAttemptLevel;
-        }
-
-        // If target prompt level for the training session is still undefined, set it to full physical.
-        if (newDraftSession.step_attempts[draftFocusStepIndex].target_prompt_level === undefined) {
-          // newDraftSession.step_attempts[draftFocusStepIndex].target_prompt_level = ChainStepPromptLevel.full_physical;
-          // this.masteryInfoMap[chainStepIdForFocus].promptLevel = ChainStepPromptLevel.full_physical;
-        }
-
-        // If this is a training session and target level hasn't been set yet,
-        // set the target prompt level to the target prompt level from the last focus step.
-        if (draftFocusStepIndex >= 0) {
-          this.draftFocusStepAttempt = newDraftSession.step_attempts[draftFocusStepIndex];
-          if (
-            (newDraftSession.session_type === ChainSessionType.training ||
-              newDraftSession.session_type === ChainSessionType.booster) &&
-            !this.draftFocusStepAttempt.target_prompt_level
-          ) {
-            newDraftSession.step_attempts[draftFocusStepIndex].target_prompt_level = lastAttemptLevel;
-            this.masteryInfoMap[chainStepIdForFocus].promptLevel = lastAttemptLevel;
-          }
-        }
-
+      // Set the target prompt levels for all steps.
+      newDraftSession.step_attempts.forEach((stepAttempt) => {
         // If this if the first booster attempt, go back to the shadow prompt level.
-        if (
+        const masteryInfo = this.masteryInfoMap[stepAttempt.chain_step_id];
+
+        const isFirstBooster =
           boosterChainStepId !== undefined &&
-          this.masteryInfoMap[chainStepIdForFocus].numAttemptsSince.boosterLastAttempted === -1
-        ) {
-          newDraftSession.step_attempts[draftFocusStepIndex].target_prompt_level = this.promptHierarchy[1].key;
-          this.masteryInfoMap[chainStepIdForFocus].promptLevel = this.promptHierarchy[1].key;
+          boosterChainStepId === stepAttempt.chain_step_id &&
+          masteryInfo.numAttemptsSince.boosterLastAttempted === -1;
+
+        const targetPromptLevel = isFirstBooster ? this.promptHierarchy[1].key : this.getTargetPromptLevel(stepAttempt);
+        stepAttempt.target_prompt_level = targetPromptLevel;
+        masteryInfo.promptLevel = targetPromptLevel;
+
+        if (stepAttempt.was_focus_step) {
+          this.draftFocusStepAttempt = stepAttempt;
         }
-      }
+      });
     }
 
     return newDraftSession;
@@ -387,7 +328,7 @@ export class ChainMastery {
     // There are at least 4 attempts since the last probe session.
     for (const masteryInfo of Object.values(this.masteryInfoMap)) {
       if (masteryInfo.numAttemptsSince.lastProbe !== -1) {
-        return masteryInfo.numAttemptsSince.lastProbe >= 4;
+        return masteryInfo.numAttemptsSince.lastProbe >= NUM_TRAINING_SESSIONS_BETWEEN_PROBES;
       }
     }
 
@@ -728,9 +669,7 @@ export class ChainMastery {
   /**
    * Given a list of step attempts, returns the first booster step.
    *
-   * First Booster session will be first AFTER the first mastered attempt AND
-   * - after 3 incomplete Probe sessions OR
-   * - after 5 incomplete training sessions
+   * First Booster session will be first AFTER the first mastered attempt AND after 2 incomplete sessions
    *
    * @param stepAttempts
    *
@@ -742,7 +681,7 @@ export class ChainMastery {
     let needsBooster = false;
 
     // Skip if there are fewer than 3 attempts, or the step has never been mastered.
-    if (stepAttempts.length < 3) {
+    if (stepAttempts.length < NUM_MIN_PROBE_SESSIONS) {
       return;
     }
 
@@ -1150,7 +1089,11 @@ export class ChainMastery {
     const numSessions = this.chainData.sessions.length;
     const hasHadTrainingSession = this.hasHadTrainingSession;
     const numSessionsSinceLastProbe = this.masteryInfoMap[0].numAttemptsSince.lastProbe;
-    return numSessions < 3 || !hasHadTrainingSession || numSessionsSinceLastProbe >= 4;
+    return (
+      numSessions < NUM_MIN_PROBE_SESSIONS ||
+      !hasHadTrainingSession ||
+      numSessionsSinceLastProbe >= NUM_TRAINING_SESSIONS_BETWEEN_PROBES
+    );
   }
 
   /**
@@ -1163,7 +1106,10 @@ export class ChainMastery {
     const hasHadTrainingSession = this.hasHadTrainingSession;
     const numSessionsSinceLastProbe = this.masteryInfoMap[0].numAttemptsSince.lastProbe;
 
-    return (numSessions >= 3 && !hasHadTrainingSession) || (numSessions >= 3 && numSessionsSinceLastProbe < 4);
+    return (
+      (numSessions >= NUM_MIN_PROBE_SESSIONS && !hasHadTrainingSession) ||
+      (numSessions >= NUM_MIN_PROBE_SESSIONS && numSessionsSinceLastProbe < NUM_TRAINING_SESSIONS_BETWEEN_PROBES)
+    );
   }
 
   /**
@@ -1324,5 +1270,36 @@ export class ChainMastery {
     const newChainData = this.chainData.clone();
     newChainData.upsertSession(this.draftSession);
     this.updateChainData(newChainData);
+  }
+
+  private getTargetPromptLevel(stepAttempt: StepAttempt): ChainStepPromptLevel {
+    const masteryInfo = this.masteryInfoMap[stepAttempt.chain_step_id];
+    const recentAttempts = this.chainData.getAllStepAttemptsForChainStep(stepAttempt.chain_step_id).reverse();
+    let numTargetLevelsMet = 0;
+    const lastAttemptLevel: ChainStepPromptLevel | undefined = masteryInfo.promptLevel;
+
+    // Count most recent successful consecutive focus step attempts
+    for (const pastAttempt of recentAttempts) {
+      if (this.stepIsComplete(pastAttempt)) {
+        numTargetLevelsMet++;
+      } else {
+        break;
+      }
+    }
+
+    // If the last 3 attempts were completed at the target prompt level,
+    // move on to the next prompt level.
+    if (numTargetLevelsMet >= NUM_COMPLETE_ATTEMPTS_FOR_MASTERY) {
+      // Set the target prompt level for the focus step in the draft session
+      if (lastAttemptLevel) {
+        return this.getNextPromptLevel(lastAttemptLevel).key;
+      }
+    } else if (lastAttemptLevel) {
+      // Return the last prompt level used, if one exists.
+      return lastAttemptLevel;
+    }
+
+    // If all else fails, return full physical.
+    return ChainStepPromptLevel.full_physical;
   }
 }

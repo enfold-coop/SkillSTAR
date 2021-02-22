@@ -46,7 +46,7 @@ export const clearSessions = (chainData: ChainData, chainMastery: ChainMastery) 
   const chainDataAllProbes = chainData.clone();
   chainDataAllProbes.sessions = [];
   chainMastery.updateChainData(chainDataAllProbes);
-  expect(chainMastery.chainData.sessions.length).toEqual(0);
+  expect(chainMastery.chainData.sessions).toHaveLength(0);
 };
 
 export const doProbeSessions = (
@@ -136,7 +136,7 @@ export const checkAllStepsMastered = (chainMastery: ChainMastery) => {
   expect(chainMastery.masteryInfoMap).toBeTruthy();
   expect(chainMastery.draftSession).toBeTruthy();
   expect(chainMastery.draftSession.step_attempts).toBeTruthy();
-  expect(chainMastery.draftSession.step_attempts.length).toEqual(mockChainSteps.length);
+  expect(chainMastery.draftSession.step_attempts).toHaveLength(mockChainSteps.length);
 
   for (const chainStep of mockChainSteps) {
     const masteryInfo = chainMastery.masteryInfoMap[chainStep.id];
