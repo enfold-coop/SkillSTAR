@@ -96,7 +96,7 @@ export const doProbeSessions = (
 
       expect(stepAttempt.session_type).toEqual(ChainSessionType.probe);
       expect(stepAttempt.was_focus_step).toBeFalsy();
-      expect(stepAttempt.target_prompt_level).toBeFalsy();
+      expect(stepAttempt.target_prompt_level).toBeTruthy();
 
       if (shouldFail) {
         // Mark all steps as incomplete

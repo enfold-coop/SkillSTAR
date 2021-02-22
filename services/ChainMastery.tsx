@@ -292,26 +292,28 @@ export class ChainMastery {
           }
         }
       });
-
-      // Set the target prompt levels for all steps.
-      newDraftSession.step_attempts.forEach((stepAttempt) => {
-        // If this if the first booster attempt, go back to the shadow prompt level.
-        const masteryInfo = this.masteryInfoMap[stepAttempt.chain_step_id];
-
-        const isFirstBooster =
-          boosterChainStepId !== undefined &&
-          boosterChainStepId === stepAttempt.chain_step_id &&
-          masteryInfo.numAttemptsSince.boosterLastAttempted === -1;
-
-        const targetPromptLevel = isFirstBooster ? this.promptHierarchy[1].key : this.getTargetPromptLevel(stepAttempt);
-        stepAttempt.target_prompt_level = targetPromptLevel;
-        masteryInfo.promptLevel = targetPromptLevel;
-
-        if (stepAttempt.was_focus_step) {
-          this.draftFocusStepAttempt = stepAttempt;
-        }
-      });
     }
+
+    // Set the target prompt levels for all steps.
+    newDraftSession.step_attempts.forEach((stepAttempt) => {
+      // If this if the first booster attempt, go back to the shadow prompt level.
+      const masteryInfo = this.masteryInfoMap[stepAttempt.chain_step_id];
+
+      const isFirstBooster =
+        boosterChainStepId !== undefined &&
+        boosterChainStepId === stepAttempt.chain_step_id &&
+        masteryInfo.numAttemptsSince.boosterLastAttempted === -1;
+
+      const targetPromptLevel = isFirstBooster
+        ? this.promptHierarchy[1].key
+        : this.getTargetPromptLevel(stepAttempt.chain_step_id);
+      stepAttempt.target_prompt_level = targetPromptLevel;
+      masteryInfo.promptLevel = targetPromptLevel;
+
+      if (stepAttempt.was_focus_step) {
+        this.draftFocusStepAttempt = stepAttempt;
+      }
+    });
 
     return newDraftSession;
   }
@@ -605,8 +607,9 @@ export class ChainMastery {
       stepAttempt.completed &&
       (stepAttempt.session_type === ChainSessionType.training ||
         stepAttempt.session_type === ChainSessionType.booster) &&
-      !!stepAttempt.was_focus_step &&
-      stepAttempt.prompt_level === ChainStepPromptLevel.none
+      stepAttempt.was_focus_step &&
+      stepAttempt.prompt_level === ChainStepPromptLevel.none &&
+      !stepAttempt.was_prompted
     );
   }
 
@@ -621,6 +624,7 @@ export class ChainMastery {
     let numConsecutiveComplete = 0;
 
     for (const thisAttempt of stepAttempts) {
+      // if (this.isProbeStepComplete(thisAttempt) || this.isFocusStepMastered(thisAttempt)) {
       if (this.isProbeStepComplete(thisAttempt) || this.isFocusStepMastered(thisAttempt)) {
         numConsecutiveComplete++;
       } else {
@@ -1255,7 +1259,7 @@ export class ChainMastery {
       if (targetLevel) {
         return targetLevel;
       } else {
-        console.log('Focus step has no target prompt level!');
+        console.error('Focus step has no target prompt level!');
       }
     }
 
@@ -1272,18 +1276,39 @@ export class ChainMastery {
     this.updateChainData(newChainData);
   }
 
-  private getTargetPromptLevel(stepAttempt: StepAttempt): ChainStepPromptLevel {
-    const masteryInfo = this.masteryInfoMap[stepAttempt.chain_step_id];
-    const recentAttempts = this.chainData.getAllStepAttemptsForChainStep(stepAttempt.chain_step_id).reverse();
-    let numTargetLevelsMet = 0;
-    const lastAttemptLevel: ChainStepPromptLevel | undefined = masteryInfo.promptLevel;
+  /**
+   * Returns the target prompt level that the next draft session should have for the given chain step ID.
+   * @param chainStepId
+   */
+  getTargetPromptLevel(chainStepId: number): ChainStepPromptLevel {
+    // If we have no sessions yet, just return full physical.
+    if (this.chainData.sessions.length === 0) {
+      return ChainStepPromptLevel.full_physical;
+    }
 
-    // Count most recent successful consecutive focus step attempts
-    for (const pastAttempt of recentAttempts) {
-      if (this.stepIsComplete(pastAttempt)) {
-        numTargetLevelsMet++;
-      } else {
-        break;
+    const recentSessions = this.chainData.sessions.slice(-3).reverse();
+    let numTargetLevelsMet = 0;
+    let lastAttemptLevel: ChainStepPromptLevel | undefined = undefined;
+
+    // Get just the attempts for this chain step.
+    for (const session of recentSessions) {
+      for (const pastAttempt of session.step_attempts) {
+        if (pastAttempt.chain_step_id === chainStepId) {
+          // Get the last prompt level used.
+          if (!lastAttemptLevel && pastAttempt.target_prompt_level) {
+            lastAttemptLevel = pastAttempt.target_prompt_level;
+          }
+
+          if (
+            pastAttempt.target_prompt_level &&
+            lastAttemptLevel &&
+            pastAttempt.target_prompt_level === lastAttemptLevel &&
+            this.stepIsComplete(pastAttempt)
+          ) {
+            // Count most recent successful consecutive focus step attempts
+            numTargetLevelsMet++;
+          }
+        }
       }
     }
 

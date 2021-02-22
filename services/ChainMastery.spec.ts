@@ -559,6 +559,7 @@ describe('ChainMastery', () => {
     }
 
     const numPromptLevels = chainMastery.promptHierarchy.length;
+    const lastPromptLevelIndex = numPromptLevels - 1;
     const numChainSteps = mockChainSteps.length;
     const lastChainStepIndex = numChainSteps - 1;
     const maxNumSessions = numPromptLevels * numChainSteps * NUM_COMPLETE_ATTEMPTS_FOR_MASTERY; // 4 * 14 * 3 = 168
@@ -567,7 +568,7 @@ describe('ChainMastery', () => {
     let focusStepIndex = 0;
     let numPostProbeSessions = 0;
     let numAttemptsAtCurrentPromptLevel = 0; // Check if this number is greater than NUM_COMPLETE_ATTEMPTS_FOR_MASTERY
-    let promptLevelIndex = chainMastery.promptHierarchy.length - 1;
+    let promptLevelIndex = lastPromptLevelIndex;
 
     console.log(`
 numPromptLevels = ${numPromptLevels}
@@ -581,12 +582,23 @@ promptLevelIndex = ${promptLevelIndex}
     `);
 
     while (focusStepIndex <= lastChainStepIndex) {
-      while (promptLevelIndex >= 0) {
-        while (numAttemptsAtCurrentPromptLevel <= NUM_COMPLETE_ATTEMPTS_FOR_MASTERY) {
-          numAttemptsAtCurrentPromptLevel++;
-          numPostProbeSessions++;
+      promptLevelIndex = lastPromptLevelIndex;
+      console.log(`********** focusStepIndex = ${focusStepIndex} **********`);
 
-          const promptLevelAttemptIndex = numAttemptsAtCurrentPromptLevel - 1;
+      while (promptLevelIndex >= 0) {
+        console.log(`========== promptLevelIndex = ${promptLevelIndex} ==========`);
+
+        while (numAttemptsAtCurrentPromptLevel <= NUM_COMPLETE_ATTEMPTS_FOR_MASTERY) {
+          if (promptLevelIndex < 0) {
+            break;
+          }
+
+          const promptLevel = chainMastery.promptHierarchy[promptLevelIndex].key;
+          numAttemptsAtCurrentPromptLevel++;
+          console.log(`---------- numAttemptsAtCurrentPromptLevel = ${numAttemptsAtCurrentPromptLevel} ----------`);
+
+          numPostProbeSessions++;
+          console.log(`(((((((((( numPostProbeSessions = ${numPostProbeSessions} )))))))))) ----------`);
 
           // Check if numPostProbeSessions is divisible by 5 to see if we need a probe session
           if (numPostProbeSessions % 5 === 0) {
@@ -605,7 +617,6 @@ promptLevelIndex = ${promptLevelIndex}
             });
           } else {
             // Do a training session at the current prompt level
-
             expect(chainMastery.draftSession.session_type).toEqual(ChainSessionType.training);
 
             // Populate training session step attempts
@@ -615,37 +626,24 @@ promptLevelIndex = ${promptLevelIndex}
 
               if (stepAttemptIndex < focusStepIndex) {
                 expect(stepMasteryInfo.dateMastered).toBeTruthy();
-                expect(stepMasteryInfo.promptLevel).toBeUndefined();
+                expect(stepMasteryInfo.promptLevel).toEqual(ChainStepPromptLevel.none);
                 expect(stepMasteryInfo.stepStatus).toEqual(ChainStepStatus.mastered);
                 expect(stepAttempt.status).toEqual(ChainStepStatus.mastered);
                 expect(stepAttempt.was_focus_step).toBeFalsy();
-                expect(stepAttempt.target_prompt_level).toBeUndefined();
+                expect(stepAttempt.target_prompt_level).toEqual(ChainStepPromptLevel.none);
                 completeStepAttempt(stepAttempt);
               }
 
               // This is the focus step. Fail first attempt at this prompt level, then complete next 3.
               if (stepAttemptIndex === focusStepIndex) {
-                const expectedPromptLevel = chainMastery.promptHierarchy[promptLevelIndex].key;
                 expect(stepAttempt.was_focus_step).toEqual(true);
                 expect(stepMasteryInfo.dateMastered).toBeFalsy();
 
                 // Mastery info should stay in sync with draft session
-                if (stepMasteryInfo.promptLevel !== expectedPromptLevel) {
-                  console.log(`
-numPromptLevels = ${numPromptLevels}
-numChainSteps = ${numChainSteps}
-lastChainStepIndex = ${lastChainStepIndex}
-maxNumSessions = ${maxNumSessions}
-focusStepIndex = ${focusStepIndex}
-numPostProbeSessions = ${numPostProbeSessions}
-numAttemptsAtCurrentPromptLevel = ${numAttemptsAtCurrentPromptLevel}
-promptLevelIndex = ${promptLevelIndex}
-                  `);
-                }
-                expect(stepMasteryInfo.promptLevel).toEqual(expectedPromptLevel);
+                expect(stepMasteryInfo.promptLevel).toEqual(promptLevel);
                 expect(stepMasteryInfo.stepStatus).toEqual(ChainStepStatus.focus);
                 expect(stepAttempt.status).toEqual(ChainStepStatus.focus);
-                expect(stepAttempt.target_prompt_level).toEqual(expectedPromptLevel);
+                expect(stepAttempt.target_prompt_level).toEqual(promptLevel);
 
                 // Mark focus step as complete at the target prompt level
                 completeStepAttempt(stepAttempt);
@@ -674,41 +672,54 @@ promptLevelIndex = ${promptLevelIndex}
 
           // Check if focus step is mastered.
           if (promptLevelIndex === 0 && numAttemptsAtCurrentPromptLevel === NUM_COMPLETE_ATTEMPTS_FOR_MASTERY) {
+            promptLevelIndex--;
+            numAttemptsAtCurrentPromptLevel = 0;
+            console.log(`++++++++++ promptLevelIndex = ${promptLevelIndex} ++++++++++`);
             expect(masteryInfo.stepStatus).toEqual(ChainStepStatus.mastered);
           } else {
-            expect(masteryInfo.stepStatus).toEqual(ChainStepStatus.focus);
-          }
-
-          // Check if prompt level is incremented
-          const expectedPromptLevel = chainMastery.promptHierarchy[promptLevelIndex];
-          if (numAttemptsAtCurrentPromptLevel === NUM_COMPLETE_ATTEMPTS_FOR_MASTERY) {
-            if (promptLevelIndex <= 0) {
-              // Should be undefined if mastered
-              expect(masteryInfo.promptLevel).toBeUndefined();
+            if ((numPostProbeSessions + 1) % 5 === 0) {
+              // Next session will be a probe session.
+              expect(masteryInfo.stepStatus).toEqual(ChainStepStatus.not_complete);
             } else {
-              // Focus step mastered at this prompt level. Should go to next prompt level.
-              const nextLevel = chainMastery.promptHierarchy[promptLevelIndex - 1];
-              expect(nextLevel).toBeTruthy();
-              expect(masteryInfo.promptLevel).toBeTruthy();
-              expect(masteryInfo.promptLevel).toEqual(nextLevel.key);
+              // Next session will be a training session.
+              if (masteryInfo.stepStatus !== ChainStepStatus.focus) {
+                console.log('oops');
+              }
+              expect(masteryInfo.stepStatus).toEqual(ChainStepStatus.focus);
             }
-          } else {
-            // Focus step still in training. Prompt level should not change.
-            expect(masteryInfo.promptLevel).toBeTruthy();
-            expect(masteryInfo.promptLevel).toEqual(expectedPromptLevel.key);
-          }
 
-          if (
-            numAttemptsAtCurrentPromptLevel === NUM_COMPLETE_ATTEMPTS_FOR_MASTERY &&
-            focusStepIndex <= lastChainStepIndex &&
-            numPostProbeSessions < maxNumSessions
-          ) {
-            // Go to the next prompt level
-            numAttemptsAtCurrentPromptLevel = 0;
+            // Check if prompt level is incremented
+            const expectedPromptLevel = chainMastery.promptHierarchy[promptLevelIndex];
+            if (numAttemptsAtCurrentPromptLevel === NUM_COMPLETE_ATTEMPTS_FOR_MASTERY) {
+              // Focus step mastered at this prompt level. Should go to next prompt level.
+              promptLevelIndex--;
+              console.log(`++++++++++ promptLevelIndex = ${promptLevelIndex} ++++++++++`);
+
+              if (promptLevelIndex <= 0) {
+                // Should be none if mastered
+                expect(masteryInfo.promptLevel).toEqual(ChainStepPromptLevel.none);
+              } else {
+                const nextLevel = chainMastery.promptHierarchy[promptLevelIndex];
+                expect(nextLevel).toBeTruthy();
+                expect(masteryInfo.promptLevel).toBeTruthy();
+                expect(masteryInfo.promptLevel).toEqual(nextLevel.key);
+              }
+            } else {
+              // Focus step still in training. Prompt level should not change.
+              expect(masteryInfo.promptLevel).toBeTruthy();
+              expect(masteryInfo.promptLevel).toEqual(expectedPromptLevel.key);
+            }
+
+            if (
+              numAttemptsAtCurrentPromptLevel === NUM_COMPLETE_ATTEMPTS_FOR_MASTERY &&
+              focusStepIndex <= lastChainStepIndex &&
+              numPostProbeSessions < maxNumSessions
+            ) {
+              // Go to the next prompt level
+              numAttemptsAtCurrentPromptLevel = 0;
+            }
           }
         }
-
-        promptLevelIndex--;
       }
 
       focusStepIndex++;
