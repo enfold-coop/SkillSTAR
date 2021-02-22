@@ -686,4 +686,29 @@ describe('ChainMastery', () => {
       chainMastery.saveDraftSession();
     }
   });
+
+  it('should advance through focus steps at appropriate prompt levels', () => {
+    // 3 Initial probe sessions
+    // Sessions 0-2 - Do no steps independently for three probe sessions.
+    // 4 training sessions
+    // - Sessions 3-5
+    //   - Start with step 1 being focus step - full physical prompt level.
+    //   - 3 sessions in full physical in step 1
+    // - Session 6
+    //   - the prompt level should advance to partial physical.
+    //   - Complete step 1 in partial physical prompt level - trial 1.
+    // 1 probe session
+    // - Session 7
+    //   - Do step 1 independently - probe session trial 1
+    // 4 training sessions
+    // - Session 8
+    //   - Partial physical prompt level - trial 2.
+    // The very next training session, prompt level became independent prompt level.
+    // He did three more trainings with independent level on step 1 (the stars were filling out)
+    // The probe session appeared and I said Bilbo did step 1 independently - probe session trial 2.
+    // Although Bilbo already did step 1 independently more than 3 times (overall 4 times), step 1 is still his focus step.
+    // I did four more training sessions with step 1 - independent level, focus step.
+    // For the probe session, I said Bilbo did step 1 independently - probe session trial 3.
+    // Step 1 is still focus step - independent level in the training session. (does not say it is mastered).
+  });
 });
