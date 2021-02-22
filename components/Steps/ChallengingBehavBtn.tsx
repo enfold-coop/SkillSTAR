@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Image, StyleSheet, Text, View } from 'react-native';
-import { TouchableOpacity } from 'react-native-gesture-handler';
+import { Image, StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import { Badge } from 'react-native-paper';
 import { useChainMasteryState } from '../../context/ChainMasteryProvider';
 import { ImageAssets } from '../../data/images';
@@ -20,13 +19,24 @@ const ChallengingBehavBtn = (props: ChallengingBehavBtnProps): JSX.Element => {
 
   // Runs when chainStepId changes
   useEffect(() => {
-    if (chainMasteryState.chainMastery && chainStepId !== undefined) {
-      const stateStepAttempt = chainMasteryState.chainMastery.getDraftSessionStep(chainStepId);
-      setStepAttempt(stateStepAttempt);
+    let isCancelled = false;
 
-      const stepAttemptCBs = stateStepAttempt.challenging_behaviors || [];
-      setNumChallengingBehavior(stepAttemptCBs.length);
-    }
+    const _load = async () => {
+      if (!isCancelled) {
+        if (chainMasteryState.chainMastery && chainStepId !== undefined) {
+          const stateStepAttempt = chainMasteryState.chainMastery.getDraftSessionStep(chainStepId);
+          setStepAttempt(stateStepAttempt);
+
+          const stepAttemptCBs = stateStepAttempt.challenging_behaviors || [];
+          setNumChallengingBehavior(stepAttemptCBs.length);
+        }
+      }
+    };
+
+    _load();
+    return () => {
+      isCancelled = true;
+    };
   }, [chainStepId, chainMasteryState.chainMastery]);
 
   // Set had_challenging_behavior to true, and add the current time to challenging_behaviors for the current step attempt.

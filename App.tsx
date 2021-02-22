@@ -1,7 +1,8 @@
+import 'react-native-gesture-handler';
+import React, { createRef, ReactElement, useEffect, useState } from 'react';
 import { NavigationContainer, NavigationContainerRef, ParamListBase } from '@react-navigation/native';
 import { createStackNavigator, StackNavigationProp } from '@react-navigation/stack';
 import * as Font from 'expo-font';
-import React, { createRef, ReactElement, useEffect, useState } from 'react';
 import { View, Text } from 'react-native';
 import { Button, Provider } from 'react-native-paper';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
@@ -98,7 +99,7 @@ export default function App(): JSX.Element | null {
 
       return (
         <View>
-          <Text> </Text>
+          <Text></Text>
         </View>
       );
     };
@@ -112,7 +113,7 @@ export default function App(): JSX.Element | null {
           options={({ navigation }) => ({
             ...screenOpts,
             title: 'Select Participant', // TODO: Replace this title with something more useful
-            headerRight: getHeaderRightFunc(navigation, 'SelectParticipant'),
+            // headerRight: getHeaderRightFunc(navigation, 'SelectParticipant'),
           })}
           name={'SelectParticipant'}
           component={SelectParticipant}
