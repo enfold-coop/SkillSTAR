@@ -5,6 +5,7 @@ set -o errexit
 main() {
   rm -rf node_modules
   rm -rf package-lock.json
+  rm -rf .expo-shared
   rm -rf .expo
   npm install
   expo install

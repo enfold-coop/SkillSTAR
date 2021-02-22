@@ -1,3 +1,16 @@
+import { deepClone } from '../_util/deepClone';
+import {
+  checkAllStepsHaveStatus,
+  checkAllStepsMastered,
+  checkMasteryInfo,
+  clearSessions,
+  completeStepAttempt,
+  doProbeSessions,
+  failStepAttempt,
+} from '../_util/testing/chainTestUtils';
+import { mockChainQuestionnaire } from '../_util/testing/mockChainQuestionnaire';
+import { makeMockChainSession } from '../_util/testing/mockChainSessions';
+import { mockChainSteps } from '../_util/testing/mockChainSteps';
 import { NUM_COMPLETE_ATTEMPTS_FOR_MASTERY, NUM_INCOMPLETE_ATTEMPTS_FOR_BOOSTER } from '../constants/MasteryAlgorithm';
 import { ChainData } from '../types/chain/ChainData';
 import { ChainSession, ChainSessionType } from '../types/chain/ChainSession';
@@ -7,11 +20,6 @@ import {
   ChainStepStatus,
   StepIncompleteReason,
 } from '../types/chain/StepAttempt';
-import { deepClone } from '../_util/deepClone';
-import { checkMasteryInfo } from '../_util/testing/chainTestUtils';
-import { mockChainQuestionnaire } from '../_util/testing/mockChainQuestionnaire';
-import { makeMockChainSession } from '../_util/testing/mockChainSessions';
-import { mockChainSteps } from '../_util/testing/mockChainSteps';
 import { ChainMastery } from './ChainMastery';
 
 describe('ChainMastery', () => {
@@ -151,9 +159,11 @@ describe('ChainMastery', () => {
       s.step_attempts.forEach((stepAttempt, i) => {
         const isComplete = i % 2 !== 0;
         stepAttempt.session_type = ChainSessionType.probe;
-        stepAttempt.completed = isComplete;
-        stepAttempt.had_challenging_behavior = !isComplete;
-        stepAttempt.was_prompted = !isComplete;
+        if (isComplete) {
+          completeStepAttempt(stepAttempt);
+        } else {
+          failStepAttempt(stepAttempt);
+        }
         stepAttempt.was_focus_step = undefined;
         stepAttempt.status = ChainStepStatus.not_complete;
         stepAttempt.challenging_behaviors = [];
@@ -183,9 +193,7 @@ describe('ChainMastery', () => {
 
       s.step_attempts.forEach((stepAttempt) => {
         stepAttempt.session_type = ChainSessionType.probe;
-        stepAttempt.completed = true;
-        stepAttempt.had_challenging_behavior = false;
-        stepAttempt.was_prompted = false;
+        completeStepAttempt(stepAttempt);
         stepAttempt.was_focus_step = undefined;
         stepAttempt.challenging_behaviors = [];
         stepAttempt.prompt_level = undefined;
@@ -202,16 +210,10 @@ describe('ChainMastery', () => {
 
     // Save the modified chain data.
     chainMastery.updateChainData(newMockChainData);
-
-    // No chain steps should be marked as the focus step.
-    expect(chainMastery.nextFocusChainStepId).toBeUndefined();
     expect(chainMastery.draftSession.session_type).toEqual(ChainSessionType.probe);
-    for (const chainStep of mockChainSteps) {
-      const draftStepAttempt = chainMastery.draftSession.step_attempts[chainStep.id];
-      expect(chainMastery.masteryInfoMap[chainStep.id].stepStatus).toEqual(ChainStepStatus.mastered);
-      expect(draftStepAttempt.status).toEqual(ChainStepStatus.mastered);
-      expect(draftStepAttempt.was_focus_step).toBeFalsy();
-    }
+
+    // All steps should be mastered now.
+    checkAllStepsMastered(chainMastery);
   });
 
   it('should get the current non-draft session focus step', () => {
@@ -259,45 +261,19 @@ describe('ChainMastery', () => {
     chainMastery.draftSession.step_attempts.forEach((stepAttempt) => {
       stepAttempt.completed = true;
       stepAttempt.had_challenging_behavior = false;
-      stepAttempt.prompt_level = ChainStepPromptLevel.full_physical;
       stepAttempt.was_prompted = true;
+      stepAttempt.prompt_level = ChainStepPromptLevel.full_physical;
     });
   });
 
   it('should set Focus Step target prompt levels', () => {
-    // Clear out all sessions.
-    const chainDataAllProbes = chainData.clone();
-    chainDataAllProbes.sessions = [];
-    chainMastery.updateChainData(chainDataAllProbes);
+    clearSessions(chainData, chainMastery);
 
     /* INITIAL PROBE SESSIONS */
 
     // First 3 sessions should be failing probes.
-    for (let i = 0; i < 3; i++) {
-      expect(chainMastery.draftSession.session_type).toEqual(ChainSessionType.probe);
-
-      // Populate probe session step attempts
-      chainMastery.draftSession.step_attempts.forEach((stepAttempt) => {
-        if (i === 0) {
-          expect(stepAttempt.status).toEqual(ChainStepStatus.not_yet_started);
-        } else {
-          expect(stepAttempt.status).toEqual(ChainStepStatus.not_complete);
-        }
-
-        expect(stepAttempt.was_focus_step).toBeFalsy();
-        expect(stepAttempt.session_type).toEqual(ChainSessionType.probe);
-        expect(stepAttempt.target_prompt_level).toBeFalsy();
-
-        // Mark all steps as incomplete
-        stepAttempt.was_prompted = true;
-        stepAttempt.completed = false;
-        stepAttempt.had_challenging_behavior = true;
-      });
-
-      // Add draft session to chain data and update chain mastery instance.
-      chainMastery.draftSession.completed = true;
-      chainMastery.saveDraftSession();
-    }
+    doProbeSessions(chainMastery, 3, true, ChainStepStatus.not_yet_started);
+    checkAllStepsHaveStatus(chainMastery, ChainStepStatus.not_complete, 0);
 
     /* FOCUS STEP MASTERY SESSIONS */
 
@@ -340,14 +316,10 @@ describe('ChainMastery', () => {
             chainMastery.draftSession.step_attempts.forEach((stepAttempt, stepAttemptIndex) => {
               if (stepAttemptIndex <= focusStepIndex) {
                 // Mark focus step and any previous steps as complete
-                stepAttempt.was_prompted = false;
-                stepAttempt.completed = true;
-                stepAttempt.had_challenging_behavior = false;
+                completeStepAttempt(stepAttempt);
               } else {
                 // Mark steps after focus step as incomplete
-                stepAttempt.was_prompted = true;
-                stepAttempt.completed = false;
-                stepAttempt.had_challenging_behavior = true;
+                failStepAttempt(stepAttempt);
               }
             });
           } else {
@@ -365,10 +337,7 @@ describe('ChainMastery', () => {
                 expect(stepAttempt.status).toEqual(ChainStepStatus.mastered);
                 expect(stepAttempt.was_focus_step).toBeFalsy();
                 expect(stepAttempt.target_prompt_level).toBeUndefined();
-
-                stepAttempt.was_prompted = false;
-                stepAttempt.completed = true;
-                stepAttempt.had_challenging_behavior = false;
+                completeStepAttempt(stepAttempt);
               }
 
               // This is the focus step. Fail first attempt at this prompt level, then complete next 3.
@@ -386,18 +355,14 @@ describe('ChainMastery', () => {
 
                 if (promptLevelAttemptIndex === 0) {
                   // Fail first attempt at this prompt level
-                  stepAttempt.was_prompted = true;
-                  stepAttempt.completed = false;
-                  stepAttempt.had_challenging_behavior = true;
+                  failStepAttempt(stepAttempt);
                   stepAttempt.prompt_level = ChainStepPromptLevel.full_physical;
                   stepAttempt.reason_step_incomplete = StepIncompleteReason.challenging_behavior;
                   stepAttempt.challenging_behaviors = [{ time: new Date() }];
                 } else {
                   // Mark focus step as complete at the target prompt level
                   expect(stepMasteryInfo.numAttemptsSince.lastFailedWithFocus).toEqual(promptLevelAttemptIndex - 1);
-                  stepAttempt.was_prompted = false;
-                  stepAttempt.completed = true;
-                  stepAttempt.had_challenging_behavior = false;
+                  completeStepAttempt(stepAttempt);
                   stepAttempt.prompt_level = stepAttempt.target_prompt_level;
                 }
               }
@@ -406,9 +371,7 @@ describe('ChainMastery', () => {
               if (stepAttemptIndex > focusStepIndex) {
                 expect(stepAttempt.was_focus_step).toBeFalsy();
                 expect(stepAttempt.status).toEqual(ChainStepStatus.not_complete);
-                stepAttempt.was_prompted = true;
-                stepAttempt.completed = false;
-                stepAttempt.had_challenging_behavior = true;
+                failStepAttempt(stepAttempt);
                 stepAttempt.prompt_level = ChainStepPromptLevel.full_physical;
                 stepAttempt.reason_step_incomplete = StepIncompleteReason.challenging_behavior;
                 stepAttempt.challenging_behaviors = [{ time: new Date() }];
@@ -423,110 +386,29 @@ describe('ChainMastery', () => {
       }
     }
 
-    // All remaining sessions should be probes, until there's a need for a booster session.
-    // Mark 3 probes as successful
-    for (let i = 0; i < NUM_COMPLETE_ATTEMPTS_FOR_MASTERY; i++) {
-      expect(chainMastery.draftSession.session_type).toEqual(ChainSessionType.probe);
+    // All steps should be mastered now.
+    checkAllStepsMastered(chainMastery);
 
-      // Populate probe session step attempts
-      chainMastery.draftSession.step_attempts.forEach((stepAttempt) => {
-        const stepMasteryInfo = chainMastery.masteryInfoMap[stepAttempt.chain_step_id];
-        expect(stepMasteryInfo.dateIntroduced).toBeTruthy();
-        expect(stepMasteryInfo.dateMastered).toBeTruthy();
-        expect(stepMasteryInfo.dateBoosterInitiated).toBeFalsy();
-        expect(stepMasteryInfo.dateBoosterMastered).toBeFalsy();
-
-        expect(stepAttempt.was_focus_step).toBeFalsy();
-        expect(stepAttempt.session_type).toEqual(ChainSessionType.probe);
-        expect(stepAttempt.status).toEqual(ChainStepStatus.mastered);
-        expect(stepAttempt.target_prompt_level).toBeFalsy();
-
-        // Mark all steps as complete
-        stepAttempt.was_prompted = false;
-        stepAttempt.completed = true;
-        stepAttempt.had_challenging_behavior = false;
-      });
-
-      // Add draft session to chain data and update chain mastery instance.
-      chainMastery.draftSession.completed = true;
-      chainMastery.saveDraftSession();
-    }
+    // Fail 2 probes in a row, triggering a booster session.
+    doProbeSessions(chainMastery, NUM_COMPLETE_ATTEMPTS_FOR_MASTERY, false, ChainStepStatus.mastered);
   });
 
   it('should set Booster Step target prompt levels', () => {
-    // Clear out all sessions.
-    const chainDataAllProbes = chainData.clone();
-    chainDataAllProbes.sessions = [];
-    chainMastery.updateChainData(chainDataAllProbes);
+    clearSessions(chainData, chainMastery);
 
     /* INITIAL PROBE SESSIONS */
 
     // First 3 sessions should be successful probes.
-    for (let i = 0; i < NUM_COMPLETE_ATTEMPTS_FOR_MASTERY; i++) {
-      expect(chainMastery.draftSession.session_type).toEqual(ChainSessionType.probe);
-
-      // Populate probe session step attempts
-      chainMastery.draftSession.step_attempts.forEach((stepAttempt) => {
-        if (i === 0) {
-          expect(stepAttempt.status).toEqual(ChainStepStatus.not_yet_started);
-        } else {
-          expect(stepAttempt.status).toEqual(ChainStepStatus.not_complete);
-        }
-
-        expect(stepAttempt.was_focus_step).toBeFalsy();
-        expect(stepAttempt.session_type).toEqual(ChainSessionType.probe);
-        expect(stepAttempt.target_prompt_level).toBeFalsy();
-
-        // Mark all steps as incomplete
-        stepAttempt.was_prompted = false;
-        stepAttempt.completed = true;
-        stepAttempt.had_challenging_behavior = false;
-      });
-
-      // Add draft session to chain data and update chain mastery instance.
-      chainMastery.draftSession.completed = true;
-      chainMastery.saveDraftSession();
-    }
+    doProbeSessions(chainMastery, 3, false, ChainStepStatus.not_yet_started);
 
     // All steps should be mastered now.
-    for (const chainStep of mockChainSteps) {
-      const masteryInfo = chainMastery.masteryInfoMap[chainStep.id];
-      expect(masteryInfo.stepStatus).toEqual(ChainStepStatus.mastered);
-      expect(masteryInfo.dateMastered).toBeTruthy();
-    }
+    checkAllStepsMastered(chainMastery);
 
     // Fail 2 probes in a row, triggering a booster session.
-    for (let i = 0; i < NUM_INCOMPLETE_ATTEMPTS_FOR_BOOSTER; i++) {
-      expect(chainMastery.draftSession.session_type).toEqual(ChainSessionType.probe);
-
-      // Populate probe session step attempts
-      chainMastery.draftSession.step_attempts.forEach((stepAttempt) => {
-        const stepMasteryInfo = chainMastery.masteryInfoMap[stepAttempt.chain_step_id];
-        expect(stepMasteryInfo.dateIntroduced).toBeTruthy();
-        expect(stepMasteryInfo.dateMastered).toBeTruthy();
-        expect(stepMasteryInfo.dateBoosterInitiated).toBeFalsy();
-        expect(stepMasteryInfo.dateBoosterMastered).toBeFalsy();
-
-        expect(stepAttempt.was_focus_step).toBeFalsy();
-        expect(stepAttempt.session_type).toEqual(ChainSessionType.probe);
-        expect(stepAttempt.status).toEqual(ChainStepStatus.mastered);
-        expect(stepAttempt.target_prompt_level).toBeFalsy();
-
-        // Mark all steps as failed
-        stepAttempt.was_prompted = true;
-        stepAttempt.completed = false;
-        stepAttempt.had_challenging_behavior = true;
-      });
-
-      // Add draft session to chain data and update chain mastery instance.
-      chainMastery.draftSession.completed = true;
-      chainMastery.saveDraftSession();
-    }
+    doProbeSessions(chainMastery, NUM_INCOMPLETE_ATTEMPTS_FOR_BOOSTER, true, ChainStepStatus.mastered);
 
     // All steps should now require a booster.
-    for (const chainStep of chainMastery.chainSteps) {
-      expect(chainMastery.masteryInfoMap[chainStep.id].stepStatus).toEqual(ChainStepStatus.booster_needed);
-    }
+    checkAllStepsHaveStatus(chainMastery, ChainStepStatus.booster_needed);
 
     /* BOOSTER STEP MASTERY SESSIONS */
     const numPromptLevels = 2;
@@ -568,14 +450,10 @@ describe('ChainMastery', () => {
             chainMastery.draftSession.step_attempts.forEach((stepAttempt, stepAttemptIndex) => {
               if (stepAttemptIndex <= focusStepIndex) {
                 // Mark focus step and any previous steps as complete
-                stepAttempt.was_prompted = false;
-                stepAttempt.completed = true;
-                stepAttempt.had_challenging_behavior = false;
+                completeStepAttempt(stepAttempt);
               } else {
                 // Mark steps after focus step as incomplete
-                stepAttempt.was_prompted = true;
-                stepAttempt.completed = false;
-                stepAttempt.had_challenging_behavior = true;
+                failStepAttempt(stepAttempt);
               }
             });
           } else {
@@ -596,9 +474,7 @@ describe('ChainMastery', () => {
                 expect(stepAttempt.session_type).toEqual(ChainSessionType.booster);
                 expect(stepAttempt.status).toEqual(ChainStepStatus.booster_mastered);
                 expect(stepAttempt.target_prompt_level).toBeUndefined();
-                stepAttempt.was_prompted = false;
-                stepAttempt.completed = true;
-                stepAttempt.had_challenging_behavior = false;
+                completeStepAttempt(stepAttempt);
               }
 
               // This is the focus step. Fail first attempt at this prompt level, then complete next 3.
@@ -620,18 +496,14 @@ describe('ChainMastery', () => {
 
                 if (promptLevelAttemptIndex === 0) {
                   // Fail first attempt at this prompt level
-                  stepAttempt.was_prompted = true;
-                  stepAttempt.completed = false;
-                  stepAttempt.had_challenging_behavior = true;
+                  failStepAttempt(stepAttempt);
                   stepAttempt.prompt_level = ChainStepPromptLevel.full_physical;
                   stepAttempt.reason_step_incomplete = StepIncompleteReason.challenging_behavior;
                   stepAttempt.challenging_behaviors = [{ time: new Date() }];
                 } else {
                   // Mark focus step as complete at the target prompt level
                   expect(stepMasteryInfo.numAttemptsSince.lastFailedWithFocus).toEqual(promptLevelAttemptIndex - 1);
-                  stepAttempt.was_prompted = false;
-                  stepAttempt.completed = true;
-                  stepAttempt.had_challenging_behavior = false;
+                  completeStepAttempt(stepAttempt);
                   stepAttempt.prompt_level = stepAttempt.target_prompt_level;
                 }
               }
@@ -639,9 +511,7 @@ describe('ChainMastery', () => {
               // Mark steps after focus step as incomplete
               if (stepAttemptIndex > focusStepIndex) {
                 expect(stepAttempt.was_focus_step).toBeFalsy();
-                stepAttempt.was_prompted = true;
-                stepAttempt.completed = false;
-                stepAttempt.had_challenging_behavior = true;
+                failStepAttempt(stepAttempt);
                 stepAttempt.prompt_level = ChainStepPromptLevel.full_physical;
                 stepAttempt.reason_step_incomplete = StepIncompleteReason.challenging_behavior;
                 stepAttempt.challenging_behaviors = [{ time: new Date() }];
@@ -656,44 +526,23 @@ describe('ChainMastery', () => {
       }
     }
 
+    checkAllStepsHaveStatus(chainMastery, ChainStepStatus.booster_mastered);
+
     // All steps should be booster_mastered, and remaining sessions should be probes again.
-    for (let i = 0; i < 3; i++) {
-      expect(chainMastery.draftSession.session_type).toEqual(ChainSessionType.probe);
-
-      // Populate probe session step attempts
-      chainMastery.draftSession.step_attempts.forEach((stepAttempt) => {
-        const stepMasteryInfo = chainMastery.masteryInfoMap[stepAttempt.chain_step_id];
-        expect(stepMasteryInfo.dateIntroduced).toBeTruthy();
-        expect(stepMasteryInfo.dateMastered).toBeTruthy();
-        expect(stepMasteryInfo.dateBoosterInitiated).toBeTruthy();
-        expect(stepMasteryInfo.dateBoosterMastered).toBeTruthy();
-        expect(stepMasteryInfo.promptLevel).toBeUndefined();
-        expect(stepMasteryInfo.stepStatus).toEqual(ChainStepStatus.booster_mastered);
-
-        expect(stepAttempt.was_focus_step).toBeFalsy();
-        expect(stepAttempt.session_type).toEqual(ChainSessionType.probe);
-        expect(stepAttempt.status).toEqual(ChainStepStatus.booster_mastered);
-        expect(stepAttempt.target_prompt_level).toBeUndefined();
-
-        // Mark all steps as complete
-        stepAttempt.was_prompted = false;
-        stepAttempt.completed = true;
-        stepAttempt.had_challenging_behavior = false;
-      });
-
-      // Add draft session to chain data and update chain mastery instance.
-      chainMastery.draftSession.completed = true;
-      chainMastery.saveDraftSession();
-    }
+    doProbeSessions(chainMastery, 3, false, ChainStepStatus.booster_mastered);
   });
 
   it('should advance through focus steps at appropriate prompt levels', () => {
+    clearSessions(chainData, chainMastery);
+
     // 3 Initial probe sessions
     // Sessions 0-2 - Do no steps independently for three probe sessions.
+    doProbeSessions(chainMastery, 3, true, ChainStepStatus.not_yet_started);
+
     // 4 training sessions
     // - Sessions 3-5
-    //   - Start with step 1 being focus step - full physical prompt level.
-    //   - 3 sessions in full physical in step 1
+    //   - Step 1 be focus step @ full physical prompt level
+    //   - Fail all other steps?
     // - Session 6
     //   - the prompt level should advance to partial physical.
     //   - Complete step 1 in partial physical prompt level - trial 1.
