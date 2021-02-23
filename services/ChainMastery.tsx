@@ -1286,7 +1286,7 @@ export class ChainMastery {
       return ChainStepPromptLevel.full_physical;
     }
 
-    const recentSessions = this.chainData.sessions.slice(-3).reverse();
+    const recentSessions = this.chainData.sessions.slice(-NUM_COMPLETE_ATTEMPTS_FOR_MASTERY).reverse();
     let numTargetLevelsMet = 0;
     let lastAttemptLevel: ChainStepPromptLevel | undefined = undefined;
 
@@ -1326,5 +1326,42 @@ export class ChainMastery {
 
     // If all else fails, return full physical.
     return ChainStepPromptLevel.full_physical;
+  }
+
+  printSessionLog() {
+    const lines: string[] = [];
+    let lastFocusStepIndex = 0;
+
+    // Loop through all sessions and step attempts
+    this.chainData.sessions.forEach((session, i) => {
+      session.step_attempts.forEach((stepAttempt, j) => {
+        if (session.session_type === ChainSessionType.probe) {
+          if (j === lastFocusStepIndex) {
+            lines.push(`#${i + 1} - Probe session @ ${stepAttempt.target_prompt_level}`);
+          }
+        } else {
+          if (stepAttempt.was_focus_step) {
+            lastFocusStepIndex = j;
+            lines.push(
+              `#${i + 1} - ${session.session_type} session - focus step: ${stepAttempt.chain_step_id} @ ${
+                stepAttempt.target_prompt_level
+              }`,
+            );
+          }
+        }
+      });
+    });
+
+    lines.push(`Draft Session #${this.chainData.sessions.length + 1} - ${this.draftSession.session_type}`);
+    for (const stepAttempt of this.draftSession.step_attempts) {
+      if (stepAttempt.was_focus_step) {
+        lines.push(`- focus step: ${stepAttempt.chain_step_id} @ ${stepAttempt.target_prompt_level}`);
+      }
+    }
+
+    // Print it all out.
+    console.log(`========================================
+${lines.join('\n')}
+========================================`);
   }
 }

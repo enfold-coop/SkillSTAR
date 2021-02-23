@@ -302,7 +302,7 @@ describe('ChainMastery', () => {
 
         // 5 step attempts for focus step at current prompt level:
         //   1. Training --> fail
-        //   2. Training --> complete
+        //   2. Training --> fail
         //   3. Training --> complete
         //   4. Training --> complete
         //   5. Probe --> complete
@@ -336,11 +336,11 @@ describe('ChainMastery', () => {
 
               if (stepAttemptIndex < focusStepIndex) {
                 expect(stepMasteryInfo.dateMastered).toBeTruthy();
-                expect(stepMasteryInfo.promptLevel).toEqual(ChainStepPromptLevel.full_physical);
+                expect(stepMasteryInfo.promptLevel).toEqual(ChainStepPromptLevel.none);
                 expect(stepMasteryInfo.stepStatus).toEqual(ChainStepStatus.mastered);
                 expect(stepAttempt.status).toEqual(ChainStepStatus.mastered);
                 expect(stepAttempt.was_focus_step).toBeFalsy();
-                expect(stepAttempt.target_prompt_level).toEqual(ChainStepPromptLevel.full_physical);
+                expect(stepAttempt.target_prompt_level).toEqual(ChainStepPromptLevel.none);
                 completeStepAttempt(stepAttempt);
               }
 
@@ -357,15 +357,15 @@ describe('ChainMastery', () => {
                 expect(stepAttempt.status).toEqual(ChainStepStatus.focus);
                 expect(stepAttempt.target_prompt_level).toEqual(expectedPromptLevel);
 
-                if (promptLevelAttemptIndex === 0) {
-                  // Fail first attempt at this prompt level
+                if (promptLevelAttemptIndex <= 1) {
+                  // Fail first 2 attempts at this prompt level
                   failStepAttempt(stepAttempt);
                   stepAttempt.prompt_level = ChainStepPromptLevel.full_physical;
                   stepAttempt.reason_step_incomplete = StepIncompleteReason.challenging_behavior;
                   stepAttempt.challenging_behaviors = [{ time: new Date() }];
                 } else {
                   // Mark focus step as complete at the target prompt level
-                  expect(stepMasteryInfo.numAttemptsSince.lastFailedWithFocus).toEqual(promptLevelAttemptIndex - 1);
+                  expect(stepMasteryInfo.numAttemptsSince.lastFailedWithFocus).toEqual(promptLevelAttemptIndex - 2);
                   completeStepAttempt(stepAttempt);
                   stepAttempt.prompt_level = stepAttempt.target_prompt_level;
                 }
@@ -476,11 +476,11 @@ describe('ChainMastery', () => {
                 expect(stepMasteryInfo.dateBoosterInitiated).toBeTruthy();
                 expect(stepMasteryInfo.dateBoosterMastered).toBeTruthy();
                 expect(stepMasteryInfo.stepStatus).toEqual(ChainStepStatus.booster_mastered);
-                expect(stepMasteryInfo.promptLevel).toEqual(ChainStepPromptLevel.full_physical);
+                expect(stepMasteryInfo.promptLevel).toEqual(ChainStepPromptLevel.none);
                 expect(stepAttempt.was_focus_step).toEqual(false);
                 expect(stepAttempt.session_type).toEqual(ChainSessionType.booster);
                 expect(stepAttempt.status).toEqual(ChainStepStatus.booster_mastered);
-                expect(stepAttempt.target_prompt_level).toEqual(ChainStepPromptLevel.full_physical);
+                expect(stepAttempt.target_prompt_level).toEqual(ChainStepPromptLevel.none);
                 completeStepAttempt(stepAttempt);
               }
 
@@ -683,7 +683,24 @@ promptLevelIndex = ${promptLevelIndex}
             } else {
               // Next session will be a training session.
               if (masteryInfo.stepStatus !== ChainStepStatus.focus) {
+                // TODO: There is a case where, if the next target prompt level will be "none" (independent),
+                //  the probe session will count toward the prompt level completion, even if it had already been
+                //  counted for the previous "shadow" prompt level.
+
                 console.log('oops');
+
+                console.log(`
+numPromptLevels = ${numPromptLevels}
+numChainSteps = ${numChainSteps}
+lastChainStepIndex = ${lastChainStepIndex}
+maxNumSessions = ${maxNumSessions}
+focusStepIndex = ${focusStepIndex}
+numPostProbeSessions = ${numPostProbeSessions}
+numAttemptsAtCurrentPromptLevel = ${numAttemptsAtCurrentPromptLevel}
+promptLevelIndex = ${promptLevelIndex}
+                `);
+
+                chainMastery.printSessionLog();
               }
               expect(masteryInfo.stepStatus).toEqual(ChainStepStatus.focus);
             }
@@ -724,61 +741,5 @@ promptLevelIndex = ${promptLevelIndex}
 
       focusStepIndex++;
     }
-
-    // ------- FOCUS STEP = 0 -------
-    // 01. Training --> complete @ full_physical
-    // 02. Training --> complete @ full_physical
-    // 03. Training --> complete @ full_physical
-    // ------- PROMOTE TO NEXT PROMPT LEVEL -------
-    // 04. Training --> complete @ partial_physical
-    // 05. Probe --> complete
-    // 06. Training --> complete @ partial_physical
-    // ------- PROMOTE TO NEXT PROMPT LEVEL -------
-    // 07. Training --> complete @ shadow
-    // 08. Training --> complete @ shadow
-    // 09. Training --> complete @ shadow
-    // ------- PROMOTE TO NEXT PROMPT LEVEL -------
-    // 10. Probe --> complete
-    // 11. Training --> complete @ independent
-    // 12. Training --> complete @ independent
-    // ------- FOCUS STEP = 1 -------
-    // 13. Training --> complete @ full_physical
-    // 14. Training --> complete @ full_physical
-    // 15. Probe --> complete
-    // ------- PROMOTE TO NEXT PROMPT LEVEL -------
-    // 16. Training --> complete @ partial_physical
-    // 17. Training --> complete @ partial_physical
-    // 18. Training --> complete @ partial_physical
-    // ------- PROMOTE TO NEXT PROMPT LEVEL -------
-    // 19. Training --> complete @ shadow
-    // 20. Probe --> complete
-    // 21. Training --> complete @ shadow
-    // ------- PROMOTE TO NEXT PROMPT LEVEL -------
-    // 22. Training --> complete @ independent
-    // 23. Training --> complete @ independent
-    // 24. Training --> complete @ independent
-    // ------- FOCUS STEP = 3 -------
-    // etc...
-
-    // 4 training sessions
-    // - Sessions 3-5
-    //   - Step 1 be focus step @ full physical prompt level
-    //   - Fail all other steps?
-    // - Session 6
-    //   - the prompt level should advance to partial physical.
-    //   - Complete step 1 in partial physical prompt level - trial 1.
-    // 1 probe session
-    // - Session 7
-    //   - Do step 1 independently - probe session trial 1
-    // 4 training sessions
-    // - Session 8
-    //   - Partial physical prompt level - trial 2.
-    // The very next training session, prompt level became independent prompt level.
-    // He did three more trainings with independent level on step 1 (the stars were filling out)
-    // The probe session appeared and I said Bilbo did step 1 independently - probe session trial 2.
-    // Although Bilbo already did step 1 independently more than 3 times (overall 4 times), step 1 is still his focus step.
-    // I did four more training sessions with step 1 - independent level, focus step.
-    // For the probe session, I said Bilbo did step 1 independently - probe session trial 3.
-    // Step 1 is still focus step - independent level in the training session. (does not say it is mastered).
   });
 });
