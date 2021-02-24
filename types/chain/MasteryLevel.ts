@@ -1,4 +1,4 @@
-import { ChainStepPromptLevel, ChainStepStatus } from './StepAttempt';
+import { ChainStepPromptLevel, ChainStepStatus, StepAttempt } from './StepAttempt';
 
 export interface MasteryStatus {
   stepStatus: ChainStepStatus;
@@ -25,7 +25,6 @@ export interface MasteryInfoNumAttemptsSince {
   lastCompletedWithoutChallenge: number;
   lastCompletedWithoutPrompt: number;
   lastFailed: number;
-  lastFailedWithFocus: number;
   lastProbe: number;
   firstMastered: number;
   boosterInitiated: number;
@@ -35,4 +34,11 @@ export interface MasteryInfoNumAttemptsSince {
 
 export interface MasteryInfoMap {
   [key: string]: MasteryInfo;
+}
+
+export interface PromptLevelMap {
+  targetPromptLevel?: ChainStepPromptLevel;
+  firstMasteredStep?: StepAttempt;
+  firstBoosterStep?: StepAttempt;
+  boosterMasteredStep?: StepAttempt;
 }

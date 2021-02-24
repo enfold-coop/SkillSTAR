@@ -26,6 +26,7 @@ export const makeMockStepAttempt = (
       completed: completed,
       was_prompted: !completed,
       had_challenging_behavior: !completed,
+      target_prompt_level: ChainStepPromptLevel.full_physical,
     };
   } else {
     const makeFocusStep = chainStepId === 0;
@@ -40,7 +41,7 @@ export const makeMockStepAttempt = (
       completed: completed,
       was_prompted: !completed,
       was_focus_step: !!makeFocusStep,
-      target_prompt_level: makeFocusStep ? ChainStepPromptLevel.full_physical : undefined,
+      target_prompt_level: ChainStepPromptLevel.full_physical,
       prompt_level: makeFocusStep ? ChainStepPromptLevel.full_physical : undefined,
       had_challenging_behavior: !completed,
       challenging_behaviors: [
