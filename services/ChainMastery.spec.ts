@@ -36,7 +36,7 @@ describe('ChainMastery', () => {
   });
 
   it('should populate the mastery info object and draft session for returning users', () => {
-    checkMasteryInfo(chainMastery, 0, 0);
+    checkMasteryInfo(chainMastery, 0);
     expect(chainMastery.chainData.sessions.every((s) => s.completed === true)).toEqual(true);
   });
 
@@ -47,7 +47,7 @@ describe('ChainMastery', () => {
       sessions: [],
     });
     chainMastery = new ChainMastery(mockChainSteps, chainData);
-    checkMasteryInfo(chainMastery, -1, -1);
+    checkMasteryInfo(chainMastery, -1);
 
     // Step attempt status should be Not Started
     const draftSession = chainMastery.draftSession;
@@ -79,6 +79,19 @@ describe('ChainMastery', () => {
     );
     expect(chainMastery.getNextPromptLevel(ChainStepPromptLevel.shadow)).toEqual(ChainStepPromptLevelMap['none']);
     expect(chainMastery.getNextPromptLevel(ChainStepPromptLevel.none)).toEqual(ChainStepPromptLevelMap['none']);
+  });
+
+  it('should get previous prompt level', () => {
+    expect(chainMastery.getPrevPromptLevel(ChainStepPromptLevel.full_physical)).toEqual(
+      ChainStepPromptLevelMap['full_physical'],
+    );
+    expect(chainMastery.getPrevPromptLevel(ChainStepPromptLevel.partial_physical)).toEqual(
+      ChainStepPromptLevelMap['full_physical'],
+    );
+    expect(chainMastery.getPrevPromptLevel(ChainStepPromptLevel.shadow)).toEqual(
+      ChainStepPromptLevelMap['partial_physical'],
+    );
+    expect(chainMastery.getPrevPromptLevel(ChainStepPromptLevel.none)).toEqual(ChainStepPromptLevelMap['shadow']);
   });
 
   it('should save draft session', () => {
@@ -136,12 +149,12 @@ describe('ChainMastery', () => {
       }
 
       if (s.session_type === ChainSessionType.probe) {
-        stepAttempt.was_prompted = undefined;
+        stepAttempt.was_prompted = false;
         stepAttempt.was_focus_step = undefined;
         stepAttempt.status = ChainStepStatus.not_yet_started;
         stepAttempt.challenging_behaviors = [];
         stepAttempt.prompt_level = undefined;
-        stepAttempt.target_prompt_level = undefined;
+        stepAttempt.target_prompt_level = ChainStepPromptLevel.full_physical;
       }
     });
 
@@ -172,7 +185,7 @@ describe('ChainMastery', () => {
         stepAttempt.status = ChainStepStatus.not_complete;
         stepAttempt.challenging_behaviors = [];
         stepAttempt.prompt_level = undefined;
-        stepAttempt.target_prompt_level = undefined;
+        stepAttempt.target_prompt_level = ChainStepPromptLevel.full_physical;
       });
     });
 
@@ -201,7 +214,7 @@ describe('ChainMastery', () => {
         stepAttempt.was_focus_step = undefined;
         stepAttempt.challenging_behaviors = [];
         stepAttempt.prompt_level = undefined;
-        stepAttempt.target_prompt_level = undefined;
+        stepAttempt.target_prompt_level = ChainStepPromptLevel.full_physical;
 
         // Should be the mastery info step status at the time the draft session was created?
         if (i < 5) {
@@ -344,16 +357,13 @@ describe('ChainMastery', () => {
                 completeStepAttempt(stepAttempt);
               }
 
-              // This is the focus step. Fail first attempt at this prompt level, then complete next 3.
+              // This is the focus step. Fail 2 attempts at this prompt level, then complete next 3.
               if (stepAttemptIndex === focusStepIndex) {
                 const expectedPromptLevel = chainMastery.promptHierarchy[promptLevelIndex].key;
                 expect(stepAttempt.was_focus_step).toEqual(true);
                 expect(stepMasteryInfo.dateMastered).toBeFalsy();
-
-                // Mastery info should stay in sync with draft session
                 expect(stepMasteryInfo.promptLevel).toEqual(expectedPromptLevel);
                 expect(stepMasteryInfo.stepStatus).toEqual(ChainStepStatus.focus);
-
                 expect(stepAttempt.status).toEqual(ChainStepStatus.focus);
                 expect(stepAttempt.target_prompt_level).toEqual(expectedPromptLevel);
 
@@ -365,7 +375,6 @@ describe('ChainMastery', () => {
                   stepAttempt.challenging_behaviors = [{ time: new Date() }];
                 } else {
                   // Mark focus step as complete at the target prompt level
-                  expect(stepMasteryInfo.numAttemptsSince.lastFailedWithFocus).toEqual(promptLevelAttemptIndex - 2);
                   completeStepAttempt(stepAttempt);
                   stepAttempt.prompt_level = stepAttempt.target_prompt_level;
                 }
@@ -411,7 +420,7 @@ describe('ChainMastery', () => {
     // All steps should be mastered now.
     checkAllStepsMastered(chainMastery);
 
-    // Fail 2 probes in a row, triggering a booster session.
+    // Fail 3 probes in a row, triggering a booster session.
     doProbeSessions(chainMastery, NUM_INCOMPLETE_ATTEMPTS_FOR_BOOSTER, true, ChainStepStatus.mastered);
 
     // All steps should now require a booster.
@@ -439,7 +448,7 @@ describe('ChainMastery', () => {
 
         // 5 step attempts for focus step at current prompt level:
         //   1. Booster --> fail
-        //   2. Booster --> complete
+        //   2. Booster --> fail
         //   3. Booster --> complete
         //   4. Booster --> complete
         //   5. Probe --> complete
@@ -501,27 +510,32 @@ describe('ChainMastery', () => {
                 expect(stepAttempt.target_prompt_level).toEqual(expectedPromptLevel);
                 expect(stepMasteryInfo.stepStatus).toEqual(ChainStepStatus.booster_needed);
 
-                if (promptLevelAttemptIndex === 0) {
-                  // Fail first attempt at this prompt level
+                if (promptLevelAttemptIndex === 1) {
+                  // Fail 2nd attempt at this prompt level
                   failStepAttempt(stepAttempt);
-                  stepAttempt.prompt_level = ChainStepPromptLevel.full_physical;
+                  stepAttempt.prompt_level = ChainStepPromptLevel.shadow;
                   stepAttempt.reason_step_incomplete = StepIncompleteReason.challenging_behavior;
                   stepAttempt.challenging_behaviors = [{ time: new Date() }];
                 } else {
                   // Mark focus step as complete at the target prompt level
-                  expect(stepMasteryInfo.numAttemptsSince.lastFailedWithFocus).toEqual(promptLevelAttemptIndex - 1);
                   completeStepAttempt(stepAttempt);
                   stepAttempt.prompt_level = stepAttempt.target_prompt_level;
                 }
               }
 
-              // Mark steps after focus step as incomplete
+              // Mark steps after focus step as incomplete every other attempt
               if (stepAttemptIndex > focusStepIndex) {
                 expect(stepAttempt.was_focus_step).toBeFalsy();
-                failStepAttempt(stepAttempt);
-                stepAttempt.prompt_level = ChainStepPromptLevel.full_physical;
-                stepAttempt.reason_step_incomplete = StepIncompleteReason.challenging_behavior;
-                stepAttempt.challenging_behaviors = [{ time: new Date() }];
+
+                if (promptLevelAttemptIndex % 2 === 0) {
+                  completeStepAttempt(stepAttempt);
+                  stepAttempt.prompt_level = stepAttempt.target_prompt_level;
+                } else {
+                  failStepAttempt(stepAttempt);
+                  stepAttempt.prompt_level = ChainStepPromptLevel.shadow;
+                  stepAttempt.reason_step_incomplete = StepIncompleteReason.challenging_behavior;
+                  stepAttempt.challenging_behaviors = [{ time: new Date() }];
+                }
               }
             });
           }
@@ -570,24 +584,10 @@ describe('ChainMastery', () => {
     let numAttemptsAtCurrentPromptLevel = 0; // Check if this number is greater than NUM_COMPLETE_ATTEMPTS_FOR_MASTERY
     let promptLevelIndex = lastPromptLevelIndex;
 
-    console.log(`
-numPromptLevels = ${numPromptLevels}
-numChainSteps = ${numChainSteps}
-lastChainStepIndex = ${lastChainStepIndex}
-maxNumSessions = ${maxNumSessions}
-focusStepIndex = ${focusStepIndex}
-numPostProbeSessions = ${numPostProbeSessions}
-numAttemptsAtCurrentPromptLevel = ${numAttemptsAtCurrentPromptLevel}
-promptLevelIndex = ${promptLevelIndex}
-    `);
-
     while (focusStepIndex <= lastChainStepIndex) {
       promptLevelIndex = lastPromptLevelIndex;
-      console.log(`********** focusStepIndex = ${focusStepIndex} **********`);
 
       while (promptLevelIndex >= 0) {
-        console.log(`========== promptLevelIndex = ${promptLevelIndex} ==========`);
-
         while (numAttemptsAtCurrentPromptLevel <= NUM_COMPLETE_ATTEMPTS_FOR_MASTERY) {
           if (promptLevelIndex < 0) {
             break;
@@ -595,10 +595,7 @@ promptLevelIndex = ${promptLevelIndex}
 
           const promptLevel = chainMastery.promptHierarchy[promptLevelIndex].key;
           numAttemptsAtCurrentPromptLevel++;
-          console.log(`---------- numAttemptsAtCurrentPromptLevel = ${numAttemptsAtCurrentPromptLevel} ----------`);
-
           numPostProbeSessions++;
-          console.log(`(((((((((( numPostProbeSessions = ${numPostProbeSessions} )))))))))) ----------`);
 
           // Check if numPostProbeSessions is divisible by 5 to see if we need a probe session
           if (numPostProbeSessions % 5 === 0) {
@@ -674,7 +671,6 @@ promptLevelIndex = ${promptLevelIndex}
           if (promptLevelIndex === 0 && numAttemptsAtCurrentPromptLevel === NUM_COMPLETE_ATTEMPTS_FOR_MASTERY) {
             promptLevelIndex--;
             numAttemptsAtCurrentPromptLevel = 0;
-            console.log(`++++++++++ promptLevelIndex = ${promptLevelIndex} ++++++++++`);
             expect(masteryInfo.stepStatus).toEqual(ChainStepStatus.mastered);
           } else {
             if ((numPostProbeSessions + 1) % 5 === 0) {
@@ -682,26 +678,6 @@ promptLevelIndex = ${promptLevelIndex}
               expect(masteryInfo.stepStatus).toEqual(ChainStepStatus.not_complete);
             } else {
               // Next session will be a training session.
-              if (masteryInfo.stepStatus !== ChainStepStatus.focus) {
-                // TODO: There is a case where, if the next target prompt level will be "none" (independent),
-                //  the probe session will count toward the prompt level completion, even if it had already been
-                //  counted for the previous "shadow" prompt level.
-
-                console.log('oops');
-
-                console.log(`
-numPromptLevels = ${numPromptLevels}
-numChainSteps = ${numChainSteps}
-lastChainStepIndex = ${lastChainStepIndex}
-maxNumSessions = ${maxNumSessions}
-focusStepIndex = ${focusStepIndex}
-numPostProbeSessions = ${numPostProbeSessions}
-numAttemptsAtCurrentPromptLevel = ${numAttemptsAtCurrentPromptLevel}
-promptLevelIndex = ${promptLevelIndex}
-                `);
-
-                chainMastery.printSessionLog();
-              }
               expect(masteryInfo.stepStatus).toEqual(ChainStepStatus.focus);
             }
 
@@ -710,7 +686,6 @@ promptLevelIndex = ${promptLevelIndex}
             if (numAttemptsAtCurrentPromptLevel === NUM_COMPLETE_ATTEMPTS_FOR_MASTERY) {
               // Focus step mastered at this prompt level. Should go to next prompt level.
               promptLevelIndex--;
-              console.log(`++++++++++ promptLevelIndex = ${promptLevelIndex} ++++++++++`);
 
               if (promptLevelIndex <= 0) {
                 // Should be none if mastered

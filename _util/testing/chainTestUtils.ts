@@ -4,7 +4,7 @@ import { ChainSessionType } from '../../types/chain/ChainSession';
 import { ChainStepStatus, StepAttempt } from '../../types/chain/StepAttempt';
 import { mockChainSteps } from './mockChainSteps';
 
-export const checkMasteryInfo = (chainMastery: ChainMastery, numLastFailed = -1, numLastFailedWithFocus = -1): void => {
+export const checkMasteryInfo = (chainMastery: ChainMastery, numLastFailed = -1): void => {
   expect(chainMastery).toBeTruthy();
   expect(chainMastery.chainSteps).toBeTruthy();
   expect(chainMastery.chainSteps.length).toBeGreaterThan(0);
@@ -24,7 +24,6 @@ export const checkMasteryInfo = (chainMastery: ChainMastery, numLastFailed = -1,
     expect(numAttemptsSince.firstMastered).toBeTruthy();
     expect(numAttemptsSince.boosterInitiated).toBeTruthy();
     expect(numAttemptsSince.boosterMastered).toBeTruthy();
-    expect(numAttemptsSince.lastFailedWithFocus).toEqual(numLastFailedWithFocus);
     expect(numAttemptsSince.lastFailed).toEqual(numLastFailed);
   });
   expect(chainMastery.masteredChainStepIds).toBeTruthy();
@@ -42,7 +41,7 @@ export const checkMasteryInfo = (chainMastery: ChainMastery, numLastFailed = -1,
  * @param chainData
  * @param chainMastery
  */
-export const clearSessions = (chainData: ChainData, chainMastery: ChainMastery) => {
+export const clearSessions = (chainData: ChainData, chainMastery: ChainMastery): void => {
   const chainDataAllProbes = chainData.clone();
   chainDataAllProbes.sessions = [];
   chainMastery.updateChainData(chainDataAllProbes);
@@ -54,7 +53,7 @@ export const doProbeSessions = (
   numToDo: number,
   shouldFail: boolean,
   stepStatus: ChainStepStatus,
-) => {
+): void => {
   const isPostMastery = [
     ChainStepStatus.mastered,
     ChainStepStatus.booster_needed,
@@ -117,7 +116,7 @@ export const checkAllStepsHaveStatus = (
   chainMastery: ChainMastery,
   stepStatus: ChainStepStatus,
   focusStepId?: number,
-) => {
+): void => {
   for (const chainStep of mockChainSteps) {
     const masteryInfo = chainMastery.masteryInfoMap[chainStep.id];
     expect(masteryInfo).toBeTruthy();
@@ -130,7 +129,7 @@ export const checkAllStepsHaveStatus = (
   }
 };
 
-export const checkAllStepsMastered = (chainMastery: ChainMastery) => {
+export const checkAllStepsMastered = (chainMastery: ChainMastery): void => {
   // No chain steps should be marked as the focus step.
   expect(chainMastery.nextFocusChainStepId).toBeUndefined();
   expect(chainMastery.masteryInfoMap).toBeTruthy();
@@ -151,13 +150,13 @@ export const checkAllStepsMastered = (chainMastery: ChainMastery) => {
   }
 };
 
-export const failStepAttempt = (stepAttempt: StepAttempt) => {
+export const failStepAttempt = (stepAttempt: StepAttempt): void => {
   stepAttempt.was_prompted = true;
   stepAttempt.completed = false;
   stepAttempt.had_challenging_behavior = true;
 };
 
-export const completeStepAttempt = (stepAttempt: StepAttempt) => {
+export const completeStepAttempt = (stepAttempt: StepAttempt): void => {
   stepAttempt.was_prompted = false;
   stepAttempt.completed = true;
   stepAttempt.had_challenging_behavior = false;
