@@ -79,7 +79,7 @@ export default function App(): JSX.Element | null {
       <Button
         color={CustomColors.uva.white}
         onPress={() => {
-          ApiService.logout().then(() => {
+          ApiService.logout(() => {
             props.navigation.navigate('LandingScreen');
           });
         }}

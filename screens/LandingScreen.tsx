@@ -12,6 +12,7 @@ import CustomColors from '../styles/Colors';
 
 const LandingScreen = (): JSX.Element => {
   const navigation = useNavigation();
+  const [isLoggedOut, setIsLoggedOut] = useState<boolean>(false);
   const [email, setEmail] = useState(DEFAULT_USER_EMAIL);
   const [password, setPassword] = useState(DEFAULT_USER_PASSWORD);
   const [isValid, setIsValid] = useState<boolean>(false);
@@ -26,7 +27,10 @@ const LandingScreen = (): JSX.Element => {
 
     const _loadUser = async () => {
       isLoading = true;
-      const user = await ApiService.getUser();
+      const user = await ApiService.getUser(() => {
+        setIsLoggedOut(true);
+        navigation.navigate('LandingScreen');
+      });
 
       if (user) {
         await userDispatch({ type: 'user', payload: user });
@@ -48,6 +52,7 @@ const LandingScreen = (): JSX.Element => {
       } else {
         // If no cached user, this screen will render the login form.
         console.log('No cached user session. Please log in.');
+        setIsLoggedOut(true);
       }
 
       isLoading = false;
@@ -63,16 +68,24 @@ const LandingScreen = (): JSX.Element => {
     return () => {
       isCancelled = true;
     };
-  }, [isValid]);
+  }, []);
   /** END LIFECYCLE METHODS */
 
-  const _checkEmail = (inputText: string) => {
+  const _checkEmail = async (inputText: string) => {
+    if (!isLoggedOut) {
+      await ApiService.logout();
+      setIsLoggedOut(true);
+    }
     setErrorMessage('');
     setIsValid(!!(inputText && password));
     setEmail(inputText);
   };
 
-  const _checkPassword = (inputText: string) => {
+  const _checkPassword = async (inputText: string) => {
+    if (!isLoggedOut) {
+      await ApiService.logout();
+      setIsLoggedOut(true);
+    }
     setErrorMessage('');
     setIsValid(!!(email && inputText));
     setPassword(inputText);
