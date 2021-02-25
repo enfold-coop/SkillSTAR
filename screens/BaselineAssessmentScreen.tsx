@@ -1,5 +1,5 @@
 import { useNavigation } from '@react-navigation/native';
-import React from 'react';
+import React, { useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { Button } from 'react-native-paper';
 import { PROBE_INSTRUCTIONS } from '../components/Chain/chainshome_text_assets/chainshome_text';
@@ -19,6 +19,7 @@ const BaselineAssessmentScreen = (): JSX.Element => {
    */
   const navigation = useNavigation();
   const [chainMasteryState, chainMasteryDispatch] = useChainMasteryContext();
+  const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
 
   const updateChainData: DataVerificationControlCallback = async (
     chainStepId: number,
@@ -40,6 +41,7 @@ const BaselineAssessmentScreen = (): JSX.Element => {
   };
 
   const updateSession = async (): Promise<void> => {
+    setIsSubmitted(true);
     if (
       chainMasteryState &&
       chainMasteryState.chainMastery &&
@@ -49,7 +51,6 @@ const BaselineAssessmentScreen = (): JSX.Element => {
       chainMasteryState.chainMastery.draftSession.completed = true;
       chainMasteryState.chainMastery.saveDraftSession();
       const dbChainData = await ApiService.upsertChainData(chainMasteryState.chainMastery.chainData);
-
       if (dbChainData) {
         chainMasteryState.chainMastery.updateChainData(dbChainData);
         chainMasteryDispatch({ type: 'chainMastery', payload: chainMasteryState.chainMastery });
@@ -78,19 +79,35 @@ const BaselineAssessmentScreen = (): JSX.Element => {
           <DataVerificationList onChange={updateChainData} />
         </View>
         <View style={styles.nextBackBtnsContainer}>
-          <Button
-            style={styles.nextButton}
-            color={CustomColors.uva.orange}
-            labelStyle={{
-              fontSize: 24,
-              fontWeight: '600',
-              color: CustomColors.uva.white,
-            }}
-            mode={'contained'}
-            onPress={() => {
-              updateSession();
-            }}
-          >{`NEXT`}</Button>
+          {isSubmitted === false ? (
+            <Button
+              style={styles.nextButton}
+              color={CustomColors.uva.orange}
+              labelStyle={{
+                fontSize: 24,
+                fontWeight: '600',
+                color: CustomColors.uva.white,
+              }}
+              mode={'contained'}
+              onPress={() => {
+                updateSession();
+              }}
+            >{`Submit`}</Button>
+          ) : (
+            <Button
+              style={styles.nextButton}
+              color={CustomColors.uva.gray}
+              labelStyle={{
+                fontSize: 24,
+                fontWeight: '600',
+                color: CustomColors.uva.white,
+              }}
+              mode={'contained'}
+              onPress={() => {
+                console.log('Submitted Probe data');
+              }}
+            >{`Thanks`}</Button>
+          )}
         </View>
       </View>
     </View>

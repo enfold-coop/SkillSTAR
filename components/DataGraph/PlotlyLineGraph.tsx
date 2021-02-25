@@ -82,9 +82,10 @@ const PlotlyLineGraph = (props: PlotlyLineGraphProps): JSX.Element => {
     plot_bgcolor: CustomColors.uva.sky,
     xaxis: {
       title: 'Session Number',
+      dtick: 1,
     },
     yaxis: {
-      title: 'Mastery (%)',
+      title: '(%) of Steps',
     },
   };
 

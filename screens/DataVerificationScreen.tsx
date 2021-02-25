@@ -20,6 +20,7 @@ const DataVerificationScreen = (): JSX.Element => {
   useEffect(() => {
     if (chainMasteryState.chainMastery) {
       const sessionType = chainMasteryState.chainMastery.draftSession.session_type;
+      //   console.log(chainMasteryState.chainMastery.draftSession);
       setSessionTypeLabel(ChainSessionTypeMap[sessionType as string].value as ChainSessionTypeLabels);
     }
   }, [chainMasteryState.chainMastery]);
@@ -72,19 +73,37 @@ const DataVerificationScreen = (): JSX.Element => {
 
       <View style={styles.btnContainer}>
         <Text style={styles.btnContainerText}>{`Please confirm your selections, then press Submit.`}</Text>
-        <Button
-          mode={'contained'}
-          color={CustomColors.uva.orange}
-          labelStyle={{
-            fontSize: 24,
-            color: CustomColors.uva.white,
-            paddingVertical: 5,
-          }}
-          style={styles.nextButton}
-          onPress={postData}
-        >
-          {!isSubmitted ? 'Confirm and Submit' : 'Thanks'}
-        </Button>
+        {!isSubmitted ? (
+          <Button
+            mode={'contained'}
+            color={CustomColors.uva.orange}
+            labelStyle={{
+              fontSize: 24,
+              color: CustomColors.uva.white,
+              paddingVertical: 5,
+            }}
+            style={styles.nextButton}
+            onPress={postData}
+          >
+            {'Confirm and Submit'}
+          </Button>
+        ) : (
+          <Button
+            mode={'contained'}
+            color={CustomColors.uva.gray}
+            labelStyle={{
+              fontSize: 24,
+              color: CustomColors.uva.white,
+              paddingVertical: 5,
+            }}
+            style={styles.nextButton}
+            onPress={() => {
+              console.log('Data Submitted');
+            }}
+          >
+            {'Thanks'}
+          </Button>
+        )}
       </View>
     </View>
   ) : (
