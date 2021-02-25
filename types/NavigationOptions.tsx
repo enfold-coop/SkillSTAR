@@ -15,7 +15,7 @@ export const screenOpts: StackNavigationOptions = {
 
 export type RootStackParamList = {
   LandingScreen: undefined;
-  SelectParticpant: undefined;
+  SelectParticipant: undefined;
   BaselineAssessmentScreen: undefined;
   ChainsHomeScreen: undefined;
   PrepareMaterialsScreen: undefined;

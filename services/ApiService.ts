@@ -1,6 +1,7 @@
 import { API_URL } from '@env';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import NetInfo from '@react-native-community/netinfo';
+import { StackNavigationProp } from '@react-navigation/stack';
 import React from 'react';
 import { parse, stringify } from 'telejson';
 import { ChainData, SkillstarChain } from '../types/chain/ChainData';
@@ -125,7 +126,7 @@ export class ApiService {
           return dbData as ChainStep[];
         }
       } catch (e) {
-        console.error(e);
+        console.error('ApiService > getChainSteps > error getting chain steps from backend:', e);
       }
     }
   }
@@ -177,7 +178,7 @@ export class ApiService {
           }
         }
       } catch (e) {
-        console.error(e);
+        console.error('ApiService > getChainQuestionnaireId > error getting questionnaire ID from backend:', e);
       }
     }
   }
@@ -213,7 +214,7 @@ export class ApiService {
         return new ChainData(dbData);
       }
     } catch (e) {
-      console.error(e);
+      console.error('ApiService > getChainData > error getting chain data from backend:', e);
     }
   }
 
@@ -244,7 +245,9 @@ export class ApiService {
     const participant = await ApiService.getSelectedParticipant();
 
     if (!(participant || dataHasParticipantId)) {
-      console.error('Cannot save the chain data. No participant found to submit the data for.');
+      console.error(
+        'ApiService > addChainData > Cannot save the chain data. No participant found to submit the data for.',
+      );
       return;
     }
 
@@ -284,7 +287,7 @@ export class ApiService {
         return dbData as SkillstarChain;
       }
     } catch (e) {
-      console.error(e);
+      console.error('ApiService > addChainData > error saving chain data to backend:', e);
     }
   }
 
@@ -296,7 +299,7 @@ export class ApiService {
       const dbData = await ApiService._parseResponse(response, 'editChainData', headers.method);
       return dbData as SkillstarChain;
     } catch (e) {
-      console.error(e);
+      console.error('ApiService > editChainData > error saving chain data to backend:', e);
     }
   }
 
@@ -308,32 +311,37 @@ export class ApiService {
       const dbData = await ApiService._parseResponse(response, 'deleteChainData', headers.method);
       return dbData as SkillstarChain;
     } catch (e) {
-      console.error(e);
+      console.error('ApiService > deleteChainData > error deleting chain data from backend:', e);
     }
   }
 
-  static async getUser(): Promise<User | undefined> {
+  static async getUser(onFail?: () => void): Promise<User | undefined> {
     const cachedUserJson = await AsyncStorage.getItem('user');
     const cachedUserTokenJson = await AsyncStorage.getItem('user_token');
+    let user: User | undefined;
 
     if (cachedUserJson) {
-      const user = parse(cachedUserJson) as User;
+      user = parse(cachedUserJson) as User;
+    }
 
-      if (user) {
-        // Check for connection to the server.
-        const isConnected = await ApiService._isConnected();
+    // Check for connection to the server.
+    const isConnected = await ApiService._isConnected();
 
-        if (isConnected && cachedUserTokenJson) {
-          // If connected, get the latest user object from the refreshSession endpoint.
-          const updatedUser = await ApiService.refreshSession();
+    if (isConnected && cachedUserTokenJson) {
+      // If connected, get the latest user object from the refreshSession endpoint.
+      const updatedUser = await ApiService.refreshSession();
 
-          // Return the updated user if defined. Otherwise, just return the cached one.
-          return updatedUser || user;
-        } else {
-          // If not connected to the internet, just return the cached user.
-          return user;
-        }
+      if (!updatedUser) {
+        // Token has expired. Log out and return undefined.
+        await this.logout(onFail);
+        return;
+      } else {
+        // Return the updated user.
+        return updatedUser;
       }
+    } else {
+      // If not connected to the internet, just return the cached user.
+      return user;
     }
   }
 
@@ -349,8 +357,7 @@ export class ApiService {
         return user;
       }
     } catch (e) {
-      console.error('Login error:');
-      console.error(e);
+      console.error('ApiService > refreshSession > error refreshing session:', e);
     }
   }
 
@@ -425,7 +432,7 @@ export class ApiService {
         return await ApiService.selectParticipant(dependents[0].id);
       }
     } else {
-      console.log('no user found.');
+      console.log('ApiService > getSelectedParticipant > no user found.');
     }
   }
 
@@ -451,15 +458,23 @@ export class ApiService {
         return null;
       }
     } catch (e) {
-      console.error('Login error:');
-      console.error(e);
+      console.error('ApiService > login > error logging in with email and password:', e);
       return null;
     }
   }
 
-  static async logout(): Promise<void> {
-    // Delete EVERYTHING in AsyncStorage
-    await AsyncStorage.clear();
+  static async logout(callback?: () => void): Promise<void> {
+    console.log('ApiService > logout');
+    // Delete EVERYTHING in AsyncStorage?
+    // await AsyncStorage.clear();
+
+    // Delete current user and token
+    await AsyncStorage.removeItem('user');
+    await AsyncStorage.removeItem('user_token');
+
+    if (callback) {
+      callback();
+    }
   }
 
   static async _getHeaders(method: 'GET' | 'POST' | 'PUT' | 'DELETE', data?: any): Promise<RequestInit> {
@@ -471,7 +486,10 @@ export class ApiService {
     };
 
     if (token) {
+      console.log('token:', token);
       headers.Authorization = `Bearer ${token}`;
+    } else {
+      console.log('no stored token found.');
     }
 
     if (method === 'GET') {
@@ -497,8 +515,7 @@ export class ApiService {
     try {
       await AsyncStorage.setItem(key, stringify(value));
     } catch (e) {
-      console.log('ApiService._cache Error');
-      console.error(e);
+      console.error(`ApiService > _cache > Error storing key "${key}":`, e);
     }
   }
 
@@ -510,8 +527,7 @@ export class ApiService {
         return parse(cachedJson);
       }
     } catch (e) {
-      console.log('ApiService._getCached Error');
-      console.error(e);
+      console.error(`ApiService > _getCached > Error getting cached key "${key}":`, e);
     }
   }
 
