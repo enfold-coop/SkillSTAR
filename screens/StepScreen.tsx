@@ -1,21 +1,20 @@
 import { useNavigation } from '@react-navigation/native';
 import { Video } from 'expo-av';
-import VideoPlayer from 'expo-video-player';
 import { AVPlaybackSource } from 'expo-av/build/AV';
+import VideoPlayer from 'expo-video-player';
 import React, { useEffect, useState } from 'react';
-import { ImageBackground, StyleSheet, Text, View, Modal, Dimensions } from 'react-native';
-import * as Animatable from 'react-native-animatable';
+import { Dimensions, ImageBackground, StyleSheet, Text, View } from 'react-native';
 import { ActivityIndicator, Button } from 'react-native-paper';
 import AppHeader from '../components/Header/AppHeader';
 import { Loading } from '../components/Loading/Loading';
-import { ChallengingBehavBtn, ProgressBar, StarsNIconsContainer } from '../components/Steps/index';
+import { ProgressBar, StarsNIconsContainer } from '../components/Steps/index';
 import { useChainMasteryState } from '../context/ChainMasteryProvider';
 import { ImageAssets } from '../data/images';
 import { videos } from '../data/videos';
 import CustomColors from '../styles/Colors';
-import { ChainStep } from '../types/chain/ChainStep';
-import { ChainStepPromptLevel, ChainStepStatus, StepAttempt } from '../types/chain/StepAttempt';
 import { MasteryIcon } from '../styles/MasteryIcon';
+import { ChainStep } from '../types/chain/ChainStep';
+import { StepAttempt } from '../types/chain/StepAttempt';
 
 const StepScreen = (): JSX.Element => {
   const navigation = useNavigation();
@@ -55,14 +54,23 @@ const StepScreen = (): JSX.Element => {
     };
   }, []);
 
-  // Runs when stepIndex is updated.
+  // Runs when videos are loaded or stepIndex is updated.
   useEffect(() => {
     let isCancelled = false;
 
     const _load = async () => {
       if (!isCancelled && stepIndex !== undefined) {
-        // Solves issue of videos not start play at beginning
-        setVideo(videos[`step_${stepIndex + 1}`]);
+        if (allVideosAreLoaded()) {
+          // Solves issue of videos not start play at beginning
+          const loadedVideo = videos[`step_${stepIndex + 1}`];
+
+          if (loadedVideo) {
+            setVideo(loadedVideo);
+          } else {
+            console.log('video is not loaded yet.');
+          }
+        }
+
         setIsPlaying(false);
         setChainStepId(stepIndex);
         getPrevCompletedFocusSteps(stepIndex);
@@ -78,6 +86,10 @@ const StepScreen = (): JSX.Element => {
   /**
    * END: LIFECYCLE CALLS
    */
+
+  const allVideosAreLoaded = () => {
+    return !!(videos && Object.values(videos).every((v) => !!v));
+  };
 
   const getPrevCompletedFocusSteps = (id: number) => {
     if (chainMasteryState.chainMastery) {
@@ -95,7 +107,7 @@ const StepScreen = (): JSX.Element => {
   };
 
   const ReturnVideoComponent = () => {
-    return video && stepIndex !== undefined ? (
+    return videos && allVideosAreLoaded() && video && stepIndex !== undefined ? (
       <VideoPlayer
         videoProps={{
           shouldPlay: true,
@@ -111,9 +123,7 @@ const StepScreen = (): JSX.Element => {
         height={Dimensions.get('screen').height / 2.5}
       />
     ) : (
-      <View style={styles.loadingContainer}>
-        <ActivityIndicator animating={true} color={CustomColors.uva.mountain} />
-      </View>
+      <Loading />
     );
   };
 
@@ -160,7 +170,7 @@ const StepScreen = (): JSX.Element => {
     nextStep();
   };
 
-  return chainSteps && chainStep && stepIndex !== undefined ? (
+  return videos && allVideosAreLoaded() && chainSteps && chainStep && stepIndex !== undefined ? (
     <ImageBackground source={ImageAssets.sunrise_muted} resizeMode={'cover'} style={styles.image}>
       <View style={styles.container}>
         <AppHeader name={'Brush Teeth'} />

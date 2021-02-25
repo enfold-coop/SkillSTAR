@@ -1055,7 +1055,10 @@ export class ChainMastery {
     const numSessions = this.chainData.sessions.length;
     const hasHadTrainingSession = this.hasHadTrainingSession;
     const numSessionsSinceLastProbe = this.masteryInfoMap[0].numAttemptsSince.lastProbe;
+    const allStepsMastered = this.unmasteredChainStepIds.length === 0;
+
     return (
+      allStepsMastered ||
       numSessions < NUM_MIN_PROBE_SESSIONS ||
       !hasHadTrainingSession ||
       numSessionsSinceLastProbe >= NUM_TRAINING_SESSIONS_BETWEEN_PROBES
@@ -1071,10 +1074,12 @@ export class ChainMastery {
     const numSessions = this.chainData.sessions.length;
     const hasHadTrainingSession = this.hasHadTrainingSession;
     const numSessionsSinceLastProbe = this.masteryInfoMap[0].numAttemptsSince.lastProbe;
+    const allStepsMastered = this.unmasteredChainStepIds.length === 0;
 
     return (
-      (numSessions >= NUM_MIN_PROBE_SESSIONS && !hasHadTrainingSession) ||
-      (numSessions >= NUM_MIN_PROBE_SESSIONS && numSessionsSinceLastProbe < NUM_TRAINING_SESSIONS_BETWEEN_PROBES)
+      !allStepsMastered &&
+      ((numSessions >= NUM_MIN_PROBE_SESSIONS && !hasHadTrainingSession) ||
+        (numSessions >= NUM_MIN_PROBE_SESSIONS && numSessionsSinceLastProbe < NUM_TRAINING_SESSIONS_BETWEEN_PROBES))
     );
   }
 
