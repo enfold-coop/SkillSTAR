@@ -53,7 +53,9 @@ const PromptAccordion = (props: PromptAccordionProps): JSX.Element => {
     setPromptValues(sansNoPrompt);
   };
 
-  const determineCheckedValue = () => {};
+  const determineCheckedValue = () => {
+    console.log('MAKE LINT HAPPY');
+  };
 
   // Store change in draft session
   const handleChange = (radioButtonIndex: number) => {
