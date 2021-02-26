@@ -57,13 +57,14 @@ export default StepAttemptStars;
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
-    alignContent: 'center',
+    alignContent: 'flex-end',
     justifyContent: 'flex-start',
   },
   promptLevelText: {
-    paddingRight: 20,
-    fontSize: 24,
-    fontWeight: 'bold',
+    paddingLeft: 10,
+    paddingTop: 50,
+    fontSize: 22,
+    fontWeight: '500',
     color: '#333',
   },
   starContainer: {

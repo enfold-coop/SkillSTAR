@@ -57,6 +57,7 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     justifyContent: 'center',
     alignContent: 'flex-start',
+    marginHorizontal: 5,
   },
   progressBar: {
     justifyContent: 'center',

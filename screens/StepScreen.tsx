@@ -200,7 +200,7 @@ const StepScreen = (): JSX.Element => {
       <View style={styles.nextBackBtnsContainer}>
         <Button
           style={styles.backButton}
-          labelStyle={{ alignSelf: 'flex-start', fontSize: 24, paddingVertical: 5 }}
+          labelStyle={{ alignSelf: 'flex-start', fontSize: 24, paddingVertical: 5, marginHorizontal: 10 }}
           disabled={!stepIndex}
           color={CustomColors.uva.blue}
           mode={'outlined'}
@@ -237,7 +237,7 @@ const StepScreen = (): JSX.Element => {
 
 const styles = StyleSheet.create({
   container: {
-    padding: 10,
+    padding: 20,
   },
   image: {
     flex: 1,
@@ -312,7 +312,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-around',
   },
   nextPromptButton: {
-    marginHorizontal: 10,
+    marginHorizontal: 5,
     marginVertical: 5,
     width: 380,
   },
@@ -324,8 +324,9 @@ const styles = StyleSheet.create({
   },
   nextButton: {},
   backButton: {
-    alignSelf: 'flex-start',
-    marginVertical: 5,
+    alignSelf: 'center',
+    // marginVertical: 5,
+    marginHorizontal: 10,
   },
   loadingContainer: {
     flex: 1,
