@@ -153,8 +153,6 @@ const StepScreen = (): JSX.Element => {
 
   // Set was_prompted to true for current step attempt
   const onNeededPrompting = () => {
-    console.log('needed prompting');
-
     if (chainStep && chainMasteryState.chainMastery) {
       chainMasteryState.chainMastery.updateDraftSessionStep(chainStep.id, 'was_prompted', true);
       chainMasteryState.chainMastery.updateDraftSessionStep(chainStep.id, 'completed', false);

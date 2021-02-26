@@ -5,20 +5,24 @@ import { RadioButton } from 'react-native-paper';
 import { randomId } from '../../_util/RandomId';
 import { useChainMasteryState } from '../../context/ChainMasteryProvider';
 import CustomColors from '../../styles/Colors';
-import { ChainStepPromptLevel, ChainStepPromptLevelMap } from '../../types/chain/StepAttempt';
+import {
+  ChainStepPromptLevel,
+  ChainStepPromptLevelMap,
+  ChainStepStatus,
+  StepAttempt,
+} from '../../types/chain/StepAttempt';
 
 interface PromptAccordionProps {
-  chainStepId: number;
+  stepAttempt: StepAttempt;
   completed: boolean;
 }
 
 const PromptAccordion = (props: PromptAccordionProps): JSX.Element => {
-  const { chainStepId } = props;
+  const { stepAttempt, completed } = props;
   const [checked, setChecked] = useState<number>();
-  const [promptValues, setPromptValues] = useState<ChainStepPromptLevelMap[]>();
+  const [chainStepId, setChainStepId] = useState<number>();
   const refSwitched = useRef(true);
   const chainMasteryState = useChainMasteryState();
-  const { completed } = props;
 
   /**
    * BEGIN: Lifecycle methods
@@ -31,7 +35,10 @@ const PromptAccordion = (props: PromptAccordionProps): JSX.Element => {
       if (!isCancelled && completed !== undefined) {
         if (refSwitched.current) {
           refSwitched.current = false;
-          removeNoPrompt();
+        }
+        if (stepAttempt && stepAttempt.chain_step_id) {
+          setChainStepId(stepAttempt.chain_step_id);
+          determineDefaultCheckedValue(stepAttempt);
         }
       }
     };
@@ -48,20 +55,16 @@ const PromptAccordion = (props: PromptAccordionProps): JSX.Element => {
    * END: Lifecycle methods
    */
 
-  const removeNoPrompt = () => {
-    const sansNoPrompt: ChainStepPromptLevelMap[] = Object.values(ChainStepPromptLevelMap).slice(1);
-    setPromptValues(sansNoPrompt);
-  };
-
-  const determineCheckedValue = () => {
-    console.log('MAKE LINT HAPPY');
+  const determineDefaultCheckedValue = (attempt: StepAttempt): void => {
+    if (attempt && attempt.status && attempt.status === ChainStepStatus.not_complete) {
+      setChecked(Object.values(ChainStepPromptLevelMap).length - 1);
+    }
   };
 
   // Store change in draft session
   const handleChange = (radioButtonIndex: number) => {
     setChecked(radioButtonIndex);
     const enumMap = Object.values(ChainStepPromptLevelMap)[radioButtonIndex];
-
     if (chainMasteryState.chainMastery && chainStepId !== undefined) {
       chainMasteryState.chainMastery.updateDraftSessionStep(
         chainStepId,
@@ -76,8 +79,8 @@ const PromptAccordion = (props: PromptAccordionProps): JSX.Element => {
       <View style={styles.promptSubContainer}>
         <Text style={styles.question}>{`What prompt did you use to complete the step?`}</Text>
         <View style={styles.promptOptsContainer}>
-          {promptValues &&
-            promptValues.map((e, i) => {
+          {Object.values(ChainStepPromptLevelMap).map((e, i) => {
+            if (e && e.key && e.key != ChainStepPromptLevel.none) {
               return (
                 <View style={styles.checkboxContainer} key={randomId()}>
                   <View
@@ -100,7 +103,8 @@ const PromptAccordion = (props: PromptAccordionProps): JSX.Element => {
                   <Text style={styles.radioBtnText}>{e.value}</Text>
                 </View>
               );
-            })}
+            }
+          })}
         </View>
       </View>
     </Animatable.View>
