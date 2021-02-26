@@ -8,7 +8,7 @@ const ColumnLabels = (): JSX.Element => {
       <Text style={[styles.mastery, styles.text]}>{`Mastery`}</Text>
       <Text style={[styles.step, styles.text]}>{`Step`}</Text>
       <Text style={[styles.promptLevel, styles.text]}>{`Prompt`}</Text>
-      <Text style={[styles.completed, styles.text]}>{`Task Completed?`}</Text>
+      <Text style={[styles.completed, styles.text]}>{`Task Completed as Recommended?`}</Text>
       <Text style={[styles.challBehav, styles.text]}>{`Challenging Behavior?`}</Text>
     </View>
   );
