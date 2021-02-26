@@ -14,7 +14,7 @@ import { videos } from '../data/videos';
 import CustomColors from '../styles/Colors';
 import { MasteryIcon } from '../styles/MasteryIcon';
 import { ChainStep } from '../types/chain/ChainStep';
-import { ChainStepStatus, StepAttempt } from '../types/chain/StepAttempt';
+import { ChainStepPromptLevel, ChainStepStatus, StepAttempt } from '../types/chain/StepAttempt';
 
 const StepScreen = (): JSX.Element => {
   const navigation = useNavigation();
@@ -60,15 +60,13 @@ const StepScreen = (): JSX.Element => {
 
     const _load = async () => {
       if (!isCancelled && stepIndex !== undefined) {
-        if (allVideosAreLoaded()) {
-          // Solves issue of videos not start play at beginning
-          const loadedVideo = videos[`step_${stepIndex + 1}`];
+        // Solves issue of videos not start play at beginning
+        const loadedVideo = videos[`step_${stepIndex + 1}`];
 
-          if (loadedVideo) {
-            setVideo(loadedVideo);
-          } else {
-            console.log('video is not loaded yet.');
-          }
+        if (loadedVideo) {
+          setVideo(loadedVideo);
+        } else {
+          console.log('video is not loaded yet.');
         }
 
         setIsPlaying(false);
@@ -87,10 +85,6 @@ const StepScreen = (): JSX.Element => {
    * END: LIFECYCLE CALLS
    */
 
-  const allVideosAreLoaded = () => {
-    return !!(videos && Object.values(videos).every((v) => !!v));
-  };
-
   const getPrevCompletedFocusSteps = (id: number) => {
     if (chainMasteryState.chainMastery) {
       setPastFocusStepAttempts(chainMasteryState.chainMastery.getPreviousFocusStepAttempts(id));
@@ -107,7 +101,7 @@ const StepScreen = (): JSX.Element => {
   };
 
   const ReturnVideoComponent = () => {
-    return videos && allVideosAreLoaded() && video && stepIndex !== undefined ? (
+    return videos && video && stepIndex !== undefined ? (
       <VideoPlayer
         videoProps={{
           shouldPlay: true,
@@ -125,6 +119,10 @@ const StepScreen = (): JSX.Element => {
     ) : (
       <Loading />
     );
+  };
+
+  const showNeededPromptingButton = (): boolean => {
+    return !!(stepAttempt && stepAttempt.target_prompt_level !== ChainStepPromptLevel.full_physical);
   };
 
   const prevStep = () => {
@@ -163,16 +161,42 @@ const StepScreen = (): JSX.Element => {
 
   // Set completed to true for this step attempt
   const onStepComplete = () => {
-    console.log('focus was complete');
-
-    if (chainStep && chainMasteryState.chainMastery) {
+    if (stepAttempt && chainStep && chainMasteryState.chainMastery) {
+      // Mark as completed = true and at the target prompt level, regardless of step status.
       chainMasteryState.chainMastery.updateDraftSessionStep(chainStep.id, 'completed', true);
+      chainMasteryState.chainMastery.updateDraftSessionStep(
+        chainStep.id,
+        'prompt_level',
+        stepAttempt.target_prompt_level,
+      );
+
+      const currentFocusStep = chainMasteryState.chainMastery.draftFocusStepAttempt;
+
+      // Focus steps and booster steps are completed with no additional prompting beyond the target prompt level.
+      if (stepAttempt.status === ChainStepStatus.focus || stepAttempt.status === ChainStepStatus.booster_needed) {
+        chainMasteryState.chainMastery.updateDraftSessionStep(chainStep.id, 'was_prompted', false);
+      }
+
+      // Not-yet-started steps are marked as complete, but with additional prompting at the target prompt level.
+      else if (
+        currentFocusStep &&
+        (stepAttempt.status === ChainStepStatus.not_yet_started ||
+          stepAttempt.status === ChainStepStatus.not_complete) &&
+        stepAttempt.chain_step_id > currentFocusStep.chain_step_id
+      ) {
+        chainMasteryState.chainMastery.updateDraftSessionStep(chainStep.id, 'was_prompted', true);
+      }
+
+      // All other step types (mastered, booster_mastered) are recorded as needing no additional prompting.
+      else {
+        chainMasteryState.chainMastery.updateDraftSessionStep(chainStep.id, 'was_prompted', false);
+      }
     }
 
     nextStep();
   };
 
-  return videos && allVideosAreLoaded() && chainSteps && chainStep && stepIndex !== undefined ? (
+  return video && chainSteps && chainStep && stepIndex !== undefined ? (
     <ImageBackground source={ImageAssets.sunrise_muted} resizeMode={'cover'} style={styles.image}>
       <View style={styles.container}>
         <AppHeader name={'Brush Teeth'} />
@@ -210,7 +234,7 @@ const StepScreen = (): JSX.Element => {
             labelStyle={{ fontSize: 24, paddingVertical: 10, marginHorizontal: 10, marginVertical: 5 }}
             color={CustomColors.uva.blue}
             mode={'contained'}
-            onPress={stepAttempt?.status === ChainStepStatus.focus ? onStepComplete : onNeededPrompting}
+            onPress={onStepComplete}
           >{`Step Complete`}</Button>
 
           <Button
@@ -218,7 +242,7 @@ const StepScreen = (): JSX.Element => {
               ...styles.nextPromptButton,
               marginHorizontal: 10,
               marginVertical: 5,
-              display: stepAttempt?.status === ChainStepStatus.focus ? 'flex' : 'none',
+              display: showNeededPromptingButton() ? 'flex' : 'none',
             }}
             labelStyle={{ fontSize: 24, paddingVertical: 10, marginHorizontal: 10, marginVertical: 5 }}
             color={CustomColors.uva.orange}

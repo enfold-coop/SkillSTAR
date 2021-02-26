@@ -92,6 +92,8 @@ const DataVerifItem = (props: DataVerifItemProps): JSX.Element => {
     // Update draft session data
     if (chainMasteryState.chainMastery) {
       chainMasteryState.chainMastery.updateDraftSessionStep(chainStepId, fieldName, fieldValue);
+    } else {
+      throw new Error('Cannot access chain data.');
     }
   };
 

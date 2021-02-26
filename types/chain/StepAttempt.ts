@@ -163,4 +163,5 @@ export type StepAttemptField =
   | Date
   | StepIncompleteReason
   | boolean
-  | number;
+  | number
+  | undefined;
