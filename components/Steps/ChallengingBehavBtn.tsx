@@ -4,7 +4,7 @@ import { Badge } from 'react-native-paper';
 import { useChainMasteryState } from '../../context/ChainMasteryProvider';
 import { ImageAssets } from '../../data/images';
 import CustomColors from '../../styles/Colors';
-import { StepAttempt } from '../../types/chain/StepAttempt';
+import { StepAttempt, StepIncompleteReason } from '../../types/chain/StepAttempt';
 import { Loading } from '../Loading/Loading';
 
 interface ChallengingBehavBtnProps {
@@ -45,6 +45,11 @@ const ChallengingBehavBtn = (props: ChallengingBehavBtnProps): JSX.Element => {
       const oldCBs = stepAttempt.challenging_behaviors || [];
       const newCBs = oldCBs.concat([{ time: new Date() }]);
       setNumChallengingBehavior(newCBs.length);
+      chainMasteryState.chainMastery.updateDraftSessionStep(
+        chainStepId,
+        'reason_step_incomplete',
+        StepIncompleteReason.challenging_behavior,
+      );
       chainMasteryState.chainMastery.updateDraftSessionStep(chainStepId, 'had_challenging_behavior', true);
       chainMasteryState.chainMastery.updateDraftSessionStep(chainStepId, 'challenging_behaviors', newCBs);
       setStepAttempt(chainMasteryState.chainMastery.getDraftSessionStep(chainStepId));

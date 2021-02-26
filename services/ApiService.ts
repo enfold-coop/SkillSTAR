@@ -1,7 +1,6 @@
 import { API_URL } from '@env';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import NetInfo from '@react-native-community/netinfo';
-import { StackNavigationProp } from '@react-navigation/stack';
 import React from 'react';
 import { parse, stringify } from 'telejson';
 import { ChainData, SkillstarChain } from '../types/chain/ChainData';

@@ -2,7 +2,6 @@ import { useNavigation } from '@react-navigation/native';
 import React, { ReactElement, useEffect, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { Button, Divider } from 'react-native-paper';
-import { participantName } from '../../_util/ParticipantName';
 import { useChainMasteryDispatch } from '../../context/ChainMasteryProvider';
 import { useParticipantContext } from '../../context/ParticipantProvider';
 import { useUserContext } from '../../context/UserProvider';
@@ -11,6 +10,7 @@ import { ChainMastery } from '../../services/ChainMastery';
 import CustomColors from '../../styles/Colors';
 import { ChainData, SkillstarChain } from '../../types/chain/ChainData';
 import { Participant } from '../../types/User';
+import { participantName } from '../../_util/ParticipantName';
 import { Loading } from '../Loading/Loading';
 
 export const SelectParticipant = (): ReactElement => {

@@ -2,15 +2,10 @@ import React, { useEffect, useRef, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import * as Animatable from 'react-native-animatable';
 import { RadioButton } from 'react-native-paper';
-import { randomId } from '../../_util/RandomId';
 import { useChainMasteryState } from '../../context/ChainMasteryProvider';
 import CustomColors from '../../styles/Colors';
-import {
-  ChainStepPromptLevel,
-  ChainStepPromptLevelMap,
-  ChainStepStatus,
-  StepAttempt,
-} from '../../types/chain/StepAttempt';
+import { ChainStepPromptLevel, ChainStepPromptLevelMap, StepAttempt } from '../../types/chain/StepAttempt';
+import { randomId } from '../../_util/RandomId';
 
 interface PromptAccordionProps {
   stepAttempt: StepAttempt;
@@ -57,13 +52,9 @@ const PromptAccordion = (props: PromptAccordionProps): JSX.Element => {
 
   // Determines the default "checked" value for incomplete stepAttempt (albeit, Focus -or- otherwise)
   const determineDefaultCheckedValue = (attempt: StepAttempt): void => {
-    if (attempt && attempt.status && attempt.status === ChainStepStatus.focus) {
-      if (!attempt.completed && attempt.was_prompted && attempt.target_prompt_level) {
-        setChecked(ChainStepPromptLevelMap[attempt.target_prompt_level].order + 1);
-      }
-    }
-    if (attempt && attempt.status && attempt.status === ChainStepStatus.not_complete) {
-      setChecked(Object.values(ChainStepPromptLevelMap).length - 1);
+    if (chainMasteryState.chainMastery && attempt && attempt.target_prompt_level) {
+      const prevPromptLevelMap = chainMasteryState.chainMastery.getPrevPromptLevel(attempt.target_prompt_level);
+      setChecked(prevPromptLevelMap.order);
     }
   };
 

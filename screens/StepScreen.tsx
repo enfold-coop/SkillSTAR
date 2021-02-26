@@ -151,9 +151,18 @@ const StepScreen = (): JSX.Element => {
 
   // Set was_prompted to true for current step attempt
   const onNeededPrompting = () => {
-    if (chainStep && chainMasteryState.chainMastery) {
+    if (stepAttempt && chainStep && chainMasteryState.chainMastery) {
       chainMasteryState.chainMastery.updateDraftSessionStep(chainStep.id, 'was_prompted', true);
       chainMasteryState.chainMastery.updateDraftSessionStep(chainStep.id, 'completed', false);
+
+      // Set the prompt level one level back.
+      if (stepAttempt.target_prompt_level) {
+        chainMasteryState.chainMastery.updateDraftSessionStep(
+          chainStep.id,
+          'prompt_level',
+          chainMasteryState.chainMastery.getPrevPromptLevel(stepAttempt.target_prompt_level).key,
+        );
+      }
     }
 
     nextStep();
@@ -169,6 +178,7 @@ const StepScreen = (): JSX.Element => {
         'prompt_level',
         stepAttempt.target_prompt_level,
       );
+      chainMasteryState.chainMastery.updateDraftSessionStep(chainStep.id, 'reason_step_incomplete', undefined);
 
       const currentFocusStep = chainMasteryState.chainMastery.draftFocusStepAttempt;
 
