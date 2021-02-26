@@ -65,7 +65,7 @@ const styles = StyleSheet.create({
     paddingTop: 50,
     fontSize: 22,
     fontWeight: '500',
-    color: '#333',
+    color: '#222',
   },
   starContainer: {
     flexDirection: 'row',
