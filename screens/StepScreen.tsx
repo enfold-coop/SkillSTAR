@@ -4,7 +4,7 @@ import { AVPlaybackSource } from 'expo-av/build/AV';
 import VideoPlayer from 'expo-video-player';
 import React, { useEffect, useState } from 'react';
 import { Dimensions, ImageBackground, StyleSheet, Text, View } from 'react-native';
-import { ActivityIndicator, Button } from 'react-native-paper';
+import { Button } from 'react-native-paper';
 import AppHeader from '../components/Header/AppHeader';
 import { Loading } from '../components/Loading/Loading';
 import { ProgressBar, StarsNIconsContainer } from '../components/Steps/index';
@@ -14,7 +14,7 @@ import { videos } from '../data/videos';
 import CustomColors from '../styles/Colors';
 import { MasteryIcon } from '../styles/MasteryIcon';
 import { ChainStep } from '../types/chain/ChainStep';
-import { StepAttempt } from '../types/chain/StepAttempt';
+import { ChainStepStatus, StepAttempt } from '../types/chain/StepAttempt';
 
 const StepScreen = (): JSX.Element => {
   const navigation = useNavigation();
@@ -153,6 +153,8 @@ const StepScreen = (): JSX.Element => {
 
   // Set was_prompted to true for current step attempt
   const onNeededPrompting = () => {
+    console.log('needed prompting');
+
     if (chainStep && chainMasteryState.chainMastery) {
       chainMasteryState.chainMastery.updateDraftSessionStep(chainStep.id, 'was_prompted', true);
       chainMasteryState.chainMastery.updateDraftSessionStep(chainStep.id, 'completed', false);
@@ -163,6 +165,8 @@ const StepScreen = (): JSX.Element => {
 
   // Set completed to true for this step attempt
   const onStepComplete = () => {
+    console.log('focus was complete');
+
     if (chainStep && chainMasteryState.chainMastery) {
       chainMasteryState.chainMastery.updateDraftSessionStep(chainStep.id, 'completed', true);
     }
@@ -192,18 +196,6 @@ const StepScreen = (): JSX.Element => {
             <ReturnVideoComponent />
           </View>
         </View>
-        {/* <View style={styles.bottomContainer}> */}
-        {/* <Button
-						style={styles.exitButton}
-						color={CustomColors.uva.blue}
-						mode={'outlined'}
-						onPress={() => {
-							console.log("exit");
-							navigation.navigate("ChainsHomeScreen");
-						}}
-					>
-						Exit
-					</Button> */}
       </View>
       <View style={styles.nextBackBtnsContainer}>
         <View
@@ -214,15 +206,13 @@ const StepScreen = (): JSX.Element => {
             width: '40%',
           }}
         >
-          {/* <ChallengingBehavBtn chainStepId={stepIndex} /> */}
-          <Text style={{ ...styles.needAddlPrompt }}>{`Needed Add'l Prompting`}</Text>
           <Button
-            style={styles.neededPromptingBtn}
-            labelStyle={{ fontSize: 28, paddingVertical: 5, color: CustomColors.uva.white }}
-            color={CustomColors.uva.orange}
+            style={styles.nextButton}
+            labelStyle={{ fontSize: 24, paddingTop: 5, paddingBottom: 5 }}
+            color={CustomColors.uva.blue}
             mode={'contained'}
-            onPress={onNeededPrompting}
-          >{`+`}</Button>
+            onPress={stepAttempt?.status === ChainStepStatus.focus ? onStepComplete : onNeededPrompting}
+          >{`Step Complete`}</Button>
         </View>
         <View style={{ ...styles.nextBackSubContainer, justifyContent: 'space-between' }}>
           <Button
@@ -233,16 +223,18 @@ const StepScreen = (): JSX.Element => {
             mode={'outlined'}
             onPress={prevStep}
           >{`Previous Step`}</Button>
-          <Button
-            style={styles.nextButton}
-            labelStyle={{ fontSize: 24, paddingTop: 5, paddingBottom: 5 }}
-            color={CustomColors.uva.blue}
-            mode={'contained'}
-            onPress={onStepComplete}
-          >{`Step Complete`}</Button>
+          <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+            {/* <Text style={{ ...styles.needAddlPrompt, flexDirection: 'row', width: '50%' }}>{`Needed Prompting`}</Text> */}
+            <Button
+              style={styles.neededPromptingBtn}
+              labelStyle={{ fontSize: 24, paddingVertical: 5, color: CustomColors.uva.white }}
+              color={CustomColors.uva.orange}
+              mode={'contained'}
+              onPress={onNeededPrompting}
+            >{`Needed Prompting`}</Button>
+          </View>
         </View>
       </View>
-      {/* </View> */}
     </ImageBackground>
   ) : (
     <Loading />
@@ -322,6 +314,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   nextBackSubContainer: {
+    backgroundColor: '#f0f',
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
