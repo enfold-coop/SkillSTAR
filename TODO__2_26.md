@@ -6,7 +6,7 @@
 - PromptLevelAccordion:
 
   - ~~Remove the "No prompt" option.~~
-  - The default value should be one prompt level more (i.e., worse) than the target prompt level.
+  - ~~The default value should be one prompt level more (i.e., worse) than the target prompt level.~~
 
 - BehaviorAccordion:
 

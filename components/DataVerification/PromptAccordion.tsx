@@ -55,7 +55,13 @@ const PromptAccordion = (props: PromptAccordionProps): JSX.Element => {
    * END: Lifecycle methods
    */
 
+  // Determines the default "checked" value for incomplete stepAttempt (albeit, Focus -or- otherwise)
   const determineDefaultCheckedValue = (attempt: StepAttempt): void => {
+    if (attempt && attempt.status && attempt.status === ChainStepStatus.focus) {
+      if (!attempt.completed && attempt.was_prompted && attempt.target_prompt_level) {
+        setChecked(ChainStepPromptLevelMap[attempt.target_prompt_level].order + 1);
+      }
+    }
     if (attempt && attempt.status && attempt.status === ChainStepStatus.not_complete) {
       setChecked(Object.values(ChainStepPromptLevelMap).length - 1);
     }
