@@ -198,41 +198,35 @@ const StepScreen = (): JSX.Element => {
         </View>
       </View>
       <View style={styles.nextBackBtnsContainer}>
-        <View
-          style={{
-            ...styles.nextBackSubContainer,
-            justifyContent: 'flex-end',
-            alignSelf: 'flex-end',
-            width: '40%',
-          }}
-        >
+        <Button
+          style={styles.backButton}
+          labelStyle={{ alignSelf: 'flex-start', fontSize: 24, paddingVertical: 5 }}
+          disabled={!stepIndex}
+          color={CustomColors.uva.blue}
+          mode={'outlined'}
+          onPress={prevStep}
+        >{`Previous Step`}</Button>
+        <View style={{ ...styles.nextBackSubContainer, justifyContent: 'space-between' }}>
           <Button
-            style={styles.nextButton}
-            labelStyle={{ fontSize: 24, paddingTop: 5, paddingBottom: 5 }}
+            style={{ ...styles.nextPromptButton, marginHorizontal: 10, marginVertical: 5 }}
+            labelStyle={{ fontSize: 24, paddingVertical: 10, marginHorizontal: 10, marginVertical: 5 }}
             color={CustomColors.uva.blue}
             mode={'contained'}
             onPress={stepAttempt?.status === ChainStepStatus.focus ? onStepComplete : onNeededPrompting}
           >{`Step Complete`}</Button>
-        </View>
-        <View style={{ ...styles.nextBackSubContainer, justifyContent: 'space-between' }}>
+
           <Button
-            style={styles.backButton}
-            labelStyle={{ alignSelf: 'flex-start', fontSize: 24, paddingVertical: 5 }}
-            disabled={!stepIndex}
-            color={CustomColors.uva.blue}
-            mode={'outlined'}
-            onPress={prevStep}
-          >{`Previous Step`}</Button>
-          <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-            {/* <Text style={{ ...styles.needAddlPrompt, flexDirection: 'row', width: '50%' }}>{`Needed Prompting`}</Text> */}
-            <Button
-              style={styles.neededPromptingBtn}
-              labelStyle={{ fontSize: 24, paddingVertical: 5, color: CustomColors.uva.white }}
-              color={CustomColors.uva.orange}
-              mode={'contained'}
-              onPress={onNeededPrompting}
-            >{`Needed Prompting`}</Button>
-          </View>
+            style={{
+              ...styles.nextPromptButton,
+              marginHorizontal: 10,
+              marginVertical: 5,
+              display: stepAttempt?.status === ChainStepStatus.focus ? 'flex' : 'none',
+            }}
+            labelStyle={{ fontSize: 24, paddingVertical: 10, marginHorizontal: 10, marginVertical: 5 }}
+            color={CustomColors.uva.orange}
+            mode={'contained'}
+            onPress={onNeededPrompting}
+          >{`Needed Prompting`}</Button>
         </View>
       </View>
     </ImageBackground>
@@ -306,33 +300,32 @@ const styles = StyleSheet.create({
     height: 30,
   },
   neededPromptingBtn: {
-    margin: 15,
     textAlign: 'center',
   },
   nextBackBtnsContainer: {
-    flexDirection: 'column',
+    flexDirection: 'row',
+    padding: 20,
     justifyContent: 'space-between',
   },
   nextBackSubContainer: {
-    backgroundColor: '#f0f',
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
+    flexDirection: 'column',
+    justifyContent: 'space-around',
   },
+  nextPromptButton: {
+    marginHorizontal: 10,
+    marginVertical: 5,
+    width: 380,
+  },
+
   needAddlPrompt: {
-    width: 80,
     color: CustomColors.uva.grayDark,
-    fontSize: 16,
     alignSelf: 'center',
     textAlign: 'center',
   },
-  nextButton: {
-    width: 244,
-    margin: 15,
-  },
+  nextButton: {},
   backButton: {
     alignSelf: 'flex-start',
-    margin: 15,
+    marginVertical: 5,
   },
   loadingContainer: {
     flex: 1,
