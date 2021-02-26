@@ -14,7 +14,8 @@ interface PromptAccordionProps {
 
 const PromptAccordion = (props: PromptAccordionProps): JSX.Element => {
   const { chainStepId } = props;
-  const [checked, setChecked] = React.useState(0);
+  const [checked, setChecked] = useState<number>();
+  const [promptValues, setPromptValues] = useState<ChainStepPromptLevelMap[]>();
   const refSwitched = useRef(true);
   const chainMasteryState = useChainMasteryState();
   const { completed } = props;
@@ -30,6 +31,7 @@ const PromptAccordion = (props: PromptAccordionProps): JSX.Element => {
       if (!isCancelled && completed !== undefined) {
         if (refSwitched.current) {
           refSwitched.current = false;
+          removeNoPrompt();
         }
       }
     };
@@ -45,6 +47,13 @@ const PromptAccordion = (props: PromptAccordionProps): JSX.Element => {
   /**
    * END: Lifecycle methods
    */
+
+  const removeNoPrompt = () => {
+    const sansNoPrompt: ChainStepPromptLevelMap[] = Object.values(ChainStepPromptLevelMap).slice(1);
+    setPromptValues(sansNoPrompt);
+  };
+
+  const determineCheckedValue = () => {};
 
   // Store change in draft session
   const handleChange = (radioButtonIndex: number) => {
@@ -65,30 +74,31 @@ const PromptAccordion = (props: PromptAccordionProps): JSX.Element => {
       <View style={styles.promptSubContainer}>
         <Text style={styles.question}>{`What prompt did you use to complete the step?`}</Text>
         <View style={styles.promptOptsContainer}>
-          {Object.values(ChainStepPromptLevelMap).map((e, i) => {
-            return (
-              <View style={styles.checkboxContainer} key={randomId()}>
-                <View
-                  style={{
-                    height: 40,
-                    width: 40,
-                    padding: 0,
-                    borderRadius: 100,
-                    borderWidth: 2,
-                    borderColor: CustomColors.uva.gray,
-                  }}
-                >
-                  <RadioButton
-                    color={CustomColors.uva.orange}
-                    value={e.key}
-                    status={checked === i ? 'checked' : 'unchecked'}
-                    onPress={() => handleChange(i)}
-                  />
+          {promptValues &&
+            promptValues.map((e, i) => {
+              return (
+                <View style={styles.checkboxContainer} key={randomId()}>
+                  <View
+                    style={{
+                      height: 40,
+                      width: 40,
+                      padding: 0,
+                      borderRadius: 100,
+                      borderWidth: 2,
+                      borderColor: CustomColors.uva.gray,
+                    }}
+                  >
+                    <RadioButton
+                      color={CustomColors.uva.orange}
+                      value={e.key}
+                      status={checked === i ? 'checked' : 'unchecked'}
+                      onPress={() => handleChange(i)}
+                    />
+                  </View>
+                  <Text style={styles.radioBtnText}>{e.value}</Text>
                 </View>
-                <Text style={styles.radioBtnText}>{e.value}</Text>
-              </View>
-            );
-          })}
+              );
+            })}
         </View>
       </View>
     </Animatable.View>

@@ -1,7 +1,7 @@
 - DataVerificationScreen:
 
   - ~~Change the "Task completed?" column heading to "Task completed as recommended?"~~
-  - If a step is marked as incomplete, both the PromptLevelAccordion and BehaviorAccordion need to be shown.
+  - ~~If a step is marked as incomplete, both the PromptLevelAccordion and BehaviorAccordion need to be shown.~~
 
 - PromptLevelAccordion:
 
