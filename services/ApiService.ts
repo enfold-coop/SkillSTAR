@@ -486,7 +486,6 @@ export class ApiService {
     };
 
     if (token) {
-      console.log('token:', token);
       headers.Authorization = `Bearer ${token}`;
     } else {
       console.log('no stored token found.');
