@@ -150,7 +150,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   skill: {
-    width: 300,
+    width: 260,
     flexWrap: 'wrap',
     padding: 5,
     fontSize: 16,
@@ -160,7 +160,7 @@ const styles = StyleSheet.create({
     paddingLeft: 20,
   },
   nextIcon: {
-    marginLeft: 'auto',
+    marginLeft: 0,
     padding: 10,
     paddingRight: 20,
   },
