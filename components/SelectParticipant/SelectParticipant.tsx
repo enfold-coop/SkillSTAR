@@ -2,7 +2,6 @@ import { useNavigation } from '@react-navigation/native';
 import React, { ReactElement, useEffect, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { Button, Divider } from 'react-native-paper';
-import { participantName } from '../../_util/ParticipantName';
 import { useChainMasteryDispatch } from '../../context/ChainMasteryProvider';
 import { useParticipantContext } from '../../context/ParticipantProvider';
 import { useUserContext } from '../../context/UserProvider';
@@ -11,6 +10,7 @@ import { ChainMastery } from '../../services/ChainMastery';
 import CustomColors from '../../styles/Colors';
 import { ChainData, SkillstarChain } from '../../types/chain/ChainData';
 import { Participant } from '../../types/User';
+import { participantName } from '../../_util/ParticipantName';
 import { Loading } from '../Loading/Loading';
 
 export const SelectParticipant = (): ReactElement => {
@@ -36,7 +36,6 @@ export const SelectParticipant = (): ReactElement => {
       if (userState.user && userState.user.participants && userState.user.participants.length > 1) {
         // Get the participants list from the user object.
         if (!participants && !isCancelled) {
-          console.log('setting participants');
           setParticipants(userState.user.participants.filter((p) => p.relationship === 'dependent'));
         }
 
@@ -45,7 +44,6 @@ export const SelectParticipant = (): ReactElement => {
 
         // If no participant has been selected yet, set it.
         if (!isCancelled && dbSelectedParticipant && !participantState.participant) {
-          console.log('setting participant from cached data');
           participantDispatch({ type: 'participant', payload: dbSelectedParticipant });
         }
       }

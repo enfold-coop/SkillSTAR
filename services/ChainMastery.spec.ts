@@ -523,7 +523,7 @@ describe('ChainMastery', () => {
                 }
               }
 
-              // Mark steps after focus step as incomplete every other attempt
+              // Mark steps after focus step as complete at the target prompt level
               if (stepAttemptIndex > focusStepIndex) {
                 expect(stepAttempt.was_focus_step).toBeFalsy();
 
@@ -647,14 +647,13 @@ describe('ChainMastery', () => {
                 stepAttempt.prompt_level = stepAttempt.target_prompt_level;
               }
 
-              // Mark steps after focus step as incomplete
+              // Mark steps after focus step as complete at the target prompt level.
               if (stepAttemptIndex > focusStepIndex) {
                 expect(stepAttempt.was_focus_step).toBeFalsy();
                 expect(stepAttempt.status).toEqual(ChainStepStatus.not_complete);
-                failStepAttempt(stepAttempt);
-                stepAttempt.prompt_level = ChainStepPromptLevel.full_physical;
-                stepAttempt.reason_step_incomplete = StepIncompleteReason.challenging_behavior;
-                stepAttempt.challenging_behaviors = [{ time: new Date() }];
+                completeStepAttempt(stepAttempt);
+                stepAttempt.was_prompted = true;
+                stepAttempt.prompt_level = stepAttempt.target_prompt_level;
               }
             });
           }
@@ -666,6 +665,15 @@ describe('ChainMastery', () => {
           const chainStepId = mockChainSteps[focusStepIndex].id;
           const masteryInfo = chainMastery.masteryInfoMap[chainStepId];
           expect(masteryInfo).toBeTruthy();
+
+          // Check that steps after the focus step have not changed prompt level.
+          mockChainSteps.forEach((chainStep, i) => {
+            if (chainStep.id > chainStepId) {
+              const promptLevel = ChainStepPromptLevel.full_physical;
+              expect(chainMastery.masteryInfoMap[chainStep.id].promptLevel).toEqual(promptLevel);
+              expect(chainMastery.draftSession.step_attempts[i].target_prompt_level).toEqual(promptLevel);
+            }
+          });
 
           // Check if focus step is mastered.
           if (promptLevelIndex === 0 && numAttemptsAtCurrentPromptLevel === NUM_COMPLETE_ATTEMPTS_FOR_MASTERY) {

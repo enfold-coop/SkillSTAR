@@ -45,7 +45,7 @@ export const DataVerificationListItem = (props: DataVerificationListItemProps): 
       <Text style={styles.stepTitle}>{`Step ${chainStepId + 1}: ${instruction}`}</Text>
       <View style={styles.questionContainer}>
         <Text style={styles.question}>{`Was this step completed independently?`}</Text>
-        <ListItemSwitch fieldName={'completed'} defaultValue={true} chainStepId={chainStepId} onChange={onChange} />
+        <ListItemSwitch fieldName={'completed'} defaultValue={false} chainStepId={chainStepId} onChange={onChange} />
       </View>
       <View style={styles.questionContainer}>
         <Text style={styles.question}>{`Did challenging behavior occur?`}</Text>

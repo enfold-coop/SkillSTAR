@@ -4,7 +4,7 @@ import { AVPlaybackSource } from 'expo-av/build/AV';
 import VideoPlayer from 'expo-video-player';
 import React, { useEffect, useState } from 'react';
 import { Dimensions, ImageBackground, StyleSheet, Text, View } from 'react-native';
-import { ActivityIndicator, Button } from 'react-native-paper';
+import { Button } from 'react-native-paper';
 import AppHeader from '../components/Header/AppHeader';
 import { Loading } from '../components/Loading/Loading';
 import { ProgressBar, StarsNIconsContainer } from '../components/Steps/index';
@@ -14,7 +14,7 @@ import { videos } from '../data/videos';
 import CustomColors from '../styles/Colors';
 import { MasteryIcon } from '../styles/MasteryIcon';
 import { ChainStep } from '../types/chain/ChainStep';
-import { StepAttempt } from '../types/chain/StepAttempt';
+import { ChainStepPromptLevel, ChainStepStatus, StepAttempt } from '../types/chain/StepAttempt';
 
 const StepScreen = (): JSX.Element => {
   const navigation = useNavigation();
@@ -60,15 +60,13 @@ const StepScreen = (): JSX.Element => {
 
     const _load = async () => {
       if (!isCancelled && stepIndex !== undefined) {
-        if (allVideosAreLoaded()) {
-          // Solves issue of videos not start play at beginning
-          const loadedVideo = videos[`step_${stepIndex + 1}`];
+        // Solves issue of videos not start play at beginning
+        const loadedVideo = videos[`step_${stepIndex + 1}`];
 
-          if (loadedVideo) {
-            setVideo(loadedVideo);
-          } else {
-            console.log('video is not loaded yet.');
-          }
+        if (loadedVideo) {
+          setVideo(loadedVideo);
+        } else {
+          console.log('video is not loaded yet.');
         }
 
         setIsPlaying(false);
@@ -87,10 +85,6 @@ const StepScreen = (): JSX.Element => {
    * END: LIFECYCLE CALLS
    */
 
-  const allVideosAreLoaded = () => {
-    return !!(videos && Object.values(videos).every((v) => !!v));
-  };
-
   const getPrevCompletedFocusSteps = (id: number) => {
     if (chainMasteryState.chainMastery) {
       setPastFocusStepAttempts(chainMasteryState.chainMastery.getPreviousFocusStepAttempts(id));
@@ -107,7 +101,7 @@ const StepScreen = (): JSX.Element => {
   };
 
   const ReturnVideoComponent = () => {
-    return videos && allVideosAreLoaded() && video && stepIndex !== undefined ? (
+    return videos && video && stepIndex !== undefined ? (
       <VideoPlayer
         videoProps={{
           shouldPlay: true,
@@ -125,6 +119,10 @@ const StepScreen = (): JSX.Element => {
     ) : (
       <Loading />
     );
+  };
+
+  const showNeededPromptingButton = (): boolean => {
+    return !!(stepAttempt && stepAttempt.target_prompt_level !== ChainStepPromptLevel.full_physical);
   };
 
   const prevStep = () => {
@@ -153,9 +151,18 @@ const StepScreen = (): JSX.Element => {
 
   // Set was_prompted to true for current step attempt
   const onNeededPrompting = () => {
-    if (chainStep && chainMasteryState.chainMastery) {
+    if (stepAttempt && chainStep && chainMasteryState.chainMastery) {
       chainMasteryState.chainMastery.updateDraftSessionStep(chainStep.id, 'was_prompted', true);
       chainMasteryState.chainMastery.updateDraftSessionStep(chainStep.id, 'completed', false);
+
+      // Set the prompt level one level back.
+      if (stepAttempt.target_prompt_level) {
+        chainMasteryState.chainMastery.updateDraftSessionStep(
+          chainStep.id,
+          'prompt_level',
+          chainMasteryState.chainMastery.getPrevPromptLevel(stepAttempt.target_prompt_level).key,
+        );
+      }
     }
 
     nextStep();
@@ -163,14 +170,43 @@ const StepScreen = (): JSX.Element => {
 
   // Set completed to true for this step attempt
   const onStepComplete = () => {
-    if (chainStep && chainMasteryState.chainMastery) {
+    if (stepAttempt && chainStep && chainMasteryState.chainMastery) {
+      // Mark as completed = true and at the target prompt level, regardless of step status.
       chainMasteryState.chainMastery.updateDraftSessionStep(chainStep.id, 'completed', true);
+      chainMasteryState.chainMastery.updateDraftSessionStep(
+        chainStep.id,
+        'prompt_level',
+        stepAttempt.target_prompt_level,
+      );
+      chainMasteryState.chainMastery.updateDraftSessionStep(chainStep.id, 'reason_step_incomplete', undefined);
+
+      const currentFocusStep = chainMasteryState.chainMastery.draftFocusStepAttempt;
+
+      // Focus steps and booster steps are completed with no additional prompting beyond the target prompt level.
+      if (stepAttempt.status === ChainStepStatus.focus || stepAttempt.status === ChainStepStatus.booster_needed) {
+        chainMasteryState.chainMastery.updateDraftSessionStep(chainStep.id, 'was_prompted', false);
+      }
+
+      // Not-yet-started steps are marked as complete, but with additional prompting at the target prompt level.
+      else if (
+        currentFocusStep &&
+        (stepAttempt.status === ChainStepStatus.not_yet_started ||
+          stepAttempt.status === ChainStepStatus.not_complete) &&
+        stepAttempt.chain_step_id > currentFocusStep.chain_step_id
+      ) {
+        chainMasteryState.chainMastery.updateDraftSessionStep(chainStep.id, 'was_prompted', true);
+      }
+
+      // All other step types (mastered, booster_mastered) are recorded as needing no additional prompting.
+      else {
+        chainMasteryState.chainMastery.updateDraftSessionStep(chainStep.id, 'was_prompted', false);
+      }
     }
 
     nextStep();
   };
 
-  return videos && allVideosAreLoaded() && chainSteps && chainStep && stepIndex !== undefined ? (
+  return video && chainSteps && chainStep && stepIndex !== undefined ? (
     <ImageBackground source={ImageAssets.sunrise_muted} resizeMode={'cover'} style={styles.image}>
       <View style={styles.container}>
         <AppHeader name={'Brush Teeth'} />
@@ -192,57 +228,39 @@ const StepScreen = (): JSX.Element => {
             <ReturnVideoComponent />
           </View>
         </View>
-        {/* <View style={styles.bottomContainer}> */}
-        {/* <Button
-						style={styles.exitButton}
-						color={CustomColors.uva.blue}
-						mode={'outlined'}
-						onPress={() => {
-							console.log("exit");
-							navigation.navigate("ChainsHomeScreen");
-						}}
-					>
-						Exit
-					</Button> */}
       </View>
       <View style={styles.nextBackBtnsContainer}>
-        <View
-          style={{
-            ...styles.nextBackSubContainer,
-            justifyContent: 'flex-end',
-            alignSelf: 'flex-end',
-            width: '40%',
-          }}
-        >
-          {/* <ChallengingBehavBtn chainStepId={stepIndex} /> */}
-          <Text style={{ ...styles.needAddlPrompt }}>{`Needed Add'l Prompting`}</Text>
-          <Button
-            style={styles.neededPromptingBtn}
-            labelStyle={{ fontSize: 28, paddingVertical: 5, color: CustomColors.uva.white }}
-            color={CustomColors.uva.orange}
-            mode={'contained'}
-            onPress={onNeededPrompting}
-          >{`+`}</Button>
-        </View>
+        <Button
+          style={styles.backButton}
+          labelStyle={{ alignSelf: 'flex-start', fontSize: 24, paddingVertical: 5, marginHorizontal: 10 }}
+          disabled={!stepIndex}
+          color={CustomColors.uva.blue}
+          mode={'outlined'}
+          onPress={prevStep}
+        >{`Previous Step`}</Button>
         <View style={{ ...styles.nextBackSubContainer, justifyContent: 'space-between' }}>
           <Button
-            style={styles.backButton}
-            labelStyle={{ alignSelf: 'flex-start', fontSize: 24, paddingVertical: 5 }}
-            disabled={!stepIndex}
-            color={CustomColors.uva.blue}
-            mode={'outlined'}
-            onPress={prevStep}
-          >{`Previous Step`}</Button>
-          <Button
-            style={styles.nextButton}
-            labelStyle={{ fontSize: 24, paddingTop: 5, paddingBottom: 5 }}
+            style={{ ...styles.nextPromptButton, marginHorizontal: 10, marginVertical: 5 }}
+            labelStyle={{ fontSize: 24, paddingVertical: 10, marginHorizontal: 10, marginVertical: 5 }}
             color={CustomColors.uva.blue}
             mode={'contained'}
             onPress={onStepComplete}
           >{`Step Complete`}</Button>
+
+          <Button
+            style={{
+              ...styles.nextPromptButton,
+              marginHorizontal: 10,
+              marginVertical: 5,
+              display: showNeededPromptingButton() ? 'flex' : 'none',
+            }}
+            labelStyle={{ fontSize: 24, paddingVertical: 10, marginHorizontal: 10, marginVertical: 5 }}
+            color={CustomColors.uva.orange}
+            mode={'contained'}
+            onPress={onNeededPrompting}
+          >{`Needed Prompting`}</Button>
         </View>
       </View>
-      {/* </View> */}
     </ImageBackground>
   ) : (
     <Loading />
@@ -251,7 +269,7 @@ const StepScreen = (): JSX.Element => {
 
 const styles = StyleSheet.create({
   container: {
-    padding: 10,
+    padding: 20,
   },
   image: {
     flex: 1,
@@ -314,32 +332,33 @@ const styles = StyleSheet.create({
     height: 30,
   },
   neededPromptingBtn: {
-    margin: 15,
     textAlign: 'center',
   },
   nextBackBtnsContainer: {
-    flexDirection: 'column',
+    flexDirection: 'row',
+    padding: 20,
     justifyContent: 'space-between',
   },
   nextBackSubContainer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
+    flexDirection: 'column',
+    justifyContent: 'space-around',
   },
+  nextPromptButton: {
+    marginHorizontal: 5,
+    marginVertical: 5,
+    width: 380,
+  },
+
   needAddlPrompt: {
-    width: 80,
     color: CustomColors.uva.grayDark,
-    fontSize: 16,
     alignSelf: 'center',
     textAlign: 'center',
   },
-  nextButton: {
-    width: 244,
-    margin: 15,
-  },
+  nextButton: {},
   backButton: {
-    alignSelf: 'flex-start',
-    margin: 15,
+    alignSelf: 'center',
+    // marginVertical: 5,
+    marginHorizontal: 10,
   },
   loadingContainer: {
     flex: 1,

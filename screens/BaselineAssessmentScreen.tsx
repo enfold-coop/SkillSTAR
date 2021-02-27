@@ -64,7 +64,8 @@ const BaselineAssessmentScreen = (): JSX.Element => {
   return chainMasteryState &&
     chainMasteryState.chainMastery &&
     chainMasteryState.chainMastery.chainData &&
-    chainMasteryState.chainMastery.draftSession ? (
+    chainMasteryState.chainMastery.draftSession &&
+    !isSubmitted ? (
     <View style={styles.image}>
       <View style={styles.container}>
         <AppHeader name={'Brushing Teeth'} />
@@ -112,7 +113,7 @@ const BaselineAssessmentScreen = (): JSX.Element => {
       </View>
     </View>
   ) : (
-    <Loading />
+    <View style={styles.middle}>{!isSubmitted ? <Loading /> : <Text>{`Saving data...`}</Text>}</View>
   );
 };
 
@@ -161,6 +162,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignSelf: 'center',
     fontWeight: '600',
+  },
+  middle: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });
 

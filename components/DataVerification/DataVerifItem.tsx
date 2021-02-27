@@ -3,7 +3,7 @@ import { Image, ImageRequireSource, StyleSheet, Text, View } from 'react-native'
 import { useChainMasteryState } from '../../context/ChainMasteryProvider';
 import CustomColors from '../../styles/Colors';
 import { MasteryIcon } from '../../styles/MasteryIcon';
-import { ChainStepPromptLevel, StepAttempt } from '../../types/chain/StepAttempt';
+import { ChainStepPromptLevel, StepAttempt, StepIncompleteReason } from '../../types/chain/StepAttempt';
 import { DataVerificationControlCallback } from '../../types/DataVerificationControlCallback';
 import { ListItemSwitch } from '../Probe';
 import BehavAccordion from './BehavAccordion';
@@ -92,6 +92,16 @@ const DataVerifItem = (props: DataVerifItemProps): JSX.Element => {
     // Update draft session data
     if (chainMasteryState.chainMastery) {
       chainMasteryState.chainMastery.updateDraftSessionStep(chainStepId, fieldName, fieldValue);
+
+      if (fieldName === 'had_challenging_behavior') {
+        chainMasteryState.chainMastery.updateDraftSessionStep(
+          chainStepId,
+          'reason_step_incomplete',
+          StepIncompleteReason.challenging_behavior,
+        );
+      }
+    } else {
+      throw new Error('Cannot access chain data.');
     }
   };
 
@@ -125,8 +135,8 @@ const DataVerifItem = (props: DataVerifItemProps): JSX.Element => {
         </View>
       </View>
       <View style={styles.accordionContainer}>
-        {!completed && <PromptAccordion chainStepId={stepAttempt.chain_step_id} completed={completed} />}
-        {!completed && hadChallengingBehavior && (
+        {!completed && <PromptAccordion stepAttempt={stepAttempt} completed={completed} />}
+        {!completed && (
           <BehavAccordion
             chainStepId={stepAttempt.chain_step_id}
             completed={completed}

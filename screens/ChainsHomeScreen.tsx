@@ -200,6 +200,8 @@ const styles = StyleSheet.create({
     padding: 5,
     margin: 5,
     marginTop: 12,
+    marginBottom: 0,
+    paddingBottom: 0,
   },
   list: {
     margin: 5,
