@@ -88,21 +88,9 @@ const DataVerificationScreen = (): JSX.Element => {
             {'Confirm and Submit'}
           </Button>
         ) : (
-          <Button
-            mode={'contained'}
-            color={CustomColors.uva.gray}
-            labelStyle={{
-              fontSize: 24,
-              color: CustomColors.uva.white,
-              paddingVertical: 5,
-            }}
-            style={styles.nextButton}
-            onPress={() => {
-              console.log('Data Submitted');
-            }}
-          >
-            {'Thanks'}
-          </Button>
+          <View style={styles.savingContainer}>
+            <Text style={styles.saving}>{'Saving data...'}</Text>
+          </View>
         )}
       </View>
     </View>
@@ -182,6 +170,18 @@ const styles = StyleSheet.create({
     width: '90%',
     justifyContent: 'center',
     alignSelf: 'center',
+  },
+  savingContainer: {
+    flexDirection: 'row',
+    paddingVertical: 5,
+    width: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  saving: {
+    fontSize: 24,
+    color: CustomColors.uva.gray,
+    paddingVertical: 5,
   },
 });
 

@@ -73,7 +73,7 @@ const ChainMasteryGraph = (props: ChainMasteryGraphProps): JSX.Element => {
     return () => {
       isCancelled = true;
     };
-  }, [chainMasteryState.chainMastery]);
+  }, [chainMasteryState.chainMastery && chainMasteryState.chainMastery.chainData.sessions]);
 
   const styles = StyleSheet.create({
     container: {
@@ -114,13 +114,13 @@ const ChainMasteryGraph = (props: ChainMasteryGraphProps): JSX.Element => {
             height={width}
             width={width}
             theme={VictoryTheme.material}
-            domain={{ x: [1, chainMasteryState.chainMastery.chainData.sessions.length], y: [0, 100] }}
+            domain={{ x: [1, chainMasteryState.chainMastery.chainData.sessions.length || 1], y: [0, 100] }}
           >
             <VictoryAxis
               crossAxis
               label={'Session #'}
               tickFormat={(t) => `${Math.floor(t)}`}
-              tickCount={Math.min(5, chainMasteryState.chainMastery.chainData.sessions.length)}
+              tickCount={Math.min(5, chainMasteryState.chainMastery.chainData.sessions.length || 1)}
               axisLabelComponent={<VictoryLabel dy={24} style={styles.axisLabel} />}
             />
             <VictoryAxis

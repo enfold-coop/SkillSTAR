@@ -4,6 +4,7 @@ import { AVPlaybackSource } from 'expo-av/build/AV';
 import VideoPlayer from 'expo-video-player';
 import React, { useEffect, useState } from 'react';
 import { Dimensions, ImageBackground, StyleSheet, Text, View } from 'react-native';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 import { Button } from 'react-native-paper';
 import AppHeader from '../components/Header/AppHeader';
 import { Loading } from '../components/Loading/Loading';
@@ -14,7 +15,13 @@ import { videos } from '../data/videos';
 import CustomColors from '../styles/Colors';
 import { MasteryIcon } from '../styles/MasteryIcon';
 import { ChainStep } from '../types/chain/ChainStep';
-import { ChainStepPromptLevel, ChainStepStatus, StepAttempt } from '../types/chain/StepAttempt';
+import {
+  ChainStepPromptLevel,
+  ChainStepPromptLevelLabels,
+  ChainStepPromptLevelMap,
+  ChainStepStatus,
+  StepAttempt,
+} from '../types/chain/StepAttempt';
 
 const StepScreen = (): JSX.Element => {
   const navigation = useNavigation();
@@ -22,11 +29,9 @@ const StepScreen = (): JSX.Element => {
   const [chainSteps, setChainSteps] = useState<ChainStep[]>();
   const [chainStep, setChainStep] = useState<ChainStep>();
   const [stepAttempt, setStepAttempt] = useState<StepAttempt>();
-  const [video, setVideo] = useState<AVPlaybackSource>();
   const chainMasteryState = useChainMasteryState();
-  const [isPLaying, setIsPlaying] = useState(false);
   const [pastFocusStepAttempts, setPastFocusStepAttempts] = useState<boolean[]>();
-  const [chainStepId, setChainStepId] = useState<number>();
+  const [video, setVideo] = useState<AVPlaybackSource>();
 
   /**
    * BEGIN: LIFECYCLE CALLS
@@ -40,7 +45,6 @@ const StepScreen = (): JSX.Element => {
         setChainSteps(chainMasteryState.chainMastery.chainSteps);
         setStepIndex(0);
         setChainStep(chainMasteryState.chainMastery.chainSteps[0]);
-        setChainStepId(chainMasteryState.chainMastery.draftSession.step_attempts[0].chain_step_id);
         const tempId = chainMasteryState.chainMastery.draftSession.step_attempts[0].chain_step_id;
         setStepAttempt(chainMasteryState.chainMastery.draftSession.step_attempts[0]);
         getPrevCompletedFocusSteps(tempId);
@@ -59,18 +63,9 @@ const StepScreen = (): JSX.Element => {
     let isCancelled = false;
 
     const _load = async () => {
-      if (!isCancelled && stepIndex !== undefined) {
-        // Solves issue of videos not start play at beginning
-        const loadedVideo = videos[`step_${stepIndex + 1}`];
-
-        if (loadedVideo) {
-          setVideo(loadedVideo);
-        } else {
-          console.log('video is not loaded yet.');
-        }
-
-        setIsPlaying(false);
-        setChainStepId(stepIndex);
+      if (!isCancelled && stepIndex !== undefined && chainMasteryState.chainMastery) {
+        setVideo(videos['step_' + (stepIndex + 1)]);
+        setChainStep(chainMasteryState.chainMastery.chainSteps[stepIndex]);
         getPrevCompletedFocusSteps(stepIndex);
       }
     };
@@ -100,25 +95,37 @@ const StepScreen = (): JSX.Element => {
     }
   };
 
-  const ReturnVideoComponent = () => {
-    return videos && video && stepIndex !== undefined ? (
-      <VideoPlayer
-        videoProps={{
-          shouldPlay: true,
-          resizeMode: Video.RESIZE_MODE_STRETCH,
-          source: video,
-          volume: 0.0,
-        }}
-        inFullscreen={false}
-        videoBackground={'transparent'}
-        disableSlider={true}
-        sliderColor={'#fff'}
-        showFullscreenButton={false}
-        height={Dimensions.get('screen').height / 2.5}
-      />
-    ) : (
-      <Loading />
-    );
+  const VideoForStep = (): JSX.Element => {
+    const height = Dimensions.get('screen').height / 2.5;
+
+    if (video && stepIndex !== undefined) {
+      const key = 'step_' + (stepIndex + 1);
+      return (
+        <View style={{ height: height, backgroundColor: CustomColors.uva.gray }}>
+          <VideoPlayer
+            key={'video-player-' + key}
+            videoProps={{
+              shouldPlay: true,
+              resizeMode: Video.RESIZE_MODE_STRETCH,
+              source: video,
+              volume: 0.0,
+            }}
+            inFullscreen={false}
+            videoBackground={'transparent'}
+            disableSlider={true}
+            sliderColor={'#fff'}
+            showFullscreenButton={false}
+            height={height}
+          />
+        </View>
+      );
+    } else {
+      return (
+        <View style={{ height: height, backgroundColor: CustomColors.uva.gray }}>
+          <Loading />
+        </View>
+      );
+    }
   };
 
   const showNeededPromptingButton = (): boolean => {
@@ -151,21 +158,23 @@ const StepScreen = (): JSX.Element => {
 
   // Set was_prompted to true for current step attempt
   const onNeededPrompting = () => {
-    if (stepAttempt && chainStep && chainMasteryState.chainMastery) {
-      chainMasteryState.chainMastery.updateDraftSessionStep(chainStep.id, 'was_prompted', true);
-      chainMasteryState.chainMastery.updateDraftSessionStep(chainStep.id, 'completed', false);
+    if (showNeededPromptingButton()) {
+      if (stepAttempt && chainStep && chainMasteryState.chainMastery) {
+        chainMasteryState.chainMastery.updateDraftSessionStep(chainStep.id, 'was_prompted', true);
+        chainMasteryState.chainMastery.updateDraftSessionStep(chainStep.id, 'completed', false);
 
-      // Set the prompt level one level back.
-      if (stepAttempt.target_prompt_level) {
-        chainMasteryState.chainMastery.updateDraftSessionStep(
-          chainStep.id,
-          'prompt_level',
-          chainMasteryState.chainMastery.getPrevPromptLevel(stepAttempt.target_prompt_level).key,
-        );
+        // Set the prompt level one level back.
+        if (stepAttempt.target_prompt_level) {
+          chainMasteryState.chainMastery.updateDraftSessionStep(
+            chainStep.id,
+            'prompt_level',
+            chainMasteryState.chainMastery.getPrevPromptLevel(stepAttempt.target_prompt_level).key,
+          );
+        }
       }
-    }
 
-    nextStep();
+      nextStep();
+    }
   };
 
   // Set completed to true for this step attempt
@@ -206,7 +215,17 @@ const StepScreen = (): JSX.Element => {
     nextStep();
   };
 
-  return video && chainSteps && chainStep && stepIndex !== undefined ? (
+  const neededPromptingButtonText = () => {
+    return showNeededPromptingButton()
+      ? `Beyond ${
+          stepAttempt && stepAttempt.target_prompt_level
+            ? ChainStepPromptLevelMap[stepAttempt.target_prompt_level].value
+            : 'target prompt level'
+        }`
+      : `${ChainStepPromptLevelLabels.full_physical} is the maximum prompt level.`;
+  };
+
+  return chainSteps && chainStep && stepIndex !== undefined && video ? (
     <ImageBackground source={ImageAssets.sunrise_muted} resizeMode={'cover'} style={styles.image}>
       <View style={styles.container}>
         <AppHeader name={'Brush Teeth'} />
@@ -225,41 +244,48 @@ const StepScreen = (): JSX.Element => {
         <PromptLevel chainStepId={chainStep.id} prevFocusStepAttempts={pastFocusStepAttempts} />
         <View style={styles.subContainer}>
           <View style={[styles.subVideoContainer]}>
-            <ReturnVideoComponent />
+            <VideoForStep />
           </View>
         </View>
       </View>
       <View style={styles.nextBackBtnsContainer}>
         <Button
           style={styles.backButton}
-          labelStyle={{ alignSelf: 'flex-start', fontSize: 24, paddingVertical: 5, marginHorizontal: 10 }}
+          labelStyle={{ fontSize: 24, paddingVertical: 10, marginHorizontal: 10, marginVertical: 5 }}
           disabled={!stepIndex}
           color={CustomColors.uva.blue}
           mode={'outlined'}
           onPress={prevStep}
         >{`Previous Step`}</Button>
-        <View style={{ ...styles.nextBackSubContainer, justifyContent: 'space-between' }}>
-          <Button
-            style={{ ...styles.nextPromptButton, marginHorizontal: 10, marginVertical: 5 }}
-            labelStyle={{ fontSize: 24, paddingVertical: 10, marginHorizontal: 10, marginVertical: 5 }}
-            color={CustomColors.uva.blue}
-            mode={'contained'}
-            onPress={onStepComplete}
-          >{`Step Complete`}</Button>
-
-          <Button
-            style={{
-              ...styles.nextPromptButton,
-              marginHorizontal: 10,
-              marginVertical: 5,
-              display: showNeededPromptingButton() ? 'flex' : 'none',
-            }}
-            labelStyle={{ fontSize: 24, paddingVertical: 10, marginHorizontal: 10, marginVertical: 5 }}
-            color={CustomColors.uva.orange}
-            mode={'contained'}
-            onPress={onNeededPrompting}
-          >{`Needed Prompting`}</Button>
-        </View>
+        <Button
+          style={styles.nextButton}
+          labelStyle={{ fontSize: 24, paddingVertical: 10, marginHorizontal: 10, marginVertical: 5 }}
+          color={CustomColors.uva.blue}
+          mode={'contained'}
+          onPress={onStepComplete}
+        >{`Step Complete`}</Button>
+      </View>
+      <View style={styles.nextBackBtnsContainer}>
+        <Button
+          style={styles.additionalPromptingButton}
+          mode={'contained'}
+          color={showNeededPromptingButton() ? CustomColors.uva.orange : CustomColors.uva.grayMedium}
+          onPress={onNeededPrompting}
+        >
+          <View style={{ paddingVertical: 10, alignContent: 'center', alignItems: 'center', justifyContent: 'center' }}>
+            <Text
+              style={{
+                fontSize: 24,
+                color: showNeededPromptingButton() ? 'white' : CustomColors.uva.gray,
+              }}
+            >
+              {showNeededPromptingButton() ? `Needed Additional Prompting` : 'No Additional Prompting Possible'}
+            </Text>
+            <Text style={{ fontSize: 16, color: showNeededPromptingButton() ? 'white' : CustomColors.uva.grayDark }}>
+              {neededPromptingButtonText()}
+            </Text>
+          </View>
+        </Button>
       </View>
     </ImageBackground>
   ) : (
@@ -334,14 +360,10 @@ const styles = StyleSheet.create({
   neededPromptingBtn: {
     textAlign: 'center',
   },
-  nextBackBtnsContainer: {
-    flexDirection: 'row',
-    padding: 20,
-    justifyContent: 'space-between',
-  },
   nextBackSubContainer: {
     flexDirection: 'column',
     justifyContent: 'space-around',
+    alignSelf: 'stretch',
   },
   nextPromptButton: {
     marginHorizontal: 5,
@@ -354,11 +376,24 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     textAlign: 'center',
   },
-  nextButton: {},
+  nextBackBtnsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'stretch',
+    alignContent: 'stretch',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+  },
   backButton: {
-    alignSelf: 'center',
-    // marginVertical: 5,
-    marginHorizontal: 10,
+    flexGrow: 1,
+    marginRight: 10,
+  },
+  nextButton: {
+    flexGrow: 1,
+    marginLeft: 10,
+  },
+  additionalPromptingButton: {
+    flexGrow: 1,
   },
   loadingContainer: {
     flex: 1,

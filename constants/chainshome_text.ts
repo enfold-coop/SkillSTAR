@@ -24,7 +24,7 @@ export const BOOSTER_INSTRUCTIONS = `
  */
 export const START_PROBE_SESSION_BTN = `Start ${ChainSessionTypeLabels.probe} Session`;
 export const START_TRAINING_SESSION_BTN = `Start ${ChainSessionTypeLabels.training} Session`;
-export const START_BOOSTER_SESSION_BTN = `Start ${ChainSessionTypeLabels.booster} Session`;
+export const START_BOOSTER_SESSION_BTN = `Start ${ChainSessionTypeLabels.training} Session`;
 
 export const PROBE_NAME = 'Probe Session (% mastery)';
 export const TRAINING_NAME = 'Training Session (% mastery)';
