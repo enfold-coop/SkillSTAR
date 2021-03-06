@@ -2,19 +2,15 @@ import React, { useEffect, useState } from 'react';
 import { LayoutRectangle, Modal, StyleSheet, View } from 'react-native';
 import { Button } from 'react-native-paper';
 import CustomColors from '../../styles/Colors';
-import { ChainData } from '../../types/chain/ChainData';
-import { ChainSession } from '../../types/chain/ChainSession';
-import PlotlyLineGraph from './PlotlyLineGraph';
+import ChainMasteryGraph from './ChainMasteryGraph';
 
 interface GraphModalProps {
   visible: boolean;
   handleVis: () => void;
-  sessionsData: ChainSession[];
 }
 
 const GraphModal = (props: GraphModalProps): JSX.Element => {
-  const { visible, handleVis, sessionsData } = props;
-
+  const { visible, handleVis } = props;
   const [graphDimens, setGraphDimens] = useState<LayoutRectangle>();
   const [vis, setVisible] = useState(false);
 
@@ -40,13 +36,13 @@ const GraphModal = (props: GraphModalProps): JSX.Element => {
           setGraphDimens(e.nativeEvent.layout);
         }}
       >
-        {graphDimens && graphDimens.height && sessionsData && (
-          <PlotlyLineGraph modal={true} dimensions={graphDimens} sessions={sessionsData} />
+        {graphDimens && graphDimens.height && (
+          <ChainMasteryGraph width={graphDimens.width} height={graphDimens.height - 80} margin={20} />
         )}
         <Button
           style={styles.closeBtn}
           labelStyle={{ fontSize: 16 }}
-          color={CustomColors.uva.graySoft}
+          color={'white'}
           mode={'outlined'}
           onPress={() => {
             setVisible(!vis);
@@ -63,13 +59,13 @@ export default GraphModal;
 const styles = StyleSheet.create({
   graphContainer: {
     flex: 1,
-    padding: 20,
+    paddingTop: 20,
     justifyContent: 'flex-start',
     alignContent: 'center',
-    backgroundColor: 'rgba(0,0,0,0.9)',
   },
   closeBtn: {
     width: 200,
     alignSelf: 'center',
+    backgroundColor: CustomColors.uva.grayDark,
   },
 });

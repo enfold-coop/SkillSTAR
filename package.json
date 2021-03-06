@@ -64,6 +64,7 @@
         "react-native-paper": "^4.6.0",
         "react-native-plotly": "^4.0.0",
         "react-native-progress": "^4.1.2",
+        "react-native-reanimated": "~1.13.0",
         "react-native-safe-area-context": "3.1.9",
         "react-native-screens": "~2.15.2",
         "react-native-svg": "^12.1.0",
@@ -74,7 +75,7 @@
         "telejson": "^5.1.0",
         "ts-jest": "^26.4.1",
         "uuid": "^8.3.2",
-        "react-native-reanimated": "~1.13.0"
+        "victory-native": "^35.3.1"
     },
     "devDependencies": {
         "@babel/core": "~7.9.0",

@@ -1,41 +1,36 @@
 import { ChainSession } from '../types/chain/ChainSession';
 import { SessionAndIndex } from '../types/chain/FilteredSessions';
-import { ChainStepPromptLevel, ChainStepStatus, StepAttempt } from '../types/chain/StepAttempt';
+import { StepAttempt } from '../types/chain/StepAttempt';
+
+export interface SessionPercentage {
+  session_number: number;
+  challenging_behavior?: number;
+  mastery?: number;
+}
 
 function percentMastered(steps: StepAttempt[]) {
-  let r = 0;
-  steps.forEach((e) => {
-    if (e.completed && !e.had_challenging_behavior) {
-      r++;
-    }
-  });
-  return (r / steps.length) * 100;
+  const numMastered = steps.reduce((memo, step) => {
+    return step.completed && !step.had_challenging_behavior ? memo + 1 : memo;
+  }, 0);
+  return (numMastered / steps.length) * 100;
 }
 
-function percentChalBehavior(steps: StepAttempt[]) {
-  let r = 0;
-  steps.forEach((e) => {
-    if (e && e.had_challenging_behavior) {
-      r++;
-    }
-  });
-  return (r / steps.length) * 100;
+function percentChallengingBehavior(steps: StepAttempt[]) {
+  const numChallenging = steps.reduce((memo, step) => {
+    return step.had_challenging_behavior ? memo + 1 : memo;
+  }, 0);
+  return (numChallenging / steps.length) * 100;
 }
 
-export function CalcChalBehaviorPercentage(sessionArr: ChainSession[]) {
-  return sessionArr.map((e, i) => {
-    return { session_number: i + 1, challenging_behavior: percentChalBehavior(e.step_attempts) };
+export function calculatePercentChallengingBehavior(sessions: ChainSession[]): SessionPercentage[] {
+  return sessions.map((session, i) => {
+    return { session_number: i + 1, challenging_behavior: percentChallengingBehavior(session.step_attempts) };
   });
 }
 
-export function CalcMasteryPercentage(sessionArr: SessionAndIndex[]) {
-  if (sessionArr.length > 0) {
-    return sessionArr.map((e, i) => {
-      if (e && e.session?.step_attempts) {
-        const mastery = percentMastered(e.session?.step_attempts);
-        // @ts-ignore
-        return { session_number: e.session_index + 1, mastery: mastery };
-      }
-    });
-  }
+export function calculatePercentMastery(sessions: SessionAndIndex[]): SessionPercentage[] {
+  return sessions.map((item) => {
+    const mastery = percentMastered(item.session.step_attempts);
+    return { session_number: item.session_index + 1, mastery: mastery };
+  });
 }

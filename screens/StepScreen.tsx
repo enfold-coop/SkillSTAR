@@ -7,7 +7,7 @@ import { Dimensions, ImageBackground, StyleSheet, Text, View } from 'react-nativ
 import { Button } from 'react-native-paper';
 import AppHeader from '../components/Header/AppHeader';
 import { Loading } from '../components/Loading/Loading';
-import { ProgressBar, StarsNIconsContainer } from '../components/Steps/index';
+import { ProgressBar, PromptLevel } from '../components/Steps/index';
 import { useChainMasteryState } from '../context/ChainMasteryProvider';
 import { ImageAssets } from '../data/images';
 import { videos } from '../data/videos';
@@ -222,7 +222,7 @@ const StepScreen = (): JSX.Element => {
             />
           </View>
         </View>
-        <StarsNIconsContainer chainStepId={chainStep.id} prevFocusStepAttempts={pastFocusStepAttempts} />
+        <PromptLevel chainStepId={chainStep.id} prevFocusStepAttempts={pastFocusStepAttempts} />
         <View style={styles.subContainer}>
           <View style={[styles.subVideoContainer]}>
             <ReturnVideoComponent />

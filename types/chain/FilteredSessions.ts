@@ -6,8 +6,8 @@ export interface FilteredSessions {
 }
 
 export interface SessionAndIndex {
-  session: ChainSession | undefined;
-  session_index: number | undefined;
+  session: ChainSession;
+  session_index: number;
 }
 
 export interface FilteredSessionsWithSessionNumber {

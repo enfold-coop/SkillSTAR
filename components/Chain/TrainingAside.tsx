@@ -5,7 +5,7 @@ import { ChainSessionType, ChainSessionTypeMap } from '../../types/chain/ChainSe
 import { ChainStep } from '../../types/chain/ChainStep';
 import { ChainStepPromptLevel, ChainStepPromptLevelMap, StepAttempt } from '../../types/chain/StepAttempt';
 import { Loading } from '../Loading/Loading';
-import { TRAINING_INSTRUCTIONS } from './chainshome_text_assets/chainshome_text';
+import { TRAINING_INSTRUCTIONS } from '../../constants/chainshome_text';
 
 // TODO: Aside content...
 //  - Focus step
