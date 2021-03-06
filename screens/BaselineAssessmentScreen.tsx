@@ -2,7 +2,7 @@ import { useNavigation } from '@react-navigation/native';
 import React, { useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { Button } from 'react-native-paper';
-import { PROBE_INSTRUCTIONS } from '../components/Chain/chainshome_text_assets/chainshome_text';
+import { PROBE_INSTRUCTIONS } from '../constants/chainshome_text';
 import AppHeader from '../components/Header/AppHeader';
 import { Loading } from '../components/Loading/Loading';
 import DataVerificationList from '../components/Probe/DataVerificationList';

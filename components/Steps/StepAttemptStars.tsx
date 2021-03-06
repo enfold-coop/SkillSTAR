@@ -6,22 +6,17 @@ import { ChainStepPromptLevel, ChainStepPromptLevelMap } from '../../types/chain
 
 interface StepAttemptStarsProps {
   promptLevel?: ChainStepPromptLevel;
-  attemptsWPromptType: boolean[] | undefined;
+  attemptsWereSuccessful: boolean[] | undefined;
 }
 
 const StepAttemptStars = (props: StepAttemptStarsProps): JSX.Element => {
-  const { promptLevel, attemptsWPromptType } = props;
+  const { promptLevel, attemptsWereSuccessful } = props;
 
   const Stars = (): JSX.Element => {
-    if (!(attemptsWPromptType && attemptsWPromptType.length > 0)) {
-      return (
-        <View>
-          <Text>{` `}</Text>
-        </View>
-      );
-    }
+    const arr =
+      !attemptsWereSuccessful || attemptsWereSuccessful.length === 0 ? [false, false, false] : attemptsWereSuccessful;
 
-    const numSuccess = attemptsWPromptType.slice(-3).filter((completed) => completed).length;
+    const numSuccess = arr.slice(-3).filter((completed) => completed).length;
     const icons = [];
 
     for (let i = 0; i < 3; i++) {
@@ -40,7 +35,7 @@ const StepAttemptStars = (props: StepAttemptStarsProps): JSX.Element => {
     return <View style={styles.starContainer}>{icons}</View>;
   };
 
-  return promptLevel && attemptsWPromptType ? (
+  return promptLevel && attemptsWereSuccessful ? (
     <View style={styles.container}>
       <Text style={styles.promptLevelText}>{'Prompt Level: ' + ChainStepPromptLevelMap[promptLevel].shortName}</Text>
       <Stars />
@@ -57,7 +52,7 @@ export default StepAttemptStars;
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
-    alignContent: 'flex-end',
+    alignItems: 'flex-end',
     justifyContent: 'flex-start',
   },
   promptLevelText: {
@@ -69,8 +64,9 @@ const styles = StyleSheet.create({
   },
   starContainer: {
     flexDirection: 'row',
-    alignContent: 'center',
+    alignItems: 'flex-end',
     justifyContent: 'flex-start',
+    marginLeft: 22,
   },
   star: {},
 });

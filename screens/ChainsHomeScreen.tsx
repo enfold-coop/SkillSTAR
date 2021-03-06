@@ -1,14 +1,13 @@
 import { useDeviceOrientation } from '@react-native-community/hooks';
 import { useNavigation } from '@react-navigation/native';
 import React, { useEffect, useState } from 'react';
-import { ImageBackground, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { ImageBackground, ScrollView, StyleSheet, TouchableOpacity, View, Text } from 'react-native';
 import * as Animatable from 'react-native-animatable';
-import { Text } from 'react-native-paper';
 import {
   START_BOOSTER_SESSION_BTN,
   START_PROBE_SESSION_BTN,
   START_TRAINING_SESSION_BTN,
-} from '../components/Chain/chainshome_text_assets/chainshome_text';
+} from '../constants/chainshome_text';
 import ScorecardListItem from '../components/Chain/ScorecardListItem';
 import SessionDataAside from '../components/Chain/SessionDataAside';
 import AppHeader from '../components/Header/AppHeader';

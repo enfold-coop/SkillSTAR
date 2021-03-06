@@ -69,7 +69,9 @@ export class ChainMastery {
    */
   getFocusStepAttemptsForChainStep(chainStepId: number): StepAttempt[] {
     const stepAttempts = this.chainData.getAllStepAttemptsForChainStep(chainStepId);
-    return stepAttempts.filter((stepAttempt) => stepAttempt.was_focus_step);
+    return stepAttempts.filter(
+      (stepAttempt) => stepAttempt.was_focus_step || stepAttempt.status === ChainStepStatus.booster_needed,
+    );
   }
 
   /**

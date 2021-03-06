@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-import { PROBE_INSTRUCTIONS } from './chainshome_text_assets/chainshome_text';
+import { PROBE_INSTRUCTIONS } from '../../constants/chainshome_text';
 
 const ProbeAside = (): JSX.Element => {
   return (

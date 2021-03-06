@@ -1,16 +1,14 @@
 import date from 'date-and-time';
-import React, { useState, FC, useEffect } from 'react';
-import { LayoutRectangle, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { Card } from 'react-native-paper';
+import React, { useState } from 'react';
+import { StyleSheet, TouchableOpacity, View, Text } from 'react-native';
+import { Button, Card } from 'react-native-paper';
 import { useChainMasteryState } from '../../context/ChainMasteryProvider';
 import CustomColors from '../../styles/Colors';
-import { ChainSession, ChainSessionType } from '../../types/chain/ChainSession';
+import { ChainSessionType } from '../../types/chain/ChainSession';
 import GraphModal from '../DataGraph/GraphModal';
-import { ChainsHomeGraph } from '../DataGraph/index';
+import { ChainMasteryGraph } from '../DataGraph/index';
 import { Loading } from '../Loading/Loading';
 import { ProbeAside, TrainingAside } from './index';
-import { ApiService } from '../../services/ApiService';
-import { ChainData } from '../../types/chain/ChainData';
 
 /**
  * NEEDS:
@@ -20,39 +18,10 @@ import { ChainData } from '../../types/chain/ChainData';
  * **
  */
 
-type Props = {
-  currentSession: ChainSession;
-  sessionData: ChainSession[] | undefined;
-};
-
-const SessionDataAside: FC<Props> = (props): JSX.Element => {
+const SessionDataAside = (): JSX.Element => {
   // eslint-disable-next-line react/prop-types
-  const { sessionData } = props;
-  const [graphContainerDimens, setGraphContainerDimens] = useState<LayoutRectangle>();
   const [modalVis, setModalVis] = useState(false);
-  const [sessions, setSessions] = useState<ChainSession[]>();
-  const [chainData, setChainData] = useState<ChainData>();
   const chainMasteryState = useChainMasteryState();
-
-  useEffect(() => {
-    let isCancelled = false;
-
-    const _load = async () => {
-      if (!isCancelled) {
-        const contextChainData = await ApiService.contextState('chainData');
-        if (contextChainData !== undefined) {
-          setChainData(contextChainData as ChainData);
-          setSessions(sessionData);
-        }
-      }
-    };
-
-    _load();
-
-    return () => {
-      isCancelled = true;
-    };
-  }, [chainMasteryState.chainMastery?.chainData]);
 
   const handleModal = () => {
     setModalVis(!modalVis);
@@ -62,7 +31,7 @@ const SessionDataAside: FC<Props> = (props): JSX.Element => {
     chainMasteryState.chainMastery.draftSession &&
     chainMasteryState.chainMastery.draftSession.date ? (
     <View style={styles.container}>
-      {sessions && <GraphModal visible={modalVis} handleVis={handleModal} sessionsData={sessions} />}
+      <GraphModal visible={modalVis} handleVis={handleModal} />
       <View>
         <View>
           <Card>
@@ -83,24 +52,20 @@ const SessionDataAside: FC<Props> = (props): JSX.Element => {
             </View>
           </Card>
         </View>
-        <View
-          style={styles.graphIconContainer}
-          onLayout={(e) => {
-            const dimensions = e.nativeEvent.layout;
-            setGraphContainerDimens(dimensions);
-          }}
-        >
-          <Card>
-            {sessionData && <ChainsHomeGraph dimensions={graphContainerDimens} sessionData={sessionData} />}
-            <TouchableOpacity
+        {chainMasteryState.chainMastery.chainData.sessions.length > 0 && (
+          <Card style={styles.graphIconContainer}>
+            <ChainMasteryGraph width={280} height={420} margin={10} />
+            <Button
               onPress={() => {
                 setModalVis(true);
               }}
+              color={CustomColors.uva.grayDark}
+              style={styles.graphModalBtn}
             >
-              <Text style={styles.graphText}>{`View your progress`}</Text>
-            </TouchableOpacity>
+              {`More detail`}
+            </Button>
           </Card>
-        </View>
+        )}
       </View>
     </View>
   ) : (
@@ -189,18 +154,19 @@ const styles = StyleSheet.create({
   },
   graphIconContainer: {
     width: 280,
-    flexDirection: 'column',
-    justifyContent: 'center',
-    alignContent: 'center',
+    height: 480,
+    justifyContent: 'flex-start',
+    alignItems: 'center',
     marginTop: 20,
     borderRadius: 10,
     backgroundColor: '#fff',
   },
-  graphText: {
+  graphModalBtn: {
     fontSize: 18,
-    color: CustomColors.uva.grayDark,
     alignSelf: 'center',
     padding: 5,
+    borderWidth: 1,
+    borderColor: CustomColors.uva.grayMedium,
   },
 });
 

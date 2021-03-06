@@ -5,12 +5,12 @@ import { ChainStepPromptLevel } from '../../types/chain/StepAttempt';
 import ChallengingBehavBtn from './ChallengingBehavBtn';
 import StepAttemptStars from './StepAttemptStars';
 
-interface StarsNIconsContainerProps {
+interface PromptLevelProps {
   chainStepId: number;
   prevFocusStepAttempts: boolean[] | undefined;
 }
 
-const StarsNIconsContainer = (props: StarsNIconsContainerProps): JSX.Element => {
+const PromptLevel = (props: PromptLevelProps): JSX.Element => {
   const { chainStepId, prevFocusStepAttempts } = props;
   const [promptLevel, setPromptLevel] = useState<ChainStepPromptLevel>();
   const chainMasteryState = useChainMasteryState();
@@ -49,7 +49,7 @@ const StarsNIconsContainer = (props: StarsNIconsContainerProps): JSX.Element => 
   return (
     <View style={styles.container}>
       {promptLevel && prevFocusStepAttempts ? (
-        <StepAttemptStars promptLevel={promptLevel} attemptsWPromptType={prevFocusStepAttempts} />
+        <StepAttemptStars promptLevel={promptLevel} attemptsWereSuccessful={prevFocusStepAttempts} />
       ) : (
         <View>
           <Text>{` `}</Text>
@@ -60,7 +60,7 @@ const StarsNIconsContainer = (props: StarsNIconsContainerProps): JSX.Element => 
   );
 };
 
-export default StarsNIconsContainer;
+export default PromptLevel;
 
 const styles = StyleSheet.create({
   container: {

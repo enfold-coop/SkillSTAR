@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import Plotly from 'react-native-plotly';
-import { FilteredSessionWithSessionIndex } from '../../_util/FilterSessionType';
+import { CB_NAME, PROBE_NAME, TRAINING_NAME } from '../../constants/chainshome_text';
 import CustomColors from '../../styles/Colors';
 import { ChainSession } from '../../types/chain/ChainSession';
-import { CalcMasteryPercentage, CalcChalBehaviorPercentage } from '../../_util/CalculateMasteryPercentage';
-import { HandleGraphPopulation, SetGraphData } from '../../_util/CreateGraphData';
+import { GraphData, HandleGraphPopulation, SetGraphData } from '../../_util/CreateGraphData';
 
 interface PlotlyGraphDimensions {
   width: number;
@@ -18,17 +17,13 @@ type PlotlyLineGraphProps = {
   sessions: ChainSession[];
 };
 
-const PROBE_NAME = 'Probe Session';
-const TRAINING_NAME = 'Training Session';
-const CB_NAME = 'Challenging Behavior';
-
 const PlotlyLineGraph = (props: PlotlyLineGraphProps): JSX.Element => {
   const { dimensions, modal, sessions } = props;
   const [thisHeight, setHeight] = useState<number>();
   const [thisWidth, setWidth] = useState<number>();
   const [isModal, setIsModal] = useState<boolean>(false);
 
-  const [data, setData] = useState([
+  const [data, setData] = useState<GraphData[]>([
     {
       x: [],
       y: [],
@@ -70,7 +65,7 @@ const PlotlyLineGraph = (props: PlotlyLineGraphProps): JSX.Element => {
     }
   };
 
-  const handleGraphPopulation = (d: []) => {
+  const handleGraphPopulation = (d: GraphData[]) => {
     const newGraphData = HandleGraphPopulation(data, d);
     setData(newGraphData);
   };
@@ -85,7 +80,8 @@ const PlotlyLineGraph = (props: PlotlyLineGraphProps): JSX.Element => {
       dtick: 1,
     },
     yaxis: {
-      title: '(%) of Steps',
+      title: '% of steps',
+      dtick: 5,
     },
   };
 
