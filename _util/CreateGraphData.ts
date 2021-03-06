@@ -78,7 +78,7 @@ export const SetGraphData = (sessions: ChainSession[]): GraphData[] => {
  *
  * @param currGraphData: data that is already present in graph's "data" state property
  * @param incomingData: data that includes new calculated mastery and challenging behavior percentages
- *  -- Combines new data into the Plotly "data" array
+ *  -- Combines new data into the GraphData "data" array
  */
 export const HandleGraphPopulation = (currGraphData: GraphData[], incomingData: GraphData[]): GraphData[] => {
   // Clone the current graph data
