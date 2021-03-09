@@ -52,15 +52,19 @@ const ScorecardListItem = (props: ScorecardListItemProps): JSX.Element => {
             setIsPressed(!isPressed);
           }}
         >
-          <Text style={styles.id}>{`${chainStep.id + 1}.`}</Text>
-          <Text style={styles.skill}>{chainStep.instruction}</Text>
-          <MasteryIcon chainStepStatus={stepAttempt.status} iconSize={40} />
-          <MaterialIcons
-            name={isPressed ? 'expand-less' : 'expand-more'}
-            size={24}
-            color={'black'}
-            style={styles.nextIcon}
-          />
+          <View style={styles.leftColumn}>
+            <Text style={styles.id}>{`${chainStep.id + 1}.`}</Text>
+            <Text style={styles.skill}>{chainStep.instruction}</Text>
+          </View>
+          <View style={styles.rightColumn}>
+            <MasteryIcon chainStepStatus={stepAttempt.status} iconSize={40} />
+            <MaterialIcons
+              name={isPressed ? 'expand-less' : 'expand-more'}
+              size={24}
+              color={'black'}
+              style={styles.nextIcon}
+            />
+          </View>
         </TouchableOpacity>
         {isPressed && (
           <View style={styles.dropDownContainer}>
@@ -115,11 +119,22 @@ const styles = StyleSheet.create({
   touchable: {
     flex: 1,
     flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'stretch',
+  },
+  leftColumn: {
+    flex: 3,
+    flexDirection: 'row',
     justifyContent: 'flex-start',
+    alignItems: 'flex-start',
+    padding: 10,
+  },
+  rightColumn: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
     alignItems: 'center',
-    paddingTop: 10,
-    paddingBottom: 10,
-    paddingLeft: 20,
+    padding: 10,
   },
   dropDownContainer: {
     flexDirection: 'column',
@@ -150,7 +165,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   skill: {
-    width: 260,
+    width: 240,
     flexWrap: 'wrap',
     padding: 5,
     fontSize: 16,
@@ -160,9 +175,8 @@ const styles = StyleSheet.create({
     paddingLeft: 20,
   },
   nextIcon: {
-    marginLeft: 0,
-    padding: 10,
-    paddingRight: 20,
+    width: 24,
+    height: 24,
   },
   title: {
     padding: 5,
