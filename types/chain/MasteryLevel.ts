@@ -42,8 +42,16 @@ export interface MasteryInfoMap {
 }
 
 export interface PromptLevelMap {
+  [key: string]: PromptLevelAndMilestonesMap;
+}
+
+export interface PromptLevelAndMilestonesMap {
   targetPromptLevel?: ChainStepPromptLevel;
   firstMasteredStep?: StepAttempt;
   firstBoosterStep?: StepAttempt;
   boosterMasteredStep?: StepAttempt;
+}
+
+export interface StepAttemptsMap {
+  [key: number]: StepAttempt[];
 }
