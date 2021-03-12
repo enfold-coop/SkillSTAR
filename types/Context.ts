@@ -2,7 +2,7 @@ import { ChainMastery } from '../services/ChainMastery';
 import { ChainData, SkillstarChain } from './chain/ChainData';
 import { ChainSession } from './chain/ChainSession';
 import { ChainStep } from './chain/ChainStep';
-import { MasteryInfo } from './chain/MasteryLevel';
+import { MasteryInfo } from './chain/MasteryInfoMap';
 import { Participant, User } from './User';
 
 export type ContextStateValue =

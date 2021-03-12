@@ -17,7 +17,6 @@ const ProbeScreen = (): JSX.Element => {
   const navigation = useNavigation();
   const [stepIndex, setStepIndex] = useState(0);
   const [readyToSubmit, setReadyToSubmit] = useState(false);
-  const [sessionReady, setSessionReady] = useState(false);
   const [chainSession, setChainSession] = useState<ChainSession>();
   const [chainSteps, setChainSteps] = useState<ChainStep[]>();
   const [chainData, setChainData] = useState<ChainData>();
@@ -57,7 +56,6 @@ const ProbeScreen = (): JSX.Element => {
 
         if (!isCancelled && !chainSession) {
           setChainSession(newChainSession);
-          setSessionReady(true);
         }
       }
     };

@@ -1,18 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { useChainMasteryState } from '../../context/ChainMasteryProvider';
-import { ChainSessionType, ChainSessionTypeMap } from '../../types/chain/ChainSession';
-import { ChainStep } from '../../types/chain/ChainStep';
-import { ChainStepPromptLevel, ChainStepPromptLevelMap, StepAttempt } from '../../types/chain/StepAttempt';
+import { ChainSessionTypeMap } from '../../types/chain/ChainSession';
+import { ChainStepPromptLevelMap } from '../../types/chain/StepAttempt';
 import { Loading } from '../Loading/Loading';
-import { TRAINING_INSTRUCTIONS } from '../../constants/chainshome_text';
-
-// TODO: Aside content...
-//  - Focus step
-//  - Session type
-//  - Target prompt level
-//  - Current chain step mastery level
-//  - Instructions
 
 const TrainingAside = (): JSX.Element => {
   const chainMasteryState = useChainMasteryState();

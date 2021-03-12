@@ -131,8 +131,7 @@ export class ChainData implements SkillstarChain {
   }
 
   /**
-   * Given a SkillstarChain, returns a list of sessions, sorted by date in ascending order (from past to present).
-   * @param skillstarChain
+   * Sorts this instance's list of sessions, sorted by date in ascending order (from past to present).
    * @private
    */
   private sortSessions() {

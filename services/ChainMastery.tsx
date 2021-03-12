@@ -7,13 +7,9 @@ import {
 import { ChainData, SkillstarChain } from '../types/chain/ChainData';
 import { ChainSession, ChainSessionType } from '../types/chain/ChainSession';
 import { ChainStep } from '../types/chain/ChainStep';
-import {
-  MasteryInfo,
-  MasteryInfoMap,
-  PromptLevelAndMilestonesMap,
-  PromptLevelMap,
-  StepAttemptsMap,
-} from '../types/chain/MasteryLevel';
+import { MasteryInfo, MasteryInfoMap } from '../types/chain/MasteryInfoMap';
+import { Milestones, MilestonesMap } from '../types/chain/MilestonesMap';
+import { PromptLevel, PromptLevelMap } from '../types/chain/PromptLevelMap';
 import {
   ChainStepPromptLevel,
   ChainStepPromptLevelMap,
@@ -23,6 +19,7 @@ import {
   StepAttemptField,
   StepAttemptFieldName,
 } from '../types/chain/StepAttempt';
+import { StepAttemptsMap } from '../types/chain/StepAttemptsMap';
 
 /**
  * Holds the chain data and mastery info for each step in the chain data.
@@ -34,8 +31,9 @@ export class ChainMastery {
   chainSteps: ChainStep[];
   chainData: ChainData;
   stepAttemptsMap: StepAttemptsMap;
-  masteryInfoMap: MasteryInfoMap;
+  milestonesMap: MilestonesMap;
   promptLevelMap: PromptLevelMap;
+  masteryInfoMap: MasteryInfoMap;
   draftSession: ChainSession;
   incompleteCount = 0;
   focusedChainStepIds: number[];
@@ -55,12 +53,13 @@ export class ChainMastery {
     this.chainSteps = chainSteps;
     this.chainData = new ChainData(chainData);
     this.stepAttemptsMap = this.buildStepAttemptsMap();
-    this.promptLevelMap = this.buildPromptLevelMap();
+    this.milestonesMap = this.buildMilestonesMap();
     this.focusedChainStepIds = this.getFocusedChainStepIds();
     this.masteredChainStepIds = this.getMasteredChainStepIds();
     this.unmasteredChainStepIds = this.getUnmasteredChainStepIds();
     this.unmasteredChainStepIdsToFocus = this.getUnmasteredChainStepIdsToFocus();
     this.unmasteredFocusedChainStepIds = this.getUnmasteredFocusedChainStepIds();
+    this.promptLevelMap = this.buildPromptLevelMap();
     this.masteryInfoMap = this.buildMasteryInfoMap();
     this.draftSession = this.buildNewDraftSession();
   }
@@ -538,12 +537,12 @@ export class ChainMastery {
    * Given a list of step attempts, returns the number of attempts since the first time the
    * step was mastered. If the step has never been mastered, returns -1.
    *
-   * @param stepAttempts
+   * @param chainStepId
    */
   numSinceFirstMastered(chainStepId: number): number {
     const stepAttempts = this.stepAttemptsMap[chainStepId];
-    const promptLevelMap = this.promptLevelMap[chainStepId];
-    const firstMasteredStep = promptLevelMap.firstMasteredStep;
+    const milestonesMap = this.milestonesMap[chainStepId];
+    const firstMasteredStep = milestonesMap.firstMasteredStep;
 
     if (firstMasteredStep !== undefined) {
       const stepIndex = stepAttempts.findIndex((s) => s === firstMasteredStep);
@@ -640,7 +639,7 @@ export class ChainMastery {
    * @param chainStepId
    */
   stepFirstMastered(chainStepId: number): StepAttempt | undefined {
-    return this.promptLevelMap[chainStepId].firstMasteredStep;
+    return this.milestonesMap[chainStepId].firstMasteredStep;
   }
 
   /**
@@ -670,6 +669,7 @@ export class ChainMastery {
 
   /**
    * Given a list of step attempts, returns true if the next attempt needs to be a booster.
+   * @param chainStepId
    * @param stepAttempts
    *
    * TODO - Replace the core booster logic with a helper method so it can be reused
@@ -752,7 +752,6 @@ export class ChainMastery {
 
   /**
    * Returns the id of the chain step that was focused on lately across all chain sessions (i.e. the last one by date.)
-   * @param chainStepId
    */
   get latestFocusedChainStepId(): number | undefined {
     if (this.focusedChainStepIds.length > 0) {
@@ -764,27 +763,27 @@ export class ChainMastery {
    * Given a mastery info for a chain step, returns true if the next attempt (i.e., in the next draft session)
    * for that chain step needs to be the focus step. Otherwise, returns false.
    *
-   * @param stepAttempts
+   * @param m: MasteryInfo object for a given chain step
    */
   chainStepNeedsFocus(m: MasteryInfo): boolean {
-    const needsFocus = !!(
+    return !!(
       m.dateIntroduced && // Step has been introduced AND
       !m.dateMastered && // ...but has not been mastered yet AND
-      this.unmasteredChainStepIdsToFocus.includes(m.chainStepId)
+      this.unmasteredChainStepIdsToFocus.length > 0 && // ...is first in the list of steps needing focus.
+      this.unmasteredChainStepIdsToFocus[0] === m.chainStepId
     );
-
-    return needsFocus;
   }
 
   /**
-   * Given a list of step attempts, returns the number of attempts after
-   * the first booster session was introduced.
-   * @param stepAttempts
+   * Given a chain step ID, returns the number of attempts since
+   * the first booster session for that chain step was introduced. Returns -1
+   * if the step has never had a booster.
+   * @param chainStepId
    */
   numSinceBoosterInitiated(chainStepId: number): number {
     const stepAttempts = this.stepAttemptsMap[chainStepId];
-    const promptLevelMap = this.promptLevelMap[chainStepId];
-    const boosterStep = promptLevelMap.firstBoosterStep;
+    const milestonesMap = this.milestonesMap[chainStepId];
+    const boosterStep = milestonesMap.firstBoosterStep;
 
     if (boosterStep) {
       const boosterStepIndex = stepAttempts.findIndex((s) => s === boosterStep);
@@ -799,15 +798,16 @@ export class ChainMastery {
   }
 
   /**
-   * Given a list of step attempts, returns the number of attempts since the
-   * a booster session was attempted.
-   * @param stepAttempts
+   * Given a chain step ID, returns the number of attempts since a booster
+   * session was attempted. Returns -1 if no booster has ever been attempted.
+   *
+   * @param chainStepId
    */
   numSinceBoosterAttempted(chainStepId: number): number {
     // Find the first step after master that the booster was needed.
     const stepAttempts = this.stepAttemptsMap[chainStepId];
-    const promptLevelMap = this.promptLevelMap[chainStepId];
-    const boosterStep = promptLevelMap.firstBoosterStep;
+    const milestonesMap = this.milestonesMap[chainStepId];
+    const boosterStep = milestonesMap.firstBoosterStep;
     let boosterStepIndex = -1;
     let boosterAttemptedIndex = -1;
 
@@ -832,14 +832,16 @@ export class ChainMastery {
   }
 
   /**
-   * Given a list of step attempts, returns the number of attempts after
-   * the last booster session was mastered.
-   * @param stepAttempts
+   * Given a chain step ID, returns the number of attempts after
+   * the last booster session was mastered. Returns -1 if no booster or
+   * if booster not mastered yet.
+   *
+   * @param chainStepId
    */
   numSinceBoosterMastered(chainStepId: number): number {
     const stepAttempts = this.stepAttemptsMap[chainStepId];
-    const promptLevelMap = this.promptLevelMap[chainStepId];
-    const boosterMasteredStep = promptLevelMap.boosterMasteredStep;
+    const milestonesMap = this.milestonesMap[chainStepId];
+    const boosterMasteredStep = milestonesMap.boosterMasteredStep;
 
     if (!boosterMasteredStep) {
       return -1;
@@ -1090,12 +1092,13 @@ export class ChainMastery {
   updateChainData(skillstarChain: SkillstarChain): void {
     this.chainData = new ChainData(skillstarChain);
     this.stepAttemptsMap = this.buildStepAttemptsMap();
-    this.promptLevelMap = this.buildPromptLevelMap();
+    this.milestonesMap = this.buildMilestonesMap();
     this.focusedChainStepIds = this.getFocusedChainStepIds();
     this.masteredChainStepIds = this.getMasteredChainStepIds();
     this.unmasteredChainStepIds = this.getUnmasteredChainStepIds();
     this.unmasteredChainStepIdsToFocus = this.getUnmasteredChainStepIdsToFocus();
     this.unmasteredFocusedChainStepIds = this.getUnmasteredFocusedChainStepIds();
+    this.promptLevelMap = this.buildPromptLevelMap();
     this.masteryInfoMap = this.buildMasteryInfoMap();
     this.draftSession = this.buildNewDraftSession();
   }
@@ -1272,6 +1275,116 @@ export class ChainMastery {
   /**
    * Creates an index of chain steps, the milestone step attempts, and target prompt level, if applicable.
    */
+  private buildMilestonesMap(): MilestonesMap {
+    const milestonesMap: MilestonesMap = {};
+    this.chainSteps.forEach((chainStep) => {
+      milestonesMap[`${chainStep.id}`] = this.buildMilestonesMapForChainStep(chainStep.id);
+    });
+    return milestonesMap;
+  }
+
+  /**
+   * Returns key milestone step attempts and the target prompt level that the next draft session should have
+   * for the given chain step ID.
+   * @param chainStepId
+   */
+  buildMilestonesMapForChainStep(chainStepId: number): Milestones {
+    const milestones: Milestones = {};
+    let numCompleteAttemptsAtThisLevel = 0;
+    let numFailedAttemptsAtThisLevel = 0;
+    let numConsecutiveCompleteProbes = 0;
+    let prevAttemptLevel: ChainStepPromptLevel = ChainStepPromptLevel.full_physical;
+    const stepAttempts = this.stepAttemptsMap[chainStepId];
+
+    // Walk through all past step attempts.
+    stepAttempts.forEach((stepAttempt) => {
+      const isComplete = this.stepIsComplete(stepAttempt);
+      const sameLevelAsPrev = prevAttemptLevel === stepAttempt.target_prompt_level;
+
+      // Count the number of complete consecutive attempts at this prompt level.
+      if (!sameLevelAsPrev) {
+        // Reset all counters
+        numCompleteAttemptsAtThisLevel = 0;
+        numConsecutiveCompleteProbes = 0;
+        numFailedAttemptsAtThisLevel = 0;
+      }
+
+      if (stepAttempt.session_type === ChainSessionType.probe) {
+        // Probe session.
+        if (isComplete) {
+          numCompleteAttemptsAtThisLevel++;
+          numConsecutiveCompleteProbes++;
+          numFailedAttemptsAtThisLevel = 0;
+        } else {
+          numCompleteAttemptsAtThisLevel = 0;
+          numConsecutiveCompleteProbes = 0;
+          numFailedAttemptsAtThisLevel++;
+        }
+      } else {
+        // Training or booster session.
+        numConsecutiveCompleteProbes = 0;
+
+        if (isComplete) {
+          numCompleteAttemptsAtThisLevel++;
+          numFailedAttemptsAtThisLevel = 0;
+        } else {
+          numCompleteAttemptsAtThisLevel = 0;
+          numFailedAttemptsAtThisLevel++;
+        }
+      }
+
+      // If consecutive probes are completed 3 or more times, the step is mastered, so prompt level should be none (i.e., independent)
+      if (numConsecutiveCompleteProbes >= NUM_COMPLETE_ATTEMPTS_FOR_MASTERY) {
+        // Step has been mastered for the first time.
+        if (!milestones.firstMasteredStep) {
+          milestones.firstMasteredStep = stepAttempt;
+        }
+
+        // Booster has been re-mastered.
+        else if (milestones.firstBoosterStep && !milestones.boosterMasteredStep) {
+          milestones.boosterMasteredStep = stepAttempt;
+        }
+      }
+
+      // If the current prompt level failed in 3 consecutive sessions, move back a prompt level.
+      else if (numFailedAttemptsAtThisLevel >= NUM_INCOMPLETE_ATTEMPTS_FOR_BOOSTER) {
+        if (milestones.firstMasteredStep && !milestones.firstBoosterStep) {
+          milestones.firstBoosterStep = stepAttempt;
+        }
+      }
+
+      // If the current prompt level was successful in 3 consecutive sessions, go forward a prompt level.
+      else if (numCompleteAttemptsAtThisLevel >= NUM_COMPLETE_ATTEMPTS_FOR_MASTERY) {
+        if (stepAttempt.target_prompt_level !== undefined) {
+          if (stepAttempt.target_prompt_level === ChainStepPromptLevel.none) {
+            // Step has been mastered for the first time.
+            if (!milestones.firstMasteredStep) {
+              milestones.firstMasteredStep = stepAttempt;
+            }
+
+            // Booster has been re-mastered.
+            else if (milestones.firstBoosterStep && !milestones.boosterMasteredStep) {
+              milestones.boosterMasteredStep = stepAttempt;
+            }
+          }
+        } else {
+          throw new Error('Step attempt has no target prompt level.');
+        }
+      }
+
+      if (stepAttempt.target_prompt_level !== undefined) {
+        prevAttemptLevel = stepAttempt.target_prompt_level;
+      } else {
+        throw new Error('Step attempt has no target prompt level.');
+      }
+    });
+
+    return milestones;
+  }
+
+  /**
+   * Creates an index of chain steps, the milestone step attempts, and target prompt level, if applicable.
+   */
   private buildPromptLevelMap(): PromptLevelMap {
     const promptLevelMap: PromptLevelMap = {};
     this.chainSteps.forEach((chainStep) => {
@@ -1285,7 +1398,7 @@ export class ChainMastery {
    * for the given chain step ID.
    * @param chainStepId
    */
-  buildPromptLevelMapForChainStep(chainStepId: number): PromptLevelAndMilestonesMap {
+  buildPromptLevelMapForChainStep(chainStepId: number): PromptLevel {
     let numCompleteAttemptsBeforeFocus = 0;
     let numCompleteAttemptsAtThisLevel = 0;
     let numFailedAttemptsAtThisLevel = 0;
@@ -1293,7 +1406,7 @@ export class ChainMastery {
     let prevAttemptLevel: ChainStepPromptLevel = ChainStepPromptLevel.full_physical;
     let lastAttemptLevel: ChainStepPromptLevel = ChainStepPromptLevel.full_physical;
     let hasBeenFocused = false;
-    const promptLevelMap: PromptLevelAndMilestonesMap = {};
+    const promptLevelMap: PromptLevel = {};
     const stepAttempts = this.stepAttemptsMap[chainStepId];
 
     // Walk through all past step attempts.
@@ -1349,25 +1462,11 @@ export class ChainMastery {
 
       // If consecutive probes are completed 3 or more times, the step is mastered, so prompt level should be none (i.e., independent)
       if (numConsecutiveCompleteProbes >= NUM_COMPLETE_ATTEMPTS_FOR_MASTERY) {
-        // Step has been mastered for the first time.
-        if (!promptLevelMap.firstMasteredStep) {
-          promptLevelMap.firstMasteredStep = stepAttempt;
-        }
-
-        // Booster has been re-mastered.
-        else if (promptLevelMap.firstBoosterStep && !promptLevelMap.boosterMasteredStep) {
-          promptLevelMap.boosterMasteredStep = stepAttempt;
-        }
-
         lastAttemptLevel = ChainStepPromptLevel.none;
       }
 
       // If the current prompt level failed in 3 consecutive sessions, move back a prompt level.
       else if (numFailedAttemptsAtThisLevel >= NUM_INCOMPLETE_ATTEMPTS_FOR_BOOSTER) {
-        if (promptLevelMap.firstMasteredStep && !promptLevelMap.firstBoosterStep) {
-          promptLevelMap.firstBoosterStep = stepAttempt;
-        }
-
         if (stepAttempt.target_prompt_level !== undefined) {
           lastAttemptLevel = this.getPrevPromptLevel(stepAttempt.target_prompt_level).key;
         } else {
@@ -1378,18 +1477,6 @@ export class ChainMastery {
       // If the current prompt level was successful in 3 consecutive sessions, go forward a prompt level.
       else if (numCompleteAttemptsAtThisLevel >= NUM_COMPLETE_ATTEMPTS_FOR_MASTERY) {
         if (stepAttempt.target_prompt_level !== undefined) {
-          if (stepAttempt.target_prompt_level === ChainStepPromptLevel.none) {
-            // Step has been mastered for the first time.
-            if (!promptLevelMap.firstMasteredStep) {
-              promptLevelMap.firstMasteredStep = stepAttempt;
-            }
-
-            // Booster has been re-mastered.
-            else if (promptLevelMap.firstBoosterStep && !promptLevelMap.boosterMasteredStep) {
-              promptLevelMap.boosterMasteredStep = stepAttempt;
-            }
-          }
-
           lastAttemptLevel = this.getNextPromptLevel(stepAttempt.target_prompt_level).key;
         } else {
           throw new Error('Step attempt has no target prompt level.');

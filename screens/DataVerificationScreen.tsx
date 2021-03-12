@@ -42,10 +42,6 @@ const DataVerificationScreen = (): JSX.Element => {
     }
   };
 
-  const getDraftStepData = (id: number) => {
-    return chainMasteryState.chainMastery?.getDraftSessionStep(id);
-  };
-
   return chainMasteryState.chainMastery ? (
     <View style={styles.container}>
       <AppHeader name={'Brushing Teeth'} />

@@ -1,21 +1,19 @@
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-import { Card } from 'react-native-paper';
 import {
   VictoryAxis,
   VictoryChart,
   VictoryContainer,
-  VictoryGroup,
   VictoryLabel,
   VictoryLegend,
   VictoryLine,
   VictoryScatter,
   VictoryTheme,
 } from 'victory-native';
+import { GraphData, HandleGraphPopulation, SetGraphData } from '../../_util/CreateGraphData';
 import { CB_NAME, PROBE_NAME, TRAINING_NAME } from '../../constants/chainshome_text';
 import { useChainMasteryState } from '../../context/ChainMasteryProvider';
 import CustomColors from '../../styles/Colors';
-import { GraphData, HandleGraphPopulation, SetGraphData } from '../../_util/CreateGraphData';
 
 interface ChainMasteryGraphProps {
   width: number;

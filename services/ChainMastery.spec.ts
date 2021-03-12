@@ -758,7 +758,11 @@ describe('ChainMastery', () => {
 
               if (chainMastery.masteryInfoMap[chainStep.id].promptLevel !== promptLevel) {
                 chainMastery.printSessionLog();
-                console.log('???');
+                console.log(`
+chainStep ${chainStep.id} has wrong promptLevel:
+- should be: ${promptLevel}
+- actual: ${chainMastery.masteryInfoMap[chainStep.id].promptLevel}
+`);
               }
 
               expect(chainMastery.masteryInfoMap[chainStep.id].promptLevel).toEqual(promptLevel);

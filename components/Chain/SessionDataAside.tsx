@@ -1,6 +1,6 @@
 import date from 'date-and-time';
 import React, { useState } from 'react';
-import { StyleSheet, TouchableOpacity, View, Text } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import { Button, Card } from 'react-native-paper';
 import { useChainMasteryState } from '../../context/ChainMasteryProvider';
 import CustomColors from '../../styles/Colors';

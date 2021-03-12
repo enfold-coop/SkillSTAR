@@ -4,7 +4,6 @@ import { AVPlaybackSource } from 'expo-av/build/AV';
 import VideoPlayer from 'expo-video-player';
 import React, { useEffect, useState } from 'react';
 import { Dimensions, ImageBackground, StyleSheet, Text, View } from 'react-native';
-import { TouchableOpacity } from 'react-native-gesture-handler';
 import { Button } from 'react-native-paper';
 import AppHeader from '../components/Header/AppHeader';
 import { Loading } from '../components/Loading/Loading';

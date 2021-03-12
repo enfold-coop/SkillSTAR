@@ -1,5 +1,4 @@
 import { useDeviceOrientation } from '@react-native-community/hooks';
-import { useNavigation } from '@react-navigation/native';
 import React, { useEffect, useState } from 'react';
 import { Image, StyleSheet, Text, View } from 'react-native';
 import { participantName } from '../../_util/ParticipantName';
