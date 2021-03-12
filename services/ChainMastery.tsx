@@ -1351,7 +1351,6 @@ export class ChainMastery {
     let lastAttemptLevel: ChainStepPromptLevel = ChainStepPromptLevel.full_physical;
     const promptLevelMap: PromptLevel = {};
     const stepAttempts = this.stepAttemptsMap[chainStepId];
-    const milestones = this.milestonesMap[chainStepId];
     const isNextFocusStep =
       this.unmasteredChainStepIdsToFocus.length > 0 && this.unmasteredChainStepIdsToFocus[0] === chainStepId;
     const hasBeenFocused = this.unmasteredFocusedChainStepIds.includes(chainStepId);
@@ -1412,10 +1411,7 @@ export class ChainMastery {
       }
 
       // If the current prompt level failed in 3 consecutive sessions, move back a prompt level.
-      else if (
-        numFailedAttemptsAtThisLevel >= NUM_INCOMPLETE_ATTEMPTS_FOR_BOOSTER &&
-        (stepAttempt.was_focus_step || stepAttempt.status === ChainStepStatus.booster_needed)
-      ) {
+      else if (numFailedAttemptsAtThisLevel >= NUM_INCOMPLETE_ATTEMPTS_FOR_BOOSTER) {
         if (stepAttempt.target_prompt_level !== undefined) {
           lastAttemptLevel = this.getPrevPromptLevel(stepAttempt.target_prompt_level).key;
         } else {

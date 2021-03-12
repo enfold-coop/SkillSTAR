@@ -595,6 +595,16 @@ describe('ChainMastery', () => {
             expect(stepMasteryInfo.numAttemptsSince.boosterInitiated).toBeGreaterThanOrEqual(0);
             expect(stepMasteryInfo.dateBoosterMastered).toBeFalsy();
             expect(stepMasteryInfo.stepStatus).toEqual(ChainStepStatus.booster_needed);
+
+            if (stepMasteryInfo.promptLevel !== expectedPromptLevel) {
+              chainMastery.printSessionLog();
+              console.log(`
+chainStep ${stepMasteryInfo.chainStepId} has wrong promptLevel:
+- should be: ${expectedPromptLevel}
+- actual: ${stepMasteryInfo.promptLevel}
+`);
+            }
+
             expect(stepMasteryInfo.promptLevel).toEqual(expectedPromptLevel);
             expect(stepAttempt.was_focus_step).toEqual(false);
             expect(stepAttempt.session_type).toEqual(ChainSessionType.booster);
@@ -749,20 +759,17 @@ describe('ChainMastery', () => {
           const masteryInfo = chainMastery.masteryInfoMap[chainStepId];
           expect(masteryInfo).toBeTruthy();
 
-          // Check that steps after the focus step have not changed prompt level, unless it is about to become
+          // Check that steps after the focus step have not changed prompt level, unless one of them is about to become
           // the next focus step.
           mockChainSteps.forEach((chainStep, i) => {
             if (chainStep.id > chainStepId) {
-              const promptLevel = ChainStepPromptLevel.full_physical;
-
-              if (chainMastery.masteryInfoMap[chainStep.id].promptLevel !== promptLevel) {
-                chainMastery.printSessionLog();
-                console.log(`
-chainStep ${chainStep.id} has wrong promptLevel:
-- should be: ${promptLevel}
-- actual: ${chainMastery.masteryInfoMap[chainStep.id].promptLevel}
-`);
-              }
+              const isNextNewFocusStep =
+                promptLevelIndex === 0 &&
+                numAttemptsAtCurrentPromptLevel === NUM_COMPLETE_ATTEMPTS_FOR_MASTERY &&
+                chainStep.id === chainStepId + 1;
+              const promptLevel = isNextNewFocusStep
+                ? ChainStepPromptLevel.partial_physical
+                : ChainStepPromptLevel.full_physical;
 
               expect(chainMastery.masteryInfoMap[chainStep.id].promptLevel).toEqual(promptLevel);
               expect(chainMastery.draftSession.step_attempts[i].target_prompt_level).toEqual(promptLevel);
