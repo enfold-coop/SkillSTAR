@@ -4,7 +4,7 @@ import { AVPlaybackSource } from 'expo-av/build/AV';
 import VideoPlayer from 'expo-video-player';
 import React, { useEffect, useState } from 'react';
 import { Dimensions, ImageBackground, StyleSheet, Text, View } from 'react-native';
-import { Button } from 'react-native-paper';
+import { Button, TouchableRipple } from 'react-native-paper';
 import AppHeader from '../components/Header/AppHeader';
 import { Loading } from '../components/Loading/Loading';
 import ProgressBar from '../components/Steps/ProgressBar';
@@ -266,26 +266,32 @@ const StepScreen = (): JSX.Element => {
         >{`Step Complete`}</Button>
       </View>
       <View style={styles.nextBackBtnsContainer}>
-        <Button
-          style={styles.additionalPromptingButton}
-          mode={'contained'}
-          color={showNeededPromptingButton() ? CustomColors.uva.orange : CustomColors.uva.grayMedium}
+        <TouchableRipple
+          style={
+            showNeededPromptingButton() ? styles.additionalPromptingButton : styles.additionalPromptingButtonDisabled
+          }
           onPress={onNeededPrompting}
+          disabled={!showNeededPromptingButton()}
         >
           <View style={{ paddingVertical: 10, alignContent: 'center', alignItems: 'center', justifyContent: 'center' }}>
             <Text
               style={{
                 fontSize: 24,
-                color: showNeededPromptingButton() ? 'white' : CustomColors.uva.gray,
+                color: showNeededPromptingButton() ? CustomColors.uva.white : CustomColors.uva.gray,
               }}
             >
               {showNeededPromptingButton() ? `Needed Additional Prompting` : 'No Additional Prompting Possible'}
             </Text>
-            <Text style={{ fontSize: 16, color: showNeededPromptingButton() ? 'white' : CustomColors.uva.grayDark }}>
+            <Text
+              style={{
+                fontSize: 16,
+                color: showNeededPromptingButton() ? CustomColors.uva.white : CustomColors.uva.grayDark,
+              }}
+            >
               {neededPromptingButtonText()}
             </Text>
           </View>
-        </Button>
+        </TouchableRipple>
       </View>
     </ImageBackground>
   ) : (
@@ -394,6 +400,13 @@ const styles = StyleSheet.create({
   },
   additionalPromptingButton: {
     flexGrow: 1,
+    backgroundColor: CustomColors.uva.orange,
+    borderRadius: 4,
+  },
+  additionalPromptingButtonDisabled: {
+    flexGrow: 1,
+    backgroundColor: CustomColors.uva.grayMedium,
+    borderRadius: 4,
   },
   loadingContainer: {
     flex: 1,
