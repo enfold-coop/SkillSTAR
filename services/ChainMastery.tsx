@@ -1459,14 +1459,6 @@ export class ChainMastery {
     // Loop through all sessions and step attempts
     this.chainData.sessions.forEach((session, i) => {
       session.step_attempts.forEach((stepAttempt, j) => {
-        if (stepAttempt.chain_step_id === 1) {
-          lines.push(
-            `#${i + 1} - ${stepAttempt.session_type} session - ${stepAttempt.status} step: ${
-              stepAttempt.chain_step_id
-            } @ ${stepAttempt.target_prompt_level} - DRAFT`,
-          );
-        }
-
         if (stepAttempt.was_focus_step) {
           lastFocusStepIndex = j;
         }
@@ -1487,12 +1479,6 @@ export class ChainMastery {
 
     const numSessions = this.chainData.sessions.length + 1;
     this.draftSession.step_attempts.forEach((stepAttempt, j) => {
-      if (stepAttempt.chain_step_id === 1) {
-        lines.push(
-          `#${numSessions} - ${stepAttempt.session_type} session - ${stepAttempt.status} step: ${stepAttempt.chain_step_id} @ ${stepAttempt.target_prompt_level} - DRAFT`,
-        );
-      }
-
       if (stepAttempt.session_type === ChainSessionType.probe) {
         if (j === lastFocusStepIndex) {
           lines.push(`#${numSessions} - Probe session - focus step: ${j} @ ${stepAttempt.target_prompt_level} - DRAFT`);

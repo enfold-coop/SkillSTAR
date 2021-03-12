@@ -595,16 +595,6 @@ describe('ChainMastery', () => {
             expect(stepMasteryInfo.numAttemptsSince.boosterInitiated).toBeGreaterThanOrEqual(0);
             expect(stepMasteryInfo.dateBoosterMastered).toBeFalsy();
             expect(stepMasteryInfo.stepStatus).toEqual(ChainStepStatus.booster_needed);
-
-            if (stepMasteryInfo.promptLevel !== expectedPromptLevel) {
-              chainMastery.printSessionLog();
-              console.log(`
-chainStep ${stepMasteryInfo.chainStepId} has wrong promptLevel:
-- should be: ${expectedPromptLevel}
-- actual: ${stepMasteryInfo.promptLevel}
-`);
-            }
-
             expect(stepMasteryInfo.promptLevel).toEqual(expectedPromptLevel);
             expect(stepAttempt.was_focus_step).toEqual(false);
             expect(stepAttempt.session_type).toEqual(ChainSessionType.booster);
