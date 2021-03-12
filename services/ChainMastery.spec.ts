@@ -660,7 +660,7 @@ describe('ChainMastery', () => {
     let focusStepIndex = 0;
     let numPostProbeSessions = 0;
     let numAttemptsAtCurrentPromptLevel = 0; // Check if this number is greater than NUM_COMPLETE_ATTEMPTS_FOR_MASTERY
-    let promptLevelIndex = lastPromptLevelIndex;
+    let promptLevelIndex: number;
 
     while (focusStepIndex <= lastChainStepIndex) {
       promptLevelIndex = lastPromptLevelIndex;
@@ -753,8 +753,7 @@ describe('ChainMastery', () => {
           // the next focus step.
           mockChainSteps.forEach((chainStep, i) => {
             if (chainStep.id > chainStepId) {
-              const skipFull = numPostProbeSessions >= NUM_COMPLETE_ATTEMPTS_FOR_MASTERY;
-              const promptLevel = skipFull ? ChainStepPromptLevel.partial_physical : ChainStepPromptLevel.full_physical;
+              const promptLevel = ChainStepPromptLevel.full_physical;
 
               if (chainMastery.masteryInfoMap[chainStep.id].promptLevel !== promptLevel) {
                 chainMastery.printSessionLog();
