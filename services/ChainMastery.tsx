@@ -1286,11 +1286,13 @@ export class ChainMastery {
    * @param chainStepId
    */
   buildPromptLevelMapForChainStep(chainStepId: number): PromptLevelAndMilestonesMap {
+    let numCompleteAttemptsBeforeFocus = 0;
     let numCompleteAttemptsAtThisLevel = 0;
     let numFailedAttemptsAtThisLevel = 0;
     let numConsecutiveCompleteProbes = 0;
     let prevAttemptLevel: ChainStepPromptLevel = ChainStepPromptLevel.full_physical;
     let lastAttemptLevel: ChainStepPromptLevel = ChainStepPromptLevel.full_physical;
+    let hasBeenFocused = false;
     const promptLevelMap: PromptLevelAndMilestonesMap = {};
     const stepAttempts = this.stepAttemptsMap[chainStepId];
 
@@ -1298,6 +1300,20 @@ export class ChainMastery {
     stepAttempts.forEach((stepAttempt) => {
       const isComplete = this.stepIsComplete(stepAttempt);
       const sameLevelAsPrev = prevAttemptLevel === stepAttempt.target_prompt_level;
+
+      if (!hasBeenFocused && stepAttempt.was_focus_step) {
+        // First time being focused.
+        hasBeenFocused = true;
+      }
+
+      if (!hasBeenFocused) {
+        // Count consecutive completes before this step has ever been focused.
+        if (isComplete) {
+          numCompleteAttemptsBeforeFocus++;
+        } else {
+          numCompleteAttemptsBeforeFocus = 0;
+        }
+      }
 
       // Count the number of complete consecutive attempts at this prompt level.
       if (!sameLevelAsPrev) {
@@ -1382,7 +1398,9 @@ export class ChainMastery {
 
       // Otherwise, just set the prompt level to the previous attempt's level.
       else {
-        lastAttemptLevel = stepAttempt.target_prompt_level || ChainStepPromptLevel.full_physical;
+        const skipFull = !hasBeenFocused && numCompleteAttemptsBeforeFocus >= NUM_COMPLETE_ATTEMPTS_FOR_MASTERY;
+        const firstLevel = skipFull ? ChainStepPromptLevel.partial_physical : ChainStepPromptLevel.full_physical;
+        lastAttemptLevel = stepAttempt.target_prompt_level || firstLevel;
       }
 
       if (stepAttempt.target_prompt_level !== undefined) {
@@ -1393,7 +1411,9 @@ export class ChainMastery {
     });
 
     // Return the last prompt level used, if one exists. If not, return full physical.
-    promptLevelMap.targetPromptLevel = lastAttemptLevel || ChainStepPromptLevel.full_physical;
+    const skipFull = !hasBeenFocused && numCompleteAttemptsBeforeFocus >= NUM_COMPLETE_ATTEMPTS_FOR_MASTERY;
+    const firstLevel = skipFull ? ChainStepPromptLevel.partial_physical : ChainStepPromptLevel.full_physical;
+    promptLevelMap.targetPromptLevel = lastAttemptLevel || firstLevel;
     return promptLevelMap;
   }
 

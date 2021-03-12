@@ -667,6 +667,11 @@ describe('ChainMastery', () => {
 
       while (promptLevelIndex >= 0) {
         while (numAttemptsAtCurrentPromptLevel <= NUM_COMPLETE_ATTEMPTS_FOR_MASTERY) {
+          // Skip straight to the 2nd prompt level if this is not the first chain step.
+          if (focusStepIndex > 0 && promptLevelIndex === lastPromptLevelIndex) {
+            promptLevelIndex--;
+          }
+
           if (promptLevelIndex < 0) {
             break;
           }
@@ -686,8 +691,8 @@ describe('ChainMastery', () => {
                 // Mark focus step and any previous steps as complete
                 completeStepAttempt(stepAttempt);
               } else {
-                // Mark steps after focus step as incomplete
-                failStepAttempt(stepAttempt);
+                // Mark steps after focus step as complete
+                completeStepAttempt(stepAttempt);
               }
             });
           } else {
@@ -730,7 +735,7 @@ describe('ChainMastery', () => {
                 expect(stepAttempt.was_focus_step).toBeFalsy();
                 expect(stepAttempt.status).toEqual(ChainStepStatus.not_complete);
                 completeStepAttempt(stepAttempt);
-                stepAttempt.was_prompted = true;
+                stepAttempt.was_prompted = false;
                 stepAttempt.prompt_level = stepAttempt.target_prompt_level;
               }
             });
@@ -744,10 +749,18 @@ describe('ChainMastery', () => {
           const masteryInfo = chainMastery.masteryInfoMap[chainStepId];
           expect(masteryInfo).toBeTruthy();
 
-          // Check that steps after the focus step have not changed prompt level.
+          // Check that steps after the focus step have not changed prompt level, unless it is about to become
+          // the next focus step.
           mockChainSteps.forEach((chainStep, i) => {
             if (chainStep.id > chainStepId) {
-              const promptLevel = ChainStepPromptLevel.full_physical;
+              const skipFull = numPostProbeSessions >= NUM_COMPLETE_ATTEMPTS_FOR_MASTERY;
+              const promptLevel = skipFull ? ChainStepPromptLevel.partial_physical : ChainStepPromptLevel.full_physical;
+
+              if (chainMastery.masteryInfoMap[chainStep.id].promptLevel !== promptLevel) {
+                chainMastery.printSessionLog();
+                console.log('???');
+              }
+
               expect(chainMastery.masteryInfoMap[chainStep.id].promptLevel).toEqual(promptLevel);
               expect(chainMastery.draftSession.step_attempts[i].target_prompt_level).toEqual(promptLevel);
             }
