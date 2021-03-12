@@ -19,7 +19,6 @@ export type RootStackParamList = {
   ChainsHomeScreen: undefined;
   PrepareMaterialsScreen: undefined;
   StepScreen: undefined;
-  ProbeScreen: undefined;
   DataVerificationScreen: undefined;
   RewardsScreens: undefined;
   NoQuestionnaireScreen: undefined;
