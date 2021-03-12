@@ -773,13 +773,6 @@ export class ChainMastery {
       this.unmasteredChainStepIdsToFocus.includes(m.chainStepId)
     );
 
-    if (this.chainData.sessions.length >= 50 && m.chainStepId === 3) {
-      console.log('m', m);
-      const isInFocusList = this.unmasteredChainStepIdsToFocus.includes(m.chainStepId);
-      console.log('isInFocusList', isInFocusList);
-      console.log('needsFocus', needsFocus);
-    }
-
     return needsFocus;
   }
 
@@ -883,57 +876,26 @@ export class ChainMastery {
   getStepStatus(stepAttempts: StepAttempt[], m: MasteryInfo): ChainStepStatus {
     // No step attempts yet.
     if (!stepAttempts || stepAttempts.length === 0) {
-      if (stepAttempts.length >= 50 && m.chainStepId === 3) {
-        console.log('???');
-      }
-
       return ChainStepStatus.not_yet_started;
     }
 
     if (m.dateBoosterMastered) {
-      if (stepAttempts.length >= 50 && m.chainStepId === 3) {
-        console.log('???');
-      }
-
       // Step required booster, and it was mastered again
       return ChainStepStatus.booster_mastered;
     }
 
     if (this.chainStepNeedsBooster(m.chainStepId, stepAttempts)) {
-      if (stepAttempts.length >= 50 && m.chainStepId === 3) {
-        console.log('???');
-      }
-
       return ChainStepStatus.booster_needed;
     }
 
     // Step has been mastered, and no booster is required
     if (m.dateMastered) {
-      if (stepAttempts.length >= 50 && m.chainStepId === 3) {
-        console.log('???');
-      }
-
       return ChainStepStatus.mastered;
     }
 
-    // TODO: Figure out which chain step ID needs to be next focus step WITHOUT relying on masteryInfoMap
-    // or lists of unmastered and mastered chain step IDs.
-
-    const needsFocus = this.chainStepNeedsFocus(m);
-    const shouldBeNext = this.shouldBeNextFocusStep(m);
-
-    if (stepAttempts.length >= 50 && m.chainStepId === 3) {
-      console.log('???');
-      console.log('needsFocus', needsFocus);
-      console.log('shouldBeNext', shouldBeNext);
-    }
-
-    if (needsFocus && shouldBeNext) {
+    // Step should be focused on next
+    if (this.chainStepNeedsFocus(m) && this.shouldBeNextFocusStep(m)) {
       return ChainStepStatus.focus;
-    }
-
-    if (stepAttempts.length >= 50 && m.chainStepId === 3) {
-      console.log('???');
     }
 
     return ChainStepStatus.not_complete;
@@ -946,11 +908,6 @@ export class ChainMastery {
   shouldBeNextFocusStep(m: MasteryInfo): boolean {
     const mostRecentFocusStepId = this.latestFocusedChainStepId;
     const isMostRecentFocusStep = mostRecentFocusStepId !== undefined && mostRecentFocusStepId === m.chainStepId;
-
-    if (this.chainData.sessions.length >= 50 && m.chainStepId === 3) {
-      console.log('this.unmasteredChainStepIdsToFocus', this.unmasteredChainStepIdsToFocus);
-      console.log('???');
-    }
 
     // If this step was most recently focused, make sure it hasn't been mastered already.
     if (isMostRecentFocusStep) {
@@ -1055,10 +1012,6 @@ export class ChainMastery {
       }
     });
 
-    if (stepAttempts.length >= 50 && chainStepId === 3) {
-      console.log('???');
-    }
-
     // Check if the chain step was just mastered in the last session.
     if (
       (!wasMastered || (wasBoosterInitiated && !wasBoosterMastered)) &&
@@ -1066,19 +1019,26 @@ export class ChainMastery {
     ) {
       const last3Attempts = stepAttempts.slice(-NUM_COMPLETE_ATTEMPTS_FOR_MASTERY);
       const allProbes = last3Attempts.every((stepAttempt) => stepAttempt.session_type === ChainSessionType.probe);
-      const allSuccessful = last3Attempts.every((stepAttempt) => {
-        if (stepAttempt.status === ChainStepStatus.booster_needed || stepAttempt.was_focus_step || allProbes) {
-          if (stepAttempt.session_type === ChainSessionType.probe) {
-            return this.isProbeStepComplete(stepAttempt);
-          } else if (this.isFocusOrBoosterStep(stepAttempt)) {
-            return this.isFocusStepMastered(stepAttempt);
+      const allSamePromptLevel = new Set(last3Attempts.map((s) => s.target_prompt_level)).size === 1;
+      const allSuccessful =
+        allSamePromptLevel &&
+        last3Attempts.every((stepAttempt) => {
+          if (
+            stepAttempt.status === ChainStepStatus.booster_needed || // The attempt was a booster
+            stepAttempt.was_focus_step || // This step was the focus
+            allProbes // All of the last 3 steps were probes
+          ) {
+            if (stepAttempt.session_type === ChainSessionType.probe) {
+              return this.isProbeStepComplete(stepAttempt);
+            } else if (this.isFocusOrBoosterStep(stepAttempt)) {
+              return this.isFocusStepMastered(stepAttempt);
+            } else {
+              return this.isStepFullyCompleted(stepAttempt);
+            }
           } else {
-            return this.isStepFullyCompleted(stepAttempt);
+            return false;
           }
-        } else {
-          return false;
-        }
-      });
+        });
 
       if (allSuccessful) {
         return true;

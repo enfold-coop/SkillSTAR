@@ -766,12 +766,6 @@ describe('ChainMastery', () => {
             } else {
               // Next session will be a training session.
               expect(chainMastery.draftSession.session_type).toEqual(ChainSessionType.training);
-
-              if (masteryInfo.stepStatus !== ChainStepStatus.focus) {
-                chainMastery.printSessionLog();
-                console.log('masteryInfo.stepStatus', masteryInfo.stepStatus);
-              }
-
               expect(masteryInfo.stepStatus).toEqual(ChainStepStatus.focus);
             }
 
