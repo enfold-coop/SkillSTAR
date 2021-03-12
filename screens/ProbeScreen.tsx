@@ -4,13 +4,13 @@ import { ImageBackground, StyleSheet, View } from 'react-native';
 import { Button } from 'react-native-paper';
 import AppHeader from '../components/Header/AppHeader';
 import { Loading } from '../components/Loading/Loading';
-import { DataVerificationListItem } from '../components/Probe/';
+import { DataVerificationListItem } from '../components/Probe/DataVerificationListItem';
 import { ImageAssets } from '../data/images';
 import { ApiService } from '../services/ApiService';
 import CustomColors from '../styles/Colors';
+import { ChainData } from '../types/chain/ChainData';
 import { ChainSession, ChainSessionType } from '../types/chain/ChainSession';
 import { ChainStep } from '../types/chain/ChainStep';
-import { ChainData } from '../types/chain/ChainData';
 import { ChainStepStatus, StepAttempt } from '../types/chain/StepAttempt';
 
 const ProbeScreen = (): JSX.Element => {

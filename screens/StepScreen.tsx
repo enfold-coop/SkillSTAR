@@ -7,7 +7,8 @@ import { Dimensions, ImageBackground, StyleSheet, Text, View } from 'react-nativ
 import { Button } from 'react-native-paper';
 import AppHeader from '../components/Header/AppHeader';
 import { Loading } from '../components/Loading/Loading';
-import { ProgressBar, PromptLevel } from '../components/Steps/index';
+import ProgressBar from '../components/Steps/ProgressBar';
+import PromptLevel from '../components/Steps/PromptLevel';
 import { useChainMasteryState } from '../context/ChainMasteryProvider';
 import { ImageAssets } from '../data/images';
 import { videos } from '../data/videos';

@@ -297,13 +297,13 @@
                 "isMulticolor": false,
                 "isMulticolor2": false,
                 "grid": 16,
-                "tags": ["tooothbrush"]
+                "tags": ["toothbrush"]
             },
             "attrs": [{}],
             "properties": {
                 "order": 27,
                 "id": 3,
-                "name": "tooothbrush",
+                "name": "toothbrush",
                 "prevSize": 32,
                 "code": 59657
             },

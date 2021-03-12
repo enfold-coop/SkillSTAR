@@ -35,7 +35,6 @@ export class ChainMastery {
   promptLevelMap: PromptLevelMap;
   masteryInfoMap: MasteryInfoMap;
   draftSession: ChainSession;
-  incompleteCount = 0;
   focusedChainStepIds: number[];
   unmasteredChainStepIds: number[];
   masteredChainStepIds: number[];
@@ -136,17 +135,6 @@ export class ChainMastery {
   }
 
   /**
-   * Returns the last (by date) focus chain step id that was attempted.
-   */
-  get prevFocusStepChainStepId(): number | undefined {
-    // Get the most recent unmastered focus step.
-    if (this.unmasteredFocusedChainStepIds.length > 0) {
-      // If there are any, return the last one.
-      return this.unmasteredFocusedChainStepIds[this.unmasteredFocusedChainStepIds.length - 1];
-    }
-  }
-
-  /**
    * Returns the chain step ID that should be focused on next, or undefined if all steps have been mastered.
    */
   get nextFocusChainStepId(): number | undefined {
@@ -204,18 +192,6 @@ export class ChainMastery {
   get currentFocusStep(): StepAttempt | undefined {
     if (this.currentSession) {
       return this.getFocusStepInSession(this.currentSession);
-    }
-    return undefined;
-  }
-
-  /**
-   * If the last session in the chain data is a training or booster session,
-   * returns the step that is marked as was_focus_step (assumes that only one
-   * step will be focus step). Otherwise, returns undefined.
-   */
-  get draftFocusStep(): StepAttempt | undefined {
-    if (this.draftSession) {
-      return this.getFocusStepInSession(this.draftSession);
     }
     return undefined;
   }
@@ -858,20 +834,6 @@ export class ChainMastery {
    * Given a list of step attempts and masteryInfo populated with dates and numAttemptsSince, returns
    * the step status for the entire step (not_complete, mastered, focus)
    *
-   * check for completion of last session's step_attempts
-   * -- IF: (a step_attempt was incomplete && (total qty of sessions >= MAX_CONSEC_INCOMPLETE))
-   * -- THEN: get prior 3 sessions _AND THEN_ check step_attempt[index] against prior_session.step_attempt[index]
-   * ------- IF: (prior_session.step_attempt[index] ALSO incomplete)
-   * ----------- THEN: incompleteCount += 1
-   * ------- ELSE:
-   * ----------- THEN: incompleteCount = 0
-   * -- IF: (incompleteCount >= MAX_CONSEC_INCOMPLETE)
-   * ----------- THEN: FOCUS_STEP = next_session.step_attempt[index]
-   * ----------- RETURN: FOCUS_STEP
-   * -- ELSE:
-   * ----------- FOCUS_STEP = next_session.step_attempt[index+1]
-   * ----------- RETURN: FOCUS_STEP
-   *
    * @param stepAttempts
    * @param m: MasteryInfo object, populated with milestone dates and numAttemptsSince.
    */
@@ -930,26 +892,6 @@ export class ChainMastery {
     } else {
       // If it hasn't been focused on yet, it'll be next in the list of chain step IDs to focus on.
       return this.unmasteredChainStepIdsToFocus.length > 0 && m.chainStepId === this.unmasteredChainStepIdsToFocus[0];
-    }
-  }
-
-  /**
-   * Returns true if the chain step in the given list of step attempts has been mastered.
-   * @param stepAttempts
-   */
-  firstMasteredBoosterStep(stepAttempts: StepAttempt[]): StepAttempt | undefined {
-    let numConsecutiveComplete = 0;
-
-    for (const stepAttempt of stepAttempts) {
-      if (this.isBoosterStepMastered(stepAttempt)) {
-        numConsecutiveComplete++;
-      } else {
-        numConsecutiveComplete = 0;
-      }
-
-      if (numConsecutiveComplete >= NUM_COMPLETE_ATTEMPTS_FOR_MASTERY) {
-        return stepAttempt;
-      }
     }
   }
 

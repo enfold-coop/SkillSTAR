@@ -1,5 +1,5 @@
 import { ChainSession, ChainSessionType } from '../types/chain/ChainSession';
-import { FilteredSessions, FilteredSessionsWithSessionNumber, SessionAndIndex } from '../types/chain/FilteredSessions';
+import { FilteredSessionsWithSessionNumber, SessionAndIndex } from '../types/chain/FilteredSessions';
 
 // Filters user session data by session type.
 // RETURNS: 2 arrays, each containing session and session index;
@@ -18,24 +18,6 @@ export function FilteredSessionWithSessionIndex(data: ChainSession[]): FilteredS
           const item = { session: e, session_index: i };
           trainingArr.push(item);
         }
-      }
-    });
-  }
-  return { probeArr, trainingArr };
-}
-
-// Filters user session data by session type.
-// RETURNS: 2 arrays
-export function FilterSessionsByType(data: ChainSession[]): FilteredSessions {
-  const probeArr: ChainSession[] = [];
-  const trainingArr: ChainSession[] = [];
-  if (data != undefined) {
-    data.forEach((e, i) => {
-      if (e.session_type === ChainSessionType.probe) {
-        probeArr[i] = e;
-      }
-      if (e.session_type === ChainSessionType.training) {
-        trainingArr[i] = e;
       }
     });
   }

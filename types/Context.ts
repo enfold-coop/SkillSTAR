@@ -1,3 +1,4 @@
+import { ReactNode } from 'react';
 import { ChainMastery } from '../services/ChainMastery';
 import { ChainData, SkillstarChain } from './chain/ChainData';
 import { ChainSession } from './chain/ChainSession';
@@ -32,21 +33,4 @@ export type ContextDispatchAction =
   | { type: 'masteryInfo'; payload: MasteryInfo }
   | { type: 'isLoading'; payload: boolean };
 
-export type ContextDispatch = (action: ContextDispatchAction) => void;
-
-export type ChainProviderProps = { children: React.ReactNode };
-
-export type ChainProviderState = {
-  state?: any;
-  dispatch?: any;
-  chainSteps?: ChainStep[];
-  sessionType?: string;
-  session?: ChainSession;
-  userData?: SkillstarChain;
-  sessionNumber?: number;
-  user?: User;
-  participant?: Participant;
-  chainData?: ChainData;
-  masteryInfo?: MasteryInfo;
-  isLoading: boolean;
-};
+export type ChainProviderProps = { children: ReactNode };

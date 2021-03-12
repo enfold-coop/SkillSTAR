@@ -113,7 +113,7 @@ const ChainsHomeScreen = (): JSX.Element => {
 
   return (
     <ImageBackground
-      key={'chains_home_sreen_' + key}
+      key={'chains_home_screen_' + key}
       source={ImageAssets.sunrise_muted}
       resizeMode={'cover'}
       style={styles.bkgrdImage}

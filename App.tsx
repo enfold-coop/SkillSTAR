@@ -11,16 +11,14 @@ import { SelectParticipant } from './components/SelectParticipant/SelectParticip
 import { ChainMasteryProvider } from './context/ChainMasteryProvider';
 import { ParticipantProvider } from './context/ParticipantProvider';
 import { UserProvider } from './context/UserProvider';
-import {
-  BaselineAssessmentScreen,
-  ChainsHomeScreen,
-  DataVerificationScreen,
-  LandingScreen,
-  NoQuestionnaireScreen,
-  PrepareMaterialsScreen,
-  RewardsScreens,
-  StepScreen,
-} from './screens';
+import BaselineAssessmentScreen from './screens/BaselineAssessmentScreen';
+import ChainsHomeScreen from './screens/ChainsHomeScreen';
+import DataVerificationScreen from './screens/DataVerificationScreen';
+import LandingScreen from './screens/LandingScreen';
+import NoQuestionnaireScreen from './screens/NoQuestionnaireScreen';
+import PrepareMaterialsScreen from './screens/PrepareMaterialsScreen';
+import RewardsScreens from './screens/RewardsScreens';
+import StepScreen from './screens/StepScreen';
 import { ApiService } from './services/ApiService';
 import CustomColors from './styles/Colors';
 import { customFonts } from './styles/Fonts';
@@ -63,7 +61,7 @@ export default function App(): JSX.Element | null {
     navigation: StackNavigationProp<ParamListBase>;
   }
 
-  const SelectParticpantButton = (props: NavButtonProps): ReactElement => {
+  const SelectParticipantButton = (props: NavButtonProps): ReactElement => {
     return (
       <Button
         color={CustomColors.uva.white}
@@ -90,7 +88,7 @@ export default function App(): JSX.Element | null {
   const getHeaderRightFunc = (navigation: StackNavigationProp<any>, parentScreen?: string): (() => JSX.Element) => {
     return function headerRightFunc() {
       if (parentScreen === 'ChainsHomeScreen') {
-        return <SelectParticpantButton navigation={navigation} />;
+        return <SelectParticipantButton navigation={navigation} />;
       }
 
       if (parentScreen === 'SelectParticipant') {
@@ -99,7 +97,7 @@ export default function App(): JSX.Element | null {
 
       return (
         <View>
-          <Text></Text>
+          <Text>{''}</Text>
         </View>
       );
     };
