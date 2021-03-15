@@ -1,23 +1,23 @@
 import { useNavigation } from '@react-navigation/native';
 import React, { ReactElement, useEffect, useState } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { Button, Divider } from 'react-native-paper';
+import { participantName } from '../../_util/ParticipantName';
 import { useChainMasteryDispatch } from '../../context/ChainMasteryProvider';
 import { useParticipantContext } from '../../context/ParticipantProvider';
-import { useUserContext } from '../../context/UserProvider';
+import { useUserState } from '../../context/UserProvider';
 import { ApiService } from '../../services/ApiService';
 import { ChainMastery } from '../../services/ChainMastery';
 import CustomColors from '../../styles/Colors';
 import { ChainData, SkillstarChain } from '../../types/chain/ChainData';
 import { Participant } from '../../types/User';
-import { participantName } from '../../_util/ParticipantName';
 import { Loading } from '../Loading/Loading';
 
 export const SelectParticipant = (): ReactElement => {
   const navigation = useNavigation();
   const [menuItems, setMenuItems] = useState<ReactElement[]>();
   const [participants, setParticipants] = useState<Participant[]>();
-  const [userState, userDispatch] = useUserContext();
+  const userState = useUserState();
   const [participantState, participantDispatch] = useParticipantContext();
   const chainMasteryDispatch = useChainMasteryDispatch();
 
@@ -62,11 +62,8 @@ export const SelectParticipant = (): ReactElement => {
   useEffect(() => {
     // Prevents React state updates on unmounted components
     let isCancelled = false;
-    let isLoading = true;
 
     const _load = async () => {
-      isLoading = false;
-
       if (!isCancelled && participants && participants.length > 0) {
         const items = participants.map((p: Participant) => {
           return (
@@ -140,15 +137,6 @@ export const SelectParticipant = (): ReactElement => {
     }
   };
 
-  const btnLabel = participantState.participant ? (
-    <Text>
-      <Text style={{ color: CustomColors.uva.orange, fontWeight: '500' }}>{'Participant: '}</Text>
-      {participantName(participantState.participant)}
-    </Text>
-  ) : (
-    <Text>{'Select Participant'}</Text>
-  );
-
   return menuItems && menuItems.length > 0 ? <View style={styles.menuContainer}>{menuItems}</View> : <Loading />;
 };
 
@@ -181,15 +169,3 @@ const styles = StyleSheet.create({
     height: 50,
   },
 });
-
-const menuContent = (items: number) => {
-  return StyleSheet.create({
-    menu: {
-      padding: 5,
-      backgroundColor: 'rgba(255,255,255,0.5)',
-      top: '10%',
-      height: 55 * items,
-      width: 277,
-    },
-  });
-};

@@ -1,13 +1,13 @@
 import { MaterialIcons } from '@expo/vector-icons';
 import date from 'date-and-time';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import * as Animatable from 'react-native-animatable';
-import { Card } from 'react-native-paper';
+import { Card, List } from 'react-native-paper';
 import CustomColors from '../../styles/Colors';
 import { MasteryIcon } from '../../styles/MasteryIcon';
 import { ChainStep } from '../../types/chain/ChainStep';
-import { MasteryInfo } from '../../types/chain/MasteryLevel';
+import { MasteryInfo } from '../../types/chain/MasteryInfoMap';
 import { StepAttempt } from '../../types/chain/StepAttempt';
 
 interface ScorecardListItemProps {
@@ -16,10 +16,41 @@ interface ScorecardListItemProps {
   masteryInfo: MasteryInfo;
 }
 
+interface ListItemIconProps {
+  color: string;
+  style: {
+    marginLeft: number;
+    marginRight: number;
+    marginVertical?: number;
+  };
+}
+
+interface DateListItemProps {
+  label: string;
+  date: Date | undefined;
+}
+
 const ScorecardListItem = (props: ScorecardListItemProps): JSX.Element => {
   const { chainStep, stepAttempt, masteryInfo } = props;
   const [isPressed, setIsPressed] = useState(false);
-  const [stepData, setStepData] = useState<StepAttempt>();
+  const dates = [
+    {
+      label: 'Date Introduced',
+      date: masteryInfo.dateIntroduced,
+    },
+    {
+      label: 'Date Mastered',
+      date: masteryInfo.dateMastered,
+    },
+    {
+      label: 'Date Booster Training Initiated',
+      date: masteryInfo.dateBoosterInitiated,
+    },
+    {
+      label: 'Date Mastered Booster Training',
+      date: masteryInfo.dateBoosterMastered,
+    },
+  ];
 
   const handleDateVals = (d?: Date | string): string => {
     if (d && d instanceof Date) {
@@ -31,17 +62,15 @@ const ScorecardListItem = (props: ScorecardListItemProps): JSX.Element => {
     return 'N/A';
   };
 
-  useEffect(() => {
-    let isCancelled = false;
-
-    if (!isCancelled) {
-      setStepData(stepAttempt);
-    }
-
-    return () => {
-      isCancelled = true;
-    };
-  }, [stepAttempt]);
+  const DateListItem = (props: DateListItemProps): JSX.Element => {
+    return (
+      <List.Item
+        title={props.label}
+        description={props.date ? handleDateVals(props.date) : 'N/A'}
+        left={(props: ListItemIconProps) => <List.Icon {...props} icon={'calendar'} />}
+      />
+    );
+  };
 
   return stepAttempt && chainStep ? (
     <Animatable.View animation={'fadeIn'} duration={500 * chainStep.id}>
@@ -52,46 +81,25 @@ const ScorecardListItem = (props: ScorecardListItemProps): JSX.Element => {
             setIsPressed(!isPressed);
           }}
         >
-          <Text style={styles.id}>{`${chainStep.id + 1}.`}</Text>
-          <Text style={styles.skill}>{chainStep.instruction}</Text>
-          <MasteryIcon chainStepStatus={stepAttempt.status} iconSize={40} />
-          <MaterialIcons
-            name={isPressed ? 'expand-less' : 'expand-more'}
-            size={24}
-            color={'black'}
-            style={styles.nextIcon}
-          />
+          <View style={styles.leftColumn}>
+            <Text style={styles.id}>{`${chainStep.id + 1}.`}</Text>
+            <Text style={styles.skill}>{chainStep.instruction}</Text>
+          </View>
+          <View style={styles.rightColumn}>
+            <MasteryIcon chainStepStatus={stepAttempt.status} iconSize={40} />
+            <MaterialIcons
+              name={isPressed ? 'expand-less' : 'expand-more'}
+              size={24}
+              color={'black'}
+              style={styles.nextIcon}
+            />
+          </View>
         </TouchableOpacity>
         {isPressed && (
           <View style={styles.dropDownContainer}>
-            <Text style={styles.dropDownLabel}>
-              {`${'\u2022'} Date Introduced: `}
-              <Text style={styles.dropDownItemDate}>
-                {masteryInfo && masteryInfo.dateIntroduced ? handleDateVals(masteryInfo.dateIntroduced) : 'N/A'}
-              </Text>
-            </Text>
-            <Text style={styles.dropDownLabel}>
-              {`${'\u2022'} Date Mastered: `}
-              <Text style={styles.dropDownItemDate}>
-                {masteryInfo && masteryInfo.dateMastered ? handleDateVals(masteryInfo.dateMastered) : 'N/A'}
-              </Text>
-            </Text>
-            <Text style={styles.dropDownLabel}>
-              {`${'\u2022'} Date Booster training initiated: `}
-              <Text style={styles.dropDownItemDate}>
-                {masteryInfo && masteryInfo.dateBoosterInitiated
-                  ? handleDateVals(masteryInfo.dateBoosterInitiated)
-                  : 'N/A'}
-              </Text>
-            </Text>
-            <Text style={styles.dropDownLabel}>
-              {`${'\u2022'} Date Mastered Booster training: `}
-              <Text style={styles.dropDownItemDate}>
-                {masteryInfo && masteryInfo.dateBoosterMastered
-                  ? handleDateVals(masteryInfo.dateBoosterMastered)
-                  : 'N/A'}
-              </Text>
-            </Text>
+            {dates.map((d, i) => (
+              <DateListItem key={'date_list_item_' + i} label={d.label} date={d.date} />
+            ))}
           </View>
         )}
       </Card>
@@ -115,11 +123,22 @@ const styles = StyleSheet.create({
   touchable: {
     flex: 1,
     flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'stretch',
+  },
+  leftColumn: {
+    flex: 3,
+    flexDirection: 'row',
     justifyContent: 'flex-start',
+    alignItems: 'flex-start',
+    padding: 10,
+  },
+  rightColumn: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
     alignItems: 'center',
-    paddingTop: 10,
-    paddingBottom: 10,
-    paddingLeft: 20,
+    padding: 10,
   },
   dropDownContainer: {
     flexDirection: 'column',
@@ -150,7 +169,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   skill: {
-    width: 260,
+    width: 240,
     flexWrap: 'wrap',
     padding: 5,
     fontSize: 16,
@@ -160,9 +179,8 @@ const styles = StyleSheet.create({
     paddingLeft: 20,
   },
   nextIcon: {
-    marginLeft: 0,
-    padding: 10,
-    paddingRight: 20,
+    width: 24,
+    height: 24,
   },
   title: {
     padding: 5,

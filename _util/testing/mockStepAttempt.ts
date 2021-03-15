@@ -40,7 +40,7 @@ export const makeMockStepAttempt = (
       status: makeFocusStep ? ChainStepStatus.focus : status,
       completed: completed,
       was_prompted: !completed,
-      was_focus_step: !!makeFocusStep,
+      was_focus_step: makeFocusStep,
       target_prompt_level: ChainStepPromptLevel.full_physical,
       prompt_level: makeFocusStep ? ChainStepPromptLevel.full_physical : undefined,
       had_challenging_behavior: !completed,

@@ -6,7 +6,7 @@ import { parse, stringify } from 'telejson';
 import { ChainData, SkillstarChain } from '../types/chain/ChainData';
 import { ChainSession } from '../types/chain/ChainSession';
 import { ChainStep } from '../types/chain/ChainStep';
-import { MasteryInfo } from '../types/chain/MasteryLevel';
+import { MasteryInfo } from '../types/chain/MasteryInfoMap';
 import { StarDriveFlow } from '../types/chain/StarDriveFlow';
 import { ContextDispatchAction, ContextStateValue } from '../types/Context';
 import { Participant, User } from '../types/User';

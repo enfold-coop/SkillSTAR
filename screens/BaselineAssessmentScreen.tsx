@@ -80,7 +80,7 @@ const BaselineAssessmentScreen = (): JSX.Element => {
           <DataVerificationList onChange={updateChainData} />
         </View>
         <View style={styles.nextBackBtnsContainer}>
-          {isSubmitted === false ? (
+          {!isSubmitted ? (
             <Button
               style={styles.nextButton}
               color={CustomColors.uva.orange}

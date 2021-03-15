@@ -5,7 +5,7 @@ import { RadioButton } from 'react-native-paper';
 import { randomId } from '../../_util/RandomId';
 import { useChainMasteryState } from '../../context/ChainMasteryProvider';
 import CustomColors from '../../styles/Colors';
-import { StepAttempt, StepIncompleteReason, StepIncompleteReasonMap } from '../../types/chain/StepAttempt';
+import { StepIncompleteReason, StepIncompleteReasonMap } from '../../types/chain/StepAttempt';
 
 interface BehavAccordionProps {
   chainStepId: number;
@@ -15,7 +15,6 @@ interface BehavAccordionProps {
 
 const BehavAccordion = (props: BehavAccordionProps): JSX.Element => {
   const [checked, setChecked] = useState(0);
-  const [stepAttempt, setStepAttempt] = useState<StepAttempt>();
   const refSwitched = useRef(true);
   const { chainStepId, completed, hadChallengingBehavior } = props;
   const chainMasteryState = useChainMasteryState();
@@ -30,7 +29,6 @@ const BehavAccordion = (props: BehavAccordionProps): JSX.Element => {
     const _load = async () => {
       if (!isCancelled && chainMasteryState.chainMastery) {
         const stateStepAttempt = chainMasteryState.chainMastery.getDraftSessionStep(chainStepId);
-        setStepAttempt(stateStepAttempt);
 
         if (stateStepAttempt.reason_step_incomplete) {
           setChecked(StepIncompleteReasonMap[stateStepAttempt.reason_step_incomplete].order);

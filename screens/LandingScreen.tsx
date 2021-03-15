@@ -1,9 +1,10 @@
 import { DEFAULT_USER_EMAIL, DEFAULT_USER_PASSWORD } from '@env';
 import { useNavigation } from '@react-navigation/native';
 import React, { useEffect, useState } from 'react';
-import { Image, ImageBackground, StyleSheet, View } from 'react-native';
+import { Image, ImageBackground, Keyboard, StyleSheet, View } from 'react-native';
 import * as Animatable from 'react-native-animatable';
-import { Button, Text, TextInput } from 'react-native-paper';
+import { Button, TextInput } from 'react-native-paper';
+import { Text } from 'react-native';
 import { useParticipantDispatch } from '../context/ParticipantProvider';
 import { useUserDispatch } from '../context/UserProvider';
 import { ImageAssets } from '../data/images';
@@ -17,6 +18,7 @@ const LandingScreen = (): JSX.Element => {
   const [password, setPassword] = useState(DEFAULT_USER_PASSWORD);
   const [isValid, setIsValid] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string>('');
+  const [keyboardIsOpen, setKeyboardIsOpen] = useState<boolean>();
   const userDispatch = useUserDispatch();
   const participantDispatch = useParticipantDispatch();
 
@@ -24,6 +26,19 @@ const LandingScreen = (): JSX.Element => {
   useEffect(() => {
     let isCancelled = false;
     let isLoading = false;
+
+    // Watch changes to the keyboard hide/show state
+    const keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', () => {
+      if (!isCancelled) {
+        setKeyboardIsOpen(true);
+      }
+    });
+
+    const keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', () => {
+      if (!isCancelled) {
+        setKeyboardIsOpen(false);
+      }
+    });
 
     const _loadUser = async () => {
       isLoading = true;
@@ -67,6 +82,8 @@ const LandingScreen = (): JSX.Element => {
 
     return () => {
       isCancelled = true;
+      keyboardDidShowListener.remove();
+      keyboardDidHideListener.remove();
     };
   }, []);
   /** END LIFECYCLE METHODS */
@@ -108,11 +125,12 @@ const LandingScreen = (): JSX.Element => {
 
   return (
     <ImageBackground source={ImageAssets.sunrise_muted} resizeMode={'cover'} style={styles.image}>
-      <View style={styles.container}>
+      <View style={{ ...styles.container, justifyContent: keyboardIsOpen ? 'flex-start' : 'center' }}>
         <Animatable.View animation={'zoomIn'}>
           <Image style={styles.logo} source={ImageAssets.logo} />
         </Animatable.View>
         <TextInput
+          textAlign={'left'}
           textContentType={'emailAddress'}
           autoCompleteType={'username'}
           label={'Email'}
@@ -121,8 +139,11 @@ const LandingScreen = (): JSX.Element => {
           style={styles.input}
           onChangeText={(text) => _checkEmail(text)}
           autoFocus={true}
+          onSubmitEditing={Keyboard.dismiss}
+          onFocus={() => Keyboard.emit('keyboardDidShow')}
         />
         <TextInput
+          textAlign={'left'}
           textContentType={'password'}
           autoCompleteType={'password'}
           secureTextEntry={true}
@@ -131,6 +152,8 @@ const LandingScreen = (): JSX.Element => {
           value={password}
           style={styles.input}
           onChangeText={(text) => _checkPassword(text)}
+          onSubmitEditing={Keyboard.dismiss}
+          onFocus={() => Keyboard.emit('keyboardDidShow')}
         />
         <View
           style={{
@@ -162,10 +185,10 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     flexDirection: 'column',
-    alignContent: 'center',
-    justifyContent: 'center',
+    alignItems: 'center',
+    justifyContent: 'flex-start',
     padding: 0,
-    marginTop: 100,
+    marginTop: 120,
   },
   image: {
     flex: 1,

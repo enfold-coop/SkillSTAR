@@ -1,14 +1,15 @@
 import date from 'date-and-time';
 import React, { useState } from 'react';
-import { StyleSheet, TouchableOpacity, View, Text } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import { Button, Card } from 'react-native-paper';
 import { useChainMasteryState } from '../../context/ChainMasteryProvider';
 import CustomColors from '../../styles/Colors';
 import { ChainSessionType } from '../../types/chain/ChainSession';
+import ChainMasteryGraph from '../DataGraph/ChainMasteryGraph';
 import GraphModal from '../DataGraph/GraphModal';
-import { ChainMasteryGraph } from '../DataGraph/index';
 import { Loading } from '../Loading/Loading';
-import { ProbeAside, TrainingAside } from './index';
+import ProbeAside from './ProbeAside';
+import TrainingAside from './TrainingAside';
 
 /**
  * NEEDS:

@@ -28,11 +28,11 @@ export const SetGraphData = (sessions: ChainSession[]): GraphData[] => {
     const { probeArr, trainingArr } = FilteredSessionWithSessionIndex(sessions);
 
     if (probeArr && probeArr.length > 0) {
-      const calculatedProbeMasteryPerc = calculatePercentMastery(probeArr);
+      const probePercent = calculatePercentMastery(probeArr);
 
-      if (calculatedProbeMasteryPerc !== undefined) {
+      if (probePercent !== undefined) {
         temp.push({
-          data: calculatedProbeMasteryPerc,
+          data: probePercent,
           name: PROBE_NAME,
           x: 'session_number',
           y: 'mastery',
@@ -43,11 +43,11 @@ export const SetGraphData = (sessions: ChainSession[]): GraphData[] => {
     }
 
     if (trainingArr && trainingArr.length > 0) {
-      const calculatedTrainingMasteryPerc = calculatePercentMastery(trainingArr);
+      const trainingPercent = calculatePercentMastery(trainingArr);
 
-      if (calculatedTrainingMasteryPerc !== undefined) {
+      if (trainingPercent !== undefined) {
         temp.push({
-          data: calculatedTrainingMasteryPerc,
+          data: trainingPercent,
           name: TRAINING_NAME,
           x: 'session_number',
           y: 'mastery',
@@ -57,11 +57,11 @@ export const SetGraphData = (sessions: ChainSession[]): GraphData[] => {
       }
     }
 
-    const calculatedChalBehavPerc = calculatePercentChallengingBehavior(sessions);
+    const challengingBehaviorPercent = calculatePercentChallengingBehavior(sessions);
 
-    if (calculatedChalBehavPerc !== undefined) {
+    if (challengingBehaviorPercent !== undefined) {
       temp.push({
-        data: calculatedChalBehavPerc,
+        data: challengingBehaviorPercent,
         name: CB_NAME,
         x: 'session_number',
         y: 'challenging_behavior',
@@ -78,7 +78,7 @@ export const SetGraphData = (sessions: ChainSession[]): GraphData[] => {
  *
  * @param currGraphData: data that is already present in graph's "data" state property
  * @param incomingData: data that includes new calculated mastery and challenging behavior percentages
- *  -- Combines new data into the Plotly "data" array
+ *  -- Combines new data into the GraphData "data" array
  */
 export const HandleGraphPopulation = (currGraphData: GraphData[], incomingData: GraphData[]): GraphData[] => {
   // Clone the current graph data

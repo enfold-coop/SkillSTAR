@@ -1,26 +1,24 @@
-import 'react-native-gesture-handler';
-import React, { createRef, ReactElement, useEffect, useState } from 'react';
 import { NavigationContainer, NavigationContainerRef, ParamListBase } from '@react-navigation/native';
 import { createStackNavigator, StackNavigationProp } from '@react-navigation/stack';
 import * as Font from 'expo-font';
-import { View, Text } from 'react-native';
+import React, { createRef, ReactElement, useEffect, useState } from 'react';
+import { Text, View } from 'react-native';
+import 'react-native-gesture-handler';
 import { Button, Provider } from 'react-native-paper';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { Loading } from './components/Loading/Loading';
 import { SelectParticipant } from './components/SelectParticipant/SelectParticipant';
 import { ChainMasteryProvider } from './context/ChainMasteryProvider';
-import { ParticipantProvider, useParticipantState } from './context/ParticipantProvider';
+import { ParticipantProvider } from './context/ParticipantProvider';
 import { UserProvider } from './context/UserProvider';
-import {
-  BaselineAssessmentScreen,
-  ChainsHomeScreen,
-  DataVerificationScreen,
-  LandingScreen,
-  NoQuestionnaireScreen,
-  PrepareMaterialsScreen,
-  RewardsScreens,
-  StepScreen,
-} from './screens';
+import BaselineAssessmentScreen from './screens/BaselineAssessmentScreen';
+import ChainsHomeScreen from './screens/ChainsHomeScreen';
+import DataVerificationScreen from './screens/DataVerificationScreen';
+import LandingScreen from './screens/LandingScreen';
+import NoQuestionnaireScreen from './screens/NoQuestionnaireScreen';
+import PrepareMaterialsScreen from './screens/PrepareMaterialsScreen';
+import RewardsScreens from './screens/RewardsScreens';
+import StepScreen from './screens/StepScreen';
 import { ApiService } from './services/ApiService';
 import CustomColors from './styles/Colors';
 import { customFonts } from './styles/Fonts';
@@ -63,7 +61,7 @@ export default function App(): JSX.Element | null {
     navigation: StackNavigationProp<ParamListBase>;
   }
 
-  const SelectParticpantButton = (props: NavButtonProps): ReactElement => {
+  const SelectParticipantButton = (props: NavButtonProps): ReactElement => {
     return (
       <Button
         color={CustomColors.uva.white}
@@ -90,7 +88,7 @@ export default function App(): JSX.Element | null {
   const getHeaderRightFunc = (navigation: StackNavigationProp<any>, parentScreen?: string): (() => JSX.Element) => {
     return function headerRightFunc() {
       if (parentScreen === 'ChainsHomeScreen') {
-        return <SelectParticpantButton navigation={navigation} />;
+        return <SelectParticipantButton navigation={navigation} />;
       }
 
       if (parentScreen === 'SelectParticipant') {
@@ -99,7 +97,7 @@ export default function App(): JSX.Element | null {
 
       return (
         <View>
-          <Text></Text>
+          <Text>{''}</Text>
         </View>
       );
     };
@@ -110,10 +108,9 @@ export default function App(): JSX.Element | null {
       <Stack.Navigator initialRouteName={'LandingScreen'}>
         <Stack.Screen name={'LandingScreen'} component={LandingScreen} options={{ headerShown: false }} />
         <Stack.Screen
-          options={({ navigation }) => ({
+          options={() => ({
             ...screenOpts,
-            title: 'Select Participant', // TODO: Replace this title with something more useful
-            // headerRight: getHeaderRightFunc(navigation, 'SelectParticipant'),
+            title: 'Select Participant',
           })}
           name={'SelectParticipant'}
           component={SelectParticipant}
@@ -121,7 +118,7 @@ export default function App(): JSX.Element | null {
         <Stack.Screen
           options={({ navigation }) => ({
             ...screenOpts,
-            title: 'Chains', // TODO: Replace this title with something more useful
+            title: 'Chains',
             headerRight: getHeaderRightFunc(navigation, 'ChainsHomeScreen'),
           })}
           name={'ChainsHomeScreen'}
@@ -136,15 +133,6 @@ export default function App(): JSX.Element | null {
           name={'PrepareMaterialsScreen'}
           component={PrepareMaterialsScreen}
         />
-        {/* <Stack.Screen
-          options={({ navigation }) => ({
-            ...screenOpts,
-            title: 'Probe Session',
-            headerRight: getHeaderRightFunc(navigation,
-          })}
-          name={'ProbeScreen'}
-          component={ProbeScreen}
-        /> */}
         <Stack.Screen
           options={({ navigation }) => ({
             ...screenOpts,
@@ -162,7 +150,7 @@ export default function App(): JSX.Element | null {
         <Stack.Screen
           options={({ navigation }) => ({
             ...screenOpts,
-            title: 'Step', // TODO: Replace this title with something more useful
+            title: 'Step',
             headerRight: getHeaderRightFunc(navigation),
           })}
           name={'StepScreen'}
@@ -176,7 +164,7 @@ export default function App(): JSX.Element | null {
         <Stack.Screen
           options={({ navigation }) => ({
             ...screenOpts,
-            title: 'No SkillSTAR Data for this participant', // TODO: Replace this title with something more useful
+            title: 'No SkillSTAR Data for this participant',
             headerRight: getHeaderRightFunc(navigation),
           })}
           name={'NoQuestionnaireScreen'}

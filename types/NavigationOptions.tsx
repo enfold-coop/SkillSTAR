@@ -1,5 +1,4 @@
-import { RouteProp } from '@react-navigation/native';
-import { StackNavigationOptions, StackNavigationProp } from '@react-navigation/stack';
+import { StackNavigationOptions } from '@react-navigation/stack';
 import CustomColors from '../styles/Colors';
 
 export const screenOpts: StackNavigationOptions = {
@@ -20,7 +19,6 @@ export type RootStackParamList = {
   ChainsHomeScreen: undefined;
   PrepareMaterialsScreen: undefined;
   StepScreen: undefined;
-  ProbeScreen: undefined;
   DataVerificationScreen: undefined;
   RewardsScreens: undefined;
   NoQuestionnaireScreen: undefined;

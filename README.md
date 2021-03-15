@@ -36,7 +36,7 @@ In order to demo locally:
 2. Once the `Expo Client` is installed on the device, open the `Metro Bundler` in your browser,
 3. From `Expo Client` on your device, select the "Projects" tab and then tap `"Scan QR Code"`.
 4. Aim device at the QR Code in the Metro Bundler,
-5. Voila! The SkillSTAR app will bundle and run.
+5. Voilà! The SkillSTAR app will bundle and run.
 
 ### Font loading issues
 
@@ -54,7 +54,7 @@ expo start -c
 
 ### Un-ejecting expo
 
-If you eject the from the managed Expo project and want to undo it, just revert any changes to `package.json` to the
+If you eject from the managed Expo project and want to undo it, just revert any changes to `package.json` to the
 pre-ejected version, then run these commands:
 
 ```bash

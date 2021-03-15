@@ -37,24 +37,6 @@ export class ChainData implements SkillstarChain {
   }
 
   /**
-   * Updates the specific chain step attempt with the given data
-   * @param sessionId: The id of the session
-   * @param chainStepId: The chain_step_id in the step attempt
-   * @param newStep: Data to update the step with
-   */
-  updateStep(sessionId: number, chainStepId: number, newStep: StepAttempt): void {
-    this.sessions.forEach((session, i) => {
-      if (session.id === sessionId) {
-        session.step_attempts.forEach((stepAttempt, j) => {
-          if (chainStepId === stepAttempt.chain_step_id) {
-            this.sessions[i].step_attempts[j] = newStep;
-          }
-        });
-      }
-    });
-  }
-
-  /**
    * Updates a specific session with the given data
    * @param sessionId: The id of the session
    * @param newSession: Data to update the session with
@@ -81,23 +63,6 @@ export class ChainData implements SkillstarChain {
     }
 
     this.sortSessions();
-  }
-
-  /**
-   * Returns a specific step within a specific session
-   * @param sessionId
-   * @param chainStepId
-   */
-  getStep(sessionId: number, chainStepId: number): StepAttempt | undefined {
-    for (const session of this.sessions) {
-      if (session.id === sessionId) {
-        for (const stepAttempt of session.step_attempts) {
-          if (chainStepId === stepAttempt.chain_step_id) {
-            return stepAttempt;
-          }
-        }
-      }
-    }
   }
 
   /**
@@ -131,8 +96,7 @@ export class ChainData implements SkillstarChain {
   }
 
   /**
-   * Given a SkillstarChain, returns a list of sessions, sorted by date in ascending order (from past to present).
-   * @param skillstarChain
+   * Sorts this instance's list of sessions, sorted by date in ascending order (from past to present).
    * @private
    */
   private sortSessions() {

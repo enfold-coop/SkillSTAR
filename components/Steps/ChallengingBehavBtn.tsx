@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Image, StyleSheet, Text, View, TouchableOpacity } from 'react-native';
+import { Image, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Badge } from 'react-native-paper';
 import { useChainMasteryState } from '../../context/ChainMasteryProvider';
 import { ImageAssets } from '../../data/images';

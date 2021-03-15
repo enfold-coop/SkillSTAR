@@ -113,7 +113,7 @@ const ChainsHomeScreen = (): JSX.Element => {
 
   return (
     <ImageBackground
-      key={'chains_home_sreen_' + key}
+      key={'chains_home_screen_' + key}
       source={ImageAssets.sunrise_muted}
       resizeMode={'cover'}
       style={styles.bkgrdImage}
@@ -131,10 +131,7 @@ const ChainsHomeScreen = (): JSX.Element => {
         chainMasteryState.chainMastery.draftSession &&
         chainMasteryState.chainMastery.chainData.sessions ? (
           <View style={styles.listContainer}>
-            <SessionDataAside
-              currentSession={chainMasteryState.chainMastery.draftSession}
-              sessionData={chainMasteryState.chainMastery.chainData.sessions}
-            />
+            <SessionDataAside />
             {chainMasteryState.chainMastery.chainSteps && chainMasteryState.chainMastery.draftSession && (
               <ScrollView style={styles.list}>
                 {chainMasteryState.chainMastery.draftSession.step_attempts.map((stepAttempt) => {
