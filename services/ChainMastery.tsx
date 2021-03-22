@@ -326,6 +326,8 @@ export class ChainMastery {
     // There are at least 4 attempts since the last probe session.
     for (const masteryInfo of Object.values(this.masteryInfoMap)) {
       if (masteryInfo.numAttemptsSince.lastProbe !== -1) {
+
+        // TODO: Allow for multiple probes in a row between training sessions
         return masteryInfo.numAttemptsSince.lastProbe >= NUM_TRAINING_SESSIONS_BETWEEN_PROBES;
       }
     }
@@ -1400,6 +1402,8 @@ export class ChainMastery {
           numFailedAttemptsAtThisLevel++;
         }
       }
+
+      // TODO: Only count training sessions for skipFull
 
       skipFull =
         !hasBeenFocused && isNextFocusStep && numCompleteAttemptsBeforeFocus >= NUM_COMPLETE_ATTEMPTS_FOR_MASTERY;
