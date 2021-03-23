@@ -122,7 +122,6 @@ const ChainsHomeScreen = (): JSX.Element => {
         <AppHeader
           name={'Chains Home'}
           onParticipantChange={(newParticipant) => {
-            // TODO: Do we need this anymore?
             setSelectedParticipant(newParticipant);
           }}
         />

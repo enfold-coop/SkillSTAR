@@ -1,3 +1,9 @@
+import {
+  NUM_COMPLETE_ATTEMPTS_FOR_MASTERY,
+  NUM_MIN_PROBE_SESSIONS,
+  NUM_PROBE_SESSIONS_BETWEEN_TRAINING,
+  NUM_TRAINING_SESSIONS_BETWEEN_PROBES,
+} from '../../constants/MasteryAlgorithm';
 import { ChainMastery } from '../../services/ChainMastery';
 import { ChainData } from '../../types/chain/ChainData';
 import { ChainSessionType } from '../../types/chain/ChainSession';
@@ -183,4 +189,30 @@ export const completeStepAttempt = (stepAttempt: StepAttempt): void => {
   stepAttempt.was_prompted = false;
   stepAttempt.completed = true;
   stepAttempt.had_challenging_behavior = false;
+};
+
+export const shouldBeProbeSession = (chainData: ChainData): boolean => {
+  const numSessions = chainData.sessions.length;
+
+  if (numSessions < NUM_MIN_PROBE_SESSIONS) {
+    return true;
+  }
+
+  let numInitialProbes = 0;
+  for (const session of chainData.sessions) {
+    if (session.session_type === ChainSessionType.probe) {
+      numInitialProbes++;
+    } else {
+      break;
+    }
+  }
+
+  const numPostProbeSessions = numSessions - numInitialProbes;
+  const n = NUM_MIN_PROBE_SESSIONS + numPostProbeSessions;
+  const a = NUM_COMPLETE_ATTEMPTS_FOR_MASTERY;
+  const b = NUM_TRAINING_SESSIONS_BETWEEN_PROBES;
+  const c = NUM_PROBE_SESSIONS_BETWEEN_TRAINING;
+  const d = (b + c) / a;
+
+  return Math.floor(n / a) % d === 0;
 };

@@ -2,6 +2,7 @@ import {
   NUM_COMPLETE_ATTEMPTS_FOR_MASTERY,
   NUM_INCOMPLETE_ATTEMPTS_FOR_BOOSTER,
   NUM_MIN_PROBE_SESSIONS,
+  NUM_PROBE_SESSIONS_BETWEEN_TRAINING,
   NUM_TRAINING_SESSIONS_BETWEEN_PROBES,
 } from '../constants/MasteryAlgorithm';
 import { ChainData, SkillstarChain } from '../types/chain/ChainData';
@@ -309,7 +310,8 @@ export class ChainMastery {
    * Returns true if the next new draft session should be a probe session
    */
   newDraftSessionShouldBeProbeSession(): boolean {
-    if (this.chainData.sessions.length < NUM_MIN_PROBE_SESSIONS) {
+    const numSessions = this.chainData.sessions.length;
+    if (numSessions < NUM_MIN_PROBE_SESSIONS) {
       // The first 3-9 sessions should be probes.
       return true;
     }
@@ -323,22 +325,28 @@ export class ChainMastery {
       return true;
     }
 
-    // There are at least 4 attempts since the last probe session.
-    for (const masteryInfo of Object.values(this.masteryInfoMap)) {
-      if (masteryInfo.numAttemptsSince.lastProbe !== -1) {
-
-        // TODO: Allow for multiple probes in a row between training sessions
-        return masteryInfo.numAttemptsSince.lastProbe >= NUM_TRAINING_SESSIONS_BETWEEN_PROBES;
-      }
-    }
-
     if (!this.hasHadTrainingSession) {
-      // Have NO training sessions ever been run at all? Return false.
       return false;
     }
 
-    // No probe sessions have ever been attempted. The next one should be a probe.
-    return true;
+    // 3 probe sessions should occur between every set of 12 training sessions
+    let numInitialProbes = 0;
+    for (const session of this.chainData.sessions) {
+      if (session.session_type === ChainSessionType.probe) {
+        numInitialProbes++;
+      } else {
+        break;
+      }
+    }
+
+    const numPostProbeSessions = numSessions - numInitialProbes;
+    const n = NUM_MIN_PROBE_SESSIONS + numPostProbeSessions;
+    const a = NUM_COMPLETE_ATTEMPTS_FOR_MASTERY;
+    const b = NUM_TRAINING_SESSIONS_BETWEEN_PROBES;
+    const c = NUM_PROBE_SESSIONS_BETWEEN_TRAINING;
+    const d = (b + c) / a;
+
+    return Math.floor(n / a) % d === 0;
   }
 
   /**
@@ -1343,7 +1351,7 @@ export class ChainMastery {
    * @param chainStepId
    */
   buildPromptLevelMapForChainStep(chainStepId: number): PromptLevel {
-    let numCompleteAttemptsBeforeFocus = 0;
+    let numCompleteTrainingAttemptsBeforeFocus = 0;
     let numCompleteAttemptsAtThisLevel = 0;
     let numFailedAttemptsAtThisLevel = 0;
     let numConsecutiveCompleteProbes = 0;
@@ -1362,12 +1370,12 @@ export class ChainMastery {
       const isComplete = this.stepIsComplete(stepAttempt);
       const sameLevelAsPrev = prevAttemptLevel === stepAttempt.target_prompt_level;
 
-      if (!hasBeenFocused) {
+      if (!hasBeenFocused && stepAttempt.session_type !== ChainSessionType.probe) {
         // Count consecutive completes before this step has ever been focused.
         if (isComplete) {
-          numCompleteAttemptsBeforeFocus++;
+          numCompleteTrainingAttemptsBeforeFocus++;
         } else {
-          numCompleteAttemptsBeforeFocus = 0;
+          numCompleteTrainingAttemptsBeforeFocus = 0;
         }
       }
 
@@ -1406,7 +1414,9 @@ export class ChainMastery {
       // TODO: Only count training sessions for skipFull
 
       skipFull =
-        !hasBeenFocused && isNextFocusStep && numCompleteAttemptsBeforeFocus >= NUM_COMPLETE_ATTEMPTS_FOR_MASTERY;
+        !hasBeenFocused &&
+        isNextFocusStep &&
+        numCompleteTrainingAttemptsBeforeFocus >= NUM_COMPLETE_ATTEMPTS_FOR_MASTERY;
       firstLevel = skipFull ? ChainStepPromptLevel.partial_physical : ChainStepPromptLevel.full_physical;
 
       // If consecutive probes are completed 3 or more times, the step is mastered, so prompt level should be none (i.e., independent)
@@ -1448,7 +1458,11 @@ export class ChainMastery {
     });
 
     // Return the last prompt level used, if one exists. If not, return full physical.
-    if (!hasBeenFocused && isNextFocusStep && numCompleteAttemptsBeforeFocus >= NUM_COMPLETE_ATTEMPTS_FOR_MASTERY) {
+    if (
+      !hasBeenFocused &&
+      isNextFocusStep &&
+      numCompleteTrainingAttemptsBeforeFocus >= NUM_COMPLETE_ATTEMPTS_FOR_MASTERY
+    ) {
       promptLevelMap.targetPromptLevel = ChainStepPromptLevel.partial_physical;
     } else {
       promptLevelMap.targetPromptLevel = lastAttemptLevel || firstLevel;
