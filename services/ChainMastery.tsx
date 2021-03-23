@@ -542,13 +542,17 @@ export class ChainMastery {
    * Returns true if the given step was:
    * - a probe session AND
    * - completed with no prompting
+   *
+   * TODO: Confirm whether it should include "no challenging behavior"
+   *
    * @param stepAttempt
    */
   isProbeStepComplete(stepAttempt: StepAttempt): boolean {
     return !!(
       stepAttempt.session_type === ChainSessionType.probe &&
       stepAttempt.completed &&
-      !stepAttempt.was_prompted
+      !stepAttempt.was_prompted &&
+      !stepAttempt.had_challenging_behavior
     );
   }
 
@@ -1355,6 +1359,7 @@ export class ChainMastery {
     let numCompleteAttemptsAtThisLevel = 0;
     let numFailedAttemptsAtThisLevel = 0;
     let numConsecutiveCompleteProbes = 0;
+    let numConsecutiveIncompleteChallengingProbes = 0;
     let skipFull = false;
     let firstLevel: ChainStepPromptLevel = ChainStepPromptLevel.full_physical;
     let prevAttemptLevel: ChainStepPromptLevel = ChainStepPromptLevel.full_physical;
@@ -1393,14 +1398,21 @@ export class ChainMastery {
           numCompleteAttemptsAtThisLevel++;
           numConsecutiveCompleteProbes++;
           numFailedAttemptsAtThisLevel = 0;
-        } else {
+        } else if (stepAttempt.had_challenging_behavior) {
+          numConsecutiveIncompleteChallengingProbes++;
+          numFailedAttemptsAtThisLevel++; // Only increment failed attempts if CB occurred.
           numCompleteAttemptsAtThisLevel = 0;
           numConsecutiveCompleteProbes = 0;
-          numFailedAttemptsAtThisLevel++;
+        } else {
+          numConsecutiveIncompleteChallengingProbes = 0;
+          // numFailedAttemptsAtThisLevel++; // Only increment failed attempts if CB occurred.
+          numCompleteAttemptsAtThisLevel = 0;
+          numConsecutiveCompleteProbes = 0;
         }
       } else {
         // Training or booster session.
         numConsecutiveCompleteProbes = 0;
+        numConsecutiveIncompleteChallengingProbes = 0;
 
         if (isComplete) {
           numCompleteAttemptsAtThisLevel++;
@@ -1424,8 +1436,12 @@ export class ChainMastery {
         lastAttemptLevel = ChainStepPromptLevel.none;
       }
 
-      // If the current prompt level failed in 3 consecutive sessions, move back a prompt level.
-      else if (numFailedAttemptsAtThisLevel >= NUM_INCOMPLETE_ATTEMPTS_FOR_BOOSTER) {
+      // If consecutive probes are incompleted 3 or more times WITH challenging behavior OR
+      // if the current prompt level failed in 3 consecutive sessions, move back a prompt level.
+      else if (
+        numConsecutiveIncompleteChallengingProbes >= NUM_INCOMPLETE_ATTEMPTS_FOR_BOOSTER ||
+        numFailedAttemptsAtThisLevel >= NUM_INCOMPLETE_ATTEMPTS_FOR_BOOSTER
+      ) {
         if (stepAttempt.target_prompt_level !== undefined) {
           lastAttemptLevel = this.getPrevPromptLevel(stepAttempt.target_prompt_level).key;
         } else {

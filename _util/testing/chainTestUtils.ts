@@ -179,10 +179,10 @@ export const checkAllStepsMastered = (chainMastery: ChainMastery): void => {
   }
 };
 
-export const failStepAttempt = (stepAttempt: StepAttempt): void => {
+export const failStepAttempt = (stepAttempt: StepAttempt, withChallengingBehavior = true): void => {
   stepAttempt.was_prompted = true;
   stepAttempt.completed = false;
-  stepAttempt.had_challenging_behavior = true;
+  stepAttempt.had_challenging_behavior = withChallengingBehavior;
 };
 
 export const completeStepAttempt = (stepAttempt: StepAttempt): void => {
