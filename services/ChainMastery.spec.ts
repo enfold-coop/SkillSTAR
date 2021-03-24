@@ -705,7 +705,6 @@ describe('ChainMastery', () => {
       promptLevelIndex = lastPromptLevelIndex;
 
       while (promptLevelIndex >= 0) {
-
         while (
           numAttemptsAtCurrentPromptLevel <= NUM_COMPLETE_ATTEMPTS_FOR_MASTERY &&
           numProbesAfterStepMastered <= NUM_PROBE_SESSIONS_BETWEEN_TRAINING

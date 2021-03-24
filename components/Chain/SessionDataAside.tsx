@@ -45,10 +45,10 @@ const SessionDataAside = (): JSX.Element => {
               </Text>
             </View>
             <View style={styles.taskInfoContainer}>
-              {chainMasteryState.chainMastery.draftSession.session_type === ChainSessionType.training ? (
-                <TrainingAside />
-              ) : (
+              {chainMasteryState.chainMastery.draftSession.session_type === ChainSessionType.probe ? (
                 <ProbeAside />
+              ) : (
+                <TrainingAside />
               )}
             </View>
           </Card>

@@ -520,6 +520,28 @@ export class ChainMastery {
   }
 
   /**
+   * Given a list of step attempts, returns the number of attempts since the last training or booster session.
+   * If no training sessions have ever been completed, returns -1.
+   *
+   * @param stepAttempts
+   */
+  numSinceLastTraining(stepAttempts: StepAttempt[]): number {
+    let lastTrainingIndex = -1;
+
+    if (!stepAttempts || stepAttempts.length === 0) {
+      return -1;
+    }
+
+    stepAttempts.forEach((stepAttempt, i) => {
+      if (stepAttempt.session_type !== ChainSessionType.probe) {
+        lastTrainingIndex = i;
+      }
+    });
+
+    return stepAttempts.length - (lastTrainingIndex + 1);
+  }
+
+  /**
    * Given a list of step attempts, returns the number of attempts since the first time the
    * step was mastered. If the step has never been mastered, returns -1.
    *
@@ -1063,37 +1085,44 @@ export class ChainMastery {
    * Returns true if one of the following is true:
    * - there are fewer than 3 past sessions OR
    * - no training session has ever been attempted OR
-   * - it's been 4 sessions since the last probe
+   * - it's been 12 sessions since the last probe
+   * - the last session was a probe, and there are have been fewer than 3 probe sessions run
    */
   canStartProbeSession(): boolean {
     const numSessions = this.chainData.sessions.length;
     const hasHadTrainingSession = this.hasHadTrainingSession;
-    const numSessionsSinceLastProbe = this.masteryInfoMap[0].numAttemptsSince.lastProbe;
     const allStepsMastered = this.unmasteredChainStepIds.length === 0;
+    const numSinceLastProbe = this.masteryInfoMap[0].numAttemptsSince.lastProbe;
+    const numSinceLastTraining = this.masteryInfoMap[0].numAttemptsSince.lastTraining;
 
     return (
       allStepsMastered ||
       numSessions < NUM_MIN_PROBE_SESSIONS ||
       !hasHadTrainingSession ||
-      numSessionsSinceLastProbe >= NUM_TRAINING_SESSIONS_BETWEEN_PROBES
+      (numSinceLastTraining === 0 && numSinceLastProbe >= NUM_TRAINING_SESSIONS_BETWEEN_PROBES) ||
+      (numSinceLastProbe === 0 && numSinceLastTraining < NUM_PROBE_SESSIONS_BETWEEN_TRAINING)
     );
   }
 
   /**
    * Returns true if one of the following is true:
    * - there are more than 3 past sessions, but no training session has ever been attempted OR
-   * - it's been fewer than 4 sessions since the last probe
+   * - it's been fewer than 12 sessions since the last probe OR
+   * - the last 3 sessions were probes
    */
   canStartTrainingSession(): boolean {
     const numSessions = this.chainData.sessions.length;
     const hasHadTrainingSession = this.hasHadTrainingSession;
-    const numSessionsSinceLastProbe = this.masteryInfoMap[0].numAttemptsSince.lastProbe;
     const allStepsMastered = this.unmasteredChainStepIds.length === 0;
+    const numSinceLastProbe = this.masteryInfoMap[0].numAttemptsSince.lastProbe;
+    const numSinceLastTraining = this.masteryInfoMap[0].numAttemptsSince.lastTraining;
 
     return (
       !allStepsMastered &&
-      ((numSessions >= NUM_MIN_PROBE_SESSIONS && !hasHadTrainingSession) ||
-        (numSessions >= NUM_MIN_PROBE_SESSIONS && numSessionsSinceLastProbe < NUM_TRAINING_SESSIONS_BETWEEN_PROBES))
+      numSessions >= NUM_MIN_PROBE_SESSIONS &&
+      (!hasHadTrainingSession ||
+        numSinceLastProbe < NUM_TRAINING_SESSIONS_BETWEEN_PROBES ||
+        numSinceLastTraining === NUM_PROBE_SESSIONS_BETWEEN_TRAINING)
     );
   }
 
@@ -1169,6 +1198,7 @@ export class ChainMastery {
         lastCompletedWithoutPrompt: this.numSinceLastCompletedWithoutPrompt(stepAttempts),
         lastFailed: this.numSinceLastFailed(stepAttempts),
         lastProbe: this.numSinceLastProbe(stepAttempts),
+        lastTraining: this.numSinceLastTraining(stepAttempts),
         firstMastered: this.numSinceFirstMastered(chainStepId),
         boosterInitiated: this.numSinceBoosterInitiated(chainStepId),
         boosterLastAttempted: this.numSinceBoosterAttempted(chainStepId),
