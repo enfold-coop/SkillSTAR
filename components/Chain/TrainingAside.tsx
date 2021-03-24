@@ -1,7 +1,7 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { useChainMasteryState } from '../../context/ChainMasteryProvider';
-import { ChainSessionTypeMap } from '../../types/chain/ChainSession';
+import { ChainSessionType, ChainSessionTypeLabels, ChainSessionTypeMap } from '../../types/chain/ChainSession';
 import { ChainStepPromptLevelMap } from '../../types/chain/StepAttempt';
 import { Loading } from '../Loading/Loading';
 
@@ -11,10 +11,10 @@ const TrainingAside = (): JSX.Element => {
   const getHeaderText = (): string => {
     const stepAttempt = chainMasteryState.chainMastery?.draftFocusStepAttempt;
     if (stepAttempt && stepAttempt.session_type) {
-      const typeMap = ChainSessionTypeMap[stepAttempt.session_type as string];
-
-      if (typeMap) {
-        return typeMap.value;
+      if (stepAttempt.session_type === ChainSessionType.probe) {
+        return ChainSessionTypeLabels.probe;
+      } else {
+        return ChainSessionTypeLabels.training;
       }
     }
 

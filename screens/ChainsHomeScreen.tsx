@@ -62,7 +62,9 @@ const ChainsHomeScreen = (): JSX.Element => {
     }
 
     const showProbeButton = chainMasteryState.chainMastery.canStartProbeSession();
-    const showTrainingButton = chainMasteryState.chainMastery.canStartTrainingSession();
+    const showTrainingButton = chainMasteryState.chainMastery.hasHadTrainingSession
+      ? !showProbeButton
+      : chainMasteryState.chainMastery.canStartTrainingSession();
     const btnWidth = showTrainingButton && showProbeButton ? '45%' : '90%';
 
     return (
@@ -122,7 +124,6 @@ const ChainsHomeScreen = (): JSX.Element => {
         <AppHeader
           name={'Chains Home'}
           onParticipantChange={(newParticipant) => {
-            // TODO: Do we need this anymore?
             setSelectedParticipant(newParticipant);
           }}
         />

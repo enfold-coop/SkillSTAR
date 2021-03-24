@@ -19,6 +19,7 @@ export interface MasteryInfoNumAttemptsSince {
   lastCompletedWithoutPrompt: number;
   lastFailed: number;
   lastProbe: number;
+  lastTraining: number;
   firstMastered: number;
   boosterInitiated: number;
   boosterLastAttempted: number;

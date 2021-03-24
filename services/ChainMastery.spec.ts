@@ -1,20 +1,9 @@
-import { deepClone } from '../_util/deepClone';
-import {
-  checkAllStepsHaveStatus,
-  checkAllStepsMastered,
-  checkMasteryInfo,
-  clearSessions,
-  completeStepAttempt,
-  doProbeSessions,
-  failStepAttempt,
-} from '../_util/testing/chainTestUtils';
-import { mockChainQuestionnaire } from '../_util/testing/mockChainQuestionnaire';
-import { makeMockChainSession } from '../_util/testing/mockChainSessions';
-import { mockChainSteps } from '../_util/testing/mockChainSteps';
 import {
   NUM_COMPLETE_ATTEMPTS_FOR_MASTERY,
   NUM_INCOMPLETE_ATTEMPTS_FOR_BOOSTER,
   NUM_MIN_PROBE_SESSIONS,
+  NUM_PROBE_SESSIONS_BETWEEN_TRAINING,
+  NUM_TRAINING_SESSIONS_BETWEEN_PROBES,
 } from '../constants/MasteryAlgorithm';
 import { ChainData } from '../types/chain/ChainData';
 import { ChainSession, ChainSessionType } from '../types/chain/ChainSession';
@@ -24,6 +13,20 @@ import {
   ChainStepStatus,
   StepIncompleteReason,
 } from '../types/chain/StepAttempt';
+import { deepClone } from '../_util/deepClone';
+import {
+  checkAllStepsHaveStatus,
+  checkAllStepsMastered,
+  checkMasteryInfo,
+  clearSessions,
+  completeStepAttempt,
+  doProbeSessions,
+  failStepAttempt,
+  shouldBeProbeSession,
+} from '../_util/testing/chainTestUtils';
+import { mockChainQuestionnaire } from '../_util/testing/mockChainQuestionnaire';
+import { makeMockChainSession } from '../_util/testing/mockChainSessions';
+import { mockChainSteps } from '../_util/testing/mockChainSteps';
 import { ChainMastery } from './ChainMastery';
 
 describe('ChainMastery', () => {
@@ -182,28 +185,30 @@ describe('ChainMastery', () => {
       ChainSessionType.training, // 4. First step mastered, 2nd step complete @ full_physical
       ChainSessionType.training, // 5. First step mastered, 2nd step complete @ full_physical
       ChainSessionType.training, // 6. First step mastered, 2nd step complete @ partial_physical
-      ChainSessionType.probe, // 7. First step mastered, 2nd step complete @ partial_physical
+      ChainSessionType.training, // 7. First step mastered, 2nd step complete @ partial_physical
       ChainSessionType.training, // 8. First step mastered, 2nd step complete @ partial_physical
       ChainSessionType.training, // 9. First step mastered, 2nd step complete @ shadow
       ChainSessionType.training, // 10. First step mastered, 2nd step complete @ shadow
       ChainSessionType.training, // 11. First step mastered, 2nd step complete @ shadow
-      ChainSessionType.probe, // 12. First step mastered, 2nd step complete @ independent
-      ChainSessionType.training, // 13. First step mastered, 2nd step complete @ independent
-      ChainSessionType.training, // 14. First step mastered, 2nd step complete @ independent
-      ChainSessionType.training, // 15. First step FAIL, 2nd step mastered, 3rd step complete @ full_physical
-      ChainSessionType.training, // 16. First step FAIL, 2nd step mastered, 3rd step complete @ full_physical
-      ChainSessionType.probe, // 17. First step FAIL, 2nd step mastered, 3rd step complete @ full_physical
+      ChainSessionType.training, // 12. First step mastered, 2nd step complete @ none
+      ChainSessionType.training, // 13. First step mastered, 2nd step complete @ none
+      ChainSessionType.training, // 14. First step mastered, 2nd step complete @ none
+      ChainSessionType.probe, // 15. Steps 1 & 2 mastered, fail step 1
+      ChainSessionType.probe, // 16. Steps 1 & 2 mastered, fail step 1
+      ChainSessionType.probe, // 17. Steps 1 & 2 mastered, fail step 1
+      ChainSessionType.training, // 18. Steps 1 & 2 mastered, fail step 1, 3rd step complete @ full_physical
+      ChainSessionType.training, // 19. Steps 1 & 2 mastered, fail step 1, 3rd step complete @ full_physical
     ];
 
-    // Draft session #18 should be:
-    // 18. (DRAFT) First step booster @ shadow, 2nd step mastered, 3rd step complete @ partial_physical
+    // Draft session #20 should be:
+    // 20. (DRAFT) First step booster @ shadow, 2nd step mastered, 3rd step complete @ partial_physical
 
     sessionTypes.forEach((sessionType, sessionIndex) => {
       chainMastery.setDraftSessionType(sessionType);
       expect(chainMastery.draftSession.session_type).toEqual(sessionType);
 
       chainMastery.draftSession.step_attempts.forEach((stepAttempt, stepAttemptIndex) => {
-        // Sessions 1-3: Initial probe sessions.
+        // Sessions 0-2: Initial probe sessions.
         if (sessionIndex < 3) {
           if (stepAttemptIndex === 0) {
             // Master first chain step.
@@ -214,8 +219,8 @@ describe('ChainMastery', () => {
           }
         }
 
-        // Sessions 4-14: First step mastered, 2nd step complete @ full_physical thru independent
-        else if (sessionIndex >= 3 && sessionIndex < 14) {
+        // Sessions 3-15: First step mastered, 2nd step complete @ full_physical thru independent + 3 probes
+        else if (sessionIndex >= 3 && sessionIndex < 16) {
           if (stepAttemptIndex <= 1) {
             // Complete first 2 chain steps.
             completeStepAttempt(stepAttempt);
@@ -225,8 +230,8 @@ describe('ChainMastery', () => {
           }
         }
 
-        // Sessions 15-17: First step FAIL, 2nd step mastered, 3rd step complete @ full_physical
-        else if (sessionIndex >= 14 && sessionIndex < 17) {
+        // Sessions 16-19: 3 training. First step FAIL, 2nd step mastered, 3rd step complete @ full_physical
+        else if (sessionIndex >= 16 && sessionIndex < 19) {
           if (stepAttemptIndex === 0) {
             // Fail first step to trigger a booster.
             failStepAttempt(stepAttempt);
@@ -243,7 +248,7 @@ describe('ChainMastery', () => {
       chainMastery.saveDraftSession();
     });
 
-    // The draft session (#18) should be a booster session
+    // The draft session (#20) should be a booster session
     expect(chainMastery.draftSession.session_type).toEqual(ChainSessionType.booster);
 
     // The date mastered and date booster initiated for the first chain step should now be populated.
@@ -431,20 +436,37 @@ describe('ChainMastery', () => {
           break;
         }
 
-        // 5 step attempts for focus step at current prompt level:
-        //   1. Training --> fail
-        //   2. Training --> fail
-        //   3. Training --> complete
-        //   4. Training --> complete
-        //   5. Probe --> complete
+        // 15 step attempts = 12 for focus step at target prompt level + 3 probes:
+        //   1. Probe --> fail all steps
+        //   2. Probe --> fail all steps
+        //   3. Probe --> fail all steps
+        //   4. Training --> step 0 fail @ full_physical
+        //   5. Training --> step 0 fail @ full_physical
+        //   6. Training --> step 0 complete @ full_physical
+        //   7. Training --> step 0 complete @ full_physical
+        //   8. Training --> step 0 complete @ full_physical
+        //   9. Training --> step 0 fail @ partial_physical
+        //   10. Training --> step 0 fail @ partial_physical
+        //   11. Training --> step 0 complete @ partial_physical
+        //   12. Training --> step 0 complete @ partial_physical
+        //   13. Training --> step 0 complete @ partial_physical
+        //   14. Training --> step 0 fail @ shadow
+        //   15. Training --> step 0 fail @ shadow
+        //   16. Probe --> step 0 complete @ none
+        //   17. Probe --> step 0 complete @ none
+        //   18. Probe --> step 0 complete @ none *** STEP 0 MASTERED ***
+        //   19. Training --> step 1 fail @ full_physical
+        //   20. Training --> step 1 fail @ full_physical
+        //   21. Training --> step 1 complete @ full_physical
+        //   ...
         for (let promptLevelAttemptIndex = 0; promptLevelAttemptIndex < 5; promptLevelAttemptIndex++) {
           numPostProbeSessions++;
           if (numPostProbeSessions > maxSessions) {
             break;
           }
 
-          // Every 5th session will be a probe session
-          if (numPostProbeSessions % 5 === 0) {
+          // Every 13th-15th session will be a probe session
+          if (shouldBeProbeSession(chainMastery.chainData)) {
             expect(chainMastery.draftSession.session_type).toEqual(ChainSessionType.probe);
 
             // Populate probe session step attempts
@@ -457,6 +479,18 @@ describe('ChainMastery', () => {
                 failStepAttempt(stepAttempt);
               }
             });
+
+            // On 3rd probe session, the step will be mastered ahead of the training schedule.
+            // The ordinal of the draft session will be the 1 more than session the current session length.
+            const n = chainMastery.chainData.sessions.length + 1;
+            const a = NUM_MIN_PROBE_SESSIONS;
+            const b = NUM_PROBE_SESSIONS_BETWEEN_TRAINING + NUM_TRAINING_SESSIONS_BETWEEN_PROBES;
+
+            if ((n - a) % b === 0) {
+              // Jump promptLevelAttemptIndex ahead to 5 and promptLevelIndex to 0.
+              promptLevelAttemptIndex = 5;
+              promptLevelIndex = 0;
+            }
           } else {
             expect(chainMastery.draftSession.session_type).toEqual(ChainSessionType.training);
 
@@ -571,7 +605,7 @@ describe('ChainMastery', () => {
         }
 
         // Every 5th session will be a probe session
-        if (numPostProbeSessions % 5 === 0) {
+        if (shouldBeProbeSession(chainMastery.chainData)) {
           expect(chainMastery.draftSession.session_type).toEqual(ChainSessionType.probe);
 
           // Populate probe session step attempts
@@ -654,25 +688,41 @@ describe('ChainMastery', () => {
     const lastPromptLevelIndex = numPromptLevels - 1;
     const numChainSteps = mockChainSteps.length;
     const lastChainStepIndex = numChainSteps - 1;
-    const maxNumSessions = numPromptLevels * numChainSteps * NUM_COMPLETE_ATTEMPTS_FOR_MASTERY; // 4 * 14 * 3 = 168
+    const maxNumSessions = // 168 + 42 - 3 = 207
+      numPromptLevels * numChainSteps * NUM_COMPLETE_ATTEMPTS_FOR_MASTERY + // 4 * 14 * 3 = 168
+      numChainSteps * NUM_PROBE_SESSIONS_BETWEEN_TRAINING - // 14 * 3 = 42
+      NUM_MIN_PROBE_SESSIONS;
 
     // Keep track of where we are.
     let focusStepIndex = 0;
     let numPostProbeSessions = 0;
     let numAttemptsAtCurrentPromptLevel = 0; // Check if this number is greater than NUM_COMPLETE_ATTEMPTS_FOR_MASTERY
+    let numProbesAfterStepMastered = 0; // Check if this number is greater than NUM_PROBE_SESSIONS_BETWEEN_TRAINING
     let promptLevelIndex: number;
+    let isFirstTrainingAfterProbes = true;
 
     while (focusStepIndex <= lastChainStepIndex) {
       promptLevelIndex = lastPromptLevelIndex;
 
       while (promptLevelIndex >= 0) {
-        while (numAttemptsAtCurrentPromptLevel <= NUM_COMPLETE_ATTEMPTS_FOR_MASTERY) {
-          // Skip straight to the 2nd prompt level if this is not the first chain step.
-          if (focusStepIndex > 0 && promptLevelIndex === lastPromptLevelIndex) {
+        while (
+          numAttemptsAtCurrentPromptLevel <= NUM_COMPLETE_ATTEMPTS_FOR_MASTERY &&
+          numProbesAfterStepMastered <= NUM_PROBE_SESSIONS_BETWEEN_TRAINING
+        ) {
+          if (isFirstTrainingAfterProbes) {
+            // Prompt level will be set back to full_physical after 3 failed probes
+            promptLevelIndex = lastPromptLevelIndex;
+            isFirstTrainingAfterProbes = false;
+          } else if (
+            focusStepIndex > 0 &&
+            promptLevelIndex === lastPromptLevelIndex &&
+            numAttemptsAtCurrentPromptLevel === 0
+          ) {
+            // Skip straight to the 2nd prompt level if this is not the first chain step.
             promptLevelIndex--;
           }
 
-          if (promptLevelIndex < 0) {
+          if (promptLevelIndex < 0 || numPostProbeSessions >= maxNumSessions) {
             break;
           }
 
@@ -680,19 +730,34 @@ describe('ChainMastery', () => {
           numAttemptsAtCurrentPromptLevel++;
           numPostProbeSessions++;
 
-          // Check if numPostProbeSessions is divisible by 5 to see if we need a probe session
-          if (numPostProbeSessions % 5 === 0) {
+          // Check to see if we need a probe session
+          if (shouldBeProbeSession(chainMastery.chainData)) {
+            numProbesAfterStepMastered++;
+
             // Do a probe session
             expect(chainMastery.draftSession.session_type).toEqual(ChainSessionType.probe);
 
             // Populate probe session step attempts
             chainMastery.draftSession.step_attempts.forEach((stepAttempt, stepAttemptIndex) => {
-              if (stepAttemptIndex <= focusStepIndex) {
+              if (stepAttemptIndex < focusStepIndex) {
                 // Mark focus step and any previous steps as complete
                 completeStepAttempt(stepAttempt);
+              } else if (stepAttemptIndex === focusStepIndex) {
+                // The previous focus step was just mastered.
+                // The new focus step should be at partial physical, because it was complete at
+                // full_physical with no challenging behavior 3 training sessions in a row.
+                if (stepAttempt.target_prompt_level !== ChainStepPromptLevel.partial_physical) {
+                  chainMastery.printSessionLog();
+                  console.log('stepAttempt.chain_step_id', stepAttempt.chain_step_id);
+                }
+
+                expect(stepAttempt.target_prompt_level).toEqual(ChainStepPromptLevel.partial_physical);
+
+                // Mark focus step as incomplete with challenging behavior.
+                failStepAttempt(stepAttempt);
               } else {
-                // Mark steps after focus step as complete
-                completeStepAttempt(stepAttempt);
+                // Mark steps after focus step as incomplete with challenging behavior.
+                failStepAttempt(stepAttempt);
               }
             });
           } else {
@@ -714,12 +779,17 @@ describe('ChainMastery', () => {
                 completeStepAttempt(stepAttempt);
               }
 
-              // This is the focus step. Fail first attempt at this prompt level, then complete next 3.
+              // This is the focus step. Complete 3 attempts at this prompt level.
               if (stepAttemptIndex === focusStepIndex) {
                 expect(stepAttempt.was_focus_step).toEqual(true);
                 expect(stepMasteryInfo.dateMastered).toBeFalsy();
 
                 // Mastery info should stay in sync with draft session
+                if (stepMasteryInfo.promptLevel !== promptLevel) {
+                  chainMastery.printSessionLog();
+                  console.log('stepMasteryInfo.chainStepId', stepMasteryInfo.chainStepId);
+                }
+
                 expect(stepMasteryInfo.promptLevel).toEqual(promptLevel);
                 expect(stepMasteryInfo.stepStatus).toEqual(ChainStepStatus.focus);
                 expect(stepAttempt.status).toEqual(ChainStepStatus.focus);
@@ -770,9 +840,10 @@ describe('ChainMastery', () => {
           if (promptLevelIndex === 0 && numAttemptsAtCurrentPromptLevel === NUM_COMPLETE_ATTEMPTS_FOR_MASTERY) {
             promptLevelIndex--;
             numAttemptsAtCurrentPromptLevel = 0;
+            numProbesAfterStepMastered = 0;
             expect(masteryInfo.stepStatus).toEqual(ChainStepStatus.mastered);
           } else {
-            if ((numPostProbeSessions + 1) % 5 === 0) {
+            if (shouldBeProbeSession(chainMastery.chainData)) {
               // Next session will be a probe session.
               expect(chainMastery.draftSession.session_type).toEqual(ChainSessionType.probe);
               expect(masteryInfo.stepStatus).toEqual(ChainStepStatus.focus);
@@ -785,21 +856,41 @@ describe('ChainMastery', () => {
             // Check if prompt level is incremented
             const expectedPromptLevel = chainMastery.promptHierarchy[promptLevelIndex];
             if (numAttemptsAtCurrentPromptLevel === NUM_COMPLETE_ATTEMPTS_FOR_MASTERY) {
-              // Focus step mastered at this prompt level. Should go to next prompt level.
-              promptLevelIndex--;
+              if (numProbesAfterStepMastered < NUM_PROBE_SESSIONS_BETWEEN_TRAINING) {
+                // Focus step mastered at this prompt level. Should go to next prompt level.
+                promptLevelIndex--;
+              } else if (numProbesAfterStepMastered === NUM_PROBE_SESSIONS_BETWEEN_TRAINING) {
+                // The prompt level index for the current focus will drop back a level after the 3 probes are finished.
+                promptLevelIndex++;
+                isFirstTrainingAfterProbes = true;
+                numProbesAfterStepMastered = 0;
+              }
 
               if (promptLevelIndex <= 0) {
                 // Should be none if mastered
                 expect(masteryInfo.promptLevel).toEqual(ChainStepPromptLevel.none);
               } else {
                 const nextLevel = chainMastery.promptHierarchy[promptLevelIndex];
+
+                if (!nextLevel) {
+                  chainMastery.printSessionLog();
+                  console.log('promptLevelIndex', promptLevelIndex);
+                  console.log('masteryInfo.chainStepId', masteryInfo.chainStepId);
+                }
                 expect(nextLevel).toBeTruthy();
                 expect(masteryInfo.promptLevel).toBeTruthy();
+
                 expect(masteryInfo.promptLevel).toEqual(nextLevel.key);
               }
             } else {
               // Focus step still in training. Prompt level should not change.
               expect(masteryInfo.promptLevel).toBeTruthy();
+
+              if (masteryInfo.promptLevel !== expectedPromptLevel.key) {
+                chainMastery.printSessionLog();
+                console.log('masteryInfo.chainStepId', masteryInfo.chainStepId);
+              }
+
               expect(masteryInfo.promptLevel).toEqual(expectedPromptLevel.key);
             }
 
@@ -817,5 +908,13 @@ describe('ChainMastery', () => {
 
       focusStepIndex++;
     }
+
+    // All steps should be mastered, and remaining sessions should be probes.
+    checkAllStepsHaveStatus(chainMastery, ChainStepStatus.mastered);
+    chainMastery.draftSession.step_attempts.forEach((s) => {
+      expect(s.was_focus_step).toBeFalsy();
+    });
+    expect(chainMastery.draftSession.session_type).toEqual(ChainSessionType.probe);
+    doProbeSessions(chainMastery, 3, false, ChainStepStatus.mastered);
   });
 });
