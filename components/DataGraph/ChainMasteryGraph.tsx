@@ -12,10 +12,12 @@ import {
   VictoryScatter,
   VictoryTheme,
 } from 'victory-native';
-import { GraphData, HandleGraphPopulation, SetGraphData } from '../../_util/CreateGraphData';
 import { CB_NAME, PROBE_NAME, TRAINING_NAME } from '../../constants/chainshome_text';
 import { useChainMasteryState } from '../../context/ChainMasteryProvider';
 import CustomColors from '../../styles/Colors';
+import { GraphData } from '../../types/GraphData';
+import { calculatePercentChallengingBehavior, calculatePercentMastery } from '../../_util/CalculateMasteryPercentage';
+import { FilteredSessionWithSessionIndex } from '../../_util/FilterSessionType';
 import { Loading } from '../Loading/Loading';
 
 interface ChainMasteryGraphProps {
@@ -35,40 +37,41 @@ const ChainMasteryGraph = (props: ChainMasteryGraphProps): JSX.Element => {
 
     const _load = async () => {
       if (!isCancelled && chainMasteryState.chainMastery) {
-        const calculatedDataArray = SetGraphData(chainMasteryState.chainMastery.chainData.sessions);
-        if (calculatedDataArray) {
-          const emptyGraphData: GraphData[] = [
-            {
-              data: [],
-              name: CB_NAME,
-              x: 'session_number',
-              y: 'challenging_behavior',
-              color: CustomColors.uva.grayMedium,
-              type: 'bar',
-              symbolStyle: { fill: CustomColors.uva.grayMedium, type: 'square' },
-            },
-            {
-              data: [],
-              name: PROBE_NAME,
-              x: 'session_number',
-              y: 'mastery',
-              color: 'black',
-              type: 'scatter-line',
-              symbolStyle: { fill: 'black', type: 'circle' },
-            },
-            {
-              data: [],
-              name: TRAINING_NAME,
-              x: 'session_number',
-              y: 'mastery',
-              color: 'black',
-              type: 'scatter-line',
-              symbolStyle: { fill: 'white', type: 'circle' },
-            },
-          ];
-          const newGraphData = HandleGraphPopulation(graphData || emptyGraphData, calculatedDataArray);
-          setGraphData(newGraphData);
-        }
+        const { probeSessionGroups, trainingSessionGroups, challengingSessionGroups } = FilteredSessionWithSessionIndex(
+          chainMasteryState.chainMastery.chainData.sessions,
+        );
+
+        const updatedGraphData: GraphData[] = [
+          {
+            data: calculatePercentChallengingBehavior(challengingSessionGroups),
+            name: CB_NAME,
+            x: 'session_number',
+            y: 'challenging_behavior',
+            color: CustomColors.uva.grayMedium,
+            type: 'bar',
+            symbolStyle: { fill: CustomColors.uva.grayMedium, type: 'square' },
+          },
+          {
+            data: calculatePercentMastery(probeSessionGroups),
+            name: PROBE_NAME,
+            x: 'session_number',
+            y: 'mastery',
+            color: 'black',
+            type: 'scatter-line',
+            symbolStyle: { fill: 'black', type: 'circle' },
+          },
+          {
+            data: calculatePercentMastery(trainingSessionGroups),
+            name: TRAINING_NAME,
+            x: 'session_number',
+            y: 'mastery',
+            color: 'black',
+            type: 'scatter-line',
+            symbolStyle: { fill: 'white', type: 'circle' },
+          },
+        ];
+
+        setGraphData(updatedGraphData);
       }
     };
 
@@ -135,53 +138,61 @@ const ChainMasteryGraph = (props: ChainMasteryGraphProps): JSX.Element => {
             {graphData.map((group, i) => {
               switch (group.type) {
                 case 'line':
-                  return (
-                    <VictoryLine
-                      key={'graph-data-line-' + i}
-                      interpolation={'linear'}
-                      data={group.data}
-                      x={group.x}
-                      y={group.y}
-                      style={{ data: { stroke: group.color, strokeWidth: 4 } }}
-                    />
-                  );
-                case 'bar':
-                  return (
-                    <VictoryBar
-                      key={'graph-data-bar-' + i}
-                      data={group.data}
-                      x={group.x}
-                      y={group.y}
-                      style={{ data: { fill: group.color } }}
-                    />
-                  );
-                case 'scatter':
-                  return (
-                    <VictoryScatter
-                      key={'graph-data-scatter-' + i}
-                      data={group.data}
-                      x={group.x}
-                      y={group.y}
-                      size={5}
-                      style={{ data: { fill: group.color } }}
-                    />
-                  );
-                case 'scatter-line':
-                  return (
-                    <VictoryGroup
-                      key={'graph-data-scatter-line' + i}
-                      data={group.data}
-                      x={group.x}
-                      y={group.y}
-                      color={group.color}
-                    >
-                      <VictoryLine />
-                      <VictoryScatter
-                        size={5}
-                        style={{ data: { stroke: group.color, strokeWidth: 2, fill: group.symbolStyle?.fill } }}
+                  return group.data.map((dataGroup) => {
+                    return (
+                      <VictoryLine
+                        key={'graph-data-line-' + i}
+                        interpolation={'linear'}
+                        data={dataGroup}
+                        x={group.x}
+                        y={group.y}
+                        style={{ data: { stroke: group.color, strokeWidth: 4 } }}
                       />
-                    </VictoryGroup>
-                  );
+                    );
+                  });
+                case 'bar':
+                  return group.data.map((dataGroup) => {
+                    return (
+                      <VictoryBar
+                        key={'graph-data-bar-' + i}
+                        data={dataGroup}
+                        x={group.x}
+                        y={group.y}
+                        style={{ data: { fill: group.color } }}
+                      />
+                    );
+                  });
+                case 'scatter':
+                  return group.data.map((dataGroup) => {
+                    return (
+                      <VictoryScatter
+                        key={'graph-data-scatter-' + i}
+                        data={dataGroup}
+                        x={group.x}
+                        y={group.y}
+                        size={5}
+                        style={{ data: { fill: group.color } }}
+                      />
+                    );
+                  });
+                case 'scatter-line':
+                  return group.data.map((dataGroup) => {
+                    return (
+                      <VictoryGroup
+                        key={'graph-data-scatter-line' + i}
+                        data={dataGroup}
+                        x={group.x}
+                        y={group.y}
+                        color={group.color}
+                      >
+                        <VictoryLine />
+                        <VictoryScatter
+                          size={5}
+                          style={{ data: { stroke: group.color, strokeWidth: 2, fill: group.symbolStyle?.fill } }}
+                        />
+                      </VictoryGroup>
+                    );
+                  });
                 default:
                   return <Loading />;
               }

@@ -74,27 +74,27 @@ describe('ChainMastery', () => {
   });
 
   it('should get next prompt level', () => {
-    expect(chainMastery.getNextPromptLevel(ChainStepPromptLevel.full_physical)).toEqual(
+    expect(ChainMastery.getNextPromptLevel(ChainStepPromptLevel.full_physical)).toEqual(
       ChainStepPromptLevelMap['partial_physical'],
     );
-    expect(chainMastery.getNextPromptLevel(ChainStepPromptLevel.partial_physical)).toEqual(
+    expect(ChainMastery.getNextPromptLevel(ChainStepPromptLevel.partial_physical)).toEqual(
       ChainStepPromptLevelMap['shadow'],
     );
-    expect(chainMastery.getNextPromptLevel(ChainStepPromptLevel.shadow)).toEqual(ChainStepPromptLevelMap['none']);
-    expect(chainMastery.getNextPromptLevel(ChainStepPromptLevel.none)).toEqual(ChainStepPromptLevelMap['none']);
+    expect(ChainMastery.getNextPromptLevel(ChainStepPromptLevel.shadow)).toEqual(ChainStepPromptLevelMap['none']);
+    expect(ChainMastery.getNextPromptLevel(ChainStepPromptLevel.none)).toEqual(ChainStepPromptLevelMap['none']);
   });
 
   it('should get previous prompt level', () => {
-    expect(chainMastery.getPrevPromptLevel(ChainStepPromptLevel.full_physical)).toEqual(
+    expect(ChainMastery.getPrevPromptLevel(ChainStepPromptLevel.full_physical)).toEqual(
       ChainStepPromptLevelMap['full_physical'],
     );
-    expect(chainMastery.getPrevPromptLevel(ChainStepPromptLevel.partial_physical)).toEqual(
+    expect(ChainMastery.getPrevPromptLevel(ChainStepPromptLevel.partial_physical)).toEqual(
       ChainStepPromptLevelMap['full_physical'],
     );
-    expect(chainMastery.getPrevPromptLevel(ChainStepPromptLevel.shadow)).toEqual(
+    expect(ChainMastery.getPrevPromptLevel(ChainStepPromptLevel.shadow)).toEqual(
       ChainStepPromptLevelMap['partial_physical'],
     );
-    expect(chainMastery.getPrevPromptLevel(ChainStepPromptLevel.none)).toEqual(ChainStepPromptLevelMap['shadow']);
+    expect(ChainMastery.getPrevPromptLevel(ChainStepPromptLevel.none)).toEqual(ChainStepPromptLevelMap['shadow']);
   });
 
   it('should save draft session', () => {
@@ -417,7 +417,7 @@ describe('ChainMastery', () => {
 
     /* FOCUS STEP MASTERY SESSIONS */
 
-    const numPromptLevels = chainMastery.promptHierarchy.length;
+    const numPromptLevels = ChainMastery.promptHierarchy.length;
     const numChainSteps = chainMastery.chainSteps.length;
     let numPostProbeSessions = 0;
     const numFocusChainSessions = 5 * numPromptLevels * numChainSteps;
@@ -511,7 +511,7 @@ describe('ChainMastery', () => {
 
               // This is the focus step. Fail 2 attempts at this prompt level, then complete next 3.
               if (stepAttemptIndex === focusStepIndex) {
-                const expectedPromptLevel = chainMastery.promptHierarchy[promptLevelIndex].key;
+                const expectedPromptLevel = ChainMastery.promptHierarchy[promptLevelIndex].key;
                 expect(stepAttempt.was_focus_step).toEqual(true);
                 expect(stepMasteryInfo.dateMastered).toBeFalsy();
                 expect(stepMasteryInfo.promptLevel).toEqual(expectedPromptLevel);
@@ -622,7 +622,7 @@ describe('ChainMastery', () => {
             const stepMasteryInfo = chainMastery.masteryInfoMap[stepAttempt.chain_step_id];
 
             // All chain steps will be booster_needed. Fail first attempt at this prompt level, then complete next 3.
-            const expectedPromptLevel = chainMastery.promptHierarchy[promptLevelIndex].key;
+            const expectedPromptLevel = ChainMastery.promptHierarchy[promptLevelIndex].key;
             expect(stepMasteryInfo.dateMastered).toBeTruthy();
             expect(stepMasteryInfo.dateBoosterInitiated).toBeTruthy();
             expect(stepMasteryInfo.dateBoosterMastered).toBeFalsy();
@@ -684,7 +684,7 @@ describe('ChainMastery', () => {
       expect(draftStepAttempt.target_prompt_level).toEqual(ChainStepPromptLevel.full_physical);
     }
 
-    const numPromptLevels = chainMastery.promptHierarchy.length;
+    const numPromptLevels = ChainMastery.promptHierarchy.length;
     const lastPromptLevelIndex = numPromptLevels - 1;
     const numChainSteps = mockChainSteps.length;
     const lastChainStepIndex = numChainSteps - 1;
@@ -726,7 +726,7 @@ describe('ChainMastery', () => {
             break;
           }
 
-          const promptLevel = chainMastery.promptHierarchy[promptLevelIndex].key;
+          const promptLevel = ChainMastery.promptHierarchy[promptLevelIndex].key;
           numAttemptsAtCurrentPromptLevel++;
           numPostProbeSessions++;
 
@@ -854,7 +854,7 @@ describe('ChainMastery', () => {
             }
 
             // Check if prompt level is incremented
-            const expectedPromptLevel = chainMastery.promptHierarchy[promptLevelIndex];
+            const expectedPromptLevel = ChainMastery.promptHierarchy[promptLevelIndex];
             if (numAttemptsAtCurrentPromptLevel === NUM_COMPLETE_ATTEMPTS_FOR_MASTERY) {
               if (numProbesAfterStepMastered < NUM_PROBE_SESSIONS_BETWEEN_TRAINING) {
                 // Focus step mastered at this prompt level. Should go to next prompt level.
@@ -870,7 +870,7 @@ describe('ChainMastery', () => {
                 // Should be none if mastered
                 expect(masteryInfo.promptLevel).toEqual(ChainStepPromptLevel.none);
               } else {
-                const nextLevel = chainMastery.promptHierarchy[promptLevelIndex];
+                const nextLevel = ChainMastery.promptHierarchy[promptLevelIndex];
 
                 if (!nextLevel) {
                   chainMastery.printSessionLog();

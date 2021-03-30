@@ -28,7 +28,7 @@ import { StepAttemptsMap } from '../types/chain/StepAttemptsMap';
  * mastery state for each step in the current session.
  */
 export class ChainMastery {
-  promptHierarchy = Object.values(ChainStepPromptLevelMap).sort((a, b) => a.order - b.order);
+  static promptHierarchy = Object.values(ChainStepPromptLevelMap).sort((a, b) => a.order - b.order);
   chainSteps: ChainStep[];
   chainData: ChainData;
   stepAttemptsMap: StepAttemptsMap;
@@ -97,9 +97,7 @@ export class ChainMastery {
    */
   getFocusStepAttemptsForChainStep(chainStepId: number): StepAttempt[] {
     const stepAttempts = this.stepAttemptsMap[chainStepId];
-    return stepAttempts.filter(
-      (stepAttempt) => stepAttempt.was_focus_step || stepAttempt.status === ChainStepStatus.booster_needed,
-    );
+    return stepAttempts.filter((stepAttempt) => ChainMastery.isFocusOrBoosterStep(stepAttempt));
   }
 
   /**
@@ -115,12 +113,16 @@ export class ChainMastery {
     if (focusStepAttempts.length > 0 && lastPromptLevel) {
       for (const stepAttempt of focusStepAttempts.reverse()) {
         if (stepAttempt.target_prompt_level === lastPromptLevel) {
-          attemptsAtLastLevel.push(this.stepIsComplete(stepAttempt));
+          attemptsAtLastLevel.push(ChainMastery.stepIsComplete(stepAttempt));
         } else {
           break;
         }
       }
     }
+
+    console.log('lastPromptLevel', lastPromptLevel);
+    console.log('focusStepAttempts.length', focusStepAttempts.length);
+    console.log('attemptsAtLastLevel', attemptsAtLastLevel);
 
     return attemptsAtLastLevel;
   }
@@ -353,21 +355,21 @@ export class ChainMastery {
    * Given a prompt level, returns the next prompt level in the prompt hierarchy.
    * @param promptLvl: the previous prompt level
    */
-  getNextPromptLevel(promptLvl: ChainStepPromptLevel): ChainStepPromptLevelMapItem {
-    const currentIndex = this.promptHierarchy.findIndex((e) => e.key === promptLvl);
+  static getNextPromptLevel(promptLvl: ChainStepPromptLevel): ChainStepPromptLevelMapItem {
+    const currentIndex = ChainMastery.promptHierarchy.findIndex((e) => e.key === promptLvl);
     const nextIndex = currentIndex > 1 ? currentIndex - 1 : 0; // 0 if prompt level is already 0 (none/independent)
-    return this.promptHierarchy[nextIndex];
+    return ChainMastery.promptHierarchy[nextIndex];
   }
 
   /**
    * Given a prompt level, returns the next prompt level in the prompt hierarchy.
    * @param promptLvl: the previous prompt level
    */
-  getPrevPromptLevel(promptLvl: ChainStepPromptLevel): ChainStepPromptLevelMapItem {
-    const maxIndex = this.promptHierarchy.length - 1;
-    const currentIndex = this.promptHierarchy.findIndex((e) => e.key === promptLvl);
+  static getPrevPromptLevel(promptLvl: ChainStepPromptLevel): ChainStepPromptLevelMapItem {
+    const maxIndex = ChainMastery.promptHierarchy.length - 1;
+    const currentIndex = ChainMastery.promptHierarchy.findIndex((e) => e.key === promptLvl);
     const prevIndex = currentIndex >= maxIndex ? maxIndex : currentIndex + 1; // 3 if prompt level is already 3 (full_physical)
-    return this.promptHierarchy[prevIndex];
+    return ChainMastery.promptHierarchy[prevIndex];
   }
 
   /**
@@ -375,7 +377,7 @@ export class ChainMastery {
    * @param stepAttempts
    * @param numAttemptsSince
    */
-  getDateFor(stepAttempts: StepAttempt[], numAttemptsSince: number): Date | undefined {
+  static getDateFor(stepAttempts: StepAttempt[], numAttemptsSince: number): Date | undefined {
     if (stepAttempts.length > 0 && numAttemptsSince >= 0) {
       const index = stepAttempts.length - numAttemptsSince - 1;
       if (index >= 0) {
@@ -489,7 +491,7 @@ export class ChainMastery {
     }
 
     stepAttempts.forEach((stepAttempt, i) => {
-      if (!this.stepIsComplete(stepAttempt)) {
+      if (!ChainMastery.stepIsComplete(stepAttempt)) {
         lastIncompleteIndex = i;
       }
     });
@@ -569,7 +571,7 @@ export class ChainMastery {
    *
    * @param stepAttempt
    */
-  isProbeStepComplete(stepAttempt: StepAttempt): boolean {
+  static isProbeStepComplete(stepAttempt: StepAttempt): boolean {
     return !!(
       stepAttempt.session_type === ChainSessionType.probe &&
       stepAttempt.completed &&
@@ -582,11 +584,12 @@ export class ChainMastery {
    * Returns true if the given step was completed with no prompting or challenging behavior
    * @param stepAttempt
    */
-  isStepFullyCompleted(stepAttempt: StepAttempt): boolean {
-    return !!(!stepAttempt.was_prompted && !stepAttempt.had_challenging_behavior && stepAttempt.completed);
+  static isStepFullyCompleted(stepAttempt: StepAttempt): boolean {
+    // return !!(!stepAttempt.was_prompted && !stepAttempt.had_challenging_behavior && stepAttempt.completed);
+    return !!(!stepAttempt.was_prompted && stepAttempt.completed);
   }
 
-  isFocusOrBoosterStep(stepAttempt: StepAttempt): boolean {
+  static isFocusOrBoosterStep(stepAttempt: StepAttempt): boolean {
     return !!(
       stepAttempt.session_type &&
       [ChainSessionType.training, ChainSessionType.booster].includes(stepAttempt.session_type) &&
@@ -602,12 +605,12 @@ export class ChainMastery {
    * - at or better than the target prompt level
    * @param stepAttempt
    */
-  isFocusStepComplete(stepAttempt: StepAttempt): boolean {
+  static isFocusStepComplete(stepAttempt: StepAttempt): boolean {
     return !!(
-      this.isFocusOrBoosterStep(stepAttempt) &&
+      ChainMastery.isFocusOrBoosterStep(stepAttempt) &&
       stepAttempt.completed &&
       (!stepAttempt.was_prompted ||
-        this.promptLevelIsBetterThanTarget(stepAttempt.prompt_level, stepAttempt.target_prompt_level))
+        ChainMastery.promptLevelIsBetterThanTarget(stepAttempt.prompt_level, stepAttempt.target_prompt_level))
     );
   }
 
@@ -619,9 +622,9 @@ export class ChainMastery {
    * - with no prompting
    * @param stepAttempt
    */
-  isFocusStepMastered(stepAttempt: StepAttempt): boolean {
+  static isFocusStepMastered(stepAttempt: StepAttempt): boolean {
     return !!(
-      this.isFocusOrBoosterStep(stepAttempt) &&
+      ChainMastery.isFocusOrBoosterStep(stepAttempt) &&
       stepAttempt.completed &&
       stepAttempt.prompt_level === ChainStepPromptLevel.none &&
       !stepAttempt.was_prompted
@@ -635,11 +638,11 @@ export class ChainMastery {
    * - with no prompting
    * @param stepAttempt
    */
-  isBoosterStepMastered(stepAttempt: StepAttempt): boolean {
+  static isBoosterStepMastered(stepAttempt: StepAttempt): boolean {
     return !!(
       stepAttempt.status === ChainStepStatus.booster_needed &&
       stepAttempt.completed &&
-      (this.isProbeStepComplete(stepAttempt) ||
+      (ChainMastery.isProbeStepComplete(stepAttempt) ||
         (stepAttempt.session_type === ChainSessionType.booster &&
           stepAttempt.prompt_level === ChainStepPromptLevel.none))
     );
@@ -662,20 +665,20 @@ export class ChainMastery {
    *   - If not the focus step, completed with no prompting or interfering challenging behavior
    * @param stepAttempt
    */
-  stepIsComplete(stepAttempt: StepAttempt): boolean {
+  static stepIsComplete(stepAttempt: StepAttempt): boolean {
     // Probe attempt is complete with no prompting
     if (stepAttempt.session_type === ChainSessionType.probe) {
-      return this.isProbeStepComplete(stepAttempt);
+      return ChainMastery.isProbeStepComplete(stepAttempt);
     }
 
     // Focus step attempt was completed either with no prompting or at the target prompt level
-    else if (this.isFocusOrBoosterStep(stepAttempt)) {
-      return this.isFocusStepComplete(stepAttempt);
+    else if (ChainMastery.isFocusOrBoosterStep(stepAttempt)) {
+      return ChainMastery.isFocusStepComplete(stepAttempt);
     }
 
     // Non-focus training/booster step completed with no prompting or challenging behavior
     else {
-      return this.isStepFullyCompleted(stepAttempt);
+      return ChainMastery.isStepFullyCompleted(stepAttempt);
     }
   }
 
@@ -706,7 +709,7 @@ export class ChainMastery {
       }
 
       if (wasMastered && !boosterStarted) {
-        if (this.stepIsComplete(stepAttempt)) {
+        if (ChainMastery.stepIsComplete(stepAttempt)) {
           numConsecutiveIncomplete = 0;
         } else {
           // Post-mastery attempt where step was not completed.
@@ -717,7 +720,7 @@ export class ChainMastery {
           boosterStarted = true;
         }
       } else if (boosterStarted && !boosterMastered) {
-        if (this.isBoosterStepMastered(stepAttempt)) {
+        if (ChainMastery.isBoosterStepMastered(stepAttempt)) {
           numConsecutiveComplete++;
         } else {
           numConsecutiveComplete = 0;
@@ -1009,11 +1012,11 @@ export class ChainMastery {
             allProbes // All of the last 3 steps were probes
           ) {
             if (stepAttempt.session_type === ChainSessionType.probe) {
-              return this.isProbeStepComplete(stepAttempt);
-            } else if (this.isFocusOrBoosterStep(stepAttempt)) {
-              return this.isFocusStepMastered(stepAttempt);
+              return ChainMastery.isProbeStepComplete(stepAttempt);
+            } else if (ChainMastery.isFocusOrBoosterStep(stepAttempt)) {
+              return ChainMastery.isFocusStepMastered(stepAttempt);
             } else {
-              return this.isStepFullyCompleted(stepAttempt);
+              return ChainMastery.isStepFullyCompleted(stepAttempt);
             }
           } else {
             return false;
@@ -1209,10 +1212,10 @@ export class ChainMastery {
     };
 
     // Initialize dates
-    m.dateIntroduced = this.getDateFor(stepAttempts, m.numAttemptsSince.firstIntroduced);
-    m.dateMastered = this.getDateFor(stepAttempts, m.numAttemptsSince.firstMastered);
-    m.dateBoosterInitiated = this.getDateFor(stepAttempts, m.numAttemptsSince.boosterInitiated);
-    m.dateBoosterMastered = this.getDateFor(stepAttempts, m.numAttemptsSince.boosterMastered);
+    m.dateIntroduced = ChainMastery.getDateFor(stepAttempts, m.numAttemptsSince.firstIntroduced);
+    m.dateMastered = ChainMastery.getDateFor(stepAttempts, m.numAttemptsSince.firstMastered);
+    m.dateBoosterInitiated = ChainMastery.getDateFor(stepAttempts, m.numAttemptsSince.boosterInitiated);
+    m.dateBoosterMastered = ChainMastery.getDateFor(stepAttempts, m.numAttemptsSince.boosterMastered);
 
     // Set step status
     m.stepStatus = this.getStepStatus(stepAttempts, m);
@@ -1228,12 +1231,12 @@ export class ChainMastery {
    * @param actualPromptLevel
    * @param targetPromptLevel
    */
-  promptLevelIsBetterThanTarget(
+  static promptLevelIsBetterThanTarget(
     actualPromptLevel: ChainStepPromptLevel | undefined,
     targetPromptLevel: ChainStepPromptLevel | undefined,
   ): boolean {
-    const actualPromptLevelIndex = this.promptHierarchy.findIndex((p) => p.key === actualPromptLevel);
-    const targetPromptLevelIndex = this.promptHierarchy.findIndex((p) => p.key === targetPromptLevel);
+    const actualPromptLevelIndex = ChainMastery.promptHierarchy.findIndex((p) => p.key === actualPromptLevel);
+    const targetPromptLevelIndex = ChainMastery.promptHierarchy.findIndex((p) => p.key === targetPromptLevel);
 
     if (targetPromptLevelIndex === -1) {
       throw new Error('Target prompt level is not valid. It might not have been populated properly.');
@@ -1284,7 +1287,7 @@ export class ChainMastery {
 
     // Walk through all past step attempts.
     stepAttempts.forEach((stepAttempt) => {
-      const isComplete = this.stepIsComplete(stepAttempt);
+      const isComplete = ChainMastery.stepIsComplete(stepAttempt);
       const sameLevelAsPrev = prevAttemptLevel === stepAttempt.target_prompt_level;
 
       // Count the number of complete consecutive attempts at this prompt level.
@@ -1402,7 +1405,7 @@ export class ChainMastery {
 
     // Walk through all past step attempts.
     stepAttempts.forEach((stepAttempt) => {
-      const isComplete = this.stepIsComplete(stepAttempt);
+      const isComplete = ChainMastery.stepIsComplete(stepAttempt);
       const sameLevelAsPrev = prevAttemptLevel === stepAttempt.target_prompt_level;
 
       if (!hasBeenFocused && stepAttempt.session_type !== ChainSessionType.probe) {
@@ -1473,7 +1476,7 @@ export class ChainMastery {
         numFailedAttemptsAtThisLevel >= NUM_INCOMPLETE_ATTEMPTS_FOR_BOOSTER
       ) {
         if (stepAttempt.target_prompt_level !== undefined) {
-          lastAttemptLevel = this.getPrevPromptLevel(stepAttempt.target_prompt_level).key;
+          lastAttemptLevel = ChainMastery.getPrevPromptLevel(stepAttempt.target_prompt_level).key;
         } else {
           throw new Error('Step attempt has no target prompt level.');
         }
@@ -1485,7 +1488,7 @@ export class ChainMastery {
         (stepAttempt.was_focus_step || stepAttempt.status === ChainStepStatus.booster_needed)
       ) {
         if (stepAttempt.target_prompt_level !== undefined) {
-          lastAttemptLevel = this.getNextPromptLevel(stepAttempt.target_prompt_level).key;
+          lastAttemptLevel = ChainMastery.getNextPromptLevel(stepAttempt.target_prompt_level).key;
         } else {
           throw new Error('Step attempt has no target prompt level.');
         }

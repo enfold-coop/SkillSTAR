@@ -1,5 +1,5 @@
-import { ChainSession } from '../types/chain/ChainSession';
-import { SessionAndIndex } from '../types/chain/FilteredSessions';
+import { ChainMastery } from '../services/ChainMastery';
+import { SessionGroup } from '../types/chain/FilteredSessions';
 import { ChainStepPromptLevelMap, StepAttempt } from '../types/chain/StepAttempt';
 
 export interface SessionPercentage {
@@ -18,7 +18,7 @@ Object.values(ChainStepPromptLevelMap)
 const percentMastered = (steps: StepAttempt[]): number => {
   const numMastered = steps.reduce((memo, step) => {
     const weight = promptLevelWeights[step.target_prompt_level as string];
-    return step.completed && !step.had_challenging_behavior ? memo + weight : memo;
+    return ChainMastery.stepIsComplete(step) ? memo + weight : memo;
   }, 0);
   return (numMastered / steps.length) * 100;
 };
@@ -30,15 +30,32 @@ const percentChallengingBehavior = (steps: StepAttempt[]): number => {
   return (numChallenging / steps.length) * 100;
 };
 
-export const calculatePercentChallengingBehavior = (sessions: ChainSession[]): SessionPercentage[] => {
-  return sessions.map((session, i) => {
-    return { session_number: i + 1, challenging_behavior: percentChallengingBehavior(session.step_attempts) };
+export const calculatePercentChallengingBehavior = (sessionGroups: SessionGroup[]): SessionPercentage[][] => {
+  if (!sessionGroups || sessionGroups.length === 0 || !sessionGroups[0] || sessionGroups[0].length === 0) {
+    return [];
+  }
+
+  return sessionGroups.map((sessionGroup) => {
+    return sessionGroup.map((item, i) => {
+      return {
+        session_number: i + 1,
+        challenging_behavior: percentChallengingBehavior(item.session.step_attempts),
+      };
+    });
   });
 };
 
-export const calculatePercentMastery = (sessions: SessionAndIndex[]): SessionPercentage[] => {
-  return sessions.map((item) => {
-    const mastery = percentMastered(item.session.step_attempts);
-    return { session_number: item.session_index + 1, mastery: mastery };
+export const calculatePercentMastery = (sessionGroups: SessionGroup[]): SessionPercentage[][] => {
+  if (!sessionGroups || sessionGroups.length === 0 || !sessionGroups[0] || sessionGroups[0].length === 0) {
+    return [];
+  }
+
+  return sessionGroups.map((sessionGroup) => {
+    return sessionGroup.map((item) => {
+      return {
+        session_number: item.session_index + 1,
+        mastery: percentMastered(item.session.step_attempts),
+      };
+    });
   });
 };
