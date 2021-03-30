@@ -3,6 +3,7 @@ import { StyleSheet, Text, View } from 'react-native';
 import * as Animatable from 'react-native-animatable';
 import { RadioButton } from 'react-native-paper';
 import { useChainMasteryState } from '../../context/ChainMasteryProvider';
+import { ChainMastery } from '../../services/ChainMastery';
 import CustomColors from '../../styles/Colors';
 import { ChainStepPromptLevel, ChainStepPromptLevelMap, StepAttempt } from '../../types/chain/StepAttempt';
 import { randomId } from '../../_util/RandomId';
@@ -52,8 +53,8 @@ const PromptAccordion = (props: PromptAccordionProps): JSX.Element => {
 
   // Determines the default "checked" value for incomplete stepAttempt (albeit, Focus -or- otherwise)
   const determineDefaultCheckedValue = (attempt: StepAttempt): void => {
-    if (chainMasteryState.chainMastery && attempt && attempt.target_prompt_level) {
-      const prevPromptLevelMap = chainMasteryState.chainMastery.getPrevPromptLevel(attempt.target_prompt_level);
+    if (attempt && attempt.target_prompt_level) {
+      const prevPromptLevelMap = ChainMastery.getPrevPromptLevel(attempt.target_prompt_level);
       setChecked(prevPromptLevelMap.order);
     }
   };

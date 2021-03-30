@@ -12,6 +12,7 @@ import PromptLevel from '../components/Steps/PromptLevel';
 import { useChainMasteryState } from '../context/ChainMasteryProvider';
 import { ImageAssets } from '../data/images';
 import { videos } from '../data/videos';
+import { ChainMastery } from '../services/ChainMastery';
 import CustomColors from '../styles/Colors';
 import { MasteryIcon } from '../styles/MasteryIcon';
 import { ChainStep } from '../types/chain/ChainStep';
@@ -168,7 +169,7 @@ const StepScreen = (): JSX.Element => {
           chainMasteryState.chainMastery.updateDraftSessionStep(
             chainStep.id,
             'prompt_level',
-            chainMasteryState.chainMastery.getPrevPromptLevel(stepAttempt.target_prompt_level).key,
+            ChainMastery.getPrevPromptLevel(stepAttempt.target_prompt_level).key,
           );
         }
       }
