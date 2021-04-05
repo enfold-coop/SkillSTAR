@@ -1,13 +1,12 @@
 import { ChainMastery } from '../services/ChainMastery';
 import { SessionGroup } from '../types/chain/FilteredSessions';
-import { ChainStepPromptLevelMap, StepAttempt } from '../types/chain/StepAttempt';
+import { ChainStepPromptLevel, ChainStepPromptLevelMap, StepAttempt } from "../types/chain/StepAttempt";
 
 export interface SessionPercentage {
   session_number: number;
   challenging_behavior?: number;
   mastery?: number;
 }
-
 const promptLevelWeights: { [key: string]: number } = {};
 Object.values(ChainStepPromptLevelMap)
   .reverse()
@@ -16,11 +15,13 @@ Object.values(ChainStepPromptLevelMap)
   });
 
 const percentMastered = (steps: StepAttempt[]): number => {
-  const numMastered = steps.reduce((memo, step) => {
-    const weight = promptLevelWeights[step.target_prompt_level as string];
+  const maxWeight = promptLevelWeights[ChainStepPromptLevel.none as string];
+  const numMasteredWeighted = steps.reduce((memo, step) => {
+    // If no actual prompt level is available (such as for Probe sessions), use Independent level as the weight.
+    const weight = step.prompt_level ? promptLevelWeights[step.prompt_level as string] : maxWeight;
     return ChainMastery.stepIsComplete(step) ? memo + weight : memo;
   }, 0);
-  return (numMastered / steps.length) * 100;
+  return (numMasteredWeighted / (steps.length * maxWeight)) * 100;
 };
 
 const percentChallengingBehavior = (steps: StepAttempt[]): number => {

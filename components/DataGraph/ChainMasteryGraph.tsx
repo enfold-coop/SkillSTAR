@@ -177,6 +177,7 @@ const ChainMasteryGraph = (props: ChainMasteryGraphProps): JSX.Element => {
                   });
                 case 'scatter-line':
                   return group.data.map((dataGroup) => {
+                    console.log('dataGroup', dataGroup);
                     return (
                       <VictoryGroup
                         key={'graph-data-scatter-line' + i}
