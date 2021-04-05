@@ -862,10 +862,8 @@ describe('ChainMastery', () => {
               } else {
                 const nextLevel = ChainMastery.promptHierarchy[promptLevelIndex];
 
-                if (!nextLevel) {
                 expect(nextLevel).toBeTruthy();
                 expect(masteryInfo.promptLevel).toBeTruthy();
-
                 expect(masteryInfo.promptLevel).toEqual(nextLevel.key);
               }
             } else {
