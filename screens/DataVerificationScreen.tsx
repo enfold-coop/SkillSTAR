@@ -27,7 +27,6 @@ const DataVerificationScreen = (): JSX.Element => {
 
   // Post state data to API
   const postData = async () => {
-    console.log('POSTING DATA');
     if (chainMasteryState.chainMastery) {
       setIsSubmitted(true);
       chainMasteryState.chainMastery.draftSession.completed = true;

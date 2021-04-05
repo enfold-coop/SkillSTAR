@@ -430,8 +430,6 @@ export class ApiService {
 
         return await ApiService.selectParticipant(dependents[0].id);
       }
-    } else {
-      console.log('ApiService > getSelectedParticipant > no user found.');
     }
   }
 
@@ -463,10 +461,6 @@ export class ApiService {
   }
 
   static async logout(callback?: () => void): Promise<void> {
-    console.log('ApiService > logout');
-    // Delete EVERYTHING in AsyncStorage?
-    // await AsyncStorage.clear();
-
     // Delete current user and token
     await AsyncStorage.removeItem('user');
     await AsyncStorage.removeItem('user_token');
@@ -486,8 +480,6 @@ export class ApiService {
 
     if (token) {
       headers.Authorization = `Bearer ${token}`;
-    } else {
-      console.log('no stored token found.');
     }
 
     if (method === 'GET') {

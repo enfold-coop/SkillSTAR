@@ -66,7 +66,6 @@ const LandingScreen = (): JSX.Element => {
         }
       } else {
         // If no cached user, this screen will render the login form.
-        console.log('No cached user session. Please log in.');
         setIsLoggedOut(true);
       }
 

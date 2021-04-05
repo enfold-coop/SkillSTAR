@@ -29,7 +29,6 @@ describe('CalculateMasteryPercentage', () => {
     expect(calculatedProbePercentages.every((p) => p.every((s) => s.session_number !== undefined))).toEqual(true);
     expect(calculatedProbePercentages.every((p) => p.every((s) => s.mastery !== undefined))).toEqual(true);
     expect(calculatedProbePercentages.every((p) => p.every((s) => s.mastery === 0))).toEqual(true);
-    console.log('calculatedProbePercentages', calculatedProbePercentages);
   });
 
   it('Should calculate percentage of mastery from training data and return array of SessionAndIndex', () => {
@@ -38,7 +37,6 @@ describe('CalculateMasteryPercentage', () => {
     expect(calculatedTrainingPercentages.every((p) => p.every((s) => s.session_number !== undefined))).toEqual(true);
     expect(calculatedTrainingPercentages.every((p) => p.every((s) => s.mastery !== undefined))).toEqual(true);
     expect(calculatedTrainingPercentages.every((p) => p.every((s) => s.mastery === 0))).toEqual(true);
-    console.log('calculatedTrainingPercentages', calculatedTrainingPercentages);
   });
 
   it('Should calculate percentage of Challenging Behavior from session data', () => {
@@ -47,6 +45,5 @@ describe('CalculateMasteryPercentage', () => {
     expect(calculatedCBPercentages.every((p) => p.every((s) => s.session_number !== undefined))).toEqual(true);
     expect(calculatedCBPercentages.every((p) => p.every((s) => s.challenging_behavior !== undefined))).toEqual(true);
     expect(calculatedCBPercentages.every((p) => p.every((s) => s.challenging_behavior === 100))).toEqual(true);
-    console.log('calculatedCBPercentages', calculatedCBPercentages);
   });
 });
