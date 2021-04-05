@@ -1,6 +1,6 @@
 import { ChainMastery } from '../services/ChainMastery';
 import { SessionGroup } from '../types/chain/FilteredSessions';
-import { ChainStepPromptLevel, ChainStepPromptLevelMap, StepAttempt } from "../types/chain/StepAttempt";
+import { ChainStepPromptLevel, ChainStepPromptLevelMap, StepAttempt } from '../types/chain/StepAttempt';
 
 export interface SessionPercentage {
   session_number: number;
@@ -37,7 +37,7 @@ export const calculatePercentChallengingBehavior = (sessionGroups: SessionGroup[
   }
 
   return sessionGroups.map((sessionGroup) => {
-    return sessionGroup.map((item, i) => {
+    return sessionGroup.map((item) => {
       return {
         session_number: item.session_index + 1,
         challenging_behavior: percentChallengingBehavior(item.session.step_attempts),
