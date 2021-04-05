@@ -120,10 +120,6 @@ export class ChainMastery {
       }
     }
 
-    console.log('lastPromptLevel', lastPromptLevel);
-    console.log('focusStepAttempts.length', focusStepAttempts.length);
-    console.log('attemptsAtLastLevel', attemptsAtLastLevel);
-
     return attemptsAtLastLevel;
   }
 

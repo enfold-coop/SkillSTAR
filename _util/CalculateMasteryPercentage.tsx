@@ -39,7 +39,7 @@ export const calculatePercentChallengingBehavior = (sessionGroups: SessionGroup[
   return sessionGroups.map((sessionGroup) => {
     return sessionGroup.map((item, i) => {
       return {
-        session_number: i + 1,
+        session_number: item.session_index + 1,
         challenging_behavior: percentChallengingBehavior(item.session.step_attempts),
       };
     });
