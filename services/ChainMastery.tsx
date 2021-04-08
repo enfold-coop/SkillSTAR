@@ -349,7 +349,7 @@ export class ChainMastery {
 
   /**
    * Given a prompt level, returns the next prompt level in the prompt hierarchy.
-   * @param promptLvl: the previous prompt level
+   * @param promptLvl: the current prompt level
    */
   static getNextPromptLevel(promptLvl: ChainStepPromptLevel): ChainStepPromptLevelMapItem {
     const currentIndex = ChainMastery.promptHierarchy.findIndex((e) => e.key === promptLvl);
@@ -358,8 +358,8 @@ export class ChainMastery {
   }
 
   /**
-   * Given a prompt level, returns the next prompt level in the prompt hierarchy.
-   * @param promptLvl: the previous prompt level
+   * Given a prompt level, returns the previous prompt level in the prompt hierarchy.
+   * @param promptLvl: the current prompt level
    */
   static getPrevPromptLevel(promptLvl: ChainStepPromptLevel): ChainStepPromptLevelMapItem {
     const maxIndex = ChainMastery.promptHierarchy.length - 1;

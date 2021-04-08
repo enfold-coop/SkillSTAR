@@ -1,12 +1,14 @@
+import { MaterialIcons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import React, { useState } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { Image, Modal, StyleSheet, Text, View } from 'react-native';
 import { Button } from 'react-native-paper';
-import { PROBE_INSTRUCTIONS } from '../constants/chainshome_text';
 import AppHeader from '../components/Header/AppHeader';
 import { Loading } from '../components/Loading/Loading';
 import DataVerificationList from '../components/Probe/DataVerificationList';
+import { PROBE_INSTRUCTIONS } from '../constants/chainshome_text';
 import { useChainMasteryContext } from '../context/ChainMasteryProvider';
+import { ImageAssets } from '../data/images';
 import { ApiService } from '../services/ApiService';
 import CustomColors from '../styles/Colors';
 import { ChainSessionTypeMap } from '../types/chain/ChainSession';
@@ -20,6 +22,17 @@ const BaselineAssessmentScreen = (): JSX.Element => {
   const navigation = useNavigation();
   const [chainMasteryState, chainMasteryDispatch] = useChainMasteryContext();
   const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
+  const [shouldShowModal, setShouldShowModal] = useState<boolean>(false);
+
+  const showModal = () => {
+    // Display the modal
+    setShouldShowModal(true);
+  };
+
+  const cancel = () => {
+    // Just hide the modal
+    setShouldShowModal(false);
+  };
 
   const updateChainData: DataVerificationControlCallback = async (
     chainStepId: number,
@@ -41,6 +54,9 @@ const BaselineAssessmentScreen = (): JSX.Element => {
   };
 
   const updateSession = async (): Promise<void> => {
+    // Hide the modal
+    setShouldShowModal(false);
+
     setIsSubmitted(true);
     if (
       chainMasteryState &&
@@ -61,6 +77,82 @@ const BaselineAssessmentScreen = (): JSX.Element => {
     }
   };
 
+  const DataConfirmationModal = (): JSX.Element => {
+    return (
+      <Modal visible={shouldShowModal} animationType={'slide'} presentationStyle={'fullScreen'}>
+        <View style={styles.modalContainer}>
+          <Text style={styles.headline}>
+            {'Please confirm that your probe session data has been entered correctly.'}
+          </Text>
+          <View style={styles.confirmStepAttemptRow} key={'confirm_step_attempt_heading'}>
+            <Text style={{ ...styles.confirmRowNum, fontWeight: 'bold', color: 'black' }}>{'#'}</Text>
+            <Text style={{ ...styles.confirmRowTitle, fontWeight: 'bold', color: 'black' }}>{'Step'}</Text>
+            <Text style={{ ...styles.confirmRowData, fontWeight: 'bold', color: 'black' }}>{'Complete'}</Text>
+            <Text style={{ ...styles.confirmRowData, fontWeight: 'bold', color: 'black' }}>
+              {'Challenging Behavior'}
+            </Text>
+          </View>
+          {chainMasteryState.chainMastery?.draftSession.step_attempts.map((stepAttempt) => {
+            let bgColor: string;
+
+            if (stepAttempt.completed) {
+              if (stepAttempt.had_challenging_behavior) {
+                bgColor = CustomColors.uva.greenSofter;
+              } else {
+                bgColor = CustomColors.uva.greenSoft;
+              }
+            } else {
+              if (stepAttempt.had_challenging_behavior) {
+                bgColor = CustomColors.uva.warningSoft;
+              } else {
+                bgColor = CustomColors.uva.warningSofter;
+              }
+            }
+
+            return (
+              <View
+                style={{ ...styles.confirmStepAttemptRow, backgroundColor: bgColor }}
+                key={'confirm_step_attempt_' + stepAttempt.chain_step_id}
+              >
+                <Text style={styles.confirmRowNum}>{`${stepAttempt.chain_step_id + 1}.`}</Text>
+                <Text style={styles.confirmRowTitle}>{stepAttempt.chain_step?.instruction}</Text>
+                <View style={styles.confirmRowData}>
+                  <MaterialIcons
+                    name={stepAttempt.completed ? 'check' : 'close'}
+                    size={36}
+                    style={{ color: stepAttempt.completed ? 'black' : CustomColors.uva.warning }}
+                  />
+                </View>
+                <View style={styles.confirmRowData}>
+                  <Image
+                    source={ImageAssets.flag_icon}
+                    style={{ ...styles.confirmRowDataIcon, opacity: stepAttempt.had_challenging_behavior ? 1 : 0 }}
+                  />
+                </View>
+              </View>
+            );
+          })}
+          <View style={styles.btnContainer}>
+            <Button
+              style={styles.closeBtn}
+              labelStyle={{ fontSize: 16, color: 'white' }}
+              color={CustomColors.uva.orange}
+              mode={'contained'}
+              onPress={updateSession}
+            >{`Confirm`}</Button>
+            <Button
+              style={styles.closeBtn}
+              labelStyle={{ fontSize: 16 }}
+              color={CustomColors.uva.gray}
+              mode={'outlined'}
+              onPress={cancel}
+            >{`Cancel`}</Button>
+          </View>
+        </View>
+      </Modal>
+    );
+  };
+
   return chainMasteryState &&
     chainMasteryState.chainMastery &&
     chainMasteryState.chainMastery.chainData &&
@@ -68,6 +160,7 @@ const BaselineAssessmentScreen = (): JSX.Element => {
     !isSubmitted ? (
     <View style={styles.image}>
       <View style={styles.container}>
+        {shouldShowModal && <DataConfirmationModal />}
         <AppHeader name={'Brushing Teeth'} />
         <View style={styles.instructionContainer}>
           <Text style={styles.screenHeader}>
@@ -80,35 +173,17 @@ const BaselineAssessmentScreen = (): JSX.Element => {
           <DataVerificationList onChange={updateChainData} />
         </View>
         <View style={styles.nextBackBtnsContainer}>
-          {!isSubmitted ? (
-            <Button
-              style={styles.nextButton}
-              color={CustomColors.uva.orange}
-              labelStyle={{
-                fontSize: 24,
-                fontWeight: '600',
-                color: CustomColors.uva.white,
-              }}
-              mode={'contained'}
-              onPress={() => {
-                updateSession();
-              }}
-            >{`Submit`}</Button>
-          ) : (
-            <Button
-              style={styles.nextButton}
-              color={CustomColors.uva.gray}
-              labelStyle={{
-                fontSize: 24,
-                fontWeight: '600',
-                color: CustomColors.uva.white,
-              }}
-              mode={'contained'}
-              onPress={() => {
-                // console.log('Submitted Probe data');
-              }}
-            >{`Thanks`}</Button>
-          )}
+          <Button
+            style={styles.nextButton}
+            color={CustomColors.uva.orange}
+            labelStyle={{
+              fontSize: 24,
+              fontWeight: '600',
+              color: CustomColors.uva.white,
+            }}
+            mode={'contained'}
+            onPress={showModal}
+          >{`Submit`}</Button>
         </View>
       </View>
     </View>
@@ -167,6 +242,63 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  modalContainer: {
+    flex: 1,
+    padding: 100,
+    justifyContent: 'center',
+    alignContent: 'center',
+  },
+  title: {
+    fontSize: 48,
+    marginBottom: 10,
+    marginHorizontal: 0,
+    paddingHorizontal: 0,
+  },
+  headline: {
+    fontSize: 24,
+    marginBottom: 40,
+    marginHorizontal: 0,
+    paddingHorizontal: 0,
+  },
+  btnContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignContent: 'center',
+  },
+  closeBtn: {
+    width: 200,
+    margin: 10,
+    alignSelf: 'center',
+  },
+  confirmStepAttemptRow: {
+    flexDirection: 'row',
+    margin: 4,
+  },
+  confirmRowNum: {
+    flex: 1,
+    margin: 4,
+  },
+  confirmRowTitle: {
+    flex: 10,
+    margin: 4,
+    textAlign: 'left',
+  },
+  confirmRowData: {
+    flex: 3,
+    textAlign: 'center',
+    fontWeight: 'bold',
+    color: 'white',
+    margin: 4,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignContent: 'center',
+  },
+  confirmRowDataIcon: {
+    height: 24,
+    width: 24,
+    alignSelf: 'center',
+    resizeMode: 'contain',
   },
 });
 

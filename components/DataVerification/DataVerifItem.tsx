@@ -117,17 +117,11 @@ const DataVerifItem = (props: DataVerifItemProps): JSX.Element => {
         <Image style={styles.promptLevelImage} source={promptIcon} resizeMode={'contain'} />
         <View style={styles.switchContainer}>
           <View style={styles.questionContainer}>
-            <ListItemSwitch
-              fieldName={'completed'}
-              defaultValue={completed}
-              onChange={handleSwitch}
-              chainStepId={stepAttempt.chain_step_id}
-            />
+            <ListItemSwitch fieldName={'completed'} onChange={handleSwitch} chainStepId={stepAttempt.chain_step_id} />
           </View>
           <View style={styles.questionContainer}>
             <ListItemSwitch
               fieldName={'had_challenging_behavior'}
-              defaultValue={hadChallengingBehavior}
               onChange={handleSwitch}
               chainStepId={stepAttempt.chain_step_id}
             />

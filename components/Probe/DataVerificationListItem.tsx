@@ -20,27 +20,27 @@ export const DataVerificationListItem = (props: DataVerificationListItemProps): 
     had_challenging_behavior: false,
   };
 
-  // Runs once on mount
-  useEffect(() => {
-    let isCancelled = false;
+  // // Runs once on mount
+  // useEffect(() => {
+  //   let isCancelled = false;
 
-    // Set step attempt default values
-    if (!isCancelled && chainMasteryState.chainMastery) {
-      // Find the step in the draft session.
-      chainMasteryState.chainMastery.draftSession.step_attempts.forEach((s) => {
-        if (chainMasteryState.chainMastery && s.chain_step_id === stepAttempt.chain_step_id) {
-          // Set its value.
-          s.completed = defaults.completed;
-          s.was_prompted = defaults.was_prompted;
-          s.had_challenging_behavior = defaults.had_challenging_behavior;
-        }
-      });
-    }
+  //   // Set step attempt default values
+  //   if (!isCancelled && chainMasteryState.chainMastery) {
+  //     // Find the step in the draft session.
+  //     chainMasteryState.chainMastery.draftSession.step_attempts.forEach((s) => {
+  //       if (chainMasteryState.chainMastery && s.chain_step_id === stepAttempt.chain_step_id) {
+  //         // Set its value.
+  //         s.completed = defaults.completed;
+  //         s.was_prompted = defaults.was_prompted;
+  //         s.had_challenging_behavior = defaults.had_challenging_behavior;
+  //       }
+  //     });
+  //   }
 
-    return () => {
-      isCancelled = true;
-    };
-  }, []);
+  //   return () => {
+  //     isCancelled = true;
+  //   };
+  // }, []);
 
   const chainStepId = stepAttempt.chain_step_id !== undefined ? stepAttempt.chain_step_id : -1;
   const instruction = stepAttempt.chain_step ? stepAttempt.chain_step.instruction : 'LOADING';
@@ -50,21 +50,11 @@ export const DataVerificationListItem = (props: DataVerificationListItemProps): 
       <Text style={styles.stepTitle}>{`Step ${chainStepId + 1}: ${instruction}`}</Text>
       <View style={styles.questionContainer}>
         <Text style={styles.question}>{`Was this step completed independently?`}</Text>
-        <ListItemSwitch
-          fieldName={'completed'}
-          defaultValue={defaults.completed}
-          chainStepId={chainStepId}
-          onChange={onChange}
-        />
+        <ListItemSwitch fieldName={'completed'} chainStepId={chainStepId} onChange={onChange} />
       </View>
       <View style={styles.questionContainer}>
         <Text style={styles.question}>{`Did challenging behavior occur?`}</Text>
-        <ListItemSwitch
-          fieldName={'had_challenging_behavior'}
-          defaultValue={defaults.had_challenging_behavior}
-          chainStepId={chainStepId}
-          onChange={onChange}
-        />
+        <ListItemSwitch fieldName={'had_challenging_behavior'} chainStepId={chainStepId} onChange={onChange} />
       </View>
     </View>
   );
