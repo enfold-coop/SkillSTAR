@@ -117,11 +117,13 @@ const ChainMasteryGraph = (props: ChainMasteryGraphProps): JSX.Element => {
       {chainMasteryState.chainMastery && graphData && (
         <VictoryContainer width={width} height={height - margin * 4}>
           <VictoryChart
+            singleQuadrantDomainPadding={false}
             padding={{ top: margin, bottom: margin * 5, left: margin * 6, right: margin * 2 }}
             height={width}
             width={width}
             theme={VictoryTheme.material}
-            domain={{ x: [1, chainMasteryState.chainMastery.chainData.sessions.length || 1], y: [0, 100] }}
+            minDomain={{ x: 0.9, y: 0 }}
+            maxDomain={{ x: chainMasteryState.chainMastery.chainData.sessions.length, y: 100 }}
           >
             <VictoryAxis
               crossAxis
