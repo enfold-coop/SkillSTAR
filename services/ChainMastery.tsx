@@ -1255,6 +1255,14 @@ export class ChainMastery {
   }
 
   /**
+   * Adds the current draft session to the chain data, updates the chain data,
+   * updates the mastery info, and generates a new draft session.
+   */
+  resetDraftSession(): void {
+    this.draftSession = this.buildNewDraftSession();
+  }
+
+  /**
    * Creates an index of chain steps, the milestone step attempts, and target prompt level, if applicable.
    */
   private buildMilestonesMap(): MilestonesMap {
