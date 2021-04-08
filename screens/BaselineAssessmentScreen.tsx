@@ -105,7 +105,7 @@ const BaselineAssessmentScreen = (): JSX.Element => {
               }}
               mode={'contained'}
               onPress={() => {
-                console.log('Submitted Probe data');
+                // console.log('Submitted Probe data');
               }}
             >{`Thanks`}</Button>
           )}

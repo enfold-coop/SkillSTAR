@@ -37,7 +37,7 @@ const GraphModal = (props: GraphModalProps): JSX.Element => {
         }}
       >
         {graphDimens && graphDimens.height && (
-          <ChainMasteryGraph width={graphDimens.width} height={graphDimens.height - 80} margin={20} />
+          <ChainMasteryGraph width={graphDimens.width} height={graphDimens.height - 80} margin={16} />
         )}
         <Button
           style={styles.closeBtn}

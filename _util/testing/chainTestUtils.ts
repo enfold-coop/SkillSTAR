@@ -79,21 +79,11 @@ export const doProbeSessions = (
           expect(stepAttempt.status).toEqual(ChainStepStatus.not_yet_started);
         } else if (i < 3) {
           // Before any training session
-          if (stepAttempt.status !== ChainStepStatus.not_complete) {
-            console.log('fail 1');
-            chainMastery.printSessionLog();
-          }
-
           expect(stepAttempt.status).toEqual(ChainStepStatus.not_complete);
         } else if (stepAttemptIndex === 0) {
           // Enough probe sessions run so focus status can be set on first chain step.
           expect(stepAttempt.status).toEqual(ChainStepStatus.focus);
         } else {
-          if (stepAttempt.status !== ChainStepStatus.not_complete) {
-            console.log('fail 2');
-            chainMastery.printSessionLog();
-          }
-
           expect(stepAttempt.status).toEqual(ChainStepStatus.not_complete);
         }
       } else {
@@ -156,10 +146,6 @@ export const checkAllStepsHaveStatus = (
 
 export const checkAllStepsMastered = (chainMastery: ChainMastery): void => {
   // No chain steps should be marked as the focus step.
-  if (chainMastery.nextFocusChainStepId !== undefined) {
-    chainMastery.printSessionLog();
-    console.log('chainMastery.nextFocusChainStepId', chainMastery.nextFocusChainStepId);
-  }
   expect(chainMastery.nextFocusChainStepId).toBeUndefined();
   expect(chainMastery.masteryInfoMap).toBeTruthy();
   expect(chainMastery.draftSession).toBeTruthy();

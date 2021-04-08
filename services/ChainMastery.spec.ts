@@ -746,11 +746,6 @@ describe('ChainMastery', () => {
                 // The previous focus step was just mastered.
                 // The new focus step should be at partial physical, because it was complete at
                 // full_physical with no challenging behavior 3 training sessions in a row.
-                if (stepAttempt.target_prompt_level !== ChainStepPromptLevel.partial_physical) {
-                  chainMastery.printSessionLog();
-                  console.log('stepAttempt.chain_step_id', stepAttempt.chain_step_id);
-                }
-
                 expect(stepAttempt.target_prompt_level).toEqual(ChainStepPromptLevel.partial_physical);
 
                 // Mark focus step as incomplete with challenging behavior.
@@ -785,11 +780,6 @@ describe('ChainMastery', () => {
                 expect(stepMasteryInfo.dateMastered).toBeFalsy();
 
                 // Mastery info should stay in sync with draft session
-                if (stepMasteryInfo.promptLevel !== promptLevel) {
-                  chainMastery.printSessionLog();
-                  console.log('stepMasteryInfo.chainStepId', stepMasteryInfo.chainStepId);
-                }
-
                 expect(stepMasteryInfo.promptLevel).toEqual(promptLevel);
                 expect(stepMasteryInfo.stepStatus).toEqual(ChainStepStatus.focus);
                 expect(stepAttempt.status).toEqual(ChainStepStatus.focus);
@@ -872,25 +862,13 @@ describe('ChainMastery', () => {
               } else {
                 const nextLevel = ChainMastery.promptHierarchy[promptLevelIndex];
 
-                if (!nextLevel) {
-                  chainMastery.printSessionLog();
-                  console.log('promptLevelIndex', promptLevelIndex);
-                  console.log('masteryInfo.chainStepId', masteryInfo.chainStepId);
-                }
                 expect(nextLevel).toBeTruthy();
                 expect(masteryInfo.promptLevel).toBeTruthy();
-
                 expect(masteryInfo.promptLevel).toEqual(nextLevel.key);
               }
             } else {
               // Focus step still in training. Prompt level should not change.
               expect(masteryInfo.promptLevel).toBeTruthy();
-
-              if (masteryInfo.promptLevel !== expectedPromptLevel.key) {
-                chainMastery.printSessionLog();
-                console.log('masteryInfo.chainStepId', masteryInfo.chainStepId);
-              }
-
               expect(masteryInfo.promptLevel).toEqual(expectedPromptLevel.key);
             }
 

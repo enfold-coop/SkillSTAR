@@ -120,10 +120,6 @@ export class ChainMastery {
       }
     }
 
-    console.log('lastPromptLevel', lastPromptLevel);
-    console.log('focusStepAttempts.length', focusStepAttempts.length);
-    console.log('attemptsAtLastLevel', attemptsAtLastLevel);
-
     return attemptsAtLastLevel;
   }
 
@@ -567,16 +563,13 @@ export class ChainMastery {
    * - a probe session AND
    * - completed with no prompting
    *
-   * TODO: Confirm whether it should include "no challenging behavior"
-   *
    * @param stepAttempt
    */
   static isProbeStepComplete(stepAttempt: StepAttempt): boolean {
     return !!(
       stepAttempt.session_type === ChainSessionType.probe &&
       stepAttempt.completed &&
-      !stepAttempt.was_prompted &&
-      !stepAttempt.had_challenging_behavior
+      !stepAttempt.was_prompted
     );
   }
 

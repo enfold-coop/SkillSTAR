@@ -117,7 +117,7 @@ const ChainMasteryGraph = (props: ChainMasteryGraphProps): JSX.Element => {
       {chainMasteryState.chainMastery && graphData && (
         <VictoryContainer width={width} height={height - margin * 4}>
           <VictoryChart
-            padding={{ top: margin, bottom: margin * 5, left: margin * 5, right: margin * 2 }}
+            padding={{ top: margin, bottom: margin * 5, left: margin * 6, right: margin * 2 }}
             height={width}
             width={width}
             theme={VictoryTheme.material}
@@ -128,12 +128,13 @@ const ChainMasteryGraph = (props: ChainMasteryGraphProps): JSX.Element => {
               label={'Session #'}
               tickFormat={(t) => `${Math.floor(t)}`}
               tickCount={Math.min(5, chainMasteryState.chainMastery.chainData.sessions.length || 1)}
-              axisLabelComponent={<VictoryLabel dy={24} style={styles.axisLabel} />}
+              axisLabelComponent={<VictoryLabel dy={margin * 2} style={styles.axisLabel} />}
             />
             <VictoryAxis
               dependentAxis
               tickFormat={(t) => `${Math.round(t)}%`}
-              axisLabelComponent={<VictoryLabel dy={-24} style={styles.axisLabel} />}
+              label={'% Steps'}
+              axisLabelComponent={<VictoryLabel dy={-(margin * 3.5)} style={styles.axisLabel} />}
             />
             {graphData.map((group, i) => {
               switch (group.type) {
