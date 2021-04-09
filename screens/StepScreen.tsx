@@ -31,7 +31,6 @@ const StepScreen = (): JSX.Element => {
   const [chainStep, setChainStep] = useState<ChainStep>();
   const [stepAttempt, setStepAttempt] = useState<StepAttempt>();
   const chainMasteryState = useChainMasteryState();
-  const [pastFocusStepAttempts, setPastFocusStepAttempts] = useState<boolean[]>();
   const [video, setVideo] = useState<AVPlaybackSource>();
 
   /**
@@ -46,9 +45,7 @@ const StepScreen = (): JSX.Element => {
         setChainSteps(chainMasteryState.chainMastery.chainSteps);
         setStepIndex(0);
         setChainStep(chainMasteryState.chainMastery.chainSteps[0]);
-        const tempId = chainMasteryState.chainMastery.draftSession.step_attempts[0].chain_step_id;
         setStepAttempt(chainMasteryState.chainMastery.draftSession.step_attempts[0]);
-        getPrevCompletedFocusSteps(tempId);
       }
     };
 
@@ -67,7 +64,6 @@ const StepScreen = (): JSX.Element => {
       if (!isCancelled && stepIndex !== undefined && chainMasteryState.chainMastery) {
         setVideo(videos['step_' + (stepIndex + 1)]);
         setChainStep(chainMasteryState.chainMastery.chainSteps[stepIndex]);
-        getPrevCompletedFocusSteps(stepIndex);
       }
     };
 
@@ -80,12 +76,6 @@ const StepScreen = (): JSX.Element => {
   /**
    * END: LIFECYCLE CALLS
    */
-
-  const getPrevCompletedFocusSteps = (id: number) => {
-    if (chainMasteryState.chainMastery) {
-      setPastFocusStepAttempts(chainMasteryState.chainMastery.getPreviousFocusStepAttempts(id));
-    }
-  };
 
   const goToStep = (i: number) => {
     if (chainMasteryState.chainMastery) {
@@ -242,7 +232,7 @@ const StepScreen = (): JSX.Element => {
             />
           </View>
         </View>
-        <PromptLevel chainStepId={chainStep.id} prevFocusStepAttempts={pastFocusStepAttempts} />
+        <PromptLevel chainStepId={chainStep.id} />
         <View style={styles.subContainer}>
           <View style={[styles.subVideoContainer]}>
             <VideoForStep />
