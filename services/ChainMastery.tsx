@@ -1447,7 +1447,7 @@ export class ChainMastery {
 
       if (!hasBeenFocused && stepAttempt.session_type !== ChainSessionType.probe) {
         // Count consecutive completes before this step has ever been focused.
-        if (isComplete) {
+        if (!stepAttempt.had_challenging_behavior) {
           numCompleteTrainingAttemptsBeforeFocus++;
         } else {
           numCompleteTrainingAttemptsBeforeFocus = 0;

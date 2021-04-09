@@ -286,11 +286,11 @@ describe('ChainMastery', () => {
             completeStepAttempt(stepAttempt);
           } else {
             // Fail all others.
-            failStepAttempt(stepAttempt);
+            failStepAttempt(stepAttempt, false);
           }
         }
 
-        // Sessions 16-19: 3 training. First step FAIL, 2nd step mastered, 3rd step complete @ full_physical
+        // Sessions 16-19: 3 training. First step FAIL, 2nd step mastered, 3rd step complete @ partial_physical
         else if (sessionIndex >= 16 && sessionIndex < 19) {
           if (stepAttemptIndex === 0) {
             // Fail first step to trigger a booster.
@@ -298,9 +298,18 @@ describe('ChainMastery', () => {
           } else if (stepAttemptIndex <= 2) {
             // Complete 2nd & 3rd chain steps.
             completeStepAttempt(stepAttempt);
+
+            if (stepAttemptIndex === 2) {
+              if (stepAttempt.target_prompt_level !== ChainStepPromptLevel.partial_physical) {
+                chainMastery.printSessionLog();
+                console.log('stepAttempt', stepAttempt);
+              }
+
+              expect(stepAttempt.target_prompt_level).toEqual(ChainStepPromptLevel.partial_physical);
+            }
           } else {
             // Fail all others.
-            failStepAttempt(stepAttempt);
+            failStepAttempt(stepAttempt, false);
           }
         }
       });
@@ -342,7 +351,7 @@ describe('ChainMastery', () => {
     expect(m3.dateMastered).toBeFalsy();
     expect(m3.dateBoosterInitiated).toBeFalsy();
     expect(m3.dateBoosterMastered).toBeFalsy();
-    expect(m3.promptLevel).toEqual(ChainStepPromptLevel.partial_physical);
+    expect(m3.promptLevel).toEqual(ChainStepPromptLevel.shadow);
     expect(m3.stepStatus).toEqual(ChainStepStatus.focus);
     expect(s3.status).toEqual(ChainStepStatus.focus);
     expect(s3.was_focus_step).toEqual(true);
