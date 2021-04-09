@@ -1131,11 +1131,10 @@ export class ChainMastery {
    */
   updateDraftSessionStep(chainStepId: number, fieldName: StepAttemptFieldName, fieldValue: StepAttemptField): void {
     //  Get the step
-    this.draftSession.step_attempts.forEach((stepAttempt, i) => {
+    this.draftSession.step_attempts.forEach((stepAttempt) => {
       if (stepAttempt.chain_step_id === chainStepId) {
         // Set the value of the fieldName for a specific step
-        // @ts-ignore-next-line
-        this.draftSession.step_attempts[i][fieldName] = fieldValue;
+        (stepAttempt[fieldName] as any) = fieldValue;
       }
     });
   }
