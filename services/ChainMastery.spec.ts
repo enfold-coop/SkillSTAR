@@ -168,7 +168,67 @@ describe('ChainMastery', () => {
     expect(chainMastery.masteryInfoMap[0].dateMastered).toBeTruthy();
   });
 
-  it('should populate set focus step on not-started step if booster is needed on previously-mastered step', () => {
+  it('should calculate the proper number of stars for a step', () => {
+    clearSessions(chainData, chainMastery);
+
+    for (const chainStep of mockChainSteps) {
+      expect(chainMastery.getNumStars(chainStep.id)).toEqual(0);
+    }
+
+    // Fail all steps in 3 probes.
+    doProbeSessions(chainMastery, 3, true, ChainStepStatus.not_yet_started);
+
+    for (const chainStep of mockChainSteps) {
+      expect(chainMastery.getNumStars(chainStep.id)).toEqual(0);
+    }
+
+    clearSessions(chainData, chainMastery);
+
+    // Master all steps in 3 probes.
+    doProbeSessions(chainMastery, NUM_COMPLETE_ATTEMPTS_FOR_MASTERY, false, ChainStepStatus.not_yet_started);
+
+    for (const chainStep of mockChainSteps) {
+      expect(chainMastery.getNumStars(chainStep.id)).toEqual(NUM_COMPLETE_ATTEMPTS_FOR_MASTERY);
+    }
+
+    // Fail all steps in 3 probes.
+    doProbeSessions(chainMastery, NUM_INCOMPLETE_ATTEMPTS_FOR_BOOSTER, true, ChainStepStatus.mastered);
+
+    for (const chainStep of mockChainSteps) {
+      expect(chainMastery.getNumStars(chainStep.id)).toEqual(0);
+      expect(chainMastery.masteryInfoMap[chainStep.id].stepStatus).toEqual(ChainStepStatus.booster_needed);
+    }
+
+    // Do 3 booster sessions at shadow prompt level.
+    for (let i = 0; i < NUM_COMPLETE_ATTEMPTS_FOR_MASTERY; i++) {
+      chainMastery.draftSession.step_attempts.forEach((stepAttempt) => {
+        expect(stepAttempt.target_prompt_level).toEqual(ChainStepPromptLevel.shadow);
+        expect(chainMastery.getNumStars(stepAttempt.chain_step_id)).toEqual(i);
+        completeStepAttempt(stepAttempt);
+      });
+
+      chainMastery.saveDraftSession();
+    }
+
+    // Do 3 more booster sessions at independent prompt level.
+    for (let i = 0; i < NUM_COMPLETE_ATTEMPTS_FOR_MASTERY; i++) {
+      chainMastery.draftSession.step_attempts.forEach((stepAttempt) => {
+        expect(stepAttempt.target_prompt_level).toEqual(ChainStepPromptLevel.none);
+        expect(chainMastery.getNumStars(stepAttempt.chain_step_id)).toEqual(i);
+        completeStepAttempt(stepAttempt);
+      });
+
+      chainMastery.saveDraftSession();
+    }
+
+    // All steps should be mastered again.
+    for (const chainStep of mockChainSteps) {
+      expect(chainMastery.getNumStars(chainStep.id)).toEqual(NUM_COMPLETE_ATTEMPTS_FOR_MASTERY);
+      expect(chainMastery.masteryInfoMap[chainStep.id].stepStatus).toEqual(ChainStepStatus.booster_mastered);
+    }
+  });
+
+  it('should set focus step on not-started step if booster is needed on previously-mastered step', () => {
     clearSessions(chainData, chainMastery);
 
     /* INITIAL PROBE SESSIONS */
@@ -226,11 +286,11 @@ describe('ChainMastery', () => {
             completeStepAttempt(stepAttempt);
           } else {
             // Fail all others.
-            failStepAttempt(stepAttempt);
+            failStepAttempt(stepAttempt, false);
           }
         }
 
-        // Sessions 16-19: 3 training. First step FAIL, 2nd step mastered, 3rd step complete @ full_physical
+        // Sessions 16-19: 3 training. First step FAIL, 2nd step mastered, 3rd step complete @ partial_physical
         else if (sessionIndex >= 16 && sessionIndex < 19) {
           if (stepAttemptIndex === 0) {
             // Fail first step to trigger a booster.
@@ -238,9 +298,18 @@ describe('ChainMastery', () => {
           } else if (stepAttemptIndex <= 2) {
             // Complete 2nd & 3rd chain steps.
             completeStepAttempt(stepAttempt);
+
+            if (stepAttemptIndex === 2) {
+              if (stepAttempt.target_prompt_level !== ChainStepPromptLevel.partial_physical) {
+                chainMastery.printSessionLog();
+                console.log('stepAttempt', stepAttempt);
+              }
+
+              expect(stepAttempt.target_prompt_level).toEqual(ChainStepPromptLevel.partial_physical);
+            }
           } else {
             // Fail all others.
-            failStepAttempt(stepAttempt);
+            failStepAttempt(stepAttempt, false);
           }
         }
       });
@@ -282,7 +351,7 @@ describe('ChainMastery', () => {
     expect(m3.dateMastered).toBeFalsy();
     expect(m3.dateBoosterInitiated).toBeFalsy();
     expect(m3.dateBoosterMastered).toBeFalsy();
-    expect(m3.promptLevel).toEqual(ChainStepPromptLevel.partial_physical);
+    expect(m3.promptLevel).toEqual(ChainStepPromptLevel.shadow);
     expect(m3.stepStatus).toEqual(ChainStepStatus.focus);
     expect(s3.status).toEqual(ChainStepStatus.focus);
     expect(s3.was_focus_step).toEqual(true);

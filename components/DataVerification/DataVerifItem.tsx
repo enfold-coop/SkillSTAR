@@ -5,6 +5,7 @@ import CustomColors from '../../styles/Colors';
 import { MasteryIcon } from '../../styles/MasteryIcon';
 import { ChainStepPromptLevel, StepAttempt, StepIncompleteReason } from '../../types/chain/StepAttempt';
 import { DataVerificationControlCallback } from '../../types/DataVerificationControlCallback';
+import { Empty } from '../Empty/Empty';
 import ListItemSwitch from '../Probe/ListItemSwitch';
 import BehavAccordion from './BehavAccordion';
 import PromptAccordion from './PromptAccordion';
@@ -117,17 +118,11 @@ const DataVerifItem = (props: DataVerifItemProps): JSX.Element => {
         <Image style={styles.promptLevelImage} source={promptIcon} resizeMode={'contain'} />
         <View style={styles.switchContainer}>
           <View style={styles.questionContainer}>
-            <ListItemSwitch
-              fieldName={'completed'}
-              defaultValue={completed}
-              onChange={handleSwitch}
-              chainStepId={stepAttempt.chain_step_id}
-            />
+            <ListItemSwitch fieldName={'completed'} onChange={handleSwitch} chainStepId={stepAttempt.chain_step_id} />
           </View>
           <View style={styles.questionContainer}>
             <ListItemSwitch
               fieldName={'had_challenging_behavior'}
-              defaultValue={hadChallengingBehavior}
               onChange={handleSwitch}
               chainStepId={stepAttempt.chain_step_id}
             />
@@ -146,7 +141,7 @@ const DataVerifItem = (props: DataVerifItemProps): JSX.Element => {
       </View>
     </View>
   ) : (
-    <Text>{`...`}</Text>
+    <Empty />
   );
 };
 

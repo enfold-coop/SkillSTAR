@@ -1,17 +1,17 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { useChainMasteryState } from '../../context/ChainMasteryProvider';
 import { ChainStepPromptLevel } from '../../types/chain/StepAttempt';
+import { Empty } from '../Empty/Empty';
 import ChallengingBehavBtn from './ChallengingBehavBtn';
 import StepAttemptStars from './StepAttemptStars';
 
 interface PromptLevelProps {
   chainStepId: number;
-  prevFocusStepAttempts: boolean[] | undefined;
 }
 
 const PromptLevel = (props: PromptLevelProps): JSX.Element => {
-  const { chainStepId, prevFocusStepAttempts } = props;
+  const { chainStepId } = props;
   const [promptLevel, setPromptLevel] = useState<ChainStepPromptLevel>();
   const chainMasteryState = useChainMasteryState();
 
@@ -48,13 +48,7 @@ const PromptLevel = (props: PromptLevelProps): JSX.Element => {
 
   return (
     <View style={styles.container}>
-      {promptLevel && prevFocusStepAttempts ? (
-        <StepAttemptStars promptLevel={promptLevel} attemptsWereSuccessful={prevFocusStepAttempts} />
-      ) : (
-        <View>
-          <Text>{` `}</Text>
-        </View>
-      )}
+      {promptLevel ? <StepAttemptStars promptLevel={promptLevel} chainStepId={chainStepId} /> : <Empty />}
       <ChallengingBehavBtn chainStepId={chainStepId} />
     </View>
   );

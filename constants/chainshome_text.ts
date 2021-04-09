@@ -3,6 +3,10 @@
  */
 import { ChainSessionTypeLabels } from '../types/chain/ChainSession';
 
+export const PROBE_ASIDE_INSTRUCTIONS = `
+Probe sessions are an opportunity to demonstrate skills independently. Please do not provide any prompting. You will enter data based on skill demonstration.
+`;
+
 export const PROBE_INSTRUCTIONS = `
 Start the probe with a simple instruction "It's time to brush your teeth."  
 

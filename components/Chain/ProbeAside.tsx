@@ -1,12 +1,12 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-import { PROBE_INSTRUCTIONS } from '../../constants/chainshome_text';
+import { PROBE_ASIDE_INSTRUCTIONS } from '../../constants/chainshome_text';
 
 const ProbeAside = (): JSX.Element => {
   return (
     <View style={styles.container}>
       <Text style={styles.headerText}>{`Probe Session`}</Text>
-      <Text style={styles.instructionText}>{PROBE_INSTRUCTIONS}</Text>
+      <Text style={styles.instructionText}>{PROBE_ASIDE_INSTRUCTIONS}</Text>
     </View>
   );
 };

@@ -2,10 +2,11 @@ import { NavigationContainer, NavigationContainerRef, ParamListBase } from '@rea
 import { createStackNavigator, StackNavigationProp } from '@react-navigation/stack';
 import * as Font from 'expo-font';
 import React, { createRef, ReactElement, useEffect, useState } from 'react';
-import { Text, View } from 'react-native';
 import 'react-native-gesture-handler';
 import { Button, Provider } from 'react-native-paper';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { ConfirmExitSession } from './components/ConfirmExitSession/ConfirmExitSession';
+import { Empty } from './components/Empty/Empty';
 import { Loading } from './components/Loading/Loading';
 import { SelectParticipant } from './components/SelectParticipant/SelectParticipant';
 import { ChainMasteryProvider } from './context/ChainMasteryProvider';
@@ -65,6 +66,7 @@ export default function App(): JSX.Element | null {
     return (
       <Button
         color={CustomColors.uva.white}
+        labelStyle={{ fontSize: 16, textTransform: 'capitalize' }}
         onPress={() => {
           props.navigation.navigate('SelectParticipant');
         }}
@@ -85,6 +87,12 @@ export default function App(): JSX.Element | null {
     );
   };
 
+  const getHeaderLeftFunc = (): (() => JSX.Element) => {
+    return function headerLeftFunc() {
+      return <Empty />;
+    };
+  };
+
   const getHeaderRightFunc = (navigation: StackNavigationProp<any>, parentScreen?: string): (() => JSX.Element) => {
     return function headerRightFunc() {
       if (parentScreen === 'ChainsHomeScreen') {
@@ -95,11 +103,11 @@ export default function App(): JSX.Element | null {
         return <LogoutButton navigation={navigation} />;
       }
 
-      return (
-        <View>
-          <Text>{''}</Text>
-        </View>
-      );
+      if (parentScreen === 'PrepareMaterialsScreen' || parentScreen === 'StepScreen') {
+        return <ConfirmExitSession />;
+      }
+
+      return <Empty />;
     };
   };
 
@@ -128,7 +136,8 @@ export default function App(): JSX.Element | null {
           options={({ navigation }) => ({
             ...screenOpts,
             title: 'Prepare Materials',
-            headerRight: getHeaderRightFunc(navigation),
+            headerLeft: getHeaderLeftFunc(),
+            headerRight: getHeaderRightFunc(navigation, 'PrepareMaterialsScreen'),
           })}
           name={'PrepareMaterialsScreen'}
           component={PrepareMaterialsScreen}
@@ -151,7 +160,8 @@ export default function App(): JSX.Element | null {
           options={({ navigation }) => ({
             ...screenOpts,
             title: 'Step',
-            headerRight: getHeaderRightFunc(navigation),
+            headerLeft: getHeaderLeftFunc(),
+            headerRight: getHeaderRightFunc(navigation, 'StepScreen'),
           })}
           name={'StepScreen'}
           component={StepScreen}

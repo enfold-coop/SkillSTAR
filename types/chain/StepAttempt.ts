@@ -108,7 +108,7 @@ export enum StepIncompleteReason {
 export enum StepIncompleteReasonLabels {
   'lack_of_attending' = 'Lack of Attending',
   'challenging_behavior' = 'Challenging Behavior',
-  'sensory_issues' = 'Sensory Issues(materials are aversive)',
+  'sensory_issues' = 'Sensory Issues (e.g., materials are aversive)',
   'other' = 'Other',
 }
 

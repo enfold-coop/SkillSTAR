@@ -101,26 +101,63 @@ export class ChainMastery {
   }
 
   /**
-   * Returns array of booleans indicating prior focus step completion at latest prompt level
+   * Returns number of stars (0-3) indicating prior step completion:
+   *
+   * For the focus or booster-needed step, the number of stars should reflect the previous successful* attempts
+   * in prior training sessions only. They should NOT count probe sessions.
+   * *actual prompt level needed meets or exceeds target prompt level
+   *
+   * For a not-yet-started step attempt in a training session, the number of stars should reflect the number of
+   * previous sessions (counting probe AND training sessions) with no challenging behavior.
+   *
+   * For a mastered or booster-mastered step, the number of stars should reflect the previous sessions (counting
+   * probe AND training sessions) where the step was completed independently.
    *
    * @param chainStepId
    */
-  getPreviousFocusStepAttempts(chainStepId: number): boolean[] {
-    const focusStepAttempts = this.getFocusStepAttemptsForChainStep(chainStepId);
-    const lastPromptLevel = this.masteryInfoMap[chainStepId].promptLevel;
-    const attemptsAtLastLevel = [];
+  getNumStars(chainStepId: number): number {
+    const masteryInfo = this.masteryInfoMap[chainStepId];
 
-    if (focusStepAttempts.length > 0 && lastPromptLevel) {
-      for (const stepAttempt of focusStepAttempts.reverse()) {
-        if (stepAttempt.target_prompt_level === lastPromptLevel) {
-          attemptsAtLastLevel.push(ChainMastery.stepIsComplete(stepAttempt));
-        } else {
-          break;
+    // If the step is Mastered/Booster Mastered, just return the maximum number of stars.
+    if ([ChainStepStatus.mastered, ChainStepStatus.booster_mastered].includes(masteryInfo.stepStatus)) {
+      return NUM_COMPLETE_ATTEMPTS_FOR_MASTERY;
+    }
+
+    const recentStepAttempts = this.stepAttemptsMap[chainStepId].reverse();
+    const lastPromptLevel = masteryInfo.promptLevel;
+    let numAttempts = 0;
+    let numStars = 0;
+    const isFocusOrBooster = [ChainStepStatus.focus, ChainStepStatus.booster_needed].includes(masteryInfo.stepStatus);
+
+    if (recentStepAttempts.length > 0 && lastPromptLevel) {
+      for (const stepAttempt of recentStepAttempts) {
+        // If the step is Focus/Booster Needed, count successful training sessions only.
+        if (isFocusOrBooster) {
+          if (stepAttempt.session_type !== ChainSessionType.probe && ChainMastery.isFocusOrBoosterStep(stepAttempt)) {
+            // Only count training sessions.
+            numAttempts++;
+
+            if (lastPromptLevel === stepAttempt.target_prompt_level && ChainMastery.stepIsComplete(stepAttempt)) {
+              numStars++;
+            }
+          }
         }
+
+        // If the step is Not Yet Started, count only attempts with no challenging behavior.
+        else {
+          // Count both training sessions and probes.
+          numAttempts++;
+
+          if (!stepAttempt.had_challenging_behavior) {
+            numStars++;
+          }
+        }
+
+        if (numStars >= NUM_COMPLETE_ATTEMPTS_FOR_MASTERY || numAttempts >= NUM_COMPLETE_ATTEMPTS_FOR_MASTERY) break;
       }
     }
 
-    return attemptsAtLastLevel;
+    return numStars;
   }
 
   /**
@@ -349,7 +386,7 @@ export class ChainMastery {
 
   /**
    * Given a prompt level, returns the next prompt level in the prompt hierarchy.
-   * @param promptLvl: the previous prompt level
+   * @param promptLvl: the current prompt level
    */
   static getNextPromptLevel(promptLvl: ChainStepPromptLevel): ChainStepPromptLevelMapItem {
     const currentIndex = ChainMastery.promptHierarchy.findIndex((e) => e.key === promptLvl);
@@ -358,8 +395,8 @@ export class ChainMastery {
   }
 
   /**
-   * Given a prompt level, returns the next prompt level in the prompt hierarchy.
-   * @param promptLvl: the previous prompt level
+   * Given a prompt level, returns the previous prompt level in the prompt hierarchy.
+   * @param promptLvl: the current prompt level
    */
   static getPrevPromptLevel(promptLvl: ChainStepPromptLevel): ChainStepPromptLevelMapItem {
     const maxIndex = ChainMastery.promptHierarchy.length - 1;
@@ -1131,11 +1168,10 @@ export class ChainMastery {
    */
   updateDraftSessionStep(chainStepId: number, fieldName: StepAttemptFieldName, fieldValue: StepAttemptField): void {
     //  Get the step
-    this.draftSession.step_attempts.forEach((stepAttempt, i) => {
+    this.draftSession.step_attempts.forEach((stepAttempt) => {
       if (stepAttempt.chain_step_id === chainStepId) {
         // Set the value of the fieldName for a specific step
-        // @ts-ignore-next-line
-        this.draftSession.step_attempts[i][fieldName] = fieldValue;
+        (stepAttempt[fieldName] as any) = fieldValue;
       }
     });
   }
@@ -1252,6 +1288,14 @@ export class ChainMastery {
     const newChainData = this.chainData.clone();
     newChainData.upsertSession(this.draftSession);
     this.updateChainData(newChainData);
+  }
+
+  /**
+   * Adds the current draft session to the chain data, updates the chain data,
+   * updates the mastery info, and generates a new draft session.
+   */
+  resetDraftSession(): void {
+    this.draftSession = this.buildNewDraftSession();
   }
 
   /**
@@ -1403,7 +1447,7 @@ export class ChainMastery {
 
       if (!hasBeenFocused && stepAttempt.session_type !== ChainSessionType.probe) {
         // Count consecutive completes before this step has ever been focused.
-        if (isComplete) {
+        if (!stepAttempt.had_challenging_behavior) {
           numCompleteTrainingAttemptsBeforeFocus++;
         } else {
           numCompleteTrainingAttemptsBeforeFocus = 0;

@@ -1,26 +1,33 @@
 import { AntDesign } from '@expo/vector-icons';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
+import { NUM_COMPLETE_ATTEMPTS_FOR_MASTERY } from '../../constants/MasteryAlgorithm';
+import { useChainMasteryState } from '../../context/ChainMasteryProvider';
 import CustomColors from '../../styles/Colors';
 import { ChainStepPromptLevel, ChainStepPromptLevelMap } from '../../types/chain/StepAttempt';
+import { Empty } from '../Empty/Empty';
 
 interface StepAttemptStarsProps {
   promptLevel?: ChainStepPromptLevel;
-  attemptsWereSuccessful: boolean[] | undefined;
+  chainStepId?: number;
 }
 
 const StepAttemptStars = (props: StepAttemptStarsProps): JSX.Element => {
-  const { promptLevel, attemptsWereSuccessful } = props;
+  const { promptLevel, chainStepId } = props;
+  const chainMasteryState = useChainMasteryState();
+  const [numStars, setNumStars] = useState<number>(0);
+
+  useEffect(() => {
+    if (chainStepId !== undefined && chainMasteryState.chainMastery) {
+      setNumStars(chainMasteryState.chainMastery.getNumStars(chainStepId));
+    }
+  }, [chainStepId]);
 
   const Stars = (): JSX.Element => {
-    const arr =
-      !attemptsWereSuccessful || attemptsWereSuccessful.length === 0 ? [false, false, false] : attemptsWereSuccessful;
+    const icons: JSX.Element[] = [];
 
-    const numSuccess = arr.slice(-3).filter((completed) => completed).length;
-    const icons = [];
-
-    for (let i = 0; i < 3; i++) {
-      const iconName = i < numSuccess ? 'star' : 'staro';
+    for (let i = 0; i < NUM_COMPLETE_ATTEMPTS_FOR_MASTERY; i++) {
+      const iconName = i < numStars ? 'star' : 'staro';
       icons.push(
         <AntDesign
           name={iconName}
@@ -35,15 +42,13 @@ const StepAttemptStars = (props: StepAttemptStarsProps): JSX.Element => {
     return <View style={styles.starContainer}>{icons}</View>;
   };
 
-  return promptLevel && attemptsWereSuccessful ? (
+  return promptLevel && chainStepId !== undefined ? (
     <View style={styles.container}>
       <Text style={styles.promptLevelText}>{'Prompt Level: ' + ChainStepPromptLevelMap[promptLevel].shortName}</Text>
       <Stars />
     </View>
   ) : (
-    <View>
-      <Text>{` `}</Text>
-    </View>
+    <Empty />
   );
 };
 

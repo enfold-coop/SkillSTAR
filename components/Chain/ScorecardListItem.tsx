@@ -9,6 +9,7 @@ import { MasteryIcon } from '../../styles/MasteryIcon';
 import { ChainStep } from '../../types/chain/ChainStep';
 import { MasteryInfo } from '../../types/chain/MasteryInfoMap';
 import { StepAttempt } from '../../types/chain/StepAttempt';
+import { Loading } from '../Loading/Loading';
 
 interface ScorecardListItemProps {
   chainStep: ChainStep;
@@ -107,9 +108,7 @@ const ScorecardListItem = (props: ScorecardListItemProps): JSX.Element => {
   ) : (
     <Animatable.View animation={'fadeIn'} duration={1000}>
       <Card style={styles.container}>
-        <View style={styles.dropDownContainer}>
-          <Text style={styles.dropDownLabel}>{`...`}</Text>
-        </View>
+        <Loading />
       </Card>
     </Animatable.View>
   );

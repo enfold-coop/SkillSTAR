@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { Switch } from 'react-native-paper';
+import { useChainMasteryState } from '../../context/ChainMasteryProvider';
 import CustomColors from '../../styles/Colors';
 import { StepAttemptFieldName } from '../../types/chain/StepAttempt';
 import { DataVerificationControlCallback } from '../../types/DataVerificationControlCallback';
@@ -8,7 +9,6 @@ import { DataVerificationControlCallback } from '../../types/DataVerificationCon
 interface ListItemSwitchProps {
   fieldName: StepAttemptFieldName;
   chainStepId: number;
-  defaultValue: boolean;
   onChange: DataVerificationControlCallback;
 }
 
@@ -20,8 +20,23 @@ const ListItemSwitch = (props: ListItemSwitchProps): JSX.Element => {
    * ---- set switch value to type, on stepId
    *
    */
+  const { chainStepId, fieldName, onChange } = props;
+  const chainMasteryState = useChainMasteryState();
 
-  const { chainStepId, fieldName, defaultValue, onChange } = props;
+  const getDefaultValue = (): boolean => {
+    if (!chainMasteryState.chainMastery) return false;
+
+    const stepAttempt = chainMasteryState.chainMastery.draftSession.step_attempts.find(
+      (s) => s.chain_step_id === chainStepId,
+    );
+
+    if (!stepAttempt) return false;
+
+    const value = stepAttempt[fieldName];
+    return value !== undefined ? !!value : false;
+  };
+
+  const defaultValue = getDefaultValue();
   const [isSwitchOn, setIsSwitchOn] = useState<boolean>(defaultValue);
   const [label, setLabel] = useState('No');
 
