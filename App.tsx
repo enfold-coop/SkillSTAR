@@ -2,11 +2,11 @@ import { NavigationContainer, NavigationContainerRef, ParamListBase } from '@rea
 import { createStackNavigator, StackNavigationProp } from '@react-navigation/stack';
 import * as Font from 'expo-font';
 import React, { createRef, ReactElement, useEffect, useState } from 'react';
-import { Text, View } from 'react-native';
 import 'react-native-gesture-handler';
 import { Button, Provider } from 'react-native-paper';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { ConfirmExitSession } from './components/ConfirmExitSession/ConfirmExitSession';
+import { Empty } from './components/Empty/Empty';
 import { Loading } from './components/Loading/Loading';
 import { SelectParticipant } from './components/SelectParticipant/SelectParticipant';
 import { ChainMasteryProvider } from './context/ChainMasteryProvider';
@@ -89,11 +89,7 @@ export default function App(): JSX.Element | null {
 
   const getHeaderLeftFunc = (): (() => JSX.Element) => {
     return function headerLeftFunc() {
-      return (
-        <View>
-          <Text>{''}</Text>
-        </View>
-      );
+      return <Empty />;
     };
   };
 
@@ -111,11 +107,7 @@ export default function App(): JSX.Element | null {
         return <ConfirmExitSession />;
       }
 
-      return (
-        <View>
-          <Text>{''}</Text>
-        </View>
-      );
+      return <Empty />;
     };
   };
 

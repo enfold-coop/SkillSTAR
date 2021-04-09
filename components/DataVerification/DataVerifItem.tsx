@@ -5,6 +5,7 @@ import CustomColors from '../../styles/Colors';
 import { MasteryIcon } from '../../styles/MasteryIcon';
 import { ChainStepPromptLevel, StepAttempt, StepIncompleteReason } from '../../types/chain/StepAttempt';
 import { DataVerificationControlCallback } from '../../types/DataVerificationControlCallback';
+import { Empty } from '../Empty/Empty';
 import ListItemSwitch from '../Probe/ListItemSwitch';
 import BehavAccordion from './BehavAccordion';
 import PromptAccordion from './PromptAccordion';
@@ -140,7 +141,7 @@ const DataVerifItem = (props: DataVerifItemProps): JSX.Element => {
       </View>
     </View>
   ) : (
-    <Text>{`...`}</Text>
+    <Empty />
   );
 };
 
