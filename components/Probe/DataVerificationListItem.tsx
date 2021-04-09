@@ -1,6 +1,5 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-import { useChainMasteryState } from '../../context/ChainMasteryProvider';
 import CustomColors from '../../styles/Colors';
 import { StepAttempt } from '../../types/chain/StepAttempt';
 import { DataVerificationControlCallback } from '../../types/DataVerificationControlCallback';
@@ -13,34 +12,6 @@ interface DataVerificationListItemProps {
 
 export const DataVerificationListItem = (props: DataVerificationListItemProps): JSX.Element => {
   const { stepAttempt, onChange } = props;
-  const chainMasteryState = useChainMasteryState();
-  const defaults = {
-    completed: false,
-    was_prompted: true,
-    had_challenging_behavior: false,
-  };
-
-  // // Runs once on mount
-  // useEffect(() => {
-  //   let isCancelled = false;
-
-  //   // Set step attempt default values
-  //   if (!isCancelled && chainMasteryState.chainMastery) {
-  //     // Find the step in the draft session.
-  //     chainMasteryState.chainMastery.draftSession.step_attempts.forEach((s) => {
-  //       if (chainMasteryState.chainMastery && s.chain_step_id === stepAttempt.chain_step_id) {
-  //         // Set its value.
-  //         s.completed = defaults.completed;
-  //         s.was_prompted = defaults.was_prompted;
-  //         s.had_challenging_behavior = defaults.had_challenging_behavior;
-  //       }
-  //     });
-  //   }
-
-  //   return () => {
-  //     isCancelled = true;
-  //   };
-  // }, []);
 
   const chainStepId = stepAttempt.chain_step_id !== undefined ? stepAttempt.chain_step_id : -1;
   const instruction = stepAttempt.chain_step ? stepAttempt.chain_step.instruction : 'LOADING';

@@ -1,7 +1,7 @@
 import { useNavigation } from '@react-navigation/native';
 import React, { ReactElement, useState } from 'react';
-import { Modal, View, Text, StyleSheet } from 'react-native';
-import { Button, Title } from 'react-native-paper';
+import { Modal, StyleSheet, Text, View } from 'react-native';
+import { Button } from 'react-native-paper';
 import { useChainMasteryState } from '../../context/ChainMasteryProvider';
 import CustomColors from '../../styles/Colors';
 
