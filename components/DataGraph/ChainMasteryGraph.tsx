@@ -123,7 +123,7 @@ const ChainMasteryGraph = (props: ChainMasteryGraphProps): JSX.Element => {
             width={width}
             theme={VictoryTheme.material}
             minDomain={{ x: 0.9, y: 0 }}
-            maxDomain={{ x: chainMasteryState.chainMastery.chainData.sessions.length, y: 100 }}
+            maxDomain={{ x: chainMasteryState.chainMastery.chainData.sessions.length + 0.1, y: 100 }}
           >
             <VictoryAxis
               crossAxis
