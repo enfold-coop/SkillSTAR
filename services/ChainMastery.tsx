@@ -137,7 +137,7 @@ export class ChainMastery {
             // Only count training sessions.
             numAttempts++;
 
-            if (ChainMastery.stepIsComplete(stepAttempt)) {
+            if (lastPromptLevel === stepAttempt.target_prompt_level && ChainMastery.stepIsComplete(stepAttempt)) {
               numStars++;
             }
           }
