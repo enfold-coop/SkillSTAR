@@ -191,20 +191,32 @@ describe('ChainMastery', () => {
       expect(chainMastery.getNumStars(chainStep.id)).toEqual(NUM_COMPLETE_ATTEMPTS_FOR_MASTERY);
     }
 
-    // Fail all steps in 3 probes.
-    doProbeSessions(chainMastery, NUM_INCOMPLETE_ATTEMPTS_FOR_BOOSTER, true, ChainStepStatus.mastered);
+    // Fail all steps in 3 probes to trigger a booster.
+    for (let i = 0; i < NUM_INCOMPLETE_ATTEMPTS_FOR_BOOSTER; i++) {
+      chainMastery.draftSession.step_attempts.forEach((stepAttempt) => {
+        const numStars = chainMastery.getNumStars(stepAttempt.chain_step_id);
+        expect(stepAttempt.status).toEqual(ChainStepStatus.mastered);
+        expect(stepAttempt.target_prompt_level).toEqual(ChainStepPromptLevel.none);
+        expect(numStars).toEqual(NUM_COMPLETE_ATTEMPTS_FOR_MASTERY - i);
+        failStepAttempt(stepAttempt);
+      });
+
+      chainMastery.saveDraftSession();
+    }
 
     for (const chainStep of mockChainSteps) {
-      expect(chainMastery.getNumStars(chainStep.id)).toEqual(0);
       expect(chainMastery.masteryInfoMap[chainStep.id].stepStatus).toEqual(ChainStepStatus.booster_needed);
+      expect(chainMastery.getNumStars(chainStep.id)).toEqual(0);
     }
 
     // Do 3 booster sessions at shadow prompt level.
     for (let i = 0; i < NUM_COMPLETE_ATTEMPTS_FOR_MASTERY; i++) {
       chainMastery.draftSession.step_attempts.forEach((stepAttempt) => {
+        expect(stepAttempt.status).toEqual(ChainStepStatus.booster_needed);
         expect(stepAttempt.target_prompt_level).toEqual(ChainStepPromptLevel.shadow);
         expect(chainMastery.getNumStars(stepAttempt.chain_step_id)).toEqual(i);
         completeStepAttempt(stepAttempt);
+        stepAttempt.prompt_level = stepAttempt.target_prompt_level;
       });
 
       chainMastery.saveDraftSession();
@@ -213,15 +225,71 @@ describe('ChainMastery', () => {
     // Do 3 more booster sessions at independent prompt level.
     for (let i = 0; i < NUM_COMPLETE_ATTEMPTS_FOR_MASTERY; i++) {
       chainMastery.draftSession.step_attempts.forEach((stepAttempt) => {
+        expect(stepAttempt.status).toEqual(ChainStepStatus.booster_needed);
         expect(stepAttempt.target_prompt_level).toEqual(ChainStepPromptLevel.none);
         expect(chainMastery.getNumStars(stepAttempt.chain_step_id)).toEqual(i);
         completeStepAttempt(stepAttempt);
+        stepAttempt.prompt_level = stepAttempt.target_prompt_level;
       });
 
       chainMastery.saveDraftSession();
     }
 
     // All steps should be mastered again.
+    for (const chainStep of mockChainSteps) {
+      expect(chainMastery.getNumStars(chainStep.id)).toEqual(NUM_COMPLETE_ATTEMPTS_FOR_MASTERY);
+      if (chainMastery.masteryInfoMap[chainStep.id].stepStatus !== ChainStepStatus.booster_mastered) {
+        chainMastery.printSessionLog();
+      }
+      expect(chainMastery.masteryInfoMap[chainStep.id].stepStatus).toEqual(ChainStepStatus.booster_mastered);
+    }
+
+    // Fail all steps in 3 probes AGAIN to trigger another booster.
+    for (let i = 0; i < NUM_INCOMPLETE_ATTEMPTS_FOR_BOOSTER; i++) {
+      chainMastery.draftSession.step_attempts.forEach((stepAttempt) => {
+        const numStars = chainMastery.getNumStars(stepAttempt.chain_step_id);
+        expect(stepAttempt.status).toEqual(ChainStepStatus.booster_mastered);
+        expect(stepAttempt.target_prompt_level).toEqual(ChainStepPromptLevel.none);
+        expect(numStars).toEqual(NUM_COMPLETE_ATTEMPTS_FOR_MASTERY - i);
+        failStepAttempt(stepAttempt);
+      });
+
+      chainMastery.saveDraftSession();
+    }
+
+    for (const chainStep of mockChainSteps) {
+      expect(chainMastery.masteryInfoMap[chainStep.id].stepStatus).toEqual(ChainStepStatus.booster_needed);
+      expect(chainMastery.getNumStars(chainStep.id)).toEqual(0);
+    }
+
+    // Do 3 booster sessions at shadow prompt level.
+    for (let i = 0; i < NUM_COMPLETE_ATTEMPTS_FOR_MASTERY; i++) {
+      chainMastery.draftSession.step_attempts.forEach((stepAttempt) => {
+        const numStars = chainMastery.getNumStars(stepAttempt.chain_step_id);
+        expect(stepAttempt.status).toEqual(ChainStepStatus.booster_needed);
+        expect(stepAttempt.target_prompt_level).toEqual(ChainStepPromptLevel.shadow);
+        expect(numStars).toEqual(i);
+        completeStepAttempt(stepAttempt);
+        stepAttempt.prompt_level = stepAttempt.target_prompt_level;
+      });
+
+      chainMastery.saveDraftSession();
+    }
+
+    // Do 3 more booster sessions at independent prompt level.
+    for (let i = 0; i < NUM_COMPLETE_ATTEMPTS_FOR_MASTERY; i++) {
+      chainMastery.draftSession.step_attempts.forEach((stepAttempt) => {
+        expect(stepAttempt.status).toEqual(ChainStepStatus.booster_needed);
+        expect(stepAttempt.target_prompt_level).toEqual(ChainStepPromptLevel.none);
+        expect(chainMastery.getNumStars(stepAttempt.chain_step_id)).toEqual(i);
+        completeStepAttempt(stepAttempt);
+        stepAttempt.prompt_level = stepAttempt.target_prompt_level;
+      });
+
+      chainMastery.saveDraftSession();
+    }
+
+    // All steps should be re-mastered again.
     for (const chainStep of mockChainSteps) {
       expect(chainMastery.getNumStars(chainStep.id)).toEqual(NUM_COMPLETE_ATTEMPTS_FOR_MASTERY);
       expect(chainMastery.masteryInfoMap[chainStep.id].stepStatus).toEqual(ChainStepStatus.booster_mastered);
@@ -258,10 +326,11 @@ describe('ChainMastery', () => {
       ChainSessionType.probe, // 17. Steps 1 & 2 mastered, fail step 1
       ChainSessionType.training, // 18. Steps 1 & 2 mastered, fail step 1, 3rd step complete @ full_physical
       ChainSessionType.training, // 19. Steps 1 & 2 mastered, fail step 1, 3rd step complete @ full_physical
+      ChainSessionType.training, // 19. Steps 1 & 2 mastered, fail step 1, 3rd step complete @ full_physical
     ];
 
-    // Draft session #20 should be:
-    // 20. (DRAFT) First step booster @ shadow, 2nd step mastered, 3rd step complete @ partial_physical
+    // Draft session #21 should be:
+    // 21. (DRAFT) First step booster @ shadow, 2nd step mastered, 3rd step complete @ partial_physical
 
     sessionTypes.forEach((sessionType, sessionIndex) => {
       chainMastery.setDraftSessionType(sessionType);
@@ -269,19 +338,36 @@ describe('ChainMastery', () => {
 
       chainMastery.draftSession.step_attempts.forEach((stepAttempt, stepAttemptIndex) => {
         // Sessions 0-2: Initial probe sessions.
-        if (sessionIndex < 3) {
+        if (sessionIndex <= 2) {
           if (stepAttemptIndex === 0) {
+            expect(chainMastery.getNumStars(stepAttempt.chain_step_id)).toEqual(sessionIndex);
+
             // Master first chain step.
             completeStepAttempt(stepAttempt);
           } else {
+            expect(chainMastery.getNumStars(stepAttempt.chain_step_id)).toEqual(0);
+
             // Fail all others.
             failStepAttempt(stepAttempt);
           }
         }
 
-        // Sessions 3-15: First step mastered, 2nd step complete @ full_physical thru independent + 3 probes
-        else if (sessionIndex >= 3 && sessionIndex < 16) {
+        // Sessions 3-17: First step mastered, 2nd step complete @ full_physical thru independent + 3 probes
+        else if (sessionIndex >= 3 && sessionIndex <= 17) {
           if (stepAttemptIndex <= 1) {
+            if (stepAttemptIndex === 0) {
+              expect(chainMastery.getNumStars(stepAttempt.chain_step_id)).toEqual(3);
+            }
+
+            if (stepAttemptIndex === 1) {
+              if (sessionIndex <= 14) {
+                expect(chainMastery.getNumStars(stepAttempt.chain_step_id)).toEqual(sessionIndex % 3);
+              } else {
+                // Mastered now.
+                expect(chainMastery.getNumStars(stepAttempt.chain_step_id)).toEqual(3);
+              }
+            }
+
             // Complete first 2 chain steps.
             completeStepAttempt(stepAttempt);
           } else {
@@ -290,8 +376,8 @@ describe('ChainMastery', () => {
           }
         }
 
-        // Sessions 16-19: 3 training. First step FAIL, 2nd step mastered, 3rd step complete @ partial_physical
-        else if (sessionIndex >= 16 && sessionIndex < 19) {
+        // Sessions 18-20: 3 training. First step FAIL, 2nd step mastered, 3rd step complete @ partial_physical
+        else if (sessionIndex >= 18 && sessionIndex <= 20) {
           if (stepAttemptIndex === 0) {
             // Fail first step to trigger a booster.
             failStepAttempt(stepAttempt);
@@ -300,11 +386,6 @@ describe('ChainMastery', () => {
             completeStepAttempt(stepAttempt);
 
             if (stepAttemptIndex === 2) {
-              if (stepAttempt.target_prompt_level !== ChainStepPromptLevel.partial_physical) {
-                chainMastery.printSessionLog();
-                console.log('stepAttempt', stepAttempt);
-              }
-
               expect(stepAttempt.target_prompt_level).toEqual(ChainStepPromptLevel.partial_physical);
             }
           } else {
@@ -317,7 +398,7 @@ describe('ChainMastery', () => {
       chainMastery.saveDraftSession();
     });
 
-    // The draft session (#20) should be a booster session
+    // The draft session (#21) should be a booster session
     expect(chainMastery.draftSession.session_type).toEqual(ChainSessionType.booster);
 
     // The date mastered and date booster initiated for the first chain step should now be populated.
@@ -731,7 +812,11 @@ describe('ChainMastery', () => {
       expect(s.was_focus_step).toBeFalsy();
     });
     expect(chainMastery.draftSession.session_type).toEqual(ChainSessionType.probe);
-    doProbeSessions(chainMastery, 3, false, ChainStepStatus.booster_mastered);
+    doProbeSessions(chainMastery, NUM_COMPLETE_ATTEMPTS_FOR_MASTERY, false, ChainStepStatus.booster_mastered);
+
+    // Fail all steps 3 times in a row, triggering boster for all steps.
+    doProbeSessions(chainMastery, NUM_INCOMPLETE_ATTEMPTS_FOR_BOOSTER, true, ChainStepStatus.booster_mastered);
+    checkAllStepsHaveStatus(chainMastery, ChainStepStatus.booster_needed);
   });
 
   it('should advance through focus steps at appropriate prompt levels', () => {

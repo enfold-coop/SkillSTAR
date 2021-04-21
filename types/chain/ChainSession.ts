@@ -21,6 +21,7 @@ export interface ChainSession {
   completed?: boolean;
   session_type?: ChainSessionType;
   step_attempts: StepAttempt[];
+  session_number?: number;
 }
 
 export const ChainSessionTypeMap = convertEnumToMap(ChainSessionType, ChainSessionTypeLabels);
