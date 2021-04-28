@@ -1,19 +1,19 @@
 import { MaterialIcons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
-import React, { useState } from 'react';
-import { Image, Modal, StyleSheet, Text, View } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { Modal, StyleSheet, Text, View } from 'react-native';
 import { Button } from 'react-native-paper';
 import AppHeader from '../components/Header/AppHeader';
 import { Loading } from '../components/Loading/Loading';
 import DataVerificationList from '../components/Probe/DataVerificationList';
 import { PROBE_INSTRUCTIONS } from '../constants/chainshome_text';
 import { useChainMasteryContext } from '../context/ChainMasteryProvider';
-import { ImageAssets } from '../data/images';
 import { ApiService } from '../services/ApiService';
 import CustomColors from '../styles/Colors';
 import { ChainSessionTypeMap } from '../types/chain/ChainSession';
 import { StepAttemptField, StepAttemptFieldName } from '../types/chain/StepAttempt';
 import { DataVerificationControlCallback } from '../types/DataVerificationControlCallback';
+import { MaterialIconsT } from '../types/icons/MaterialIcons';
 
 const BaselineAssessmentScreen = (): JSX.Element => {
   /**
@@ -23,6 +23,22 @@ const BaselineAssessmentScreen = (): JSX.Element => {
   const [chainMasteryState, chainMasteryDispatch] = useChainMasteryContext();
   const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
   const [shouldShowModal, setShouldShowModal] = useState<boolean>(false);
+
+  // Runs once on first load.
+  useEffect(() => {
+    if (
+      chainMasteryState &&
+      chainMasteryState.chainMastery &&
+      chainMasteryState.chainMastery.chainData &&
+      chainMasteryState.chainMastery.draftSession
+    ) {
+      // Set default values for all session steps.
+      chainMasteryState.chainMastery.draftSession.step_attempts.forEach((stepAttempt) => {
+        stepAttempt.completed = false;
+        stepAttempt.had_challenging_behavior = false;
+      });
+    }
+  }, []);
 
   const showModal = () => {
     // Display the modal
@@ -93,18 +109,46 @@ const BaselineAssessmentScreen = (): JSX.Element => {
             </Text>
           </View>
           {chainMasteryState.chainMastery?.draftSession.step_attempts.map((stepAttempt) => {
-            let bgColor: string;
+            let bgColor = CustomColors.uva.orange;
+            let iconColor = 'white';
+            let icon: MaterialIconsT;
+            let cbIcon: MaterialIconsT;
+            let cbIconColor = 'white';
 
-            if (stepAttempt.completed) {
-              if (stepAttempt.had_challenging_behavior) {
+            if (stepAttempt.had_challenging_behavior === true) {
+              cbIcon = 'flag';
+              cbIconColor = CustomColors.uva.warning;
+            } else if (stepAttempt.had_challenging_behavior === false) {
+              cbIcon = 'flag';
+              cbIconColor = 'rgba(0, 0, 0, 0.1)';
+            } else {
+              cbIcon = 'error';
+              cbIconColor = 'white';
+              bgColor = CustomColors.uva.orange;
+            }
+
+            if (stepAttempt.completed === true) {
+              icon = 'check';
+              iconColor = 'black';
+            } else if (stepAttempt.completed === false) {
+              icon = 'close';
+              iconColor = CustomColors.uva.warning;
+            } else {
+              icon = 'error';
+              iconColor = 'white';
+              bgColor = CustomColors.uva.orange;
+            }
+
+            if (stepAttempt.completed === true) {
+              if (stepAttempt.had_challenging_behavior === true) {
                 bgColor = CustomColors.uva.greenSofter;
-              } else {
+              } else if (stepAttempt.had_challenging_behavior === false) {
                 bgColor = CustomColors.uva.greenSoft;
               }
-            } else {
-              if (stepAttempt.had_challenging_behavior) {
+            } else if (stepAttempt.completed === false) {
+              if (stepAttempt.had_challenging_behavior === true) {
                 bgColor = CustomColors.uva.warningSoft;
-              } else {
+              } else if (stepAttempt.had_challenging_behavior === false) {
                 bgColor = CustomColors.uva.warningSofter;
               }
             }
@@ -117,17 +161,10 @@ const BaselineAssessmentScreen = (): JSX.Element => {
                 <Text style={styles.confirmRowNum}>{`${stepAttempt.chain_step_id + 1}.`}</Text>
                 <Text style={styles.confirmRowTitle}>{stepAttempt.chain_step?.instruction}</Text>
                 <View style={styles.confirmRowData}>
-                  <MaterialIcons
-                    name={stepAttempt.completed ? 'check' : 'close'}
-                    size={36}
-                    style={{ color: stepAttempt.completed ? 'black' : CustomColors.uva.warning }}
-                  />
+                  <MaterialIcons name={icon} size={36} style={{ color: iconColor }} />
                 </View>
                 <View style={styles.confirmRowData}>
-                  <Image
-                    source={ImageAssets.flag_icon}
-                    style={{ ...styles.confirmRowDataIcon, opacity: stepAttempt.had_challenging_behavior ? 1 : 0 }}
-                  />
+                  <MaterialIcons name={cbIcon} size={36} style={{ color: cbIconColor }} />
                 </View>
               </View>
             );
