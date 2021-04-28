@@ -1539,6 +1539,22 @@ export class ChainMastery {
     return promptLevelMap;
   }
 
+  printDraftSessionSummary(): void {
+    const lines: string[] = [];
+    lines.push(`============================`);
+    lines.push(`STEP  COMPLETED  CHALLENGING`);
+    lines.push(`----------------------------`);
+
+    this.draftSession.step_attempts.forEach((s) => {
+      const challenging = s.had_challenging_behavior === true ? 'T' : s.had_challenging_behavior === false ? 'F' : '?';
+      const completed = s.completed === true ? 'T' : s.completed === false ? 'F' : '?';
+      lines.push(` ${s.chain_step_id}        ${completed}          ${challenging}`);
+    });
+
+    lines.push(`============================`);
+    console.log(lines.join('\n'));
+  }
+
   printSessionLog(): void {
     const lines: string[] = [];
     let lastFocusStepIndex = 0;
