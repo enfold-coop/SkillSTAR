@@ -35,6 +35,7 @@ const BaselineAssessmentScreen = (): JSX.Element => {
       // Set default values for all session steps.
       chainMasteryState.chainMastery.draftSession.step_attempts.forEach((stepAttempt) => {
         stepAttempt.completed = false;
+        stepAttempt.was_prompted = true;
         stepAttempt.had_challenging_behavior = false;
       });
     }
@@ -66,6 +67,8 @@ const BaselineAssessmentScreen = (): JSX.Element => {
       if (fieldName === 'completed') {
         chainMasteryState.chainMastery.updateDraftSessionStep(chainStepId, 'was_prompted', !fieldValue);
       }
+
+      chainMasteryState.chainMastery.printDraftSessionSummary();
     }
   };
 
