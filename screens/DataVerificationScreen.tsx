@@ -59,7 +59,7 @@ const DataVerificationScreen = (): JSX.Element => {
               return <DataVerifItem chainStepId={item.item.chain_step_id} />;
             }}
             keyExtractor={(item) => item.chain_step_id.toString()}
-            maxToRenderPerBatch={chainMasteryState.chainMastery.chainSteps.length}
+            maxToRenderPerBatch={20}
           />
         ) : (
           <Loading />
