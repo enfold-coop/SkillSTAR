@@ -239,9 +239,6 @@ describe('ChainMastery', () => {
     // All steps should be mastered again.
     for (const chainStep of mockChainSteps) {
       expect(chainMastery.getNumStars(chainStep.id)).toEqual(NUM_COMPLETE_ATTEMPTS_FOR_MASTERY);
-      if (chainMastery.masteryInfoMap[chainStep.id].stepStatus !== ChainStepStatus.booster_mastered) {
-        chainMastery.printSessionLog();
-      }
       expect(chainMastery.masteryInfoMap[chainStep.id].stepStatus).toEqual(ChainStepStatus.booster_mastered);
     }
 
@@ -832,20 +829,26 @@ describe('ChainMastery', () => {
     // All steps should be mastered now.
     checkAllStepsHaveStatus(chainMastery, ChainStepStatus.mastered);
 
-    // Sessions #3-5 - Fail 3 steps in a row.
+    // Sessions #3-5 - Fail 3 attempts in a row.
     for (let i = 0; i < NUM_INCOMPLETE_ATTEMPTS_FOR_BOOSTER; i++) {
-      chainMastery.draftSession.step_attempts.forEach((stepAttempt) => {
+      chainMastery.setDraftSessionType(ChainSessionType.probe);
+
+      chainMastery.draftSession.step_attempts.forEach((stepAttempt, j) => {
+        expect(stepAttempt.session_type).toEqual(ChainSessionType.probe);
+
         // Step status should still be mastered, at independent target prompt level.
         expect(stepAttempt.status).toEqual(ChainStepStatus.mastered);
         expect(stepAttempt.target_prompt_level).toEqual(ChainStepPromptLevel.none);
 
-        // Step completed, but required prompting (shouldn't happen, but
-        // data verification screen can potentially produce this state.)
-        stepAttempt.completed = true;
+        // Step required prompting, but no challenging behavior.
+        stepAttempt.completed = false;
         stepAttempt.was_prompted = true;
-        stepAttempt.prompt_level = ChainStepPromptLevel.shadow;
+
+        // Mark every other step as having challenging behavior.
+        stepAttempt.had_challenging_behavior = j % 2 === 0;
       });
 
+      chainMastery.draftSession.completed = true;
       chainMastery.saveDraftSession();
     }
 
