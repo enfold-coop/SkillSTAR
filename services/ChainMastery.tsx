@@ -1541,14 +1541,15 @@ export class ChainMastery {
 
   printDraftSessionSummary(): void {
     const lines: string[] = [];
-    lines.push(`============================`);
-    lines.push(`STEP  COMPLETED  CHALLENGING`);
-    lines.push(`----------------------------`);
+    lines.push(`======================================`);
+    lines.push(`STEP  COMPLETED  PROMPTED  CHALLENGING`);
+    lines.push(`--------------------------------------`);
 
     this.draftSession.step_attempts.forEach((s) => {
       const challenging = s.had_challenging_behavior === true ? 'T' : s.had_challenging_behavior === false ? 'F' : '?';
       const completed = s.completed === true ? 'T' : s.completed === false ? 'F' : '?';
-      lines.push(` ${s.chain_step_id}        ${completed}          ${challenging}`);
+      const prompted = s.was_prompted === true ? 'T' : s.was_prompted === false ? 'F' : '?';
+      lines.push(` ${s.chain_step_id}        ${completed}         ${prompted}           ${challenging}`);
     });
 
     lines.push(`============================`);
