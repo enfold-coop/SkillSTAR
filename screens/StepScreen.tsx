@@ -191,36 +191,15 @@ const StepScreen = (): JSX.Element => {
   // Set completed to true for this step attempt
   const onStepComplete = () => {
     if (stepAttempt && chainStep && chainMasteryState.chainMastery) {
-      // Mark as completed = true and at the target prompt level, regardless of step status.
+      // Mark as completed with no additional prompting and set prompt level to the target prompt level, regardless of step status.
       chainMasteryState.chainMastery.updateDraftSessionStep(chainStep.id, 'completed', true);
+      chainMasteryState.chainMastery.updateDraftSessionStep(chainStep.id, 'was_prompted', false);
       chainMasteryState.chainMastery.updateDraftSessionStep(
         chainStep.id,
         'prompt_level',
         stepAttempt.target_prompt_level,
       );
       chainMasteryState.chainMastery.updateDraftSessionStep(chainStep.id, 'reason_step_incomplete', undefined);
-
-      const currentFocusStep = chainMasteryState.chainMastery.draftFocusStepAttempt;
-
-      // Focus steps and booster steps are completed with no additional prompting beyond the target prompt level.
-      if (stepAttempt.status === ChainStepStatus.focus || stepAttempt.status === ChainStepStatus.booster_needed) {
-        chainMasteryState.chainMastery.updateDraftSessionStep(chainStep.id, 'was_prompted', false);
-      }
-
-      // Not-yet-started steps are marked as complete, but with additional prompting at the target prompt level.
-      else if (
-        currentFocusStep &&
-        (stepAttempt.status === ChainStepStatus.not_yet_started ||
-          stepAttempt.status === ChainStepStatus.not_complete) &&
-        stepAttempt.chain_step_id > currentFocusStep.chain_step_id
-      ) {
-        chainMasteryState.chainMastery.updateDraftSessionStep(chainStep.id, 'was_prompted', true);
-      }
-
-      // All other step types (mastered, booster_mastered) are recorded as needing no additional prompting.
-      else {
-        chainMasteryState.chainMastery.updateDraftSessionStep(chainStep.id, 'was_prompted', false);
-      }
     }
 
     nextStep();
