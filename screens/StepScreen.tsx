@@ -79,6 +79,26 @@ const StepScreen = (): JSX.Element => {
 
   const goToStep = (i: number) => {
     if (chainMasteryState.chainMastery) {
+      if (stepIndex !== undefined) {
+        const stepAttempt = chainMasteryState.chainMastery.draftSession.step_attempts[stepIndex];
+
+        if (stepAttempt) {
+          // Make sure both completed and was_prompted are set.
+          if (stepAttempt.was_prompted !== undefined && stepAttempt.completed === undefined) {
+            stepAttempt.completed = !stepAttempt.was_prompted;
+          } else if (stepAttempt.was_prompted === undefined && stepAttempt.completed !== undefined) {
+            stepAttempt.was_prompted = !stepAttempt.completed;
+          } else if (stepAttempt.completed === stepAttempt.was_prompted) {
+            // They're both undefined or the same value. Set them to the default values.
+            stepAttempt.was_prompted = true;
+            stepAttempt.completed = false;
+          }
+
+          // Make sure had_challenging_behavior is set.
+          stepAttempt.had_challenging_behavior = !!stepAttempt.had_challenging_behavior;
+        }
+      }
+
       setVideo(undefined);
       setChainStep(chainMasteryState.chainMastery.chainSteps[i]);
       setStepAttempt(chainMasteryState.chainMastery.draftSession.step_attempts[i]);
@@ -136,7 +156,7 @@ const StepScreen = (): JSX.Element => {
 
   const nextStep = () => {
     if (!chainSteps || stepIndex === undefined) {
-      console.error('chainSteps and/or stepIndex not loaded.');
+      console.error('chainMasteryState, chainSteps, and/or stepIndex not loaded.');
       return;
     }
 
