@@ -67,8 +67,6 @@ const BaselineAssessmentScreen = (): JSX.Element => {
       if (fieldName === 'completed') {
         chainMasteryState.chainMastery.updateDraftSessionStep(chainStepId, 'was_prompted', !fieldValue);
       }
-
-      chainMasteryState.chainMastery.printDraftSessionSummary();
     }
   };
 

@@ -79,6 +79,26 @@ const StepScreen = (): JSX.Element => {
 
   const goToStep = (i: number) => {
     if (chainMasteryState.chainMastery) {
+      if (stepIndex !== undefined) {
+        const stepAttempt = chainMasteryState.chainMastery.draftSession.step_attempts[stepIndex];
+
+        if (stepAttempt) {
+          // Make sure both completed and was_prompted are set.
+          if (stepAttempt.was_prompted !== undefined && stepAttempt.completed === undefined) {
+            stepAttempt.completed = !stepAttempt.was_prompted;
+          } else if (stepAttempt.was_prompted === undefined && stepAttempt.completed !== undefined) {
+            stepAttempt.was_prompted = !stepAttempt.completed;
+          } else if (stepAttempt.completed === stepAttempt.was_prompted) {
+            // They're both undefined or the same value. Set them to the default values.
+            stepAttempt.was_prompted = true;
+            stepAttempt.completed = false;
+          }
+
+          // Make sure had_challenging_behavior is set.
+          stepAttempt.had_challenging_behavior = !!stepAttempt.had_challenging_behavior;
+        }
+      }
+
       setVideo(undefined);
       setChainStep(chainMasteryState.chainMastery.chainSteps[i]);
       setStepAttempt(chainMasteryState.chainMastery.draftSession.step_attempts[i]);
@@ -136,7 +156,7 @@ const StepScreen = (): JSX.Element => {
 
   const nextStep = () => {
     if (!chainSteps || stepIndex === undefined) {
-      console.error('chainSteps and/or stepIndex not loaded.');
+      console.error('chainMasteryState, chainSteps, and/or stepIndex not loaded.');
       return;
     }
 
@@ -171,36 +191,15 @@ const StepScreen = (): JSX.Element => {
   // Set completed to true for this step attempt
   const onStepComplete = () => {
     if (stepAttempt && chainStep && chainMasteryState.chainMastery) {
-      // Mark as completed = true and at the target prompt level, regardless of step status.
+      // Mark as completed with no additional prompting and set prompt level to the target prompt level, regardless of step status.
       chainMasteryState.chainMastery.updateDraftSessionStep(chainStep.id, 'completed', true);
+      chainMasteryState.chainMastery.updateDraftSessionStep(chainStep.id, 'was_prompted', false);
       chainMasteryState.chainMastery.updateDraftSessionStep(
         chainStep.id,
         'prompt_level',
         stepAttempt.target_prompt_level,
       );
       chainMasteryState.chainMastery.updateDraftSessionStep(chainStep.id, 'reason_step_incomplete', undefined);
-
-      const currentFocusStep = chainMasteryState.chainMastery.draftFocusStepAttempt;
-
-      // Focus steps and booster steps are completed with no additional prompting beyond the target prompt level.
-      if (stepAttempt.status === ChainStepStatus.focus || stepAttempt.status === ChainStepStatus.booster_needed) {
-        chainMasteryState.chainMastery.updateDraftSessionStep(chainStep.id, 'was_prompted', false);
-      }
-
-      // Not-yet-started steps are marked as complete, but with additional prompting at the target prompt level.
-      else if (
-        currentFocusStep &&
-        (stepAttempt.status === ChainStepStatus.not_yet_started ||
-          stepAttempt.status === ChainStepStatus.not_complete) &&
-        stepAttempt.chain_step_id > currentFocusStep.chain_step_id
-      ) {
-        chainMasteryState.chainMastery.updateDraftSessionStep(chainStep.id, 'was_prompted', true);
-      }
-
-      // All other step types (mastered, booster_mastered) are recorded as needing no additional prompting.
-      else {
-        chainMasteryState.chainMastery.updateDraftSessionStep(chainStep.id, 'was_prompted', false);
-      }
     }
 
     nextStep();

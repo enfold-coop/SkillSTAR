@@ -7,7 +7,7 @@ import {
 import { ChainMastery } from '../../services/ChainMastery';
 import { ChainData } from '../../types/chain/ChainData';
 import { ChainSessionType } from '../../types/chain/ChainSession';
-import { ChainStepStatus, StepAttempt } from '../../types/chain/StepAttempt';
+import { ChainStepPromptLevel, ChainStepStatus, StepAttempt } from '../../types/chain/StepAttempt';
 import { mockChainSteps } from './mockChainSteps';
 
 export const checkMasteryInfo = (chainMastery: ChainMastery, numLastFailed = -1): void => {
@@ -144,6 +144,17 @@ export const checkAllStepsHaveStatus = (
   }
 };
 
+export const checkAllStepsHaveTargetPromptLevel = (
+  chainMastery: ChainMastery,
+  targetPromptLevel: ChainStepPromptLevel,
+): void => {
+  for (const chainStep of mockChainSteps) {
+    const masteryInfo = chainMastery.masteryInfoMap[chainStep.id];
+    expect(masteryInfo).toBeTruthy();
+    expect(masteryInfo.promptLevel).toEqual(targetPromptLevel);
+  }
+};
+
 export const checkAllStepsMastered = (chainMastery: ChainMastery): void => {
   // No chain steps should be marked as the focus step.
   expect(chainMastery.nextFocusChainStepId).toBeUndefined();
@@ -156,11 +167,13 @@ export const checkAllStepsMastered = (chainMastery: ChainMastery): void => {
     const masteryInfo = chainMastery.masteryInfoMap[chainStep.id];
     expect(masteryInfo).toBeTruthy();
     expect(masteryInfo.stepStatus).toEqual(ChainStepStatus.mastered);
+    expect(masteryInfo.promptLevel).toEqual(ChainStepPromptLevel.none);
     expect(masteryInfo.dateMastered).toBeTruthy();
 
     const draftStepAttempt = chainMastery.draftSession.step_attempts[chainStep.id];
     expect(draftStepAttempt).toBeTruthy();
     expect(draftStepAttempt.status).toEqual(ChainStepStatus.mastered);
+    expect(draftStepAttempt.target_prompt_level).toEqual(ChainStepPromptLevel.none);
     expect(draftStepAttempt.was_focus_step).toBeFalsy();
   }
 };

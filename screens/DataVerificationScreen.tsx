@@ -17,6 +17,23 @@ const DataVerificationScreen = (): JSX.Element => {
   const [sessionTypeLabel, setSessionTypeLabel] = useState<ChainSessionTypeLabels>();
   const [chainMasteryState, chainMasteryDispatch] = useChainMasteryContext();
 
+  // Runs once on first load.
+  useEffect(() => {
+    if (
+      chainMasteryState &&
+      chainMasteryState.chainMastery &&
+      chainMasteryState.chainMastery.chainData &&
+      chainMasteryState.chainMastery.draftSession
+    ) {
+      // Set default values for all session steps if unset.
+      chainMasteryState.chainMastery.draftSession.step_attempts.forEach((stepAttempt) => {
+        stepAttempt.had_challenging_behavior = !!stepAttempt.had_challenging_behavior;
+        stepAttempt.was_prompted = !!stepAttempt.was_prompted;
+        stepAttempt.completed = !stepAttempt.was_prompted;
+      });
+    }
+  }, []);
+
   useEffect(() => {
     if (chainMasteryState.chainMastery) {
       const sessionType = chainMasteryState.chainMastery.draftSession.session_type;

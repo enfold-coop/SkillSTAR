@@ -16,6 +16,7 @@ import {
 import { deepClone } from '../_util/deepClone';
 import {
   checkAllStepsHaveStatus,
+  checkAllStepsHaveTargetPromptLevel,
   checkAllStepsMastered,
   checkMasteryInfo,
   clearSessions,
@@ -238,9 +239,6 @@ describe('ChainMastery', () => {
     // All steps should be mastered again.
     for (const chainStep of mockChainSteps) {
       expect(chainMastery.getNumStars(chainStep.id)).toEqual(NUM_COMPLETE_ATTEMPTS_FOR_MASTERY);
-      if (chainMastery.masteryInfoMap[chainStep.id].stepStatus !== ChainStepStatus.booster_mastered) {
-        chainMastery.printSessionLog();
-      }
       expect(chainMastery.masteryInfoMap[chainStep.id].stepStatus).toEqual(ChainStepStatus.booster_mastered);
     }
 
@@ -721,12 +719,14 @@ describe('ChainMastery', () => {
 
     // All steps should be mastered now.
     checkAllStepsMastered(chainMastery);
+    checkAllStepsHaveTargetPromptLevel(chainMastery, ChainStepPromptLevel.none);
 
     // Fail 3 probes in a row, triggering a booster session for all steps.
     doProbeSessions(chainMastery, NUM_INCOMPLETE_ATTEMPTS_FOR_BOOSTER, true, ChainStepStatus.mastered);
 
     // All steps should now require a booster.
     checkAllStepsHaveStatus(chainMastery, ChainStepStatus.booster_needed);
+    checkAllStepsHaveTargetPromptLevel(chainMastery, ChainStepPromptLevel.shadow);
 
     /* BOOSTER STEP MASTERY SESSIONS */
     const numPromptLevels = 2;
@@ -817,6 +817,50 @@ describe('ChainMastery', () => {
     // Fail all steps 3 times in a row, triggering boster for all steps.
     doProbeSessions(chainMastery, NUM_INCOMPLETE_ATTEMPTS_FOR_BOOSTER, true, ChainStepStatus.booster_mastered);
     checkAllStepsHaveStatus(chainMastery, ChainStepStatus.booster_needed);
+  });
+
+  it('should trigger a booster', () => {
+    clearSessions(chainData, chainMastery);
+
+    // 3 Initial probe sessions
+    // Sessions #0-2 - Do all steps independently for three probe sessions.
+    doProbeSessions(chainMastery, NUM_MIN_PROBE_SESSIONS, false, ChainStepStatus.not_yet_started);
+
+    // All steps should be mastered now.
+    checkAllStepsHaveStatus(chainMastery, ChainStepStatus.mastered);
+
+    // Sessions #3-5 - Fail 3 attempts in a row.
+    for (let i = 0; i < NUM_INCOMPLETE_ATTEMPTS_FOR_BOOSTER; i++) {
+      chainMastery.setDraftSessionType(ChainSessionType.probe);
+
+      chainMastery.draftSession.step_attempts.forEach((stepAttempt, j) => {
+        expect(stepAttempt.session_type).toEqual(ChainSessionType.probe);
+
+        // Step status should still be mastered, at independent target prompt level.
+        expect(stepAttempt.status).toEqual(ChainStepStatus.mastered);
+        expect(stepAttempt.target_prompt_level).toEqual(ChainStepPromptLevel.none);
+
+        // Step required prompting, but no challenging behavior.
+        stepAttempt.completed = false;
+        stepAttempt.was_prompted = true;
+
+        // Mark every other step as having challenging behavior.
+        stepAttempt.had_challenging_behavior = j % 2 === 0;
+      });
+
+      chainMastery.draftSession.completed = true;
+      chainMastery.saveDraftSession();
+    }
+
+    // Draft Session #6
+    // All steps should require a booster @ shadow prompt level
+    chainMastery.draftSession.step_attempts.forEach((stepAttempt) => {
+      expect(stepAttempt.status).toEqual(ChainStepStatus.booster_needed);
+      expect(stepAttempt.target_prompt_level).toEqual(ChainStepPromptLevel.shadow);
+    });
+
+    checkAllStepsHaveStatus(chainMastery, ChainStepStatus.booster_needed);
+    checkAllStepsHaveTargetPromptLevel(chainMastery, ChainStepPromptLevel.shadow);
   });
 
   it('should advance through focus steps at appropriate prompt levels', () => {

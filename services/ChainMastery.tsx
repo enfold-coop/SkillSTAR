@@ -603,11 +603,7 @@ export class ChainMastery {
    * @param stepAttempt
    */
   static isProbeStepComplete(stepAttempt: StepAttempt): boolean {
-    return !!(
-      stepAttempt.session_type === ChainSessionType.probe &&
-      stepAttempt.completed &&
-      !stepAttempt.was_prompted
-    );
+    return stepAttempt.session_type === ChainSessionType.probe && ChainMastery.isStepFullyCompleted(stepAttempt);
   }
 
   /**
@@ -615,7 +611,6 @@ export class ChainMastery {
    * @param stepAttempt
    */
   static isStepFullyCompleted(stepAttempt: StepAttempt): boolean {
-    // return !!(!stepAttempt.was_prompted && !stepAttempt.had_challenging_behavior && stepAttempt.completed);
     return !!(!stepAttempt.was_prompted && stepAttempt.completed);
   }
 
@@ -1430,8 +1425,8 @@ export class ChainMastery {
       this.unmasteredChainStepIdsToFocus.length > 0 && this.unmasteredChainStepIdsToFocus[0] === chainStepId;
     const hasBeenFocused = this.unmasteredFocusedChainStepIds.includes(chainStepId);
 
-    // Walk through all past step attempts.
-    stepAttempts.forEach((stepAttempt) => {
+    // Walk through the past 6 step attempts.
+    stepAttempts.slice(-(NUM_COMPLETE_ATTEMPTS_FOR_MASTERY * 2)).forEach((stepAttempt) => {
       if (stepAttempt.target_prompt_level === undefined) {
         throw new Error('Step attempt has no target prompt level.');
       }
@@ -1450,31 +1445,34 @@ export class ChainMastery {
 
       // Count the number of complete consecutive attempts at this prompt level.
       if (!sameLevelAsPrev) {
-        // Reset all counters
+        // Reset all counters if switching to a new target prompt level.
         numCompleteAttemptsAtThisLevel = 0;
         numConsecutiveCompleteProbes = 0;
+        numConsecutiveIncompleteChallengingProbes = 0;
         numFailedAttemptsAtThisLevel = 0;
       }
 
+      // Probe session.
       if (stepAttempt.session_type === ChainSessionType.probe) {
-        // Probe session.
         if (isComplete) {
           numCompleteAttemptsAtThisLevel++;
           numConsecutiveCompleteProbes++;
           numFailedAttemptsAtThisLevel = 0;
-        } else if (stepAttempt.had_challenging_behavior) {
-          numConsecutiveIncompleteChallengingProbes++;
-          numFailedAttemptsAtThisLevel++; // Only increment failed attempts if CB occurred.
-          numCompleteAttemptsAtThisLevel = 0;
-          numConsecutiveCompleteProbes = 0;
         } else {
-          numConsecutiveIncompleteChallengingProbes = 0;
-          // numFailedAttemptsAtThisLevel++; // Only increment failed attempts if CB occurred.
+          if (stepAttempt.had_challenging_behavior) {
+            numConsecutiveIncompleteChallengingProbes++;
+          } else {
+            numConsecutiveIncompleteChallengingProbes = 0;
+          }
+
+          numFailedAttemptsAtThisLevel++;
           numCompleteAttemptsAtThisLevel = 0;
           numConsecutiveCompleteProbes = 0;
         }
-      } else {
-        // Training or booster session.
+      }
+
+      // Training or booster session.
+      else {
         numConsecutiveCompleteProbes = 0;
         numConsecutiveIncompleteChallengingProbes = 0;
 
@@ -1542,6 +1540,8 @@ export class ChainMastery {
   printDraftSessionSummary(): void {
     const lines: string[] = [];
     lines.push(`======================================`);
+    lines.push(`DRAFT SESSION: ${this.draftSession.session_type}`);
+    lines.push(`======================================`);
     lines.push(`STEP  COMPLETED  PROMPTED  CHALLENGING`);
     lines.push(`--------------------------------------`);
 
@@ -1587,12 +1587,14 @@ export class ChainMastery {
         if (j === lastFocusStepIndex) {
           lines.push(`#${numSessions} - Probe session - focus step: ${j} @ ${stepAttempt.target_prompt_level} - DRAFT`);
         }
+      } else if (stepAttempt.was_focus_step || stepAttempt.status === ChainStepStatus.booster_needed) {
+        lines.push(
+          `#${numSessions} - ${stepAttempt.session_type} session - ${stepAttempt.status} step: ${stepAttempt.chain_step_id} @ ${stepAttempt.target_prompt_level} - DRAFT`,
+        );
       } else {
-        if (stepAttempt.was_focus_step || stepAttempt.status === ChainStepStatus.booster_needed) {
-          lines.push(
-            `#${numSessions} - ${stepAttempt.session_type} session - ${stepAttempt.status} step: ${stepAttempt.chain_step_id} @ ${stepAttempt.target_prompt_level} - DRAFT`,
-          );
-        }
+        lines.push(
+          `#${numSessions} - ${stepAttempt.session_type} session - ${stepAttempt.status} step: ${stepAttempt.chain_step_id} @ ${stepAttempt.target_prompt_level} - DRAFT`,
+        );
       }
     });
 
