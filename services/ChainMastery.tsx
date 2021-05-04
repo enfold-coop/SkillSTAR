@@ -1539,20 +1539,23 @@ export class ChainMastery {
 
   printDraftSessionSummary(): void {
     const lines: string[] = [];
-    lines.push(`======================================`);
+    lines.push(`============================================================`);
     lines.push(`DRAFT SESSION: ${this.draftSession.session_type}`);
-    lines.push(`======================================`);
-    lines.push(`STEP  COMPLETED  PROMPTED  CHALLENGING`);
-    lines.push(`--------------------------------------`);
+    lines.push(`============================================================`);
+    lines.push(`STEP  COMPLETED  PROMPTED  CHALLENGING  PROMPT_LEVEL  REASON`);
+    lines.push(`------------------------------------------------------------`);
 
     this.draftSession.step_attempts.forEach((s) => {
       const challenging = s.had_challenging_behavior === true ? 'T' : s.had_challenging_behavior === false ? 'F' : '?';
       const completed = s.completed === true ? 'T' : s.completed === false ? 'F' : '?';
       const prompted = s.was_prompted === true ? 'T' : s.was_prompted === false ? 'F' : '?';
-      lines.push(` ${s.chain_step_id}        ${completed}         ${prompted}           ${challenging}`);
+      lines.push(
+        ` ${s.chain_step_id}        ${completed}         ${prompted}           ${challenging}` +
+          `      ${s.prompt_level}    ${s.reason_step_incomplete}`,
+      );
     });
 
-    lines.push(`============================`);
+    lines.push(`============================================================`);
     console.log(lines.join('\n'));
   }
 
