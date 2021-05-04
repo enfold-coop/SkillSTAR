@@ -54,7 +54,7 @@ describe('CalculateMasteryPercentage', () => {
   });
 
   it('should calculate percent mastered from a list of step attempts', () => {
-    const stepAttempts: StepAttempt[] = [...Array(100).keys()].map((_) => {
+    const stepAttempts: StepAttempt[] = [...Array(100).keys()].map(() => {
       return {
         chain_step_id: 0,
         session_type: ChainSessionType.training,
@@ -108,7 +108,7 @@ describe('CalculateMasteryPercentage', () => {
   });
 
   it('should calculate percent challenging from a list of step attempts', () => {
-    const stepAttempts: StepAttempt[] = [...Array(100).keys()].map((_) => {
+    const stepAttempts: StepAttempt[] = [...Array(100).keys()].map(() => {
       return {
         chain_step_id: 0,
         session_type: ChainSessionType.training,

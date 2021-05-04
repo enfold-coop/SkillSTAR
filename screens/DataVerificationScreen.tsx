@@ -37,7 +37,6 @@ const DataVerificationScreen = (): JSX.Element => {
   useEffect(() => {
     if (chainMasteryState.chainMastery) {
       const sessionType = chainMasteryState.chainMastery.draftSession.session_type;
-      //   console.log(chainMasteryState.chainMastery.draftSession);
       setSessionTypeLabel(ChainSessionTypeMap[sessionType as string].value as ChainSessionTypeLabels);
     }
   }, [chainMasteryState.chainMastery]);

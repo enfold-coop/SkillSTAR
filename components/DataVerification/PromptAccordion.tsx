@@ -16,7 +16,6 @@ interface PromptAccordionProps {
 const PromptAccordion = (props: PromptAccordionProps): JSX.Element => {
   const { chainStepId, completed } = props;
   const [checked, setChecked] = useState<number>();
-  const [stepAttempt, setStepAttempt] = useState<StepAttempt>();
   const chainMasteryState = useChainMasteryState();
 
   /**
@@ -30,7 +29,6 @@ const PromptAccordion = (props: PromptAccordionProps): JSX.Element => {
       if (!isCancelled && completed !== undefined) {
         if (chainMasteryState.chainMastery && chainStepId !== undefined) {
           const stateStepAttempt = chainMasteryState.chainMastery.getDraftSessionStep(chainStepId);
-          setStepAttempt(stateStepAttempt);
           determineDefaultCheckedValue(stateStepAttempt);
         }
       }

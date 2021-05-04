@@ -5,7 +5,7 @@ import { wait } from '../_util/testing/wait';
 import { ChainMasteryProvider } from '../context/ChainMasteryProvider';
 import { ParticipantProvider } from '../context/ParticipantProvider';
 import { UserProvider } from '../context/UserProvider';
-import ChainsHomeScreen from './ChainsHomeScreen';
+import StepScreen from './StepScreen';
 
 const mockedNavigate = jest.fn();
 
@@ -19,7 +19,7 @@ jest.mock('@react-navigation/native', () => {
   };
 });
 
-describe('ChainsHomeScreen', () => {
+describe('StepScreen', () => {
   let tree: TestRendererJSON;
 
   beforeEach(async () => {
@@ -28,7 +28,7 @@ describe('ChainsHomeScreen', () => {
         <UserProvider>
           <ParticipantProvider>
             <ChainMasteryProvider>
-              <ChainsHomeScreen />
+              <StepScreen />
             </ChainMasteryProvider>
           </ParticipantProvider>
         </UserProvider>,
