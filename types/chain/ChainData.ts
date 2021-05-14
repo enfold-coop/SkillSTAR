@@ -91,8 +91,13 @@ export class ChainData implements SkillstarChain {
    * @param skillstarChain
    * @private
    */
-  private sortSessionsInChain(skillstarChain: SkillstarChain): ChainSession[] {
-    return this.sortSessionDates(this.convertSessionDates(skillstarChain.sessions));
+  private sortSessionsInChain(skillstarChain?: SkillstarChain): ChainSession[] {
+    const sessionsToSort = skillstarChain ? skillstarChain.sessions : this.sessions;
+    return this.sortSessionDates(this.convertSessionDates(sessionsToSort)).map((s, i) => {
+      s.session_number = i + 1;
+      s.step_attempts.forEach((sa) => (sa.session_number = s.session_number));
+      return s;
+    });
   }
 
   /**
@@ -100,7 +105,7 @@ export class ChainData implements SkillstarChain {
    * @private
    */
   private sortSessions() {
-    this.sessions = this.sortSessionDates(this.convertSessionDates(this.sessions));
+    this.sessions = this.sortSessionsInChain();
   }
 
   /**

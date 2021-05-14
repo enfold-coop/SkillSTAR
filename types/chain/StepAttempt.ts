@@ -128,6 +128,8 @@ export interface StepAttempt {
   reason_step_incomplete?: StepIncompleteReason;
   challenging_behaviors?: ChallengingBehavior[];
   session_type?: ChainSessionType;
+  session_number?: number;
+  num_stars?: number;
 
   // Focus steps
   was_focus_step?: boolean;
@@ -152,7 +154,9 @@ export type StepAttemptFieldName =
   | 'challenging_behaviors'
   | 'session_type'
   | 'was_focus_step'
-  | 'target_prompt_level';
+  | 'target_prompt_level'
+  | 'session_number'
+  | 'num_stars';
 
 export type StepAttemptField =
   | ChainSessionType
