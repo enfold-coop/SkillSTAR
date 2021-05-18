@@ -1,7 +1,13 @@
 import { ChainData } from '../types/chain/ChainData';
-import { ChainSession } from '../types/chain/ChainSession';
+import { ChainSession, ChainSessionType } from '../types/chain/ChainSession';
 import { SessionGroup } from '../types/chain/FilteredSessions';
-import { calculatePercentChallengingBehavior, calculatePercentMastery } from './CalculateMasteryPercentage';
+import { ChainStepPromptLevel, ChainStepStatus, StepAttempt } from '../types/chain/StepAttempt';
+import {
+  calculatePercentChallengingBehavior,
+  calculatePercentMastery,
+  percentChallengingBehavior,
+  percentMastered,
+} from './CalculateMasteryPercentage';
 import { FilteredSessionWithSessionIndex } from './FilterSessionType';
 import { mockChainQuestionnaire } from './testing/mockChainQuestionnaire';
 
@@ -45,5 +51,97 @@ describe('CalculateMasteryPercentage', () => {
     expect(calculatedCBPercentages.every((p) => p.every((s) => s.session_number !== undefined))).toEqual(true);
     expect(calculatedCBPercentages.every((p) => p.every((s) => s.challenging_behavior !== undefined))).toEqual(true);
     expect(calculatedCBPercentages.every((p) => p.every((s) => s.challenging_behavior === 100))).toEqual(true);
+  });
+
+  it('should calculate percent mastered from a list of step attempts', () => {
+    const stepAttempts: StepAttempt[] = [...Array(100).keys()].map(() => {
+      return {
+        chain_step_id: 0,
+        session_type: ChainSessionType.training,
+        completed: true,
+        was_prompted: false,
+        was_focus_step: true,
+        had_challenging_behavior: false,
+        status: ChainStepStatus.focus,
+      };
+    });
+
+    stepAttempts.forEach((s) => {
+      s.prompt_level = ChainStepPromptLevel.none;
+      s.target_prompt_level = ChainStepPromptLevel.none;
+    });
+    expect(Math.round(percentMastered(stepAttempts))).toEqual(100);
+
+    stepAttempts.forEach((s) => {
+      s.prompt_level = ChainStepPromptLevel.shadow;
+      s.target_prompt_level = ChainStepPromptLevel.shadow;
+    });
+    expect(Math.round(percentMastered(stepAttempts))).toEqual(67);
+
+    stepAttempts.forEach((s) => {
+      s.prompt_level = ChainStepPromptLevel.partial_physical;
+      s.target_prompt_level = ChainStepPromptLevel.partial_physical;
+    });
+    expect(Math.round(percentMastered(stepAttempts))).toEqual(33);
+
+    stepAttempts.forEach((s) => {
+      s.prompt_level = ChainStepPromptLevel.full_physical;
+      s.target_prompt_level = ChainStepPromptLevel.full_physical;
+    });
+    expect(Math.round(percentMastered(stepAttempts))).toEqual(0);
+
+    stepAttempts.forEach((s) => {
+      s.session_type = ChainSessionType.probe;
+      s.prompt_level = undefined;
+      s.target_prompt_level = ChainStepPromptLevel.full_physical;
+    });
+    expect(Math.round(percentMastered(stepAttempts))).toEqual(100);
+
+    stepAttempts.forEach((s) => {
+      s.session_type = ChainSessionType.probe;
+      s.prompt_level = undefined;
+      s.target_prompt_level = ChainStepPromptLevel.full_physical;
+      s.completed = false;
+      s.was_prompted = true;
+    });
+    expect(Math.round(percentMastered(stepAttempts))).toEqual(0);
+  });
+
+  it('should calculate percent challenging from a list of step attempts', () => {
+    const stepAttempts: StepAttempt[] = [...Array(100).keys()].map(() => {
+      return {
+        chain_step_id: 0,
+        session_type: ChainSessionType.training,
+        completed: true,
+        was_prompted: false,
+        was_focus_step: true,
+        status: ChainStepStatus.focus,
+      };
+    });
+
+    stepAttempts.forEach((s) => {
+      s.had_challenging_behavior = false;
+    });
+    expect(Math.round(percentChallengingBehavior(stepAttempts))).toEqual(0);
+
+    stepAttempts.forEach((s, i) => {
+      s.had_challenging_behavior = i < 25;
+    });
+    expect(Math.round(percentChallengingBehavior(stepAttempts))).toEqual(25);
+
+    stepAttempts.forEach((s, i) => {
+      s.had_challenging_behavior = i < 50;
+    });
+    expect(Math.round(percentChallengingBehavior(stepAttempts))).toEqual(50);
+
+    stepAttempts.forEach((s, i) => {
+      s.had_challenging_behavior = i < 75;
+    });
+    expect(Math.round(percentChallengingBehavior(stepAttempts))).toEqual(75);
+
+    stepAttempts.forEach((s) => {
+      s.had_challenging_behavior = true;
+    });
+    expect(Math.round(percentChallengingBehavior(stepAttempts))).toEqual(100);
   });
 });

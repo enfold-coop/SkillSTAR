@@ -333,20 +333,27 @@ describe('ChainMastery', () => {
     sessionTypes.forEach((sessionType, sessionIndex) => {
       chainMastery.setDraftSessionType(sessionType);
       expect(chainMastery.draftSession.session_type).toEqual(sessionType);
+      expect(chainMastery.draftSession.session_number).toEqual(sessionIndex + 1);
 
       chainMastery.draftSession.step_attempts.forEach((stepAttempt, stepAttemptIndex) => {
+        if (stepAttempt.session_number === undefined) {
+          throw new Error('No session number found');
+        }
+
+        stepAttempt.num_stars = chainMastery.getNumStars(stepAttempt.chain_step_id);
+
         // Sessions 0-2: Initial probe sessions.
         if (sessionIndex <= 2) {
           if (stepAttemptIndex === 0) {
-            expect(chainMastery.getNumStars(stepAttempt.chain_step_id)).toEqual(sessionIndex);
+            expect(chainMastery.getNumStars(stepAttempt.chain_step_id)).toEqual(0);
 
             // Master first chain step.
             completeStepAttempt(stepAttempt);
           } else {
             expect(chainMastery.getNumStars(stepAttempt.chain_step_id)).toEqual(0);
 
-            // Fail all others.
-            failStepAttempt(stepAttempt);
+            // Fail all others with challenging behavior.
+            failStepAttempt(stepAttempt, true);
           }
         }
 
@@ -358,7 +365,8 @@ describe('ChainMastery', () => {
             }
 
             if (stepAttemptIndex === 1) {
-              if (sessionIndex <= 14) {
+              if (sessionIndex <= 11) {
+                // Number of stars will increment from 0 to 3
                 expect(chainMastery.getNumStars(stepAttempt.chain_step_id)).toEqual(sessionIndex % 3);
               } else {
                 // Mastered now.
@@ -368,9 +376,50 @@ describe('ChainMastery', () => {
 
             // Complete first 2 chain steps.
             completeStepAttempt(stepAttempt);
+            stepAttempt.prompt_level = stepAttempt.target_prompt_level;
           } else {
-            // Fail all others.
-            failStepAttempt(stepAttempt, false);
+            // Fail Step 3 with NO challenging behavior.
+            if (stepAttemptIndex === 2) {
+              failStepAttempt(stepAttempt, false);
+              stepAttempt.prompt_level = ChainMastery.getPrevPromptLevel(
+                stepAttempt.target_prompt_level || ChainStepPromptLevel.full_physical,
+              ).key;
+
+              if (sessionIndex <= 5) {
+                // The number of stars increases from 1 to 3.
+                expect(chainMastery.getNumStars(stepAttempt.chain_step_id)).toEqual(sessionIndex % 3);
+                expect(stepAttempt.target_prompt_level).toEqual(ChainStepPromptLevel.full_physical);
+              } else if (sessionIndex < 12) {
+                // Step hasn't been focused yet. It should have 3 stars, since there has been no challenging behavior.
+                expect(chainMastery.getNumStars(stepAttempt.chain_step_id)).toEqual(3);
+                expect(stepAttempt.target_prompt_level).toEqual(ChainStepPromptLevel.full_physical);
+              } else {
+                // Step 3 is the focus step now. It should have 0 stars, since it has not been completed
+                // successfully at the current prompt level.
+                expect(stepAttempt.status).toEqual(ChainStepStatus.focus);
+                expect(stepAttempt.was_focus_step).toBeTruthy();
+                expect(chainMastery.getNumStars(stepAttempt.chain_step_id)).toEqual(0);
+
+                // Step 3 starts at partial physical, but fails 3 times in training.
+                if (stepAttempt.session_number >= 13 && stepAttempt.session_number <= 15) {
+                  expect(stepAttempt.target_prompt_level).toEqual(ChainStepPromptLevel.partial_physical);
+                }
+
+                // After failing 3 times, Step 3 is knocked back to full physical.
+                if (stepAttempt.session_number > 15) {
+                  expect(stepAttempt.target_prompt_level).toEqual(ChainStepPromptLevel.full_physical);
+                }
+              }
+            }
+
+            // Fail all other steps with challenging behavior.
+            else {
+              expect(chainMastery.getNumStars(stepAttempt.chain_step_id)).toEqual(0);
+              failStepAttempt(stepAttempt, true);
+              stepAttempt.prompt_level = ChainMastery.getPrevPromptLevel(
+                stepAttempt.target_prompt_level || ChainStepPromptLevel.full_physical,
+              ).key;
+            }
           }
         }
 
@@ -384,7 +433,7 @@ describe('ChainMastery', () => {
             completeStepAttempt(stepAttempt);
 
             if (stepAttemptIndex === 2) {
-              expect(stepAttempt.target_prompt_level).toEqual(ChainStepPromptLevel.partial_physical);
+              expect(stepAttempt.target_prompt_level).toEqual(ChainStepPromptLevel.full_physical);
             }
           } else {
             // Fail all others.
@@ -430,7 +479,7 @@ describe('ChainMastery', () => {
     expect(m3.dateMastered).toBeFalsy();
     expect(m3.dateBoosterInitiated).toBeFalsy();
     expect(m3.dateBoosterMastered).toBeFalsy();
-    expect(m3.promptLevel).toEqual(ChainStepPromptLevel.shadow);
+    expect(m3.promptLevel).toEqual(ChainStepPromptLevel.partial_physical);
     expect(m3.stepStatus).toEqual(ChainStepStatus.focus);
     expect(s3.status).toEqual(ChainStepStatus.focus);
     expect(s3.was_focus_step).toEqual(true);
@@ -943,14 +992,14 @@ describe('ChainMastery', () => {
               } else if (stepAttemptIndex === focusStepIndex) {
                 // The previous focus step was just mastered.
                 // The new focus step should be at partial physical, because it was complete at
-                // full_physical with no challenging behavior 3 training sessions in a row.
+                // full_physical with challenging behavior fewer than 3 training sessions in a row.
                 expect(stepAttempt.target_prompt_level).toEqual(ChainStepPromptLevel.partial_physical);
 
                 // Mark focus step as incomplete with challenging behavior.
-                failStepAttempt(stepAttempt);
+                failStepAttempt(stepAttempt, true);
               } else {
                 // Mark steps after focus step as incomplete with challenging behavior.
-                failStepAttempt(stepAttempt);
+                failStepAttempt(stepAttempt, true);
               }
             });
           } else {

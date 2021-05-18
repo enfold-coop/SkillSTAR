@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import * as Animatable from 'react-native-animatable';
 import { RadioButton } from 'react-native-paper';
@@ -15,7 +15,6 @@ interface BehavAccordionProps {
 
 const BehavAccordion = (props: BehavAccordionProps): JSX.Element => {
   const [checked, setChecked] = useState(0);
-  const refSwitched = useRef(true);
   const { chainStepId, completed, hadChallengingBehavior } = props;
   const chainMasteryState = useChainMasteryState();
 
@@ -28,31 +27,11 @@ const BehavAccordion = (props: BehavAccordionProps): JSX.Element => {
 
     const _load = async () => {
       if (!isCancelled && chainMasteryState.chainMastery) {
-        const stateStepAttempt = chainMasteryState.chainMastery.getDraftSessionStep(chainStepId);
-
-        if (stateStepAttempt.reason_step_incomplete) {
-          setChecked(StepIncompleteReasonMap[stateStepAttempt.reason_step_incomplete].order);
-        }
-      }
-    };
-
-    if (!isCancelled) {
-      _load();
-    }
-
-    return () => {
-      isCancelled = true;
-    };
-  }, [chainStepId, chainMasteryState.chainMastery]);
-
-  useEffect(() => {
-    let isCancelled = false;
-
-    const _load = async () => {
-      if (!isCancelled && completed !== undefined && hadChallengingBehavior !== undefined) {
-        if (refSwitched.current) {
-          refSwitched.current = false;
-        }
+        const stepAttempt = chainMasteryState.chainMastery.getDraftSessionStep(chainStepId);
+        const reason = stepAttempt.reason_step_incomplete || StepIncompleteReason.lack_of_attending;
+        const checkedIndex = StepIncompleteReasonMap[reason].order;
+        setChecked(checkedIndex);
+        handleChange(checkedIndex);
       }
     };
 

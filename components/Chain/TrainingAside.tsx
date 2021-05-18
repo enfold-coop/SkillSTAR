@@ -1,7 +1,7 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { useChainMasteryState } from '../../context/ChainMasteryProvider';
-import { ChainSessionType, ChainSessionTypeLabels, ChainSessionTypeMap } from '../../types/chain/ChainSession';
+import { ChainSessionType, ChainSessionTypeLabels } from '../../types/chain/ChainSession';
 import { ChainStepPromptLevelMap } from '../../types/chain/StepAttempt';
 import { Loading } from '../Loading/Loading';
 

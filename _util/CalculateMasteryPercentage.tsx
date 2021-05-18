@@ -14,7 +14,7 @@ Object.values(ChainStepPromptLevelMap)
     promptLevelWeights[promptLevel.key as string] = i;
   });
 
-const percentMastered = (steps: StepAttempt[]): number => {
+export const percentMastered = (steps: StepAttempt[]): number => {
   const maxWeight = promptLevelWeights[ChainStepPromptLevel.none as string];
   const numMasteredWeighted = steps.reduce((memo, step) => {
     // If no actual prompt level is available (such as for Probe sessions), use Independent level as the weight.
@@ -24,7 +24,7 @@ const percentMastered = (steps: StepAttempt[]): number => {
   return (numMasteredWeighted / (steps.length * maxWeight)) * 100;
 };
 
-const percentChallengingBehavior = (steps: StepAttempt[]): number => {
+export const percentChallengingBehavior = (steps: StepAttempt[]): number => {
   const numChallenging = steps.reduce((memo, step) => {
     return step.had_challenging_behavior ? memo + 1 : memo;
   }, 0);

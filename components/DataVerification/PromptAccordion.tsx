@@ -1,23 +1,21 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import * as Animatable from 'react-native-animatable';
 import { RadioButton } from 'react-native-paper';
+import { randomId } from '../../_util/RandomId';
 import { useChainMasteryState } from '../../context/ChainMasteryProvider';
 import { ChainMastery } from '../../services/ChainMastery';
 import CustomColors from '../../styles/Colors';
 import { ChainStepPromptLevel, ChainStepPromptLevelMap, StepAttempt } from '../../types/chain/StepAttempt';
-import { randomId } from '../../_util/RandomId';
 
 interface PromptAccordionProps {
-  stepAttempt: StepAttempt;
+  chainStepId: number;
   completed: boolean;
 }
 
 const PromptAccordion = (props: PromptAccordionProps): JSX.Element => {
-  const { stepAttempt, completed } = props;
+  const { chainStepId, completed } = props;
   const [checked, setChecked] = useState<number>();
-  const [chainStepId, setChainStepId] = useState<number>();
-  const refSwitched = useRef(true);
   const chainMasteryState = useChainMasteryState();
 
   /**
@@ -29,12 +27,9 @@ const PromptAccordion = (props: PromptAccordionProps): JSX.Element => {
 
     const _load = async () => {
       if (!isCancelled && completed !== undefined) {
-        if (refSwitched.current) {
-          refSwitched.current = false;
-        }
-        if (stepAttempt && stepAttempt.chain_step_id) {
-          setChainStepId(stepAttempt.chain_step_id);
-          determineDefaultCheckedValue(stepAttempt);
+        if (chainMasteryState.chainMastery && chainStepId !== undefined) {
+          const stateStepAttempt = chainMasteryState.chainMastery.getDraftSessionStep(chainStepId);
+          determineDefaultCheckedValue(stateStepAttempt);
         }
       }
     };
@@ -69,6 +64,11 @@ const PromptAccordion = (props: PromptAccordionProps): JSX.Element => {
         'prompt_level',
         enumMap.key as ChainStepPromptLevel,
       );
+    } else {
+      throw new Error(`Cannot access chain mastery state.
+        chainMasteryState.chainMastery loaded: ${!!chainMasteryState.chainMastery}
+        chainStepId loaded: ${chainStepId !== undefined}
+      `);
     }
   };
 

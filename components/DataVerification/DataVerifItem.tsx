@@ -86,15 +86,24 @@ const DataVerifItem = (props: DataVerifItemProps): JSX.Element => {
   const handleSwitch: DataVerificationControlCallback = async (chainStepId, fieldName, fieldValue) => {
     if (fieldName === 'completed') {
       setCompleted(fieldValue as boolean);
+
+      if (chainMasteryState.chainMastery && stepAttempt && fieldValue) {
+        chainMasteryState.chainMastery.updateDraftSessionStep(
+          chainStepId,
+          'prompt_level',
+          stepAttempt.target_prompt_level,
+        );
+        chainMasteryState.chainMastery.updateDraftSessionStep(chainStepId, 'reason_step_incomplete', undefined);
+      }
     } else if (fieldName === 'had_challenging_behavior') {
       setHadChallengingBehavior(fieldValue as boolean);
     }
 
     // Update draft session data
-    if (chainMasteryState.chainMastery) {
+    if (chainMasteryState.chainMastery && chainStepId !== undefined) {
       chainMasteryState.chainMastery.updateDraftSessionStep(chainStepId, fieldName, fieldValue);
 
-      if (fieldName === 'had_challenging_behavior') {
+      if (fieldName === 'had_challenging_behavior' && stepAttempt && !stepAttempt.completed) {
         chainMasteryState.chainMastery.updateDraftSessionStep(
           chainStepId,
           'reason_step_incomplete',
@@ -102,7 +111,10 @@ const DataVerifItem = (props: DataVerifItemProps): JSX.Element => {
         );
       }
     } else {
-      throw new Error('Cannot access chain data.');
+      throw new Error(`Cannot access chain mastery state.
+        chainMasteryState.chainMastery loaded: ${!!chainMasteryState.chainMastery}
+        chainStepId loaded: ${chainStepId !== undefined}
+      `);
     }
   };
 
@@ -130,7 +142,7 @@ const DataVerifItem = (props: DataVerifItemProps): JSX.Element => {
         </View>
       </View>
       <View style={styles.accordionContainer}>
-        {!completed && <PromptAccordion stepAttempt={stepAttempt} completed={completed} />}
+        {!completed && <PromptAccordion chainStepId={chainStepId} completed={completed} />}
         {!completed && (
           <BehavAccordion
             chainStepId={stepAttempt.chain_step_id}

@@ -20,7 +20,6 @@ import {
   ChainStepPromptLevel,
   ChainStepPromptLevelLabels,
   ChainStepPromptLevelMap,
-  ChainStepStatus,
   StepAttempt,
 } from '../types/chain/StepAttempt';
 
