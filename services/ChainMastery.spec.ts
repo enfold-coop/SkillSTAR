@@ -365,7 +365,7 @@ describe('ChainMastery', () => {
             }
 
             if (stepAttemptIndex === 1) {
-              if (sessionIndex <= 11) {
+              if (sessionIndex <= 14) {
                 // Number of stars will increment from 0 to 3
                 expect(chainMastery.getNumStars(stepAttempt.chain_step_id)).toEqual(sessionIndex % 3);
               } else {
@@ -389,7 +389,7 @@ describe('ChainMastery', () => {
                 // The number of stars increases from 1 to 3.
                 expect(chainMastery.getNumStars(stepAttempt.chain_step_id)).toEqual(sessionIndex % 3);
                 expect(stepAttempt.target_prompt_level).toEqual(ChainStepPromptLevel.full_physical);
-              } else if (sessionIndex < 12) {
+              } else if (sessionIndex < 15) {
                 // Step hasn't been focused yet. It should have 3 stars, since there has been no challenging behavior.
                 expect(chainMastery.getNumStars(stepAttempt.chain_step_id)).toEqual(3);
                 expect(stepAttempt.target_prompt_level).toEqual(ChainStepPromptLevel.full_physical);
@@ -401,12 +401,12 @@ describe('ChainMastery', () => {
                 expect(chainMastery.getNumStars(stepAttempt.chain_step_id)).toEqual(0);
 
                 // Step 3 starts at partial physical, but fails 3 times in training.
-                if (stepAttempt.session_number >= 13 && stepAttempt.session_number <= 15) {
+                if (stepAttempt.session_number >= 16 && stepAttempt.session_number <= 18) {
                   expect(stepAttempt.target_prompt_level).toEqual(ChainStepPromptLevel.partial_physical);
                 }
 
                 // After failing 3 times, Step 3 is knocked back to full physical.
-                if (stepAttempt.session_number > 15) {
+                if (stepAttempt.session_number > 18) {
                   expect(stepAttempt.target_prompt_level).toEqual(ChainStepPromptLevel.full_physical);
                 }
               }
@@ -431,6 +431,7 @@ describe('ChainMastery', () => {
           } else if (stepAttemptIndex <= 2) {
             // Complete 2nd & 3rd chain steps.
             completeStepAttempt(stepAttempt);
+            stepAttempt.prompt_level = stepAttempt.target_prompt_level;
 
             if (stepAttemptIndex === 2) {
               expect(stepAttempt.target_prompt_level).toEqual(ChainStepPromptLevel.full_physical);
