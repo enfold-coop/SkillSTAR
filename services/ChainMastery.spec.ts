@@ -434,7 +434,7 @@ describe('ChainMastery', () => {
             stepAttempt.prompt_level = stepAttempt.target_prompt_level;
 
             if (stepAttemptIndex === 2) {
-              expect(stepAttempt.target_prompt_level).toEqual(ChainStepPromptLevel.full_physical);
+              expect(stepAttempt.target_prompt_level).toEqual(ChainStepPromptLevel.partial_physical);
             }
           } else {
             // Fail all others.
@@ -473,14 +473,14 @@ describe('ChainMastery', () => {
     expect(s2.status).toEqual(ChainStepStatus.mastered);
     expect(s2.was_focus_step).toEqual(false);
 
-    // The third step should be focused @ partial_physical prompt level
+    // The third step should be focused @ shadow prompt level
     const m3 = chainMastery.masteryInfoMap[2];
     const s3 = chainMastery.draftSession.step_attempts[2];
     expect(m3).toBeTruthy();
     expect(m3.dateMastered).toBeFalsy();
     expect(m3.dateBoosterInitiated).toBeFalsy();
     expect(m3.dateBoosterMastered).toBeFalsy();
-    expect(m3.promptLevel).toEqual(ChainStepPromptLevel.partial_physical);
+    expect(m3.promptLevel).toEqual(ChainStepPromptLevel.shadow);
     expect(m3.stepStatus).toEqual(ChainStepStatus.focus);
     expect(s3.status).toEqual(ChainStepStatus.focus);
     expect(s3.was_focus_step).toEqual(true);
@@ -1142,5 +1142,70 @@ describe('ChainMastery', () => {
     });
     expect(chainMastery.draftSession.session_type).toEqual(ChainSessionType.probe);
     doProbeSessions(chainMastery, 3, false, ChainStepStatus.mastered);
+  });
+
+  it('should not change target prompt level if post-training probes are incomplete', () => {
+    clearSessions(chainData, chainMastery);
+
+    // 3 Initial probe sessions
+    // Sessions 0-2 - Do no steps independently for three probe sessions.
+    doProbeSessions(chainMastery, NUM_MIN_PROBE_SESSIONS, true, ChainStepStatus.not_yet_started);
+    checkAllStepsHaveStatus(chainMastery, ChainStepStatus.not_complete, 0);
+
+    // 12 training sessions
+    // Sessions 3-15 - Complete all steps
+    for (let i = 0; i < NUM_TRAINING_SESSIONS_BETWEEN_PROBES; i++) {
+      for (let j = 0; j < chainMastery.chainSteps.length; j++) {
+        expect(chainMastery.draftSession.session_type).toEqual(ChainSessionType.training);
+
+        const stepAttempt = chainMastery.draftSession.step_attempts[j];
+        completeStepAttempt(stepAttempt);
+        stepAttempt.prompt_level = stepAttempt.target_prompt_level;
+      }
+
+      chainMastery.saveDraftSession();
+    }
+
+    expect(chainMastery.draftSession.session_type).toEqual(ChainSessionType.probe);
+
+    // Step 1 should be mastered @ none
+    expect(chainMastery.draftSession.step_attempts[0].status).toEqual(ChainStepStatus.mastered);
+    expect(chainMastery.draftSession.step_attempts[0].target_prompt_level).toEqual(ChainStepPromptLevel.none);
+
+    // Step 2 should be focus step @ partial_physical
+    expect(chainMastery.draftSession.step_attempts[1].status).toEqual(ChainStepStatus.focus);
+    expect(chainMastery.draftSession.step_attempts[1].target_prompt_level).toEqual(
+      ChainStepPromptLevel.partial_physical,
+    );
+
+    // Step 3 should be not_complete @ full_physical
+    expect(chainMastery.draftSession.step_attempts[2].status).toEqual(ChainStepStatus.not_complete);
+    expect(chainMastery.draftSession.step_attempts[2].target_prompt_level).toEqual(ChainStepPromptLevel.full_physical);
+
+    // Fail 3 probe sessions in a row with NO challenging behavior.
+    for (let i = 0; i < NUM_PROBE_SESSIONS_BETWEEN_TRAINING; i++) {
+      for (let j = 0; j < chainMastery.chainSteps.length; j++) {
+        const stepAttempt = chainMastery.draftSession.step_attempts[j];
+        stepAttempt.completed = false;
+        stepAttempt.had_challenging_behavior = false;
+        stepAttempt.was_prompted = true;
+      }
+
+      chainMastery.saveDraftSession();
+    }
+
+    // Step 1 should be booster_needed @ shadow
+    expect(chainMastery.draftSession.step_attempts[0].status).toEqual(ChainStepStatus.booster_needed);
+    expect(chainMastery.draftSession.step_attempts[0].target_prompt_level).toEqual(ChainStepPromptLevel.shadow);
+
+    // Step 2 should still be focus step @ partial_physical
+    expect(chainMastery.draftSession.step_attempts[1].status).toEqual(ChainStepStatus.focus);
+    expect(chainMastery.draftSession.step_attempts[1].target_prompt_level).toEqual(
+      ChainStepPromptLevel.partial_physical,
+    );
+
+    // Step 3 should be not_complete @ full_physical
+    expect(chainMastery.draftSession.step_attempts[2].status).toEqual(ChainStepStatus.not_complete);
+    expect(chainMastery.draftSession.step_attempts[2].target_prompt_level).toEqual(ChainStepPromptLevel.full_physical);
   });
 });

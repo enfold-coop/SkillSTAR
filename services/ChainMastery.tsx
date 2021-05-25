@@ -1480,11 +1480,10 @@ export class ChainMastery {
    * @param chainStepId
    */
   buildPromptLevelMapForChainStep(chainStepId: number): PromptLevel {
-    let numIncompleteTrainingAttemptsBeforeFocus = 0;
+    let numChallengingTrainingAttemptsBeforeFocus = 0;
+    let numFailedProbeAttemptsAtThisLevel = 0;
     let numCompleteTrainingAttemptsAtThisLevel = 0;
     let numFailedTrainingAttemptsAtThisLevel = 0;
-    let numCompleteProbeAttemptsAtThisLevel = 0;
-    let numFailedProbeAttemptsAtThisLevel = 0;
     let numConsecutiveCompleteProbes = 0;
     let numConsecutiveIncompleteChallengingProbes = 0;
     let skipFull = false;
@@ -1509,9 +1508,9 @@ export class ChainMastery {
       if (!hasBeenFocused && stepAttempt.session_type !== ChainSessionType.probe) {
         // Count consecutive training sessions with challenging behavior before this step has ever been focused.
         if (stepAttempt.had_challenging_behavior) {
-          numIncompleteTrainingAttemptsBeforeFocus++;
+          numChallengingTrainingAttemptsBeforeFocus++;
         } else {
-          numIncompleteTrainingAttemptsBeforeFocus = 0;
+          numChallengingTrainingAttemptsBeforeFocus = 0;
         }
       }
 
@@ -1527,7 +1526,6 @@ export class ChainMastery {
       // Probe session.
       if (stepAttempt.session_type === ChainSessionType.probe) {
         if (isComplete) {
-          numCompleteProbeAttemptsAtThisLevel++;
           numConsecutiveCompleteProbes++;
           numFailedProbeAttemptsAtThisLevel = 0;
         } else {
@@ -1537,9 +1535,8 @@ export class ChainMastery {
             numConsecutiveIncompleteChallengingProbes = 0;
           }
 
-          numFailedProbeAttemptsAtThisLevel++;
-          numCompleteProbeAttemptsAtThisLevel = 0;
           numConsecutiveCompleteProbes = 0;
+          numFailedProbeAttemptsAtThisLevel++;
         }
       }
 
@@ -1547,7 +1544,6 @@ export class ChainMastery {
       else {
         numConsecutiveCompleteProbes = 0;
         numConsecutiveIncompleteChallengingProbes = 0;
-        numCompleteProbeAttemptsAtThisLevel = 0;
         numFailedProbeAttemptsAtThisLevel = 0;
 
         if (isComplete) {
@@ -1570,17 +1566,17 @@ export class ChainMastery {
         !hasBeenFocused &&
         isNextFocusStep &&
         !isVeryFirstFocusStep &&
-        numIncompleteTrainingAttemptsBeforeFocus < NUM_INCOMPLETE_ATTEMPTS_FOR_BOOSTER;
+        numChallengingTrainingAttemptsBeforeFocus < NUM_INCOMPLETE_ATTEMPTS_FOR_BOOSTER;
       firstLevel = skipFull ? ChainStepPromptLevel.partial_physical : ChainStepPromptLevel.full_physical;
 
       const goPrev =
         numConsecutiveIncompleteChallengingProbes >= NUM_INCOMPLETE_ATTEMPTS_FOR_BOOSTER ||
-        numFailedProbeAttemptsAtThisLevel >= NUM_INCOMPLETE_ATTEMPTS_FOR_BOOSTER ||
-        numFailedTrainingAttemptsAtThisLevel >= NUM_INCOMPLETE_ATTEMPTS_FOR_BOOSTER;
+        numFailedTrainingAttemptsAtThisLevel >= NUM_INCOMPLETE_ATTEMPTS_FOR_BOOSTER ||
+        (numFailedProbeAttemptsAtThisLevel >= NUM_INCOMPLETE_ATTEMPTS_FOR_BOOSTER &&
+          (stepAttempt.status === ChainStepStatus.mastered || stepAttempt.status === ChainStepStatus.booster_mastered));
 
       const goNext =
-        (numCompleteProbeAttemptsAtThisLevel >= NUM_COMPLETE_ATTEMPTS_FOR_MASTERY ||
-          numCompleteTrainingAttemptsAtThisLevel >= NUM_COMPLETE_ATTEMPTS_FOR_MASTERY) &&
+        numCompleteTrainingAttemptsAtThisLevel >= NUM_COMPLETE_ATTEMPTS_FOR_MASTERY &&
         (stepAttempt.was_focus_step || stepAttempt.status === ChainStepStatus.booster_needed);
 
       // If consecutive probes are completed 3 or more times, the step is mastered, so prompt level should be none (i.e., independent)
@@ -1668,7 +1664,7 @@ export class ChainMastery {
               stepAttempt.chain_step_id
             } @ ${stepAttempt.target_prompt_level} - ${stepAttempt.completed ? 'COMPLETED' : 'FAILED'} @ ${
               stepAttempt.prompt_level
-            } - ${stars}`,
+            } ${stepAttempt.had_challenging_behavior ? '+ CB' : ''} - ${stars}`,
           );
         }
 
