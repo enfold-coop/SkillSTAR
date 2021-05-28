@@ -297,12 +297,6 @@ describe('ChainMastery', () => {
   it('should set focus step on not-started step if booster is needed on previously-mastered step', () => {
     clearSessions(chainData, chainMastery);
 
-    /* INITIAL PROBE SESSIONS */
-
-    // First 3 sessions should be failing probes.
-    // doProbeSessions(chainMastery, 21, true, ChainStepStatus.not_yet_started);
-    // checkAllStepsHaveStatus(chainMastery, ChainStepStatus.not_complete, 0);
-
     const sessionTypes = [
       ChainSessionType.probe, // 0. Master first, fail others.
       ChainSessionType.probe, // 1. Master first, fail others.
