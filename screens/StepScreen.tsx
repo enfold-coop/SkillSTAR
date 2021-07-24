@@ -115,7 +115,7 @@ const StepScreen = (): JSX.Element => {
           <VideoPlayer
             key={'video-player-' + key}
             videoProps={{
-              shouldPlay: true,
+              shouldPlay: false,
               resizeMode: Video.RESIZE_MODE_STRETCH,
               source: video,
               volume: 0.0,
@@ -125,6 +125,7 @@ const StepScreen = (): JSX.Element => {
             disableSlider={true}
             sliderColor={'#fff'}
             showFullscreenButton={false}
+            showControlsOnLoad={true}
             height={height}
           />
         </View>

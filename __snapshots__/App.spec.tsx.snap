@@ -4,6 +4,11 @@ exports[`App renders correctly 1`] = `
 <View>
   <View
     accessibilityRole="progressbar"
+    accessibilityState={
+      Object {
+        "busy": true,
+      }
+    }
     accessible={true}
     style={
       Array [
