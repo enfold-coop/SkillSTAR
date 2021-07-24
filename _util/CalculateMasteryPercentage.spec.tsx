@@ -21,9 +21,8 @@ describe('CalculateMasteryPercentage', () => {
   beforeEach(() => {
     chainData = new ChainData(mockChainQuestionnaire);
     sessions = chainData.sessions;
-    const { probeSessionGroups, trainingSessionGroups, challengingSessionGroups } = FilteredSessionWithSessionIndex(
-      sessions,
-    );
+    const { probeSessionGroups, trainingSessionGroups, challengingSessionGroups } =
+      FilteredSessionWithSessionIndex(sessions);
     probes = probeSessionGroups;
     training = trainingSessionGroups;
     challenging = challengingSessionGroups;
