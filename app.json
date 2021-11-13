@@ -29,7 +29,7 @@
             "favicon": "./assets/images/favicon.png"
         },
         "description": "",
-        "githubUrl": "https://github.com/sartography/skillstar",
+        "githubUrl": "https://github.com/enfold-coop/SkillSTAR",
         "android": {
             "package": "com.ajlouie.SkillSTAR"
         }

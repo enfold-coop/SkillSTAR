@@ -120,13 +120,17 @@ const StepScreen = (): JSX.Element => {
               source: video,
               volume: 0.0,
             }}
-            inFullscreen={false}
-            videoBackground={'transparent'}
-            disableSlider={true}
-            sliderColor={'#fff'}
-            showFullscreenButton={false}
-            showControlsOnLoad={true}
-            height={height}
+            fullscreen={{
+              inFullscreen: false,
+              visible: false,
+            }}
+            style={{
+              videoBackgroundColor: 'transparent',
+              height: height,
+            }}
+            slider={{ visible: false }}
+            timeVisible={false}
+            defaultControlsVisible={true}
           />
         </View>
       );

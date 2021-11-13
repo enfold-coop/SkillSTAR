@@ -2,7 +2,7 @@ export const mockUserToken = 'some_big_long_string_of_characters_and_numbers';
 
 export const mockUser = {
   created_password: true,
-  email: 'aaron@sartography.com',
+  email: 'aaron@enfold.coop',
   email_verified: true,
   id: 4,
   identity: 'self_professional',

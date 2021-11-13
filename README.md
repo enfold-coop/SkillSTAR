@@ -2,8 +2,7 @@
 
 ## Overview
 
-Mobile application teaching essential skills to young children afflicted by autism. A collaboration between UVa and
-UMich. Built by Sartography.
+Mobile application teaching essential skills to young children afflicted by autism. A collaboration between University of Virginia and University of North Florida. Built by Enfold LLC.
 
 ## Getting Started
 

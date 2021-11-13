@@ -7,7 +7,7 @@ module.exports = {
   useTabs: false,
   jsxSingleQuote: true,
   bracketSpacing: true,
-  jsxBracketSameLine: false,
+  bracketSameLine: false,
   proseWrap: 'always',
   overrides: [
     {
