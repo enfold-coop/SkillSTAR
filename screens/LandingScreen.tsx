@@ -136,7 +136,7 @@ const LandingScreen = (): JSX.Element => {
           mode={'outlined'}
           value={email}
           style={styles.input}
-          onChangeText={(text) => _checkEmail(text)}
+          onChangeText={(text: string) => _checkEmail(text)}
           autoFocus={true}
           onSubmitEditing={Keyboard.dismiss}
           onFocus={() => Keyboard.emit('keyboardDidShow')}
@@ -150,7 +150,7 @@ const LandingScreen = (): JSX.Element => {
           mode={'outlined'}
           value={password}
           style={styles.input}
-          onChangeText={(text) => _checkPassword(text)}
+          onChangeText={(text: string) => _checkPassword(text)}
           onSubmitEditing={Keyboard.dismiss}
           onFocus={() => Keyboard.emit('keyboardDidShow')}
         />

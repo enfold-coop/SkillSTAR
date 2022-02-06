@@ -3,7 +3,7 @@
         "name": "SkillSTAR",
         "slug": "SkillSTAR",
         "privacy": "unlisted",
-        "version": "1.0.8",
+        "version": "1.0.9",
         "orientation": "portrait",
         "icon": "./assets/images/app_icon.png",
         "scheme": "myapp",
@@ -17,7 +17,7 @@
         },
         "assetBundlePatterns": ["**/*"],
         "ios": {
-            "buildNumber": "9",
+            "buildNumber": "10",
             "supportsTablet": true,
             "bundleIdentifier": "SkillSTAR",
             "infoPlist": {
