@@ -9,9 +9,10 @@ import { ImageAssets } from '../data/images';
 import { MaterialsItems } from '../data/prep_materials';
 import CustomColors from '../styles/Colors';
 import { ChainSessionType } from '../types/chain/ChainSession';
+import { ScreenNavigationProp } from '../types/NavigationOptions';
 
 const PrepareMaterialsScreen = (): JSX.Element => {
-  const navigation = useNavigation();
+  const navigation = useNavigation<ScreenNavigationProp>();
   const [chainSessionType, setChainSessionType] = useState<ChainSessionType>();
   const chainMasteryState = useChainMasteryState();
 

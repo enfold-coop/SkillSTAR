@@ -22,9 +22,10 @@ import {
   ChainStepPromptLevelMap,
   StepAttempt,
 } from '../types/chain/StepAttempt';
+import { ScreenNavigationProp } from '../types/NavigationOptions';
 
 const StepScreen = (): JSX.Element => {
-  const navigation = useNavigation();
+  const navigation = useNavigation<ScreenNavigationProp>();
   const [stepIndex, setStepIndex] = useState<number>();
   const [chainSteps, setChainSteps] = useState<ChainStep[]>();
   const [chainStep, setChainStep] = useState<ChainStep>();

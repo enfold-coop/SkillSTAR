@@ -5,9 +5,10 @@ import { Button } from 'react-native-paper';
 import AppHeader from '../components/Header/AppHeader';
 import { ImageAssets } from '../data/images';
 import CustomColors from '../styles/Colors';
+import { ScreenNavigationProp } from '../types/NavigationOptions';
 
 const RewardsScreens = (): JSX.Element => {
-  const navigation = useNavigation();
+  const navigation = useNavigation<ScreenNavigationProp>();
   return (
     <View style={styles.container}>
       <AppHeader name={'Congrats!'} />

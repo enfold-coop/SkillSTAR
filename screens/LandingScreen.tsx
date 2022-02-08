@@ -1,10 +1,9 @@
 import { DEFAULT_USER_EMAIL, DEFAULT_USER_PASSWORD } from '@env';
 import { useNavigation } from '@react-navigation/native';
 import React, { useEffect, useState } from 'react';
-import { Image, ImageBackground, Keyboard, StyleSheet, View } from 'react-native';
+import { Image, ImageBackground, Keyboard, StyleSheet, Text, View } from 'react-native';
 import * as Animatable from 'react-native-animatable';
 import { Button, TextInput } from 'react-native-paper';
-import { Text } from 'react-native';
 import { useParticipantDispatch } from '../context/ParticipantProvider';
 import { useUserDispatch } from '../context/UserProvider';
 import { ImageAssets } from '../data/images';
@@ -44,7 +43,7 @@ const LandingScreen = (): JSX.Element => {
       isLoading = true;
       const user = await ApiService.getUser(() => {
         setIsLoggedOut(true);
-        navigation.navigate('LandingScreen');
+        navigation.navigate({ key: 'LandingScreen' });
       });
 
       if (user) {
@@ -57,7 +56,7 @@ const LandingScreen = (): JSX.Element => {
           // When the participant is returned, go to the ChainsHomeScreen.
           await participantDispatch({ type: 'participant', payload: selectedParticipant });
           // navigation.navigate('ChainsHomeScreen');
-          navigation.navigate('SelectParticipant');
+          navigation.navigate({ key: 'SelectParticipant' });
         } else {
           // TODO: There is a cached user, but the user account has no participants.
           //  Render a message that instructs the user to go to STAR DRIVE and
@@ -114,7 +113,7 @@ const LandingScreen = (): JSX.Element => {
       const user = await ApiService.login(email, password);
       if (user) {
         userDispatch({ type: 'user', payload: user });
-        navigation.navigate('SelectParticipant');
+        navigation.navigate({ key: 'SelectParticipant' });
       }
     } catch (e) {
       setErrorMessage('Invalid username or password. Please check your login information and try again.');
@@ -131,7 +130,7 @@ const LandingScreen = (): JSX.Element => {
         <TextInput
           textAlign={'left'}
           textContentType={'emailAddress'}
-          autoCompleteType={'username'}
+          autoComplete={'username'}
           label={'Email'}
           mode={'outlined'}
           value={email}
@@ -144,7 +143,7 @@ const LandingScreen = (): JSX.Element => {
         <TextInput
           textAlign={'left'}
           textContentType={'password'}
-          autoCompleteType={'password'}
+          autoComplete={'password'}
           secureTextEntry={true}
           label={'Password'}
           mode={'outlined'}

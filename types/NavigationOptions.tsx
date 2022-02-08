@@ -1,4 +1,4 @@
-import { StackNavigationOptions } from '@react-navigation/stack';
+import type { StackNavigationOptions, StackNavigationProp } from '@react-navigation/stack';
 import CustomColors from '../styles/Colors';
 
 export const screenOpts: StackNavigationOptions = {
@@ -23,3 +23,5 @@ export type RootStackParamList = {
   RewardsScreens: undefined;
   NoQuestionnaireScreen: undefined;
 };
+
+export type ScreenNavigationProp = StackNavigationProp<RootStackParamList>;

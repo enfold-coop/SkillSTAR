@@ -24,9 +24,9 @@ import { ApiService } from './services/ApiService';
 import CustomColors from './styles/Colors';
 import { customFonts } from './styles/Fonts';
 import { globalTheme } from './styles/Global';
-import { RootStackParamList, screenOpts } from './types/NavigationOptions';
+import { RootStackParamList, ScreenNavigationProp, screenOpts } from './types/NavigationOptions';
 
-const containerRef = createRef<NavigationContainerRef>();
+const containerRef = createRef<NavigationContainerRef<RootStackParamList>>();
 const Stack = createStackNavigator<RootStackParamList>();
 
 /**
@@ -59,7 +59,7 @@ export default function App(): JSX.Element | null {
   });
 
   interface NavButtonProps {
-    navigation: StackNavigationProp<ParamListBase>;
+    navigation: StackNavigationProp<ParamListBase, string>;
   }
 
   const SelectParticipantButton = (props: NavButtonProps): ReactElement => {
@@ -93,7 +93,10 @@ export default function App(): JSX.Element | null {
     };
   };
 
-  const getHeaderRightFunc = (navigation: StackNavigationProp<any>, parentScreen?: string): (() => JSX.Element) => {
+  const getHeaderRightFunc = (
+    navigation: StackNavigationProp<ParamListBase, string>,
+    parentScreen?: string,
+  ): (() => JSX.Element) => {
     return function headerRightFunc() {
       if (parentScreen === 'ChainsHomeScreen') {
         return <SelectParticipantButton navigation={navigation} />;

@@ -10,9 +10,10 @@ import { useChainMasteryContext } from '../context/ChainMasteryProvider';
 import { ApiService } from '../services/ApiService';
 import CustomColors from '../styles/Colors';
 import { ChainSessionTypeLabels, ChainSessionTypeMap } from '../types/chain/ChainSession';
+import { ScreenNavigationProp } from '../types/NavigationOptions';
 
 const DataVerificationScreen = (): JSX.Element => {
-  const navigation = useNavigation();
+  const navigation = useNavigation<ScreenNavigationProp>();
   const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
   const [sessionTypeLabel, setSessionTypeLabel] = useState<ChainSessionTypeLabels>();
   const [chainMasteryState, chainMasteryDispatch] = useChainMasteryContext();
@@ -52,7 +53,7 @@ const DataVerificationScreen = (): JSX.Element => {
       if (dbChainData) {
         chainMasteryState.chainMastery.updateChainData(dbChainData);
         chainMasteryDispatch({ type: 'chainMastery', payload: chainMasteryState.chainMastery });
-        navigation.navigate('ChainsHomeScreen', {});
+        navigation.navigate('ChainsHomeScreen', undefined);
       }
     }
   };

@@ -2,7 +2,6 @@ import { useNavigation } from '@react-navigation/native';
 import React, { ReactElement, useEffect, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Button, Divider } from 'react-native-paper';
-import { participantName } from '../../_util/ParticipantName';
 import { useChainMasteryDispatch } from '../../context/ChainMasteryProvider';
 import { useParticipantContext } from '../../context/ParticipantProvider';
 import { useUserState } from '../../context/UserProvider';
@@ -10,11 +9,13 @@ import { ApiService } from '../../services/ApiService';
 import { ChainMastery } from '../../services/ChainMastery';
 import CustomColors from '../../styles/Colors';
 import { ChainData, SkillstarChain } from '../../types/chain/ChainData';
+import { ScreenNavigationProp } from '../../types/NavigationOptions';
 import { Participant } from '../../types/User';
+import { participantName } from '../../_util/ParticipantName';
 import { Loading } from '../Loading/Loading';
 
 export const SelectParticipant = (): ReactElement => {
-  const navigation = useNavigation();
+  const navigation = useNavigation<ScreenNavigationProp>();
   const [menuItems, setMenuItems] = useState<ReactElement[]>();
   const [participants, setParticipants] = useState<Participant[]>();
   const userState = useUserState();
@@ -125,7 +126,7 @@ export const SelectParticipant = (): ReactElement => {
           // Update the participant in the Participant Provider
           participantDispatch({ type: 'participant', payload: newDbParticipant });
 
-          navigation.navigate('ChainsHomeScreen', {});
+          navigation.navigate('ChainsHomeScreen', undefined);
         } else {
           console.error('No chain data found in the database!');
         }

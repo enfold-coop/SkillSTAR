@@ -4,9 +4,10 @@ import { Modal, StyleSheet, Text, View } from 'react-native';
 import { Button } from 'react-native-paper';
 import { useChainMasteryState } from '../../context/ChainMasteryProvider';
 import CustomColors from '../../styles/Colors';
+import { ScreenNavigationProp } from '../../types/NavigationOptions';
 
 export const ConfirmExitSession = (): ReactElement => {
-  const navigation = useNavigation();
+  const navigation = useNavigation<ScreenNavigationProp>();
   const chainMasteryState = useChainMasteryState();
   const [shouldShowModal, setShouldShowModal] = useState<boolean>(false);
 

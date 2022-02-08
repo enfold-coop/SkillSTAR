@@ -14,12 +14,13 @@ import { ChainSessionTypeMap } from '../types/chain/ChainSession';
 import { StepAttemptField, StepAttemptFieldName } from '../types/chain/StepAttempt';
 import { DataVerificationControlCallback } from '../types/DataVerificationControlCallback';
 import { MaterialIconsT } from '../types/icons/MaterialIcons';
+import { ScreenNavigationProp } from '../types/NavigationOptions';
 
 const BaselineAssessmentScreen = (): JSX.Element => {
   /**
    * Set session type: Probe or Training
    */
-  const navigation = useNavigation();
+  const navigation = useNavigation<ScreenNavigationProp>();
   const [chainMasteryState, chainMasteryDispatch] = useChainMasteryContext();
   const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
   const [shouldShowModal, setShouldShowModal] = useState<boolean>(false);
@@ -87,7 +88,7 @@ const BaselineAssessmentScreen = (): JSX.Element => {
       if (dbChainData) {
         chainMasteryState.chainMastery.updateChainData(dbChainData);
         chainMasteryDispatch({ type: 'chainMastery', payload: chainMasteryState.chainMastery });
-        navigation.navigate('ChainsHomeScreen', {});
+        navigation.navigate('ChainsHomeScreen', undefined);
       } else {
         console.error('Something went wrong with saving the chain data.');
       }
