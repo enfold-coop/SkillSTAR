@@ -2,7 +2,6 @@ import { NavigationContainer, NavigationContainerRef, ParamListBase } from '@rea
 import { createStackNavigator, StackNavigationProp } from '@react-navigation/stack';
 import * as Font from 'expo-font';
 import React, { createRef, ReactElement, useEffect, useState } from 'react';
-import 'react-native-gesture-handler';
 import { Button, Provider } from 'react-native-paper';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { ConfirmExitSession } from './components/ConfirmExitSession/ConfirmExitSession';

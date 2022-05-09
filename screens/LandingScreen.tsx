@@ -140,7 +140,6 @@ const LandingScreen = (): JSX.Element => {
           onChangeText={(text: string) => _checkEmail(text)}
           autoFocus={true}
           onSubmitEditing={Keyboard.dismiss}
-          onFocus={() => Keyboard.emit('keyboardDidShow')}
         />
         <TextInput
           textAlign={'left'}
@@ -153,7 +152,6 @@ const LandingScreen = (): JSX.Element => {
           style={styles.input}
           onChangeText={(text: string) => _checkPassword(text)}
           onSubmitEditing={Keyboard.dismiss}
-          onFocus={() => Keyboard.emit('keyboardDidShow')}
         />
         <View
           style={{
