@@ -1,4 +1,5 @@
 import { useNavigation } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
 import React, { useEffect, useState } from 'react';
 import { Image, ImageBackground, StyleSheet, View } from 'react-native';
 import * as Animatable from 'react-native-animatable';
@@ -9,9 +10,10 @@ import { ImageAssets } from '../data/images';
 import { MaterialsItems } from '../data/prep_materials';
 import CustomColors from '../styles/Colors';
 import { ChainSessionType } from '../types/chain/ChainSession';
+import { RootStackParamList } from '../types/NavigationOptions';
 
 const PrepareMaterialsScreen = (): JSX.Element => {
-  const navigation = useNavigation();
+  const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
   const [chainSessionType, setChainSessionType] = useState<ChainSessionType>();
   const chainMasteryState = useChainMasteryState();
 

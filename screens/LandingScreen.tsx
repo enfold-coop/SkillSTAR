@@ -1,18 +1,19 @@
 import { DEFAULT_USER_EMAIL, DEFAULT_USER_PASSWORD } from '@env';
 import { useNavigation } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
 import React, { useEffect, useState } from 'react';
-import { Image, ImageBackground, Keyboard, StyleSheet, View } from 'react-native';
+import { Image, ImageBackground, Keyboard, StyleSheet, Text, View } from 'react-native';
 import * as Animatable from 'react-native-animatable';
 import { Button, TextInput } from 'react-native-paper';
-import { Text } from 'react-native';
 import { useParticipantDispatch } from '../context/ParticipantProvider';
 import { useUserDispatch } from '../context/UserProvider';
 import { ImageAssets } from '../data/images';
 import { ApiService } from '../services/ApiService';
 import CustomColors from '../styles/Colors';
+import { RootStackParamList } from '../types/NavigationOptions';
 
 const LandingScreen = (): JSX.Element => {
-  const navigation = useNavigation();
+  const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
   const [isLoggedOut, setIsLoggedOut] = useState<boolean>(false);
   const [email, setEmail] = useState(DEFAULT_USER_EMAIL);
   const [password, setPassword] = useState(DEFAULT_USER_PASSWORD);
@@ -44,7 +45,7 @@ const LandingScreen = (): JSX.Element => {
       isLoading = true;
       const user = await ApiService.getUser(() => {
         setIsLoggedOut(true);
-        navigation.navigate('LandingScreen');
+        navigation.navigate({ name: 'LandingScreen', params: undefined });
       });
 
       if (user) {
@@ -131,7 +132,7 @@ const LandingScreen = (): JSX.Element => {
         <TextInput
           textAlign={'left'}
           textContentType={'emailAddress'}
-          autoCompleteType={'username'}
+          autoComplete={'username'}
           label={'Email'}
           mode={'outlined'}
           value={email}
@@ -139,12 +140,11 @@ const LandingScreen = (): JSX.Element => {
           onChangeText={(text: string) => _checkEmail(text)}
           autoFocus={true}
           onSubmitEditing={Keyboard.dismiss}
-          onFocus={() => Keyboard.emit('keyboardDidShow')}
         />
         <TextInput
           textAlign={'left'}
           textContentType={'password'}
-          autoCompleteType={'password'}
+          autoComplete={'password'}
           secureTextEntry={true}
           label={'Password'}
           mode={'outlined'}
@@ -152,7 +152,6 @@ const LandingScreen = (): JSX.Element => {
           style={styles.input}
           onChangeText={(text: string) => _checkPassword(text)}
           onSubmitEditing={Keyboard.dismiss}
-          onFocus={() => Keyboard.emit('keyboardDidShow')}
         />
         <View
           style={{

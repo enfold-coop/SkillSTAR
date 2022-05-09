@@ -1,27 +1,29 @@
 import { useDeviceOrientation } from '@react-native-community/hooks';
 import { useNavigation } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
 import React, { useEffect, useState } from 'react';
-import { ImageBackground, ScrollView, StyleSheet, TouchableOpacity, View, Text } from 'react-native';
+import { ImageBackground, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import * as Animatable from 'react-native-animatable';
+import ScorecardListItem from '../components/Chain/ScorecardListItem';
+import SessionDataAside from '../components/Chain/SessionDataAside';
+import AppHeader from '../components/Header/AppHeader';
+import { Loading } from '../components/Loading/Loading';
 import {
   START_BOOSTER_SESSION_BTN,
   START_PROBE_SESSION_BTN,
   START_TRAINING_SESSION_BTN,
 } from '../constants/chainshome_text';
-import ScorecardListItem from '../components/Chain/ScorecardListItem';
-import SessionDataAside from '../components/Chain/SessionDataAside';
-import AppHeader from '../components/Header/AppHeader';
-import { Loading } from '../components/Loading/Loading';
 import { useChainMasteryState } from '../context/ChainMasteryProvider';
 import { useParticipantState } from '../context/ParticipantProvider';
 import { ImageAssets } from '../data/images';
 import CustomColors from '../styles/Colors';
 import { ChainSessionType } from '../types/chain/ChainSession';
+import { RootStackParamList } from '../types/NavigationOptions';
 import { Participant } from '../types/User';
 
 // Chain Home Screen
 const ChainsHomeScreen = (): JSX.Element => {
-  const navigation = useNavigation();
+  const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
   const { portrait } = useDeviceOrientation();
   const chainMasteryState = useChainMasteryState();
   const participantState = useParticipantState();
@@ -82,7 +84,7 @@ const ChainsHomeScreen = (): JSX.Element => {
               // Set the draft session type to probe and go to Prepare Materials
               if (chainMasteryState.chainMastery) {
                 chainMasteryState.chainMastery.setDraftSessionType(ChainSessionType.probe);
-                navigation.navigate('PrepareMaterialsScreen', {});
+                navigation.navigate({ name: 'PrepareMaterialsScreen', params: undefined });
               }
             }}
           >
@@ -98,7 +100,7 @@ const ChainsHomeScreen = (): JSX.Element => {
               // Set the draft session type to training and go to Prepare Materials
               if (chainMasteryState.chainMastery) {
                 chainMasteryState.chainMastery.setDraftSessionType(ChainSessionType.training);
-                navigation.navigate('PrepareMaterialsScreen', {});
+                navigation.navigate({ name: 'PrepareMaterialsScreen', params: undefined });
               }
             }}
           >

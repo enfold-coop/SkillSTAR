@@ -1,4 +1,5 @@
-import { AntDesign, MaterialIcons } from '@expo/vector-icons';
+import AntDesign from '@expo/vector-icons/AntDesign';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 
 export const customFonts = {
   ...AntDesign.font,

@@ -1,4 +1,5 @@
 import { useNavigation } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
 import React, { useEffect, useState } from 'react';
 import { FlatList, StyleSheet, Text, View } from 'react-native';
 import { Button } from 'react-native-paper';
@@ -10,9 +11,10 @@ import { useChainMasteryContext } from '../context/ChainMasteryProvider';
 import { ApiService } from '../services/ApiService';
 import CustomColors from '../styles/Colors';
 import { ChainSessionTypeLabels, ChainSessionTypeMap } from '../types/chain/ChainSession';
+import { RootStackParamList } from '../types/NavigationOptions';
 
 const DataVerificationScreen = (): JSX.Element => {
-  const navigation = useNavigation();
+  const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
   const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
   const [sessionTypeLabel, setSessionTypeLabel] = useState<ChainSessionTypeLabels>();
   const [chainMasteryState, chainMasteryDispatch] = useChainMasteryContext();
@@ -52,7 +54,7 @@ const DataVerificationScreen = (): JSX.Element => {
       if (dbChainData) {
         chainMasteryState.chainMastery.updateChainData(dbChainData);
         chainMasteryDispatch({ type: 'chainMastery', payload: chainMasteryState.chainMastery });
-        navigation.navigate('ChainsHomeScreen', {});
+        navigation.navigate({ name: 'ChainsHomeScreen', params: undefined });
       }
     }
   };

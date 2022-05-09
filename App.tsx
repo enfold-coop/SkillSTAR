@@ -1,8 +1,7 @@
 import { NavigationContainer, NavigationContainerRef, ParamListBase } from '@react-navigation/native';
 import { createStackNavigator, StackNavigationProp } from '@react-navigation/stack';
-import * as Font from 'expo-font';
+import { loadAsync } from 'expo-font';
 import React, { createRef, ReactElement, useEffect, useState } from 'react';
-import 'react-native-gesture-handler';
 import { Button, Provider } from 'react-native-paper';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { ConfirmExitSession } from './components/ConfirmExitSession/ConfirmExitSession';
@@ -26,7 +25,7 @@ import { customFonts } from './styles/Fonts';
 import { globalTheme } from './styles/Global';
 import { RootStackParamList, screenOpts } from './types/NavigationOptions';
 
-const containerRef = createRef<NavigationContainerRef>();
+const containerRef = createRef<NavigationContainerRef<RootStackParamList>>();
 const Stack = createStackNavigator<RootStackParamList>();
 
 /**
@@ -40,7 +39,7 @@ export default function App(): JSX.Element | null {
     let isCancelled = false;
 
     const _loadFonts = async () => {
-      await Font.loadAsync(customFonts);
+      await loadAsync(customFonts);
 
       if (!isCancelled) {
         setIsLoadingComplete(true);
@@ -93,7 +92,10 @@ export default function App(): JSX.Element | null {
     };
   };
 
-  const getHeaderRightFunc = (navigation: StackNavigationProp<any>, parentScreen?: string): (() => JSX.Element) => {
+  const getHeaderRightFunc = (
+    navigation: StackNavigationProp<ParamListBase>,
+    parentScreen?: string,
+  ): (() => JSX.Element) => {
     return function headerRightFunc() {
       if (parentScreen === 'ChainsHomeScreen') {
         return <SelectParticipantButton navigation={navigation} />;
@@ -103,7 +105,7 @@ export default function App(): JSX.Element | null {
         return <LogoutButton navigation={navigation} />;
       }
 
-      if (parentScreen === 'PrepareMaterialsScreen' || parentScreen === 'StepScreen') {
+      if (['PrepareMaterialsScreen', 'StepScreen'].includes(`${parentScreen}`)) {
         return <ConfirmExitSession />;
       }
 
@@ -116,7 +118,7 @@ export default function App(): JSX.Element | null {
       <Stack.Navigator initialRouteName={'LandingScreen'}>
         <Stack.Screen name={'LandingScreen'} component={LandingScreen} options={{ headerShown: false }} />
         <Stack.Screen
-          options={() => ({
+          options={({ route, navigation }) => ({
             ...screenOpts,
             title: 'Select Participant',
           })}
@@ -124,7 +126,7 @@ export default function App(): JSX.Element | null {
           component={SelectParticipant}
         />
         <Stack.Screen
-          options={({ navigation }) => ({
+          options={({ route, navigation }) => ({
             ...screenOpts,
             title: 'Chains',
             headerRight: getHeaderRightFunc(navigation, 'ChainsHomeScreen'),
@@ -133,7 +135,7 @@ export default function App(): JSX.Element | null {
           component={ChainsHomeScreen}
         />
         <Stack.Screen
-          options={({ navigation }) => ({
+          options={({ route, navigation }) => ({
             ...screenOpts,
             title: 'Prepare Materials',
             headerLeft: getHeaderLeftFunc(),
@@ -143,7 +145,7 @@ export default function App(): JSX.Element | null {
           component={PrepareMaterialsScreen}
         />
         <Stack.Screen
-          options={({ navigation }) => ({
+          options={({ route, navigation }) => ({
             ...screenOpts,
             title: 'Baseline Assessment',
             headerRight: getHeaderRightFunc(navigation),
@@ -152,12 +154,15 @@ export default function App(): JSX.Element | null {
           component={BaselineAssessmentScreen}
         />
         <Stack.Screen
-          options={{ ...screenOpts, title: 'Data verification' }}
+          options={({ route, navigation }) => ({
+            ...screenOpts,
+            title: 'Data verification',
+          })}
           name={'DataVerificationScreen'}
           component={DataVerificationScreen}
         />
         <Stack.Screen
-          options={({ navigation }) => ({
+          options={({ route, navigation }) => ({
             ...screenOpts,
             title: 'Step',
             headerLeft: getHeaderLeftFunc(),
@@ -167,12 +172,15 @@ export default function App(): JSX.Element | null {
           component={StepScreen}
         />
         <Stack.Screen
-          options={{ ...screenOpts, title: 'Congrats!' }}
+          options={({ route, navigation }) => ({
+            ...screenOpts,
+            title: 'Congrats!',
+          })}
           name={'RewardsScreens'}
           component={RewardsScreens}
         />
         <Stack.Screen
-          options={({ navigation }) => ({
+          options={({ route, navigation }) => ({
             ...screenOpts,
             title: 'No SkillSTAR Data for this participant',
             headerRight: getHeaderRightFunc(navigation),

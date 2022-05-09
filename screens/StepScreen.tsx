@@ -1,5 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
-import { Video } from 'expo-av';
+import { StackNavigationProp } from '@react-navigation/stack';
+import { ResizeMode, Video } from 'expo-av';
 import { AVPlaybackSource } from 'expo-av/build/AV';
 import VideoPlayer from 'expo-video-player';
 import React, { useEffect, useState } from 'react';
@@ -22,9 +23,10 @@ import {
   ChainStepPromptLevelMap,
   StepAttempt,
 } from '../types/chain/StepAttempt';
+import { RootStackParamList } from '../types/NavigationOptions';
 
 const StepScreen = (): JSX.Element => {
-  const navigation = useNavigation();
+  const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
   const [stepIndex, setStepIndex] = useState<number>();
   const [chainSteps, setChainSteps] = useState<ChainStep[]>();
   const [chainStep, setChainStep] = useState<ChainStep>();
@@ -116,7 +118,7 @@ const StepScreen = (): JSX.Element => {
             key={'video-player-' + key}
             videoProps={{
               shouldPlay: false,
-              resizeMode: Video.RESIZE_MODE_STRETCH,
+              resizeMode: ResizeMode.STRETCH,
               source: video,
               volume: 0.0,
             }}
