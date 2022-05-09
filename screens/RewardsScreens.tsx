@@ -1,13 +1,15 @@
 import { useNavigation } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
 import React from 'react';
 import { Image, StyleSheet, Text, View } from 'react-native';
 import { Button } from 'react-native-paper';
 import AppHeader from '../components/Header/AppHeader';
 import { ImageAssets } from '../data/images';
 import CustomColors from '../styles/Colors';
+import { RootStackParamList } from '../types/NavigationOptions';
 
 const RewardsScreens = (): JSX.Element => {
-  const navigation = useNavigation();
+  const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
   return (
     <View style={styles.container}>
       <AppHeader name={'Congrats!'} />

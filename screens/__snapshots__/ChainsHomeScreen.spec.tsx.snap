@@ -130,6 +130,7 @@ exports[`ChainsHomeScreen renders correctly 1`] = `
           }
         >
           <View
+            collapsable={false}
             style={
               Object {
                 "alignItems": "center",
@@ -143,6 +144,7 @@ exports[`ChainsHomeScreen renders correctly 1`] = `
             }
           >
             <View
+              collapsable={false}
               style={
                 Object {
                   "height": 24,
@@ -166,6 +168,7 @@ exports[`ChainsHomeScreen renders correctly 1`] = `
                 }
               >
                 <View
+                  collapsable={false}
                   style={
                     Object {
                       "height": 24,
@@ -192,6 +195,7 @@ exports[`ChainsHomeScreen renders correctly 1`] = `
                     }
                   >
                     <View
+                      collapsable={false}
                       style={
                         Object {
                           "borderColor": "#6F7EA0",
@@ -208,6 +212,7 @@ exports[`ChainsHomeScreen renders correctly 1`] = `
             </View>
           </View>
           <View
+            collapsable={false}
             style={
               Object {
                 "alignItems": "center",
@@ -221,6 +226,7 @@ exports[`ChainsHomeScreen renders correctly 1`] = `
             }
           >
             <View
+              collapsable={false}
               style={
                 Object {
                   "height": 24,
@@ -245,6 +251,7 @@ exports[`ChainsHomeScreen renders correctly 1`] = `
                 }
               >
                 <View
+                  collapsable={false}
                   style={
                     Object {
                       "height": 24,
@@ -271,6 +278,7 @@ exports[`ChainsHomeScreen renders correctly 1`] = `
                     }
                   >
                     <View
+                      collapsable={false}
                       style={
                         Object {
                           "borderColor": "#6F7EA0",
@@ -319,6 +327,7 @@ exports[`ChainsHomeScreen renders correctly 1`] = `
           }
         >
           <View
+            collapsable={false}
             style={
               Object {
                 "alignItems": "center",
@@ -332,6 +341,7 @@ exports[`ChainsHomeScreen renders correctly 1`] = `
             }
           >
             <View
+              collapsable={false}
               style={
                 Object {
                   "height": 24,
@@ -355,6 +365,7 @@ exports[`ChainsHomeScreen renders correctly 1`] = `
                 }
               >
                 <View
+                  collapsable={false}
                   style={
                     Object {
                       "height": 24,
@@ -381,6 +392,7 @@ exports[`ChainsHomeScreen renders correctly 1`] = `
                     }
                   >
                     <View
+                      collapsable={false}
                       style={
                         Object {
                           "borderColor": "#6F7EA0",
@@ -397,6 +409,7 @@ exports[`ChainsHomeScreen renders correctly 1`] = `
             </View>
           </View>
           <View
+            collapsable={false}
             style={
               Object {
                 "alignItems": "center",
@@ -410,6 +423,7 @@ exports[`ChainsHomeScreen renders correctly 1`] = `
             }
           >
             <View
+              collapsable={false}
               style={
                 Object {
                   "height": 24,
@@ -434,6 +448,7 @@ exports[`ChainsHomeScreen renders correctly 1`] = `
                 }
               >
                 <View
+                  collapsable={false}
                   style={
                     Object {
                       "height": 24,
@@ -460,6 +475,7 @@ exports[`ChainsHomeScreen renders correctly 1`] = `
                     }
                   >
                     <View
+                      collapsable={false}
                       style={
                         Object {
                           "borderColor": "#6F7EA0",
