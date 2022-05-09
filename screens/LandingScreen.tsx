@@ -1,4 +1,3 @@
-import { DEFAULT_USER_EMAIL, DEFAULT_USER_PASSWORD } from '@env';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import React, { useEffect, useState } from 'react';
@@ -15,8 +14,8 @@ import { RootStackParamList } from '../types/NavigationOptions';
 const LandingScreen = (): JSX.Element => {
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
   const [isLoggedOut, setIsLoggedOut] = useState<boolean>(false);
-  const [email, setEmail] = useState(DEFAULT_USER_EMAIL);
-  const [password, setPassword] = useState(DEFAULT_USER_PASSWORD);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [isValid, setIsValid] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string>('');
   const [keyboardIsOpen, setKeyboardIsOpen] = useState<boolean>();
