@@ -1,6 +1,6 @@
 import { NavigationContainer, NavigationContainerRef, ParamListBase } from '@react-navigation/native';
 import { createStackNavigator, StackNavigationProp } from '@react-navigation/stack';
-import * as Font from 'expo-font';
+import { loadAsync } from 'expo-font';
 import React, { createRef, ReactElement, useEffect, useState } from 'react';
 import { Button, Provider } from 'react-native-paper';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
@@ -39,7 +39,7 @@ export default function App(): JSX.Element | null {
     let isCancelled = false;
 
     const _loadFonts = async () => {
-      await Font.loadAsync(customFonts);
+      await loadAsync(customFonts);
 
       if (!isCancelled) {
         setIsLoadingComplete(true);
