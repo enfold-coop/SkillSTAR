@@ -10,8 +10,8 @@ npm-debug.*
 *.orig.*
 .idea
 web-build/
-*.mp4
-assets/videos/*
+# *.mp4
+# assets/videos/*
 
 # Created by https://www.toptal.com/developers/gitignore/api/reactnative,vscode,pycharm+all
 # Edit at https://www.toptal.com/developers/gitignore?templates=reactnative,vscode,pycharm+all

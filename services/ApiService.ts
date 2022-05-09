@@ -1,4 +1,3 @@
-import { API_URL } from '@env';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import NetInfo from '@react-native-community/netinfo';
 import React from 'react';
@@ -10,6 +9,8 @@ import { MasteryInfo } from '../types/chain/MasteryInfoMap';
 import { StarDriveFlow } from '../types/chain/StarDriveFlow';
 import { ContextDispatchAction, ContextStateValue } from '../types/Context';
 import { Participant, User } from '../types/User';
+
+const API_URL = 'https://autismdrive.virginia.edu/api';
 
 export class ApiService {
   private static endpoints = {
